@@ -1,2 +1,6 @@
 # Project exclude paths
 /cmake-build-debug/
+/venv/
+/dist/
+/sente.egg-info/
+/build/
