@@ -1,0 +1,472 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Japanese]SZ[19]KM[0.00]
+PW[White]PB[Black]
+;B[qd]LB[oc:B][od:A]C[3-4 Looking for a strong opening corner and influence twards the Right
+
+A; High Aproach: look for Influence Twards left and center
+
+B: Low Aproach: look for less influence twards center and more twards side and corner1]
+(;W[od]LB[mc:C][oc:B][oe:D][pf:A]C[A Knight's Move: looks for territory on the Right12
+
+B Attach: looks for the corner and presure on the whire stone
+
+C Low Pinser: looks to put presure on the white aproach and makes a small bit of territory on the left
+
+D Attach on top: looks for outward influence]
+(;B[pf]
+;W[qc]C[Take the Corner from Black]
+;B[rc]C[Attack stone and move into corner]
+;W[pc]LB[rb:A][re:B]C[A is standord, take the small corner for what its worth and force white to settle on the Left
+
+B secures the Right better but could give up the corner]
+(;B[rb]LB[kc:B][jd:A]TR[cc][dc][cd][dd]C[If white has a stone on one of the triangles A and other higher moves are better
+
+B is better if your opponent has influence in that area]
+;W[kc]
+;B[qj]C[Black gets: territory on the right and a small corner
+
+White gets: inititive, and a base in the upper left
+
+])
+(;B[re]
+;W[kc]LB[rb:A]C[later in the game A can be played by ether player for a small corner
+
+White Gets: A base on the right and inititive
+
+Black Gets: Stronger stones and weak influence twards the left
+
+**TYPICALY NOT PLAYED]))
+(;B[oc]
+(;W[nc]C[White はね]
+;B[pc]C[Extend]
+;W[nd]C[Defend]
+(;B[qf]C[make more territory]
+;W[jc]C[white Makes base on left
+
+White Gets: Base on Left
+
+Black gets: Big Corner and inititive])
+(;B[pe]TR[pj][qj][pk][qk][pp][qp][pq][qq]C[This Move is better if Black has influence on the right]
+;W[jc]))
+(;W[pd]C[Small Avalanch Joseki, LEARN THIS ONE
+
+White dosen't want to settle for the side so they extend rather than hane]
+;B[pc]
+;W[qe]
+(;B[nd]TR[qc][rd][re]SQ[nc]C[Empty corner Small Avalanch joseki
+
+Black can play at any of the marked points instead to avoid avalanch
+
+Square makes Large Avalanch]
+;W[qc]C[White's Best move, most other moves are chicken-out moves for white and give black a big advantage]
+;B[rd]
+;W[qb]C[White MUST play here, all other moves are verry bad]
+(;B[re]TR[nc]C[White should not play the marked spot because all of white's stones die]
+(;W[pf]C[Normal response for white]
+(;B[qf]C[Black atari]
+;W[nc]C[White Counterattacks]
+;B[pe]C[Black takes and atari]
+;W[oe]
+;B[of]
+;W[ne]
+;B[pg]
+;W[md])
+(;B[of]C[Another Option: Almost Trick move but still playable]
+(;W[rf]C[BAAAAD move throw in leads to a loseing captureing race for white]
+;B[oe]
+;W[pe]
+;B[pg]
+;W[qf]
+;B[rg]
+;W[sf]
+;B[sg]
+;W[se]
+;B[qg]
+;W[sd]
+;B[sc])
+(;W[pg]C[White's Best Response]
+;B[ne]C[Black Conects in sente]
+;W[pe]
+;B[pb]C[Black needs to short the white stones one more liberty to kill them]
+;W[nc]C[White cuts]
+;B[nb]
+;W[mc]
+;B[rb]C[Fighting]
+;W[mb]
+;B[oa])))
+(;W[qf]C[move white should make if white has the ladder in the lower left corner AND outward influence advantage for fight]
+(;B[rf]C[Response if Black has the ladder]
+(;W[nc]C[If white dosen't have the ladder they cannot play here now]
+;B[oe]
+;W[pe]
+;B[qg]
+;W[pf]
+;B[of]
+;W[pg]
+;B[ph]
+;W[og]
+;B[ng]
+;W[oh]C[Ladder Continuation])
+(;W[qg]C[Best Response for white if black has the ladder]
+;B[mc]C[Black fixes, verry verry good for black]))
+(;B[ne]C[Black's response if White has the ladder]
+;W[of]C[White makes shape]
+;B[pb]C[black needs to stay ahead in captureing race in the corner]
+;W[nc]C[white Cuts]
+;B[nb]
+;W[mc]
+;B[rb]C[Black kills the stones]
+;W[mb]
+;B[oa]
+;W[nf]C[Fight begins])))
+(;B[rc]
+;W[nc]
+;B[nb]
+;W[mc]
+;B[pb]LB[mb:A][re:B]C[White gets Sente Exchanges at points like A and B, 先手 and weak outward influence
+
+Black gets: Corner + two stones
+
+White gets, Week outside influence + sente]))
+(;B[qc]C[Simplest Variation]
+;W[nd]C[White fixes]
+;B[re]
+;W[qf]
+;B[rf]
+;W[qg]
+;B[mc]
+;W[le]
+;B[lc]C[Black gets: Larger Corner
+
+White gets: outward influence and sente])
+(;B[rd]
+;W[nd]
+;B[nc]
+;W[md]
+;B[lc]
+;W[pf]C[White uses thickness
+
+Black gets: Small-ish corner and sente
+
+White gets: lots of high influence])
+(;B[re]
+;W[rd]C[Cut]
+;B[qc]
+;W[rf]
+;B[nd]
+;W[pf]
+;B[of]C[Sweat move #1]
+;W[og]
+;B[ng]C[Sweat move #2]
+;W[oh]
+;B[ne]C[Black gets: high influence twards top, small corner and seviral stones
+
+White gets: Lots of influence and sente])
+(;B[nc]C[Larch Avalanch ACK!!!]
+(;W[nd]C[White accepts larege avalanch]
+;B[md]C[Similar to small avalanch only white has one extra stone]
+;W[qc]
+;B[rd]
+;W[qb]
+;B[re]
+;W[mc]C[white can cut here because his stones are in no danger of being laddered]
+;B[lc])
+(;W[rd]C[White can still reject avalanch but result isnt exsactly equal]
+;B[qc]
+;W[pf]C[Black gets: Large Corner + lots of Aji + sente
+
+White gets: week Influence twards the bottom]))))
+(;B[mc]
+;W[qc]C[White Takes Corner and Seperates]
+;B[pc]C[hane White stone]
+;W[pd]C[Automatic Cut allways play this in this posiiton]
+;B[oc]C[Strenghen P17]
+;W[nc]C[Short Liberties on the 2 group stones]
+;B[nd]C[あたり]
+;W[nb]TR[oc][pc]C[Extend and threaten the two Marked vital stones
+
+**THESE STONES ARE ABSOULTELY VITAL
+
+Black cannot play any move that gives up せんてい otherwise white can attack the two vital stones so any move that gives up せんてい is not playable
+
+Black Cannot Ladder on ether side.]
+;B[qb]C[あたり forces white to respond and gains black extra liberties]
+;W[rc]LB[ob:A][pb:B]TR[nb][nc]C[White ExtendsExtend
+
+Black plays A rather than B because it shorts the liberties on marked stones]
+;B[ob]LB[mb:A][md:B][qe:C]TR[cp][dp][cq][dq]SQ[od][pd]C[White has two options at this point, if White has a ladder at one of the triangularly marked points white can safely play A to attack black and win the ladder of the marked stones that is created from Black playing on B
+
+If white does not have the ladder then white should play C to cut down on あじ and prevent the ladder
+]
+(;W[qe]C[White Takes the stone]
+;B[mb]C[and in exchange black gets the other stones ]
+;W[ne]
+;B[md]C[Black gets: 2 stones, solid wall faceing left
+
+White gets: Inititive, one stone and a weak wall faceing down])
+(;W[mb]CR[nb][nc]LB[md:A]TR[od][pd][cp][dp][cq][dq]C[Black's Normal response to this move would be at A. A is a doubble threat against the Marked Stones. the Triangularly marked stones are being threatened with a ladder and the curcularly marked stones are being threatened to be killed.
+
+**IMPORTANT: White should play this move if They have the ladder at one of the marked stones and Only then]
+;B[qe]TR[ob][qb][oc][pc]C[Black Must Extend to protect the Marked Stones, Sacrificeing the weak stones, simltaniusly attacking the two white stones]
+;W[pf]TR[od][pd]C[White protects Marked stones]
+;B[rb]TR[qc][rc]C[Black extends and kills the marked stones makeing life in the corner
+]
+;W[lc]C[White gets: week outward influence
+
+Black gets: Inititive, Two Stones and a small corner]))
+(;B[oe]
+;W[ne]C[White はね]
+;B[pe]C[Black Runs]
+(;W[nf]C[White Extends, Trying to get influence twards the Center]
+;B[nd]C[Black Cuts]
+;W[md]C[White Gives up Stone]
+;B[nc]C[Black Extends]
+;W[mc]C[White Blocks]
+;B[ob]C[Black Diagonal]
+;W[nb]TR[nc][nd]C[White attacks marked stones]
+;B[oc]C[White Defends])
+(;W[md]C[Tiger's Mouth]
+;B[oc]C[Take large corner]
+;W[nc]TR[oc]C[White looks to get outward influence and puts presure on marked stone]
+;B[ob]C[Black defends its stone]
+;W[nf]C[White Gets: Influence faceing left
+
+Black Gets: Big Corner and inititive])))
+(;W[oc]LB[mc:D][ld:C][pe:A][pf:B]C[A; しゅさくdiagonal, Looking for strenght in many directions
+
+B: More Territorial move, more common after こみ became a thing
+
+C: Black Puts Presure on White stone and looks for outward influence
+
+D: Black puts presure on White stone and looking for territory on top]
+(;B[pe]C[しゅさく]
+(;W[kc]LB[pc:A]C[White tries to make a bigger baseso that A is no longer forces white to be overconcentrated]
+;B[mc]C[Black Invades]
+;W[oe]C[White Leans on Strong Black stones while attacking Lone black stone]
+;B[of]C[black はね]
+;W[ne]C[White Defends]
+;B[pc]C[Black Threatens to connect under and takes a big bite out of the corner]
+;W[ob]C[White Prevents Black from linking up underneath]
+;B[pg]C[Black fixes defect]
+;W[ld]C[White Finaly Kills the stone
+
+Black Gets: Decent Corner and Downward Influence and あじ
+
+White Gets: Inititive, Stone and a strong base on the Left])
+(;W[lc]C[White makes a small base]
+;B[pc]C[Black Kicks]
+;W[od]LB[pd:A]C[White responds, overconcentrateing themselves and exposeing a weakness of black's at A]
+;B[pg]C[Black fixes defect and takes territory
+
+Black gets: Big corner and side influence
+
+White gets: side influence and Inititive]))
+(;B[pf]
+(;W[qc]C[White takes corner]
+;B[rc]C[Black はね]
+;W[pd]C[White Tiger's Mouth]
+(;B[qe]C[Blcak defends]
+;W[qb]C[White Gets: Small, Solid Corner
+
+Black Gets: Downward Influence, Inititive])
+(;B[qb]C[Agressive Black あたり]
+;W[qe]C[White Returns the Favor]
+;B[pc]LB[pb:A][rd:B]C[Black takes.
+
+White can あたり at A or B depending on what kind of influence they want A is Better if Black is Strong]
+(;W[rd]C[White takes influence twards the Right]
+;B[qc]C[Fill]
+;W[pe]LB[od:A]C[Fix
+
+Typical じょせき
+
+**If Black is stron Cut at A is a threat
+
+Black Gets; Small Corner, Inititive and a Stone
+
+White Gets: Downward Influence])
+(;W[pb]C[White takes influence twards the left]
+;B[qc]C[Fill]
+;W[od]C[Black gets: Small Corner, Inititive and a Stone
+
+White gets: White Wall])))
+(;W[md]C[White gives up corner]
+;B[pc]C[Black kicks]
+;W[od]C[White exposes defect, overconcentrateing himself]
+;B[pb]C[Black Defends
+
+Black gets: Strong corner and Right influence
+
+White gets: Left influence and inititive]))
+(;B[ld]
+;W[nd]TR[ld]C[Prevent Conection between stones, get space to run and put presure on Marked Stone]
+;B[pf]C[Black Makes Territory and protects corner]
+(;W[qb]TR[qd][pf]C[White takes rights for corner and threatens Marked stones]
+;B[qj]LB[jc:B][rc:A]TR[ld]C[After this White should attack the Marked stone somehow, Dependent on the situation
+
+White can てぬき and reserver moves like A and B fro later
+
+Black gets: strong right influence
+
+White gets: Week groups that can easily be strenthened, a stone to attack and inititive
+]
+(;W[jc]C[White makes a low pinser, threataning the mareked stone and threataning to make eyes for the larger group])
+(;W[rc]C[White makes Eyes in the corner]))
+(;W[qc]C[White Takes Corner]
+;B[rc]C[White takes some of the corner]
+;W[pd]C[White Attacks Black stones]
+;B[qe]C[Black defends stones]
+;W[qb]C[White makes Eye space]))
+(;B[mc]C[Black Pinsers]
+(;W[oe]C[White Runs]
+;B[pf]C[Black Takes Territory and Puts presure on White Stones]
+(;W[ph]LB[pe:A][qe:B]C[Exposes Defect at A and B]
+;B[of]C[White forced to fix Defect]
+;W[md]C[White attaches weakening the stone]
+(;B[pc]C[Blakc takes the corner and works to fix defect]
+;W[nc]TR[mc]C[White attacks the Marked Stone]
+;B[mf]C[Black Fixes Defect and puts presure on white stone]
+;W[kd]C[Whites takes
+
+Black Gets: Corner, Inititive, Center Influence
+
+White Gets: Side Influence, Strong on the top])
+(;B[lc]C[Black defends thier stone]
+;W[nf]
+(;B[ng]C[Harsh move against white, makes tons of weaknesses for both players]
+;W[og]C[also brutal move]
+;B[pg]
+;W[oh]
+;B[ne]
+;W[mf]
+;B[nd]
+;W[qc]C[White lives in the corner]
+;B[od]
+;W[rd]
+;B[pd]
+;W[mh]C[White makes Shape])
+(;B[oh]
+;W[pe]
+;B[qe]
+;W[og]
+(;B[ng]
+;W[pg]
+;B[qf]
+;W[mf]
+;B[pi]
+;W[nh]
+;B[oi]
+;W[mg]
+;B[qh]C[White gets: Central Infulence and 先手
+
+Black gets: Influence twards Right, a strong group on top and a few (9) points on the right])
+(;B[pg]C[wrong あたり]
+;W[ng]TR[ph]C[Marked stone is now verry hard to deal with because it can lean on black's three weak stones]
+(;B[pi]
+;W[qh]C[先手 for white]
+(;B[rg]
+;W[rh]C[先手 for white]
+(;B[qg])
+(;B[dp]
+;W[rf]
+;B[qf]
+;W[qg]
+;B[re]
+;W[sg]))
+(;B[dp]
+;W[qf]
+;B[qg]
+;W[rg]))
+(;B[qh]
+;W[pi])))))
+(;W[of]C[BAD MOVE NOT 除籍]
+;B[pg]C[Black gets verry sold base on top and white dose not get enough compensation in strength])
+(;W[qc]C[Bad move for white, white lives small and becomes verry heavy]
+;B[pd]
+;W[pc]
+;B[od]
+;W[nd]
+;B[nc]
+;W[rd]
+;B[re]
+;W[rc])
+(;W[ld]C[Less common 除籍]
+;B[lc]
+;W[kd]
+;B[md]
+;W[me]
+;B[kc]
+;W[jd]
+;B[ic]
+;W[nd]C[White has to conect unlike in 4-4 sequence]
+;B[ph]C[Black should solidify himself on the top somehow
+
+White gets: 先手 and Central Influence
+
+Black gets: Two solid groups and influence twards right]))
+(;W[pe]C[White Leans to Get influence twards the left]
+(;B[qe]C[Black Crawls]
+;W[pf]C[White Extends]
+;B[qg]C[Black Jumps]
+;W[jc]C[White Attacks the Black stone
+
+White Gets: Influence on Left and presure on a stone
+
+Black Gets: Small corner + Inititive])
+(;B[pd]C[Black looking for influence twards the right]
+;W[od]C[Block]
+;B[oe]C[Cut]
+;W[ne]C[あたり]
+;B[of]C[Extend]
+;W[md]C[Fix]
+;B[pf]C[Kill]
+;W[lc]C[Kill
+
+White gets: Influence twards Left + stone
+
+Black gets: Influence twards Right + stone + Influence twards corner]))
+(;W[qc]C[White Just wants to settle]
+(;B[rc]
+;W[pd]C[These two moves are by far the most common]
+(;B[qe]C[Backing off gives white exsactly what they wanted so this isn't viewed as being the best of moves]
+;W[qb]
+;B[pg]
+;W[rb]C[White's Move is Key, Playing elsewhere allows Black to settle both of their groups
+
+Black should now either solidify his stones on the right or on the left
+
+Black gets: Some forceing moves and Influence twards the right and top
+
+White gets: Living Corner and 先手])
+(;B[qb]C[Black Decides to take the corner]
+;W[qe]C[This is white's only choice, こ is bad and empty triangle is bad as well]
+;B[pc]
+;W[rd]
+;B[qc]
+(;W[pe]
+(;B[ob]
+;W[pi]C[White makes Eyespace
+
+])
+(;B[od]C[If black has the ladder Black can cut here]))
+(;W[oe]C[White has to play this if Black has the ladder because White's Stone will be cut off.
+
+THIS IS A BAD TIGER'S MOUTH SINCE IT FACES THE CENTER Black gets too man free moves by peeping])))
+(;B[pd]
+;W[pc]
+;B[od]
+(;W[nc]
+;B[nd]
+;W[mb]
+;B[lc]C[White gets: Big Corner & 先手
+
+Black gets: Big wall])
+(;W[nd]C[White can also fight if white wants to]
+;B[nc]
+;W[rd]
+;B[re]
+;W[rc]
+;B[pf]
+;W[ne]
+;B[ld]
+;W[ng]))))))

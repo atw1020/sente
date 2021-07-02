@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.4)
+project(sente)
+
+set(CMAKE_CXX_STANDARD 11)
+
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
+set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
+
+add_subdirectory(pybind11)
+# pybind11_add_module(sente src/module.cpp src/include/Move.h src/Move.cpp)
+pybind11_add_module(sente src/module.cpp src/Group.cpp src/include/Group.h src/include/GoGame.h src/GoGame.cpp
+                          src/Move.cpp src/include/Move.h src/include/Board.h src/include/GoGame.h src/include/Tree.h)
