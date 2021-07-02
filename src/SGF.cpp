@@ -14,10 +14,13 @@ namespace sente_utils {
 
     Tree<sente::Move> getSGFMoves(const std::string& SGFText){
 
-        unsigned numParens;
         Tree<sente::Move> moves;
 
         for (const auto& character : SGFText){
+
+            if (character == '('){
+
+            }
 
         }
 

@@ -69,7 +69,7 @@ class TestSGF(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
-                GoGame(os.path.join("sgf", file))
+                sgf.load(os.path.join("sgf", file))
 
     def test_single_branch_file(self):
         """
@@ -79,4 +79,4 @@ class TestSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame("sgf/simple_sequence.sgf")
+        game = sgf.load("sgf/simple_sequence.sgf")

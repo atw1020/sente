@@ -97,58 +97,63 @@ PYBIND11_MODULE(sente, module){
     py::class_<sente::GoGame>(module, "GoGame")
             .def(py::init<sente::Rules, unsigned>(),
                 py::arg("rules") = sente::Rules::CHINESE,
-                py::arg("board_size") = 19)
-            .def(py::init<std::string>(),
-                py::arg("sgf_file_path"),
-                "initializes a game of go from an sgf file")
+                py::arg("board_size") = 19,
+                "initializes a go game with a specified board size and rules")
             .def("is_legal", &sente::GoGame::isLegal,
-                 py::arg("x"),
-                 py::arg("y"),
-                 "checks to see if a move is legal")
+                py::arg("x"),
+                py::arg("y"),
+                "checks to see if a move is legal")
             .def("is_legal", &sente::GoGame::isLegal2,
-                 py::arg("x"),
-                 py::arg("y"),
-                 py::arg("stone"),
-                 "checks to see if a move is legal")
+                py::arg("x"),
+                py::arg("y"),
+                py::arg("stone"),
+                "checks to see if a move is legal")
             .def("is_legal", &sente::GoGame::isLegal3,
-                 py::arg("move"),
-                 "checks to see if a move is legal")
+                py::arg("move"),
+                "checks to see if a move is legal")
             .def("is_legal", [](sente::GoGame& game, const py::object& obj){
                 return obj.is_none();
             })
             .def("get_point", &sente::GoGame::getSpace,
-                 py::arg("x"),
-                 py::arg("y"),
-                 "get move played at the specified position")
+                py::arg("x"),
+                py::arg("y"),
+                "get move played at the specified position")
             .def("play", &sente::GoGame::playStone,
-                 py::arg("x"),
-                 py::arg("y"),
-                 "plays a stone in the game and updates the board to remove any captured stones")
+                py::arg("x"),
+                py::arg("y"),
+                "plays a stone in the game and updates the board to remove any captured stones")
             .def("play", &sente::GoGame::playStone2,
-                 py::arg("x"),
-                 py::arg("y"),
-                 py::arg("stone"),
-                 "plays a stone in the game and updates the board to remove any captured stones")
+                py::arg("x"),
+                py::arg("y"),
+                py::arg("stone"),
+                "plays a stone in the game and updates the board to remove any captured stones")
             .def("play", &sente::GoGame::playStone3,
-                 py::arg("move"),
-                 "plays a stone in the game and updates the board to remove any captured stones")
+                py::arg("move"),
+                "plays a stone in the game and updates the board to remove any captured stones")
             .def("play", [](sente::GoGame& game, const py::object& obj){
-                 if (obj.is_none()){
-                     // pass if the object is none
-                     game.playStone3(sente::Move(game.getActivePlayer(), sente::PASS));
-                 }
-                 else {
-                     throw std::domain_error("invalid python object");
-                 }
-             })
-             .def("play_pass", [](sente::GoGame& game){
-                 game.playStone3(sente::Move(game.getActivePlayer(), sente::PASS));
-             })
-             .def("play_resign", [](sente::GoGame& game){
-                 game.playStone3(sente::Move(game.getActivePlayer(), sente::RESIGN));
-             })
-             .def("__str__", [](const sente::GoGame& game){
-                 return std::string(game);
-             });
+                if (obj.is_none()){
+                    // pass if the object is none
+                    game.playStone3(sente::Move(game.getActivePlayer(), sente::PASS));
+                }
+                else {
+                    throw std::domain_error("invalid python object");
+                }
+            })
+            .def("play_pass", [](sente::GoGame& game){
+                game.playStone3(sente::Move(game.getActivePlayer(), sente::PASS));
+            })
+            .def("play_resign", [](sente::GoGame& game){
+                game.playStone3(sente::Move(game.getActivePlayer(), sente::RESIGN));
+            })
+            .def("__str__", [](const sente::GoGame& game){
+                return std::string(game);
+            });
+
+    module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
+        .def("load", [](const std::string& fileName){
+                return sente::GoGame(fileName);
+            },
+            py::arg("filename"),
+            "Loads a go game from an SGF file");
 
 }
