@@ -14,8 +14,7 @@
 #include <unordered_set>
 
 #include "Tree.h"
-#include "Move.h"
-#include "Board.h"
+#include "GoComponents.h"
 #include "Group.h"
 
 namespace std {
@@ -28,11 +27,6 @@ namespace std {
 }
 
 namespace sente {
-
-    enum Rules {
-        CHINESE,
-        JAPANESE
-    };
 
     class GoGame {
     public:

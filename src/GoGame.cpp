@@ -8,6 +8,7 @@
 #include "pybind11/pybind11.h"
 
 #include "include/GoGame.h"
+#include "include/SGF.h"
 
 namespace py = pybind11;
 
@@ -36,30 +37,15 @@ namespace sente {
      */
     GoGame::GoGame(const std::string& sgfFile) {
 
-        using namespace std::regex_constants;
-
         // load the text from the file
         std::ifstream filePointer(sgfFile);
         std::string sgf((std::istreambuf_iterator<char>(filePointer)),
                          std::istreambuf_iterator<char>());
 
-        // find the rules and board size to initialize the game
-        std::smatch result;
+        // extract parameters from the game using the SGF parser
+        unsigned side = sente_utils::getSGFBoardSize(sgf);
+        rules = sente_utils::getSGFRules(sgf);
 
-        std::regex boardSizeRegex("SZ\\[\\d{1,2}\\]");
-        std::regex rulesRegex("RU\\[((Chinese|Japanese))\\]", icase);
-
-        // extract the board size from the string
-        std::regex_search(sgf, result, boardSizeRegex);
-        unsigned side = std::stol(std::string(result[0].str().begin() + 3, result[0].str().end()));
-
-        // extract the rules from the string
-        std::regex_search(sgf, result, rulesRegex);
-
-        std::string temp = result[0].str();
-        std::string rulesString(temp.begin() + 3, temp.end() - 1);
-
-        // create the board from the results
         switch (side){
             case 19:
                 board = std::unique_ptr<Board<19>>(new Board<19>());
@@ -72,19 +58,6 @@ namespace sente {
                 break;
             default:
                 throw std::domain_error("Invalid Board size " + std::to_string(side));
-        }
-
-        // convert the rules to lowercase
-        std::transform(rulesString.begin(), rulesString.end(), rulesString.begin(), ::tolower);
-
-        if (rulesString == "japanese"){
-            rules = JAPANESE;
-        }
-        else if (rulesString == "chinese"){
-            rules = CHINESE;
-        }
-        else {
-            throw std::domain_error("Invalid Rules " + rulesString);
         }
 
         // fixme: make code work with SGF files with more than one branch
