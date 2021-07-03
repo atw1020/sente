@@ -24,12 +24,20 @@ namespace sente {
         virtual unsigned getSide() const = 0;
 
         virtual Move getSpace(unsigned x, unsigned y) const = 0;
+
         virtual explicit operator std::string() const = 0;
+
     };
 
     template<unsigned side>
     class Board : public _board{
     public:
+
+        Board() = default;
+
+        explicit Board(std::array<std::array<Stone, side>, side> board){
+            this->board = board;
+        }
 
         bool isOnBoard(const Move& move) const override {
 
@@ -58,6 +66,10 @@ namespace sente {
             return board[x][y];
         }
 
+        bool operator==(const Board<side>& other) const{
+            return board == other.board;
+        }
+
         explicit operator std::string() const override{
 
             std::stringstream accumulator;
@@ -65,18 +77,17 @@ namespace sente {
             for (unsigned i = 0; i < side; i++){
 
                 // accumulate the beginning of the row
-                if (side - i >= 10){
-                    accumulator << side - i;
+                if (i + 1 < 10){
+                    accumulator << " ";
                 }
-                else {
-                    accumulator << " " << side - i;
-                }
+
+                accumulator << i + 1;
 
                 for (unsigned j = 0; j < side; j++){
 
                     accumulator << "  ";
 
-                    switch(board[side - i - 1][j].getStone()){
+                    switch(board[i][j].getStone()){
                         case BLACK:
                             accumulator << "#";
                             break;

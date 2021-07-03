@@ -161,6 +161,10 @@ namespace sente {
         return moveTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
+    const _board& GoGame::getBoard() const {
+        return *board;
+    }
+
     GoGame::operator std::string() const {
         return std::string(*board);
     }

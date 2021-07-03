@@ -65,6 +65,11 @@ PYBIND11_MODULE(sente, module){
             }, "get the stone ")
             .def("__str__", [](const sente::Board<19>& board){
                 return std::string(board);
+            })
+            .def("__eq__", &sente::Board<19>::operator==,
+                "equality operator")
+            .def("__ne__", [](const sente::Board<19>& us, const sente::Board<19>& other){
+                return not (us == other);
             });
 
     py::class_<sente::Board<13>>(module, "Board13")
@@ -79,6 +84,11 @@ PYBIND11_MODULE(sente, module){
             }, "get the stone ")
             .def("__str__", [](const sente::Board<13>& board){
                 return std::string(board);
+            })
+            .def("__eq__", &sente::Board<13>::operator==,
+                 "equality operator")
+            .def("__ne__", [](const sente::Board<13>& us, const sente::Board<13>& other){
+                return not (us == other);
             });
 
     py::class_<sente::Board<9>>(module, "Board9")
@@ -93,6 +103,11 @@ PYBIND11_MODULE(sente, module){
             }, "get the stone ")
             .def("__str__", [](const sente::Board<9>& board){
                 return std::string(board);
+            })
+            .def("__eq__", &sente::Board<9>::operator==,
+                 "equality operator")
+            .def("__ne__", [](const sente::Board<9>& us, const sente::Board<9>& other){
+                return not (us == other);
             });
 
     py::class_<sente::GoGame>(module, "GoGame")
@@ -146,6 +161,8 @@ PYBIND11_MODULE(sente, module){
             .def("play_resign", [](sente::GoGame& game){
                 game.playStone3(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
+            .def("get_bard", &sente::GoGame::getBoard,
+                 "Get the board that the game is being played on")
             .def("__str__", [](const sente::GoGame& game){
                 return std::string(game);
             });

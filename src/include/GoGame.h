@@ -48,6 +48,8 @@ namespace sente {
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
+        const _board& getBoard() const;
+
         // std::map<Stone, double> score(double komi) const;
         std::unordered_set<Move>& getLegalMoves() const;
 
