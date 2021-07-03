@@ -35,8 +35,12 @@ namespace sente {
 
         Board() = default;
 
-        explicit Board(std::array<std::array<Stone, side>, side> board){
-            this->board = board;
+        explicit Board(std::array<std::array<Stone, side>, side> stones){
+            for (unsigned i = 0; i < side; i++){
+                for (unsigned j = 0; j < side; j++){
+                    board[i][j] = Move(i, j, stones[i][j]);
+                }
+            }
         }
 
         bool isOnBoard(const Move& move) const override {

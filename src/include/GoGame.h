@@ -36,13 +36,13 @@ namespace sente {
         GoGame(Rules rules, unsigned side);
 
         bool isLegal(unsigned x, unsigned y) const;
-        bool isLegal2(unsigned x, unsigned y, Stone stone) const;
-        bool isLegal3(const Move& move) const;
+        bool isLegal(unsigned x, unsigned y, Stone stone) const;
+        bool isLegal(const Move& move) const;
         bool isOver() const;
 
         void playStone(unsigned x, unsigned y);
-        void playStone2(unsigned x, unsigned y, Stone stone);
-        void playStone3(const Move& move);
+        void playStone(unsigned x, unsigned y, Stone stone);
+        void playStone(const Move& move);
         // void resetToMove(unsigned moveNumber);
 
         Stone getSpace(unsigned x, unsigned y) const;

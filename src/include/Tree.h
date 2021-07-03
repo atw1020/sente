@@ -5,6 +5,7 @@
 #ifndef SENTE_TREE_H
 #define SENTE_TREE_H
 
+#include <memory>
 #include <unordered_set>
 
 #include <pybind11/pybind11.h>

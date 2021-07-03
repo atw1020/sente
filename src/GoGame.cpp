@@ -54,10 +54,13 @@ namespace sente {
 
         // play out the first sequence in the tree
         if (playOut){
+            py::print("isAtRoot:", moveTree.isAtRoot());
+            py::print("isAtLeaf:", moveTree.isAtLeaf());
             // advance to a child
             while(not moveTree.isAtLeaf()){
                 auto move = moveTree.stepDown();
-                playStone3(move);
+                playStone(move);
+                py::print(*this);
             }
 
         }
@@ -83,14 +86,14 @@ namespace sente {
     }
 
     bool GoGame::isLegal(unsigned x, unsigned y) const{
-        return isLegal3(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        return isLegal(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
-    bool GoGame::isLegal2(unsigned int x, unsigned int y, Stone stone) const {
-        return isLegal3(Move(x, y, stone));
+    bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) const {
+        return isLegal(Move(x, y, stone));
     }
 
-    bool GoGame::isLegal3(const Move& move) const {
+    bool GoGame::isLegal(const Move& move) const {
 
         return board->isOnBoard(move) and
                board->isEmpty(move) and
@@ -100,11 +103,11 @@ namespace sente {
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
-        playStone3(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        playStone(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
-    void GoGame::playStone2(unsigned int x, unsigned int y, Stone stone) {
-        playStone3(Move(x, y, stone));
+    void GoGame::playStone(unsigned int x, unsigned int y, Stone stone) {
+        playStone(Move(x, y, stone));
     }
 
     /**
@@ -113,7 +116,7 @@ namespace sente {
      *
      * @param move move to play
      */
-    void GoGame::playStone3(const Move &move) {
+    void GoGame::playStone(const Move &move) {
 
         // check for pass/resign
         if (move == Move(move.getStone(), PASS)){
@@ -130,7 +133,7 @@ namespace sente {
         }
 
         // error handling
-        if (not isLegal3(move)){
+        if (not isLegal(move)){
             if (not board->isOnBoard(move)){
                 throw IllegalMoveException(OFF_BOARD, move);
             }

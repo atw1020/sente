@@ -4,9 +4,12 @@
  *
  */
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include "include/GoGame.h"
 #include "include/SGF.h"
+
+#include <iostream>
 
 int add(int x, int y){
     return x + y;
@@ -52,9 +55,9 @@ PYBIND11_MODULE(sente, module){
                 return std::string(move);
             });
 
-
     py::class_<sente::Board<19>>(module, "Board19")
             .def(py::init<>())
+            .def(py::init<std::array<std::array<sente::Stone, 19>, 19>>())
             .def("get_side", &sente::Board<19>::getSide,
                  "get the length of the side of the board")
             .def("play", &sente::Board<19>::playStone,
@@ -115,16 +118,22 @@ PYBIND11_MODULE(sente, module){
                 py::arg("rules") = sente::Rules::CHINESE,
                 py::arg("board_size") = 19,
                 "initializes a go game with a specified board size and rules")
-            .def("is_legal", &sente::GoGame::isLegal,
+            .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
+                    return game.isLegal(x, y);
+                },
                 py::arg("x"),
                 py::arg("y"),
                 "checks to see if a move is legal")
-            .def("is_legal", &sente::GoGame::isLegal2,
+            .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
+                    return game.isLegal(x, y, stone);
+                },
                 py::arg("x"),
                 py::arg("y"),
                 py::arg("stone"),
                 "checks to see if a move is legal")
-            .def("is_legal", &sente::GoGame::isLegal3,
+            .def("is_legal", [](const sente::GoGame& game, const sente::Move& move){
+                    return game.isLegal(move);
+                },
                 py::arg("move"),
                 "checks to see if a move is legal")
             .def("is_legal", [](sente::GoGame& game, const py::object& obj){
@@ -134,32 +143,38 @@ PYBIND11_MODULE(sente, module){
                 py::arg("x"),
                 py::arg("y"),
                 "get move played at the specified position")
-            .def("play", &sente::GoGame::playStone,
+            .def("play", [](sente::GoGame& game, unsigned x, unsigned y){
+                    game.playStone(x, y);
+                },
                 py::arg("x"),
                 py::arg("y"),
                 "plays a stone in the game and updates the board to remove any captured stones")
-            .def("play", &sente::GoGame::playStone2,
+            .def("play", [](sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
+                    return game.playStone(x, y, stone);
+                },
                 py::arg("x"),
                 py::arg("y"),
                 py::arg("stone"),
                 "plays a stone in the game and updates the board to remove any captured stones")
-            .def("play", &sente::GoGame::playStone3,
+            .def("play", [](sente::GoGame& game, const sente::Move& move){
+                    game.playStone(move);
+                },
                 py::arg("move"),
                 "plays a stone in the game and updates the board to remove any captured stones")
             .def("play", [](sente::GoGame& game, const py::object& obj){
                 if (obj.is_none()){
                     // pass if the object is none
-                    game.playStone3(sente::Move(game.getActivePlayer(), sente::PASS));
+                    game.playStone(sente::Move(game.getActivePlayer(), sente::PASS));
                 }
                 else {
                     throw std::domain_error("invalid python object");
                 }
             })
             .def("play_pass", [](sente::GoGame& game){
-                game.playStone3(sente::Move(game.getActivePlayer(), sente::PASS));
+                game.playStone(sente::Move(game.getActivePlayer(), sente::PASS));
             })
             .def("play_resign", [](sente::GoGame& game){
-                game.playStone3(sente::Move(game.getActivePlayer(), sente::RESIGN));
+                game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
             .def("get_bard", &sente::GoGame::getBoard,
                  "Get the board that the game is being played on")
