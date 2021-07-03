@@ -45,8 +45,8 @@ namespace sente {
         // extract the move tree
         try{
             board = sente_utils::getSGFBoardSize(SGFText);
-            rules = sente_utils::getSGFRules(SGFFile);
-            moveTree = sente_utils::getSGFMoves(SGFFile);
+            rules = sente_utils::getSGFRules(SGFText);
+            moveTree = sente_utils::getSGFMoves(SGFText);
         }
         catch (const sente_utils::InvalidSGFException& E){
             throw sente_utils::InvalidSGFException(E, SGFFile);

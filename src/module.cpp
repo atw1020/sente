@@ -6,6 +6,7 @@
 #include <pybind11/pybind11.h>
 
 #include "include/GoGame.h"
+#include "include/SGF.h"
 
 int add(int x, int y){
     return x + y;
@@ -149,12 +150,14 @@ PYBIND11_MODULE(sente, module){
                 return std::string(game);
             });
 
-    module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
+    auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
         .def("load", [](const std::string& fileName, bool playOut){
                 return sente::GoGame(fileName, playOut);
             },
             py::arg("filename"),
             py::arg("play_out") = true,
             "Loads a go game from an SGF file");
+
+    py::register_exception<sente_utils::InvalidSGFException>(sgf, "InvalidSGFException");
 
 }

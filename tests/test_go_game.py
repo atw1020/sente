@@ -65,10 +65,11 @@ class TestSGF(DoesNotRaiseTestCase):
 
         files = os.listdir("sgf")
 
-        GoGame(os.path.join("sgf", "34839594-255-IDW64-noob_bot_3.sgf"))
+        # sgf.load(os.path.join("sgf", "34839594-255-IDW64-noob_bot_3.sgf"))
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
+                print("testing", file)
                 sgf.load(os.path.join("sgf", file))
 
     def test_single_branch_file(self):

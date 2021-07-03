@@ -29,6 +29,7 @@ namespace sente_utils {
         for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
 
             if (*cursor == '('){
+
                 // find the moves in the current segment
                 currentSegment = std::string(previousIndex, cursor);
                 sente::Move temp;
@@ -66,8 +67,10 @@ namespace sente_utils {
                     moves.insertNoAdvance(temp);
                 }
 
-                // step up a move if we see a closing parentheses
-                moves.stepUp();
+                if (not moves.isAtRoot()){
+                    // step up a move if we see a closing parentheses
+                    moves.stepUp();
+                }
 
                 // update the previous index
                 previousIndex = cursor;

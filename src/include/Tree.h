@@ -7,6 +7,10 @@
 
 #include <unordered_set>
 
+#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
+
 namespace sente_utils{
 
     template<typename Type>
@@ -30,7 +34,7 @@ namespace sente_utils{
             return parent == nullptr;
         }
         bool isLeaf(){
-            return children.empty();
+            return not children.empty();
         }
 
         Type payload;
@@ -61,13 +65,14 @@ namespace sente_utils{
             depth++;
         }
         void insertNoAdvance(const Type& payload){
-            cursor->parent->children.insert(std::make_shared<TreeNode<Type>>(payload, cursor));
+            cursor->children.insert(std::make_shared<TreeNode<Type>>(payload, cursor));
         }
 
-        void stepUp(){
+        Type stepUp(){
             if (not cursor->isRoot()){
                 cursor = cursor->parent;
                 depth--;
+                return cursor->payload;
             }
             else {
                 throw std::domain_error("cannot step up past root node");
@@ -84,6 +89,7 @@ namespace sente_utils{
             }
         }
         void stepTo(const Type& value){
+
             for (const auto & child : cursor->children){
                 if (child->payload == value){
                     cursor = child;
