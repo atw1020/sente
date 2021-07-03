@@ -31,7 +31,7 @@ namespace sente {
     class GoGame {
     public:
 
-        explicit GoGame(const std::string& sgf_file);
+        explicit GoGame(const std::string& sgf_file, bool playOut);
 
         GoGame(Rules rules, unsigned side);
 

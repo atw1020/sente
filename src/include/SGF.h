@@ -12,10 +12,15 @@
 
 namespace sente_utils {
 
-    Tree<sente::Move> getSGFMoves(const std::string& SGFText);
+    class InvalidSGFException : public std::domain_error{
+    public:
+        explicit InvalidSGFException(const std::string &message);
+        InvalidSGFException(const InvalidSGFException& other, const std::string& fileName);
+    };
 
+    Tree<sente::Move> getSGFMoves(const std::string& SGFText);
     sente::Rules getSGFRules(const std::string& SGFText);
-    unsigned getSGFBoardSize(const std::string& SGFText);
+    std::unique_ptr<sente::_board> getSGFBoardSize(const std::string& SGFText);
 
 }
 

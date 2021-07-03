@@ -150,10 +150,11 @@ PYBIND11_MODULE(sente, module){
             });
 
     module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
-        .def("load", [](const std::string& fileName){
-                return sente::GoGame(fileName);
+        .def("load", [](const std::string& fileName, bool playOut){
+                return sente::GoGame(fileName, playOut);
             },
             py::arg("filename"),
+            py::arg("play_out") = true,
             "Loads a go game from an SGF file");
 
 }

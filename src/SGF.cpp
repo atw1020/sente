@@ -12,14 +12,65 @@ namespace py = pybind11;
 
 namespace sente_utils {
 
+    InvalidSGFException::InvalidSGFException(const std::string &message)
+    : std::domain_error(message){}
+
+    InvalidSGFException::InvalidSGFException(const InvalidSGFException &other, const std::string &fileName)
+    : std::domain_error(std::string(other.what()) + " in file: " + fileName) {}
+
     Tree<sente::Move> getSGFMoves(const std::string& SGFText){
 
         Tree<sente::Move> moves;
+        std::string currentSegment;
+        auto previousIndex = SGFText.begin();
+        std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
 
-        for (const auto& character : SGFText){
+        // for each letter in the SGF
+        for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
 
-            if (character == '('){
+            if (*cursor == '('){
+                // find the moves in the current segment
+                currentSegment = std::string(previousIndex, cursor);
+                sente::Move temp;
 
+                bool noMatches = true;
+
+                // go through all the matches
+                for (auto iter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                     iter != std::sregex_iterator(); iter++){
+                    // insert the move but don't advance to the new node
+                    temp = sente::Move(iter->str());
+                    moves.insertNoAdvance(temp);
+                    noMatches = false;
+                }
+
+                if (not noMatches){
+                    // step into the last match
+                    moves.stepTo(temp);
+                }
+
+                // update the previous index
+                previousIndex = cursor;
+            }
+            else if (*cursor == ')'){
+
+                // find the moves in the current segment
+                currentSegment = std::string(previousIndex, cursor);
+                sente::Move temp;
+
+                // go through all the matches
+                for (auto iter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                     iter != std::sregex_iterator(); iter++){
+                    // insert the move but don't advance to the new node
+                    temp = sente::Move(iter->str());
+                    moves.insertNoAdvance(temp);
+                }
+
+                // step up a move if we see a closing parentheses
+                moves.stepUp();
+
+                // update the previous index
+                previousIndex = cursor;
             }
 
         }
@@ -54,11 +105,11 @@ namespace sente_utils {
             return sente::CHINESE;
         }
         else {
-            throw std::domain_error("Invalid Rules " + rulesString);
+            throw InvalidSGFException("Could not determine Rules");
         }
 
     }
-    unsigned getSGFBoardSize(const std::string& SGFText){
+    std::unique_ptr<sente::_board> getSGFBoardSize(const std::string& SGFText){
 
         std::smatch result;
         std::regex boardSizeRegex("SZ\\[\\d{1,2}\\]");
@@ -67,7 +118,19 @@ namespace sente_utils {
         std::regex_search(SGFText, result, boardSizeRegex);
 
         std::string temp = result[0].str();
-        return std::stol(std::string(temp.begin() + 3, temp.end() - 1));
+
+        unsigned side = std::stol(std::string(temp.begin() + 3, temp.end() - 1));
+
+        switch (side){
+            case 19:
+                return std::unique_ptr<sente::Board<19>>(new sente::Board<19>());
+            case 13:
+                return std::unique_ptr<sente::Board<13>>(new sente::Board<13>());
+            case 9:
+                return std::unique_ptr<sente::Board<9>>(new sente::Board<9>());
+            default:
+                throw std::domain_error("Invalid Board size " + std::to_string(side));
+        }
 
     }
 

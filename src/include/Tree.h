@@ -29,6 +29,9 @@ namespace sente_utils{
         bool isRoot(){
             return parent == nullptr;
         }
+        bool isLeaf(){
+            return children.empty();
+        }
 
         Type payload;
         std::shared_ptr<TreeNode> parent; // you do not own your parent
@@ -70,16 +73,14 @@ namespace sente_utils{
                 throw std::domain_error("cannot step up past root node");
             }
         }
-        void stepDown(){
+        Type stepDown(){
             if (cursor->children.size() == 1){
-                cursor = *cursor->children.begin();
+                cursor = *cursor->children.begin(); // step into whichever
                 depth++;
+                return cursor->payload;
             }
-            else if (cursor->children.size() == 0){
+            else if (cursor->isLeaf()){
                 throw std::domain_error("cannot infer child to step to (no children to step to)");
-            }
-            else {
-                throw std::domain_error("cannot infer child to step to (at a branch node)");
             }
         }
         void stepTo(const Type& value){
@@ -105,6 +106,13 @@ namespace sente_utils{
 
         unsigned getDepth() const{
             return depth;
+        }
+
+        bool isAtRoot(){
+            return cursor->isRoot();
+        }
+        bool isAtLeaf(){
+            return cursor->isLeaf();
         }
 
     private:

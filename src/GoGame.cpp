@@ -35,49 +35,30 @@ namespace sente {
      *
      * @param filePointer
      */
-    GoGame::GoGame(const std::string& sgfFile) {
+    GoGame::GoGame(const std::string& SGFFile, bool playOut) {
 
         // load the text from the file
-        std::ifstream filePointer(sgfFile);
-        std::string sgf((std::istreambuf_iterator<char>(filePointer)),
+        std::ifstream filePointer(SGFFile);
+        std::string SGFText((std::istreambuf_iterator<char>(filePointer)),
                          std::istreambuf_iterator<char>());
 
-        // extract parameters from the game using the SGF parser
-        unsigned side = sente_utils::getSGFBoardSize(sgf);
-        rules = sente_utils::getSGFRules(sgf);
-
-        switch (side){
-            case 19:
-                board = std::unique_ptr<Board<19>>(new Board<19>());
-                break;
-            case 13:
-                board = std::unique_ptr<Board<13>>(new Board<13>());
-                break;
-            case 9:
-                board = std::unique_ptr<Board<9>>(new Board<9>());
-                break;
-            default:
-                throw std::domain_error("Invalid Board size " + std::to_string(side));
+        // extract the move tree
+        try{
+            board = sente_utils::getSGFBoardSize(SGFText);
+            rules = sente_utils::getSGFRules(SGFFile);
+            moveTree = sente_utils::getSGFMoves(SGFFile);
+        }
+        catch (const sente_utils::InvalidSGFException& E){
+            throw sente_utils::InvalidSGFException(E, SGFFile);
         }
 
-        // fixme: make code work with SGF files with more than one branch
-        std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
-
-        // play all of the matching moves
-        for (auto iter = std::sregex_iterator(sgf.begin(), sgf.end(), moveRegex);
-                  iter != std::sregex_iterator(); iter++){
-            // create the move
-            Move toPlay(iter->str());
-            // play the move
-            playStone3(toPlay);
-
-            // print out the board every 10 moves
-#ifdef DEBUG_LOG
-            if (moveTree.getDepth() % 10 == 0){
-                py::print("board after move ", moveTree.getDepth());
-                py::print(std::string(*this));
+        // play out the first sequence in the tree
+        if (playOut){
+            // advance to a child
+            while(not moveTree.isAtLeaf()){
+                auto move = moveTree.stepDown();
+                playStone3(move);
             }
-#endif
 
         }
 
