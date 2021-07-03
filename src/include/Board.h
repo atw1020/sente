@@ -5,7 +5,7 @@
 #ifndef SENTE_BOARD_H
 #define SENTE_BOARD_H
 
-#include <vector>
+#include <array>
 #include <sstream>
 
 #include "Move.h"
@@ -58,6 +58,8 @@ namespace sente {
             board[move.getX()][move.getY()] = Move(move.getX(), move.getY(), EMPTY);
         }
 
+        bool isStar(unsigned x, unsigned y) const;
+
         unsigned getSide() const override{
             return side;
         }
@@ -95,7 +97,13 @@ namespace sente {
                             accumulator << "O";
                             break;
                         case EMPTY:
-                            accumulator << ".";
+                            // check if we are on a star point
+                            if (isStar(i, j)){
+                                accumulator << "*";
+                            }
+                            else {
+                                accumulator << ".";
+                            }
                     }
                 }
                 accumulator << std::endl;
@@ -118,6 +126,7 @@ namespace sente {
         std::array<std::array<Move, side>, side> board;
 
     };
+
 }
 
 

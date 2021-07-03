@@ -69,8 +69,7 @@ class TestSGF(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
-                print("testing", file)
-                sgf.load(os.path.join("sgf", file))
+                print(sgf.load(os.path.join("sgf", file)))
 
     def test_single_branch_file(self):
         """
