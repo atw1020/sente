@@ -33,25 +33,38 @@ namespace sente {
 
         GoGame(Rules rules, unsigned side);
         explicit GoGame(const std::string& sgf_file);
+        void resetBoard();
 
+        ///
+        /// Move Legality
+        ///
+
+        bool isLegal(const Move& move) const;
         bool isLegal(unsigned x, unsigned y) const;
         bool isLegal(unsigned x, unsigned y, Stone stone) const;
-        bool isLegal(const Move& move) const;
         bool isOver() const;
 
+        void playStone(const Move& move);
         void playStone(unsigned x, unsigned y);
         void playStone(unsigned x, unsigned y, Stone stone);
-        void playStone(const Move& move);
-        // void resetToMove(unsigned moveNumber);
 
+        ///
+        /// movement through the game tree
+        ///
+
+        void advanceToRoot();
+        void stepUp(unsigned steps);
         void playDefaultBranch();
+        void playMoveSequence(const std::vector<Move>& moves);
+        std::vector<Move> getMoveSequence();
+        const std::unordered_set<Move>& getBranches();
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
         const _board& getBoard() const;
 
-        // std::map<Stone, double> score(double komi) const;
+        std::map<Stone, double> score(double komi) const;
         std::unordered_set<Move>& getLegalMoves() const;
 
         explicit operator std::string() const;
@@ -59,9 +72,11 @@ namespace sente {
     private:
 
         Rules rules;
+        Stone resigned;
 
         unsigned passCount = 0;
 
+        // todo: look into moving the board onto the stack
         std::unique_ptr<_board> board;
 
         sente_utils::Tree<Move> moveTree;
@@ -72,6 +87,7 @@ namespace sente {
         Move koPoint;
 
         void makeBoard(unsigned side);
+        void resetKoPoint();
 
         void updateBoard(Move move);
         void connectGroups(Move move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);

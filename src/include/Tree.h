@@ -5,8 +5,10 @@
 #ifndef SENTE_TREE_H
 #define SENTE_TREE_H
 
+#include <vector>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <pybind11/pybind11.h>
 
@@ -131,6 +133,38 @@ namespace sente_utils{
 
         unsigned getDepth() const{
             return depth;
+        }
+
+        /**
+         *
+         * get the sequence of items that lead to the cursor node
+         *
+         * @return
+         */
+        std::vector<Type> getSequence(){
+
+            // copy the cursor
+            auto temp = cursor;
+            std::vector<Type> moves;
+
+            while (not temp->isRoot()){
+                moves.push_back(temp->payload); // add the current item
+                temp = temp->parent; // step up
+            }
+
+            // reverse the vector
+            return std::vector<Type>(moves.rbegin(), moves.rend());
+
+        }
+
+        const std::unordered_set<Type>& getChildren(){
+            std::unordered_set<Type> children;
+
+            for (const auto& child : cursor->children){
+                children.insert(child.first);
+            }
+
+            return children;
         }
 
         bool isAtRoot(){

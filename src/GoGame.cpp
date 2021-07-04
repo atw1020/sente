@@ -29,6 +29,11 @@ namespace sente {
     GoGame::GoGame(Rules rules, unsigned int side) {
         this->rules = rules;
         makeBoard(side);
+
+        // some book-keeping
+
+        resetKoPoint();
+        resigned = EMPTY;
     }
 
     /**
@@ -54,6 +59,33 @@ namespace sente {
         catch (const sente_utils::InvalidSGFException& E){
             throw sente_utils::InvalidSGFException(E, SGFFile);
         }
+
+        // some book-keeping
+
+        resetKoPoint();
+        resigned = EMPTY;
+
+    }
+
+    /**
+     *
+     * resets the board to be empty
+     *
+     */
+    void GoGame::resetBoard(){
+
+        // create a new board
+        makeBoard(board->getSide());
+        // reset the tree to the root
+        moveTree.advanceToRoot();
+
+        // set the groups and captures to be empty
+        groups = std::unordered_map<Move, std::shared_ptr<Group>>();
+        capturedStones = std::unordered_map<unsigned, std::unordered_set<Move>>();
+
+        // reset the ko point
+        resetKoPoint();
+        resigned = EMPTY;
 
     }
 
@@ -131,6 +163,23 @@ namespace sente {
 
     }
 
+    void GoGame::advanceToRoot() {
+        resetBoard();
+    }
+
+    void GoGame::stepUp(unsigned steps) {
+
+        // get the moves that lead to this sequence
+        auto sequence = getMoveSequence();
+
+        // reset the board
+        resetBoard();
+
+        // play out the move sequence without the last few moves
+        playMoveSequence(std::vector<Move>(sequence.begin(), sequence.end() - steps));
+
+    }
+
     void GoGame::playDefaultBranch(){
 
         moveTree.advanceToRoot();
@@ -141,6 +190,21 @@ namespace sente {
             moveTree.stepUp(); // step up to the previous node and play the move from that node
             playStone(move);
         }
+    }
+
+    void GoGame::playMoveSequence(const std::vector<Move>& moves) {
+        // play all of the stones in the sequence
+        for (const auto& move : moves){
+            playStone(move);
+        }
+    }
+
+    const std::unordered_set<Move>& GoGame::getBranches() {
+        return moveTree.getChildren();
+    }
+
+    std::vector<Move> GoGame::getMoveSequence() {
+        return moveTree.getSequence();
     }
 
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
@@ -172,6 +236,10 @@ namespace sente {
             default:
                 throw std::domain_error("Invalid Board size");
         }
+    }
+
+    void GoGame::resetKoPoint(){
+        koPoint = Move(board->getSide() + 1, board->getSide() + 1, EMPTY);
     }
 
     /**
@@ -213,7 +281,7 @@ namespace sente {
 #endif
 
         // reset the ko point
-        koPoint = Move(board->getSide() + 1, board->getSide() + 1, EMPTY);
+        resetKoPoint();
 
         // capture stones
         for (const auto& group : theirAffectedGroups){
