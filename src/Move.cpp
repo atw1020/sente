@@ -66,8 +66,9 @@ namespace sente {
             }
         }
         else {
-            x = unsigned(sgf[3] - 'a');
-            y = unsigned(sgf[4] - 'a');
+            // reverse the order of the co-ordinates
+            x = unsigned(sgf[4] - 'a');
+            y = unsigned(sgf[3] - 'a');
             if (sgf[1] == 'B'){
                 stone = BLACK;
             }
