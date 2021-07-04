@@ -31,7 +31,7 @@ namespace sente {
     class GoGame {
     public:
 
-        GoGame(Rules rules, unsigned side);
+        GoGame(unsigned side, Rules rules);
         explicit GoGame(const std::string& sgf_file);
         void resetBoard();
 
@@ -65,9 +65,11 @@ namespace sente {
         const _board& getBoard() const;
 
         std::map<Stone, double> score(double komi) const;
-        std::unordered_set<Move>& getLegalMoves() const;
+        std::unordered_set<Move> getLegalMoves() const;
 
         explicit operator std::string() const;
+
+        std::string toSGF(std::unordered_map<std::string, std::string> attributes) const;
 
     private:
 

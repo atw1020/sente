@@ -9,7 +9,7 @@
 #include "include/GoGame.h"
 #include "include/SGF.h"
 
-#include <iostream>
+#include <fstream>
 
 int add(int x, int y){
     return x + y;
@@ -28,13 +28,13 @@ PYBIND11_MODULE(sente, module){
 
     py::register_exception<sente::IllegalMoveException>(module, "IllegalMoveException");
 
-    py::enum_<sente::Stone>(module, "Stone")
+    py::enum_<sente::Stone>(module, "stone")
             .value("BLACK", sente::BLACK)
             .value("WHITE", sente::WHITE)
             .value("EMPTY", sente::EMPTY)
             .export_values();
 
-    py::enum_<sente::Rules>(module, "Rules")
+    py::enum_<sente::Rules>(module, "rules")
             .value("CHINESE", sente::Rules::CHINESE)
             .value("JAPANESE", sente::Rules::JAPANESE)
             .export_values();
@@ -116,9 +116,9 @@ PYBIND11_MODULE(sente, module){
             });
 
     py::class_<sente::GoGame>(module, "GoGame")
-            .def(py::init<sente::Rules, unsigned>(),
-                py::arg("rules") = sente::Rules::CHINESE,
+            .def(py::init<unsigned, sente::Rules>(),
                 py::arg("board_size") = 19,
+                py::arg("rules") = sente::Rules::CHINESE,
                 "initializes a go game with a specified board size and rules")
             .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
                     return game.isLegal(x, y);
@@ -191,7 +191,11 @@ PYBIND11_MODULE(sente, module){
                 return sente::GoGame(fileName);
             },
             py::arg("filename"),
-            "Loads a go game from an SGF file");
+            "Loads a go game from an SGF file")
+        .def("dump", [](const sente::GoGame& game, const std::string& fileName, std::unordered_map<std::string, std::string> params){
+                std::ofstream output(fileName);
+                output << game.toSGF(params);
+            });
 
     py::register_exception<sente_utils::InvalidSGFException>(sgf, "InvalidSGFException");
 

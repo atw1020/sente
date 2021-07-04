@@ -26,7 +26,7 @@ namespace std {
 
 namespace sente {
 
-    GoGame::GoGame(Rules rules, unsigned int side) {
+    GoGame::GoGame(unsigned side, Rules rules) {
         this->rules = rules;
         makeBoard(side);
 
@@ -222,7 +222,24 @@ namespace sente {
         return std::string(*board);
     }
 
+    std::string GoGame::toSGF(std::unordered_map<std::string, std::string> attributes) const {
+
+        // add some other parameters
+        switch (rules){
+            case JAPANESE:
+                attributes["RU"] = "Japanese";
+                break;
+            case CHINESE:
+                attributes["RU"] = "Chinese";
+        }
+        attributes["SZ"] = std::to_string(board->getSide());
+
+        return sente_utils::toSGF(moveTree, attributes);
+
+    }
+
     void GoGame::makeBoard(unsigned int side) {
+
         switch (side){
             case 19:
                 board = std::unique_ptr<Board<19>>(new Board<19>());
@@ -234,7 +251,7 @@ namespace sente {
                 board = std::unique_ptr<Board<9>>(new Board<9>());
                 break;
             default:
-                throw std::domain_error("Invalid Board size");
+                throw std::domain_error("Invalid Board size " + std::to_string(side) + " only 9x9, 13x13 and 19x19 are currently supported");
         }
     }
 

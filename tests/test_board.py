@@ -33,19 +33,19 @@ class BoardTest19(TestCase):
 
         board1 = Board19()
 
-        board1.play(Move(3, 3, Stone.BLACK))
-        board1.play(Move(8, 3, Stone.WHITE))
-        board1.play(Move(3, 7, Stone.BLACK))
+        board1.play(Move(3, 3, stone.BLACK))
+        board1.play(Move(8, 3, stone.WHITE))
+        board1.play(Move(3, 7, stone.BLACK))
 
         board2 = Board19()
 
-        board2.play(Move(3, 3, Stone.BLACK))
-        board2.play(Move(8, 3, Stone.WHITE))
+        board2.play(Move(3, 3, stone.BLACK))
+        board2.play(Move(8, 3, stone.WHITE))
 
         self.assertNotEqual(board1, Board19())
         self.assertNotEqual(board1, board2)
 
-        board2.play(Move(3, 7, Stone.BLACK))
+        board2.play(Move(3, 7, stone.BLACK))
         self.assertEqual(board1, board2)
 
     def test_get_stone(self):
@@ -57,10 +57,10 @@ class BoardTest19(TestCase):
         """
 
         board = Board19()
-        board.play(Move(3, 3, Stone.BLACK))
+        board.play(Move(3, 3, stone.BLACK))
 
-        self.assertEqual(board.get_stone(5, 5), Stone.EMPTY)
-        self.assertEqual(board.get_stone(3, 3), Stone.BLACK)
+        self.assertEqual(board.get_stone(5, 5), stone.EMPTY)
+        self.assertEqual(board.get_stone(3, 3), stone.BLACK)
 
     def test__str__(self):
         """
@@ -72,8 +72,8 @@ class BoardTest19(TestCase):
 
         board = Board19()
 
-        board.play(Move(0, 0, Stone.BLACK))
-        board.play(Move(15, 3, Stone.WHITE))
+        board.play(Move(0, 0, stone.BLACK))
+        board.play(Move(15, 3, stone.WHITE))
 
         self.assertEqual(" 1  #  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
@@ -122,19 +122,19 @@ class BoardTest13(TestCase):
 
         board1 = Board19()
 
-        board1.play(Move(3, 3, Stone.BLACK))
-        board1.play(Move(8, 3, Stone.WHITE))
-        board1.play(Move(3, 7, Stone.BLACK))
+        board1.play(Move(3, 3, stone.BLACK))
+        board1.play(Move(8, 3, stone.WHITE))
+        board1.play(Move(3, 7, stone.BLACK))
 
         board2 = Board19()
 
-        board2.play(Move(3, 3, Stone.BLACK))
-        board2.play(Move(8, 3, Stone.WHITE))
+        board2.play(Move(3, 3, stone.BLACK))
+        board2.play(Move(8, 3, stone.WHITE))
 
         self.assertNotEqual(board1, Board19())
         self.assertNotEqual(board1, board2)
 
-        board2.play(Move(3, 7, Stone.BLACK))
+        board2.play(Move(3, 7, stone.BLACK))
         self.assertEqual(board1, board2)
 
     def test_get_stone(self):
@@ -146,10 +146,10 @@ class BoardTest13(TestCase):
         """
 
         board = Board13()
-        board.play(Move(3, 3, Stone.BLACK))
+        board.play(Move(3, 3, stone.BLACK))
 
-        self.assertEqual(board.get_stone(5, 5), Stone.EMPTY)
-        self.assertEqual(board.get_stone(3, 3), Stone.BLACK)
+        self.assertEqual(board.get_stone(5, 5), stone.EMPTY)
+        self.assertEqual(board.get_stone(3, 3), stone.BLACK)
 
     def test__str__(self):
         """
@@ -161,8 +161,8 @@ class BoardTest13(TestCase):
 
         board = Board13()
 
-        board.play(Move(0, 0, Stone.BLACK))
-        board.play(Move(8, 3, Stone.WHITE))
+        board.play(Move(0, 0, stone.BLACK))
+        board.play(Move(8, 3, stone.WHITE))
 
         self.assertEqual(" 1  #  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
@@ -205,19 +205,19 @@ class BoardTest9(TestCase):
 
         board1 = Board19()
 
-        board1.play(Move(3, 3, Stone.BLACK))
-        board1.play(Move(8, 3, Stone.WHITE))
-        board1.play(Move(3, 7, Stone.BLACK))
+        board1.play(Move(3, 3, stone.BLACK))
+        board1.play(Move(8, 3, stone.WHITE))
+        board1.play(Move(3, 7, stone.BLACK))
 
         board2 = Board19()
 
-        board2.play(Move(3, 3, Stone.BLACK))
-        board2.play(Move(8, 3, Stone.WHITE))
+        board2.play(Move(3, 3, stone.BLACK))
+        board2.play(Move(8, 3, stone.WHITE))
 
         self.assertNotEqual(board1, Board19())
         self.assertNotEqual(board1, board2)
 
-        board2.play(Move(3, 7, Stone.BLACK))
+        board2.play(Move(3, 7, stone.BLACK))
         self.assertEqual(board1, board2)
 
     def test_get_stone(self):
@@ -229,10 +229,10 @@ class BoardTest9(TestCase):
         """
 
         board = Board9()
-        board.play(Move(3, 3, Stone.BLACK))
+        board.play(Move(3, 3, stone.BLACK))
 
-        self.assertEqual(board.get_stone(5, 5), Stone.EMPTY)
-        self.assertEqual(board.get_stone(3, 3), Stone.BLACK)
+        self.assertEqual(board.get_stone(5, 5), stone.EMPTY)
+        self.assertEqual(board.get_stone(3, 3), stone.BLACK)
 
     def test__str__(self):
         """
@@ -244,8 +244,8 @@ class BoardTest9(TestCase):
 
         board = Board9()
 
-        board.play(Move(0, 0, Stone.BLACK))
-        board.play(Move(8, 3, Stone.WHITE))
+        board.play(Move(0, 0, stone.BLACK))
+        board.play(Move(8, 3, stone.WHITE))
 
         self.assertEqual(
                          " 1  #  .  .  .  .  .  .  .  .\n"

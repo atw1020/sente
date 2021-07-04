@@ -3,6 +3,7 @@
 //
 
 #include <regex>
+#include <sstream>
 
 #include <pybind11/pybind11.h>
 
@@ -137,6 +138,58 @@ namespace sente_utils {
                 throw std::domain_error("Invalid Board size " + std::to_string(side));
         }
 
+    }
+
+    void insertIntoSGF(Tree<sente::Move>& moves, std::stringstream& SGF){
+        // for each child
+        for (auto& child : moves.getChildren()){
+            // serialize the move
+            SGF << ";" << std::string(child);
+            // step to the child
+            moves.stepTo(child);
+            if (not moves.isAtLeaf()){
+                SGF << "(";
+                insertIntoSGF(moves, SGF);
+                SGF << ")";
+            }
+            // step up
+            moves.stepUp();
+        }
+    }
+
+    std::string toSGF(Tree<sente::Move> moves, std::unordered_map<std::string, std::string>& attributes){
+
+        // add some default attributes
+        attributes["FF"] = "4";
+
+        // create the string stream to use
+        std::stringstream SGF;
+
+        // backup the current position of the board and advance to the root node
+        auto moveSequence = moves.getSequence();
+        moves.advanceToRoot();
+
+        SGF << "(";
+
+        if (not attributes.empty()){
+            SGF << ";";
+        }
+
+        for (const auto& attribute : attributes){
+            SGF << attribute.first << "[" << attribute.second << "]\n";
+        }
+
+        insertIntoSGF(moves, SGF);
+
+        SGF << ")";
+
+        // return the board to it's original state
+        moves.advanceToRoot();
+        for (const auto& move : moveSequence){
+            moves.stepTo(move);
+        }
+
+        return SGF.str();
     }
 
 }

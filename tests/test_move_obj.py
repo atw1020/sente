@@ -19,9 +19,9 @@ class StoneTest(TestCase):
         :return:
         """
 
-        self.assertEqual(sente.Stone.BLACK, sente.Stone.BLACK)
-        self.assertEqual(sente.Stone.WHITE, sente.Stone.WHITE)
-        self.assertEqual(sente.Stone.EMPTY, sente.Stone.EMPTY)
+        self.assertEqual(sente.stone.BLACK, sente.stone.BLACK)
+        self.assertEqual(sente.stone.WHITE, sente.stone.WHITE)
+        self.assertEqual(sente.stone.EMPTY, sente.stone.EMPTY)
 
     def test_opposite(self):
         """
@@ -31,20 +31,20 @@ class StoneTest(TestCase):
         :return:
         """
 
-        stone = sente.Stone.BLACK
-        self.assertEqual(sente.opposite_player(stone), sente.Stone.WHITE)
+        stone = sente.stone.BLACK
+        self.assertEqual(sente.opposite_player(stone), sente.stone.WHITE)
 
-        stone = sente.Stone.WHITE
-        self.assertEqual(sente.opposite_player(stone), sente.Stone.BLACK)
+        stone = sente.stone.WHITE
+        self.assertEqual(sente.opposite_player(stone), sente.stone.BLACK)
 
 
 class MoveTest(TestCase):
 
-    move1 = sente.Move(4, 4, sente.Stone.BLACK)
-    move2 = sente.Move(4, 4, sente.Stone.BLACK)
-    move3 = sente.Move(3, 4, sente.Stone.BLACK)
-    move4 = sente.Move(3, 4, sente.Stone.WHITE)
-    move5 = sente.Move(0, 0, sente.Stone.EMPTY)
+    move1 = sente.Move(4, 4, sente.stone.BLACK)
+    move2 = sente.Move(4, 4, sente.stone.BLACK)
+    move3 = sente.Move(3, 4, sente.stone.BLACK)
+    move4 = sente.Move(3, 4, sente.stone.WHITE)
+    move5 = sente.Move(0, 0, sente.stone.EMPTY)
 
     def test_equals(self):
         """
@@ -70,8 +70,8 @@ class MoveTest(TestCase):
         self.assertEqual(3, self.move3.get_x())
         self.assertEqual(4, self.move3.get_y())
 
-        self.assertEqual(sente.Stone.BLACK, self.move1.get_stone())
-        self.assertEqual(sente.Stone.WHITE, self.move4.get_stone())
+        self.assertEqual(sente.stone.BLACK, self.move1.get_stone())
+        self.assertEqual(sente.stone.WHITE, self.move4.get_stone())
 
     def test__str__(self):
         """

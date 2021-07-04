@@ -23,17 +23,15 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
         with self.assertDoesNotRaise(Exception):
             GoGame()
-            GoGame(CHINESE)
-            GoGame(JAPANESE)
-            GoGame(CHINESE, 9)
+            GoGame(13)
+            GoGame(19)
+            GoGame(9, CHINESE)
             GoGame(rules=CHINESE)
+            GoGame(rules=JAPANESE)
             GoGame(rules=JAPANESE, board_size=13)
 
-        with self.assertRaises(TypeError):
-            GoGame(19)
-
         with self.assertRaises(ValueError):
-            GoGame(JAPANESE, 15)
+            GoGame(15, JAPANESE)
 
     def test_play(self):
         """

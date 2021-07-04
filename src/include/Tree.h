@@ -157,7 +157,7 @@ namespace sente_utils{
 
         }
 
-        const std::unordered_set<Type>& getChildren(){
+        std::unordered_set<Type>& getChildren(){
             std::unordered_set<Type> children;
 
             for (const auto& child : cursor->children){

@@ -22,6 +22,8 @@ namespace sente_utils {
     sente::Rules getSGFRules(const std::string& SGFText);
     std::unique_ptr<sente::_board> getSGFBoardSize(const std::string& SGFText);
 
+    std::string toSGF(Tree<sente::Move> moves, std::unordered_map<std::string, std::string>& attributes);
+
 }
 
 #endif //SENTE_SGF_H
