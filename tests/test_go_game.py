@@ -45,6 +45,8 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
         game = GoGame()
 
+        print("test section A")
+
         with self.assertDoesNotRaise(Exception):
             game.play(3, 15, BLACK)
             game.play(15, 15)
@@ -69,7 +71,9 @@ class TestSGF(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
-                print(sgf.load(os.path.join("sgf", file)))
+                game = sgf.load(os.path.join("sgf", file))
+                game.play_default_branch()
+                print(game)
 
     def test_single_branch_file(self):
         """

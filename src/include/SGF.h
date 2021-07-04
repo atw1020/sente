@@ -18,7 +18,7 @@ namespace sente_utils {
         InvalidSGFException(const InvalidSGFException& other, const std::string& fileName);
     };
 
-    std::unique_ptr<Tree<sente::Move>> getSGFMoves(const std::string& SGFText);
+    Tree<sente::Move> getSGFMoves(const std::string& SGFText);
     sente::Rules getSGFRules(const std::string& SGFText);
     std::unique_ptr<sente::_board> getSGFBoardSize(const std::string& SGFText);
 

@@ -64,7 +64,7 @@ namespace sente {
 
         std::unique_ptr<_board> board;
 
-        std::unique_ptr<sente_utils::Tree<Move>> moveTree;
+        sente_utils::Tree<Move> moveTree;
 
         std::unordered_map<Move, std::shared_ptr<Group>> groups;
         std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;

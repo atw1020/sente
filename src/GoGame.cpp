@@ -58,7 +58,7 @@ namespace sente {
     }
 
     bool GoGame::isLegal(unsigned x, unsigned y) const{
-        return isLegal(Move(x, y, moveTree->getDepth() % 2 == 0 ? BLACK : WHITE));
+        return isLegal(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
     bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) const {
@@ -67,15 +67,17 @@ namespace sente {
 
     bool GoGame::isLegal(const Move& move) const {
 
-        return board->isOnBoard(move) and
-               board->isEmpty(move) and
-               isNotSelfCapture(move) and
-               isNotKoPoint(move) and
-               isCorrectColor(move);
+        bool onBoard = board->isOnBoard(move);
+        bool isEmpty = board->isEmpty(move);
+        bool notSelfCapture = isNotSelfCapture(move);
+        bool notKoPoint = isNotKoPoint(move);
+        bool correctColor = isCorrectColor(move);
+
+        return onBoard and isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
-        playStone(Move(x, y, moveTree->getDepth() % 2 == 0 ? BLACK : WHITE));
+        playStone(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
     void GoGame::playStone(unsigned int x, unsigned int y, Stone stone) {
@@ -93,7 +95,7 @@ namespace sente {
         // check for pass/resign
         if (move == Move(move.getStone(), PASS)){
             passCount++;
-            moveTree->insert(move);
+            moveTree.insert(move);
             return;
         }
         else {
@@ -122,7 +124,7 @@ namespace sente {
 
         // place the stone on the board and record the move
         board->playStone(move);
-        moveTree->insert(move);
+        moveTree.insert(move);
 
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
@@ -131,12 +133,12 @@ namespace sente {
 
     void GoGame::playDefaultBranch(){
 
-        moveTree->advanceToRoot();
+        moveTree.advanceToRoot();
 
-        while(not moveTree->isAtLeaf()){
-            moveTree->stepDown(); // step into the next move
-            auto move = moveTree->get(); // get the move at this index
-            moveTree->stepUp(); // step up to the previous node and play the move from that node
+        while(not moveTree.isAtLeaf()){
+            moveTree.stepDown(); // step into the next move
+            auto move = moveTree.get(); // get the move at this index
+            moveTree.stepUp(); // step up to the previous node and play the move from that node
             playStone(move);
         }
     }
@@ -145,7 +147,7 @@ namespace sente {
         return board->getSpace(x, y).getStone();
     }
     Stone GoGame::getActivePlayer() const {
-        return moveTree->getDepth() % 2 == 0 ? BLACK : WHITE;
+        return moveTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
     const _board& GoGame::getBoard() const {
@@ -254,7 +256,7 @@ namespace sente {
                     // erase the item
                     groups[stone] = nullptr;
                     board->captureStone(stone);
-                    capturedStones[moveTree->getDepth()].insert(stone);
+                    capturedStones[moveTree.getDepth()].insert(stone);
                 }
             }
         }
@@ -262,7 +264,7 @@ namespace sente {
     }
 
     bool GoGame::isCorrectColor(const Move &move) const {
-        return (moveTree->getDepth() % 2 == 0) ? move.getStone() == BLACK : move.getStone() == WHITE;
+        return (moveTree.getDepth() % 2 == 0) ? move.getStone() == BLACK : move.getStone() == WHITE;
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{
