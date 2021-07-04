@@ -8,8 +8,12 @@
 #include <array>
 #include <sstream>
 
+#include <pybind11/pybind11.h>
+
 #include "Move.h"
 #include "Group.h"
+
+namespace py = pybind11;
 
 namespace sente {
 
@@ -73,7 +77,15 @@ namespace sente {
         }
 
         bool operator==(const Board<side>& other) const{
-            return board == other.board;
+
+            for (unsigned i = 0; i < side; i++){
+                for (unsigned j = 0; j < side; j++){
+                    if (board[i][j].getStone() != other.board[i][j].getStone()){
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         explicit operator std::string() const override{

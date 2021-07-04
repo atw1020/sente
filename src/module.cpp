@@ -179,7 +179,8 @@ PYBIND11_MODULE(sente, module){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
             .def("play_default_branch", &sente::GoGame::playDefaultBranch)
-            .def("get_bard", &sente::GoGame::getBoard,
+            .def("get_board", &sente::GoGame::getBoard,
+                 py::return_value_policy::reference,
                  "Get the board that the game is being played on")
             .def("__str__", [](const sente::GoGame& game){
                 return std::string(game);
