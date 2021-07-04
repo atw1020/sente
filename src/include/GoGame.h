@@ -31,9 +31,8 @@ namespace sente {
     class GoGame {
     public:
 
-        explicit GoGame(const std::string& sgf_file, bool playOut);
-
         GoGame(Rules rules, unsigned side);
+        explicit GoGame(const std::string& sgf_file);
 
         bool isLegal(unsigned x, unsigned y) const;
         bool isLegal(unsigned x, unsigned y, Stone stone) const;
@@ -44,6 +43,8 @@ namespace sente {
         void playStone(unsigned x, unsigned y, Stone stone);
         void playStone(const Move& move);
         // void resetToMove(unsigned moveNumber);
+
+        void playDefaultBranch();
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
@@ -63,12 +64,14 @@ namespace sente {
 
         std::unique_ptr<_board> board;
 
-        sente_utils::Tree<Move> moveTree;
+        std::unique_ptr<sente_utils::Tree<Move>> moveTree;
 
         std::unordered_map<Move, std::shared_ptr<Group>> groups;
         std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;
 
         Move koPoint;
+
+        void makeBoard(unsigned side);
 
         void updateBoard(Move move);
         void connectGroups(Move move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);

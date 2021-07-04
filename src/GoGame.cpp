@@ -3,7 +3,6 @@
 //
 
 #include <regex>
-#include <sstream>
 
 #include "pybind11/pybind11.h"
 
@@ -27,6 +26,10 @@ namespace std {
 
 namespace sente {
 
+    GoGame::GoGame(Rules rules, unsigned int side) {
+        this->rules = rules;
+        makeBoard(side);
+    }
 
     /**
      *
@@ -35,7 +38,7 @@ namespace sente {
      *
      * @param filePointer
      */
-    GoGame::GoGame(const std::string& SGFFile, bool playOut) {
+    GoGame::GoGame(const std::string& SGFFile) {
 
         // load the text from the file
         std::ifstream filePointer(SGFFile);
@@ -52,41 +55,10 @@ namespace sente {
             throw sente_utils::InvalidSGFException(E, SGFFile);
         }
 
-        // play out the first sequence in the tree
-        if (playOut){
-            py::print("isAtRoot:", moveTree.isAtRoot());
-            py::print("isAtLeaf:", moveTree.isAtLeaf());
-            // advance to a child
-            while(not moveTree.isAtLeaf()){
-                auto move = moveTree.stepDown();
-                playStone(move);
-                py::print(*this);
-            }
-
-        }
-
-    }
-
-    GoGame::GoGame(Rules rules, unsigned int side) {
-        this->rules = rules;
-
-        switch (side){
-            case 19:
-                board = std::unique_ptr<Board<19>>(new Board<19>());
-                break;
-            case 13:
-                board = std::unique_ptr<Board<13>>(new Board<13>());
-                break;
-            case 9:
-                board = std::unique_ptr<Board<9>>(new Board<9>());
-                break;
-            default:
-                throw std::domain_error("Invalid Board size");
-        }
     }
 
     bool GoGame::isLegal(unsigned x, unsigned y) const{
-        return isLegal(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        return isLegal(Move(x, y, moveTree->getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
     bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) const {
@@ -103,7 +75,7 @@ namespace sente {
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
-        playStone(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        playStone(Move(x, y, moveTree->getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
     void GoGame::playStone(unsigned int x, unsigned int y, Stone stone) {
@@ -121,7 +93,7 @@ namespace sente {
         // check for pass/resign
         if (move == Move(move.getStone(), PASS)){
             passCount++;
-            moveTree.insert(move);
+            moveTree->insert(move);
             return;
         }
         else {
@@ -150,18 +122,30 @@ namespace sente {
 
         // place the stone on the board and record the move
         board->playStone(move);
-        moveTree.insert(move);
+        moveTree->insert(move);
 
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
 
     }
 
+    void GoGame::playDefaultBranch(){
+
+        moveTree->advanceToRoot();
+
+        while(not moveTree->isAtLeaf()){
+            moveTree->stepDown(); // step into the next move
+            auto move = moveTree->get(); // get the move at this index
+            moveTree->stepUp(); // step up to the previous node and play the move from that node
+            playStone(move);
+        }
+    }
+
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
         return board->getSpace(x, y).getStone();
     }
     Stone GoGame::getActivePlayer() const {
-        return moveTree.getDepth() % 2 == 0 ? BLACK : WHITE;
+        return moveTree->getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
     const _board& GoGame::getBoard() const {
@@ -170,6 +154,22 @@ namespace sente {
 
     GoGame::operator std::string() const {
         return std::string(*board);
+    }
+
+    void GoGame::makeBoard(unsigned int side) {
+        switch (side){
+            case 19:
+                board = std::unique_ptr<Board<19>>(new Board<19>());
+                break;
+            case 13:
+                board = std::unique_ptr<Board<13>>(new Board<13>());
+                break;
+            case 9:
+                board = std::unique_ptr<Board<9>>(new Board<9>());
+                break;
+            default:
+                throw std::domain_error("Invalid Board size");
+        }
     }
 
     /**
@@ -254,7 +254,7 @@ namespace sente {
                     // erase the item
                     groups[stone] = nullptr;
                     board->captureStone(stone);
-                    capturedStones[moveTree.getDepth()].insert(stone);
+                    capturedStones[moveTree->getDepth()].insert(stone);
                 }
             }
         }
@@ -262,7 +262,7 @@ namespace sente {
     }
 
     bool GoGame::isCorrectColor(const Move &move) const {
-        return (moveTree.getDepth() % 2 == 0) ? move.getStone() == BLACK : move.getStone() == WHITE;
+        return (moveTree->getDepth() % 2 == 0) ? move.getStone() == BLACK : move.getStone() == WHITE;
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{

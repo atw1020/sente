@@ -18,9 +18,9 @@ namespace sente_utils {
     InvalidSGFException::InvalidSGFException(const InvalidSGFException &other, const std::string &fileName)
     : std::domain_error(std::string(other.what()) + " in file: " + fileName) {}
 
-    Tree<sente::Move> getSGFMoves(const std::string& SGFText){
+    std::unique_ptr<Tree<sente::Move>> getSGFMoves(const std::string& SGFText){
 
-        Tree<sente::Move> moves;
+        auto moves = std::unique_ptr<Tree<sente::Move>>(new Tree<sente::Move>());
         std::string currentSegment;
         auto previousIndex = SGFText.begin();
         std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
@@ -41,13 +41,13 @@ namespace sente_utils {
                      iter != std::sregex_iterator(); iter++){
                     // insert the move but don't advance to the new node
                     temp = sente::Move(iter->str());
-                    moves.insertNoAdvance(temp);
+                    moves->insertNoStep(temp);
                     noMatches = false;
                 }
 
                 if (not noMatches){
                     // step into the last match
-                    moves.stepTo(temp);
+                    moves->stepTo(temp);
                 }
 
                 // update the previous index
@@ -64,12 +64,12 @@ namespace sente_utils {
                      iter != std::sregex_iterator(); iter++){
                     // insert the move but don't advance to the new node
                     temp = sente::Move(iter->str());
-                    moves.insertNoAdvance(temp);
+                    moves->insertNoStep(temp);
                 }
 
-                if (not moves.isAtRoot()){
+                if (not moves->isAtRoot()){
                     // step up a move if we see a closing parentheses
-                    moves.stepUp();
+                    moves->stepUp();
                 }
 
                 // update the previous index
@@ -77,6 +77,8 @@ namespace sente_utils {
             }
 
         }
+
+        moves->advanceToRoot();
 
         return moves;
 

@@ -35,7 +35,16 @@ namespace sente_utils{
             return parent == nullptr;
         }
         bool isLeaf(){
-            return not children.empty();
+            return children.empty();
+        }
+
+        bool hasChild(const Type& toFind){
+            for (const auto& child : children){
+                if (child->payload == toFind){
+                    return true;
+                }
+            }
+            return false;
         }
 
         Type payload;
@@ -61,31 +70,39 @@ namespace sente_utils{
         }
 
         void insert(const Type& payload){
-            cursor = std::make_shared<TreeNode<Type>>(payload, cursor);
-            cursor->parent->children.insert(cursor);
-            depth++;
+            if (not cursor->hasChild(payload)){
+                // if the move isn't already a child node, insert it
+                cursor = std::make_shared<TreeNode<Type>>(payload, cursor);
+                cursor->parent->children.insert(cursor);
+                depth++;
+            }
+            else {
+                // if we already have this move, step down to it
+                stepTo(payload);
+            }
         }
-        void insertNoAdvance(const Type& payload){
-            cursor->children.insert(std::make_shared<TreeNode<Type>>(payload, cursor));
+        void insertNoStep(const Type& payload){
+            // only insert if the payload doesn't already exist
+            if (not cursor->hasChild(payload)) {
+                cursor->children.insert(std::make_shared<TreeNode<Type>>(payload, cursor));
+            }
         }
 
-        Type stepUp(){
+        void stepUp(){
             if (not cursor->isRoot()){
                 cursor = cursor->parent;
                 depth--;
-                return cursor->payload;
             }
             else {
                 throw std::domain_error("cannot step up past root node");
             }
         }
-        Type stepDown(){
-            if (cursor->children.size() == 1){
+        void stepDown(){
+            if (not cursor->isLeaf()){
                 cursor = *cursor->children.begin(); // step into whichever
                 depth++;
-                return cursor->payload;
             }
-            else if (cursor->isLeaf()){
+            else{
                 throw std::domain_error("cannot infer child to step to (no children to step to)");
             }
         }
@@ -100,7 +117,7 @@ namespace sente_utils{
             }
         }
 
-        void stepToRoot(){
+        void advanceToRoot(){
             cursor = root;
             depth = 0;
         }
@@ -109,7 +126,14 @@ namespace sente_utils{
             if (not cursor->isRoot()){
                 return cursor->payload;
             }
+            else {
+                throw std::domain_error("at root of tree, no move available");
+            }
         }
+
+        std::unordered_set<std::shared_ptr<TreeNode<Type>>> getChildren() const{
+            return cursor->children;
+        };
 
         unsigned getDepth() const{
             return depth;
@@ -120,6 +144,10 @@ namespace sente_utils{
         }
         bool isAtLeaf(){
             return cursor->isLeaf();
+        }
+        bool isChild(const Type& move){
+            // can we find the move in the list of children
+            return not cursor->children.find(move) == cursor->children.end();
         }
 
     private:

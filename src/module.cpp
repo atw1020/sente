@@ -77,6 +77,7 @@ PYBIND11_MODULE(sente, module){
 
     py::class_<sente::Board<13>>(module, "Board13")
             .def(py::init<>())
+            .def(py::init<std::array<std::array<sente::Stone, 13>, 13>>())
             .def("get_side", &sente::Board<13>::getSide,
                  "get the length of the side of the board")
             .def("play", &sente::Board<13>::playStone,
@@ -96,6 +97,7 @@ PYBIND11_MODULE(sente, module){
 
     py::class_<sente::Board<9>>(module, "Board9")
             .def(py::init<>())
+            .def(py::init<std::array<std::array<sente::Stone, 9>, 9>>())
             .def("get_side", &sente::Board<9>::getSide,
                  "get the length of the side of the board")
             .def("play", &sente::Board<9>::playStone,
@@ -176,6 +178,7 @@ PYBIND11_MODULE(sente, module){
             .def("play_resign", [](sente::GoGame& game){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
+            .def("play_default_branch", &sente::GoGame::playDefaultBranch)
             .def("get_bard", &sente::GoGame::getBoard,
                  "Get the board that the game is being played on")
             .def("__str__", [](const sente::GoGame& game){
@@ -183,11 +186,10 @@ PYBIND11_MODULE(sente, module){
             });
 
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
-        .def("load", [](const std::string& fileName, bool playOut){
-                return sente::GoGame(fileName, playOut);
+        .def("load", [](const std::string& fileName){
+                return sente::GoGame(fileName);
             },
             py::arg("filename"),
-            py::arg("play_out") = true,
             "Loads a go game from an SGF file");
 
     py::register_exception<sente_utils::InvalidSGFException>(sgf, "InvalidSGFException");

@@ -79,4 +79,12 @@ class TestSGF(DoesNotRaiseTestCase):
         :return:
         """
 
+        B = BLACK
+        W = WHITE
+        _ = EMPTY
+
         game = sgf.load("sgf/simple_sequence.sgf")
+        game.play_default_branch()
+        print(game)
+
+        # self.assertEqual(Board19([]))
