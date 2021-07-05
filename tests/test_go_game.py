@@ -219,3 +219,15 @@ class TestTreeNavigation(TestCase):
 
         :return:
         """
+
+        game = GoGame()
+
+        self.assertEqual(game.get_branches(), [])
+
+        game.play(3, 3)
+        game.step_up()
+
+        game.play(2, 3)
+        game.step_up()
+
+        self.assertEqual(game.get_branches(), [Move(3, 3, stone.BLACK), Move(2, 3, stone.BLACK)])

@@ -57,7 +57,7 @@ namespace sente {
         void playDefaultBranch();
         void playMoveSequence(const std::vector<Move>& moves);
         std::vector<Move> getMoveSequence();
-        const std::vector<Move>& getBranches();
+        std::vector<Move> getBranches();
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;

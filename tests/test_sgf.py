@@ -9,6 +9,7 @@ from sente import *
 
 from assert_does_not_raise import DoesNotRaiseTestCase
 
+
 class TestSGF(DoesNotRaiseTestCase):
 
     def test_all_sgfs(self):
@@ -114,12 +115,32 @@ class TestSGF(DoesNotRaiseTestCase):
         self.assertEqual(str(expected_game), str(game))
         self.assertEqual(expected_game, game.get_board())
 
-    def test_branched_sgf(self):
+    def test_simple_branched_sgf(self):
+        """
+
+        tests to see if the SGF reader works for simple files
+
+        :return:
+        """
+
+    def test_complex_branched_sgf(self):
         """
 
         tests to see if the SGF parser can handle an SGF file with multiple branches
 
-        TODO Implement
-
         :return:
         """
+
+        game = sgf.load("sgf/3-4.sgf")  # a 3-4 joseki refrence with lots of branches
+
+        print(len(game.get_branches()))
+
+        game.play_default_branch()
+        print(game)
+
+        game.advance_to_root()
+
+        self.assertEqual([Move(3, 16, stone.BLACK)], game.get_branches())
+        game.play(3, 16)
+
+        self.assertEqual([Move(3, 14, stone.WHITE), Move(2, 14, stone.WHITE)], game.get_branches())

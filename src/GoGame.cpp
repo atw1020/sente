@@ -189,7 +189,7 @@ namespace sente {
         }
     }
 
-    const std::vector<Move>& GoGame::getBranches() {
+    std::vector<Move> GoGame::getBranches() {
         return moveTree.getChildren();
     }
 
