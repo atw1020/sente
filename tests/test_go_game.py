@@ -53,6 +53,34 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
 class TestTreeNavigation(TestCase):
 
+    def test_advance_to_root(self):
+        """
+
+        tests to see if the reset_to_root method works
+
+        :return:
+        """
+
+        game = GoGame()
+
+        game.play(3, 3)
+        game.play(3, 4)
+        game.play(4, 3)
+        game.play(4, 4)
+        game.play(3, 15)
+        game.play(15, 3)
+        game.play(15, 15)
+
+        game.advance_to_root()
+
+        self.assertEqual(stone.EMPTY, game.get_point(3, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(3, 4))
+        self.assertEqual(stone.EMPTY, game.get_point(4, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(4, 4))
+        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
+        self.assertEqual(stone.EMPTY, game.get_point(15, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(15, 15))
+
     def test_undo_move(self):
         """
 
@@ -149,3 +177,37 @@ class TestTreeNavigation(TestCase):
         self.assertEqual(stone.BLACK, game.get_point(3, 3))
         self.assertEqual(stone.EMPTY, game.get_point(15, 3))
         self.assertEqual(stone.WHITE, game.get_point(3, 15))
+
+    def test_play_moves(self):
+        """
+
+        tests to see if the play_moves method is working
+
+        :return:
+        """
+
+        game = GoGame()
+
+        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(7, 7, stone.BLACK)]
+
+        game.play_moves(moves)
+
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.WHITE, game.get_point(5, 5))
+        self.assertEqual(stone.BLACK, game.get_point(7, 7))
+
+    def test_get_move_sequence(self):
+        """
+
+        checks to see if the game generates the correct sequence of moves
+
+        :return:
+        """
+
+        game = GoGame()
+
+        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(7, 7, stone.BLACK)]
+
+        game.play_moves(moves)
+
+        self.assertEqual(moves, game.get_moves())

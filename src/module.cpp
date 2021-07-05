@@ -178,10 +178,18 @@ PYBIND11_MODULE(sente, module){
             .def("play_resign", [](sente::GoGame& game){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
+            .def("advance_to_root", &sente::GoGame::advanceToRoot,
+                 "advance to the root node")
             .def("step_up", &sente::GoGame::stepUp,
                  py::arg("steps") = 1,
                  "step up the tree the specified number of steps")
-            .def("play_default_branch", &sente::GoGame::playDefaultBranch)
+            .def("play_default_branch", &sente::GoGame::playDefaultBranch,
+                 "plays out the moves in the default (first) branch of the tree")
+            .def("play_moves", &sente::GoGame::playMoveSequence,
+                 py::arg("moves"),
+                 "plays all of the moves in a given list of moves")
+            .def("get_moves", &sente::GoGame::getMoveSequence,
+                 "get a list containing all of the moves on the current branch of the tree")
             .def("get_board", &sente::GoGame::getBoard,
                  py::return_value_policy::reference,
                  "Get the board that the game is being played on")
