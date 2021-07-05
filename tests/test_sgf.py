@@ -254,13 +254,24 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-    def test_invalid_move(self):
+        files = os.listdir("invalid sgf")
+
+        for file in files:
+            with self.assertRaises(Exception):
+                game = sgf.load(os.path.join("invalid sgf", file))
+
+    def test_invalid_moves(self):
         """
 
         tests to see if moves that have invalid formatting throw an exception
 
         :return:
         """
+
+        self.assertRaises(sgf.load("invalid sgf/extra letter in move.sgf"), utils.InvalidSGFException)
+        self.assertRaises(sgf.load("invalid sgf/extra square bracket.sgf"), utils.InvalidSGFException)
+        self.assertRaises(sgf.load("invalid sgf/missing letter in move.sgf"), utils.InvalidSGFException)
+        self.assertRaises(sgf.load("invalid sgf/missing square bracket.sgf"), utils.InvalidSGFException)
 
     def test_incorrect_parentheses(self):
         """
@@ -270,7 +281,7 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        self.assertRaises()
+        self.assertRaises(sgf.load("invalid sgf/branched missing 2 parens.sgf"), utils.InvalidSGFException)
 
     def test_nonexistent_file(self):
         """

@@ -27,7 +27,6 @@ PYBIND11_MODULE(sente, module){
     module.doc() = "Sente: an open source API for go";
     module.def("opposite_player", &sente::getOpponent, "get the opponent of a particular stone color");
 
-    py::register_exception<sente::utils::IllegalMoveException>(module, "IllegalMoveException");
 
     py::enum_<sente::Stone>(module, "stone")
             .value("BLACK", sente::BLACK)
@@ -225,6 +224,9 @@ PYBIND11_MODULE(sente, module){
             return game.toSGF(params);
         });
 
-    py::register_exception<sente::utils::InvalidSGFException>(sgf, "InvalidSGFException");
+    auto utils = module.def_submodule("utils", "various utilities used by sente");
+
+    py::register_exception<sente::utils::InvalidSGFException>(utils, "InvalidSGFException");
+    py::register_exception<sente::utils::IllegalMoveException>(utils, "IllegalMoveException");
 
 }
