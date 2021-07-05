@@ -91,7 +91,9 @@ namespace sente {
 
             }
 
-            moves.advanceToRoot();
+            if (not branchDepths.empty()){
+                throw InvalidSGFException("Number of opening parentheses did not match number of closing parentheses");
+            }
 
             return moves;
 

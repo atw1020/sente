@@ -3,14 +3,15 @@
  * Author: Arthur Wesley
  *
  */
-#include <pybind11/pybind11.h>
+#include <fstream>
+
 #include <pybind11/stl.h>
+#include <pybind11/eval.h>
+#include <pybind11/pybind11.h>
 
 #include "include/SGF.h"
 #include "include/GoGame.h"
 #include "include/SenteExceptions.h"
-
-#include <fstream>
 
 int add(int x, int y){
     return x + y;
@@ -202,13 +203,18 @@ PYBIND11_MODULE(sente, module){
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
         .def("load", [](const std::string& fileName){
 
-                // load the text from the file
-                std::ifstream filePointer(fileName);
-                std::string SGFText((std::istreambuf_iterator<char>(filePointer)),
-                                     std::istreambuf_iterator<char>());
+                std::string SGFText;
 
-
-
+                try {
+                    // load the text from the file
+                    std::ifstream filePointer(fileName);
+                    SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
+                                           std::istreambuf_iterator<char>());
+                }
+                catch (const std::domain_error& E){
+                    py::print("hit exception", E.what());
+                    py::eval("raise FileNotFoundError(" + fileName + ")");
+                }
                 return sente::GoGame(SGFText);
             },
             py::arg("filename"),
