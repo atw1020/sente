@@ -102,9 +102,6 @@ class BasicSGF(DoesNotRaiseTestCase):
                                  [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
                                  [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
 
-        print(expected_game)
-        print(game)
-
         self.assertEqual(str(expected_game), str(game))
         self.assertEqual(expected_game, game.get_board())
 
@@ -129,10 +126,7 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("sgf/3-4.sgf")  # a 3-4 joseki refrence with lots of branches
 
-        print(len(game.get_branches()))
-
         game.play_default_branch()
-        print(game)
 
         game.advance_to_root()
 

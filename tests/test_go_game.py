@@ -41,8 +41,6 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
         game = GoGame()
 
-        print("test section A")
-
         with self.assertDoesNotRaise(Exception):
             game.play(3, 15, BLACK)
             game.play(15, 15)
@@ -117,8 +115,6 @@ class TestTreeNavigation(TestCase):
 
         game.step_up()
         game.play(3, 15)
-
-        print(game)
 
         self.assertEqual(stone.BLACK, game.get_point(3, 3))
         self.assertEqual(stone.WHITE, game.get_point(3, 15))

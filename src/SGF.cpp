@@ -24,8 +24,6 @@ namespace sente {
             std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
             std::stack<unsigned> branchDepths{};
 
-            py::print("entering getSGFMoves");
-
             // for each letter in the SGF
             for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
 
@@ -34,8 +32,6 @@ namespace sente {
                     // find the moves in the current segment
                     currentSegment = std::string(previousIndex, cursor);
                     auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
-
-                    py::print("entering parentheses and looking at string", currentSegment);
 
                     // only insert moves if we find one
                     if (regexIter != std::sregex_iterator()){
@@ -68,8 +64,6 @@ namespace sente {
                         // if there are any moves, insert them
                         Move temp((regexIter++)->str());
 
-                        py::print("leaving parentheses and looking at string", currentSegment);
-
                         branchDepths.push(moves.getDepth());
                         moves.insert(temp);
 
@@ -98,8 +92,6 @@ namespace sente {
             }
 
             moves.advanceToRoot();
-
-            py::print("leaving getSGFMoves");
 
             return moves;
 
