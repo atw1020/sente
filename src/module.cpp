@@ -184,12 +184,13 @@ PYBIND11_MODULE(sente, module){
                  py::arg("steps") = 1,
                  "step up the tree the specified number of steps")
             .def("play_default_branch", &sente::GoGame::playDefaultBranch,
-                 "plays out the moves in the default (first) branch of the tree")
+                 "plays out the moves in the default (first) branch of the tree") // TODO: implement default branch functionality
             .def("play_moves", &sente::GoGame::playMoveSequence,
                  py::arg("moves"),
                  "plays all of the moves in a given list of moves")
             .def("get_moves", &sente::GoGame::getMoveSequence,
                  "get a list containing all of the moves on the current branch of the tree")
+            .def("get_branches", &sente::GoGame::getBranches)
             .def("get_board", &sente::GoGame::getBoard,
                  py::return_value_policy::reference,
                  "Get the board that the game is being played on")

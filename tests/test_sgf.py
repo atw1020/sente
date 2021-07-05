@@ -113,3 +113,13 @@ class TestSGF(DoesNotRaiseTestCase):
 
         self.assertEqual(str(expected_game), str(game))
         self.assertEqual(expected_game, game.get_board())
+
+    def test_branched_sgf(self):
+        """
+
+        tests to see if the SGF parser can handle an SGF file with multiple branches
+
+        TODO Implement
+
+        :return:
+        """

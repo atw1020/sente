@@ -189,7 +189,7 @@ namespace sente {
         }
     }
 
-    const std::unordered_set<Move>& GoGame::getBranches() {
+    const std::vector<Move>& GoGame::getBranches() {
         return moveTree.getChildren();
     }
 

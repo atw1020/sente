@@ -211,3 +211,11 @@ class TestTreeNavigation(TestCase):
         game.play_moves(moves)
 
         self.assertEqual(moves, game.get_moves())
+
+    def test_get_children(self):
+        """
+
+        tests to see if the
+
+        :return:
+        """
