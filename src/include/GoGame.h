@@ -32,7 +32,7 @@ namespace sente {
     public:
 
         GoGame(unsigned side, Rules rules);
-        explicit GoGame(const std::string& sgf_file);
+        explicit GoGame(const std::string& SGFText);
         void resetBoard();
 
         ///

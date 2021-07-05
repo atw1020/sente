@@ -76,6 +76,7 @@ namespace sente_utils{
             else {
                 // if we already have this move, step down to it
                 stepTo(payload);
+                depth++;
             }
         }
         void insertNoStep(const Type& payload){

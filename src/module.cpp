@@ -169,7 +169,7 @@ PYBIND11_MODULE(sente, module){
                     game.playStone(sente::Move(game.getActivePlayer(), sente::PASS));
                 }
                 else {
-                    throw std::domain_error("invalid python object");
+                    throw std::domain_error("cannot play " + std::string(py::str(obj)));
                 }
             })
             .def("play_pass", [](sente::GoGame& game){
@@ -178,6 +178,9 @@ PYBIND11_MODULE(sente, module){
             .def("play_resign", [](sente::GoGame& game){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
+            .def("step_up", &sente::GoGame::stepUp,
+                 py::arg("steps") = 1,
+                 "step up the tree the specified number of steps")
             .def("play_default_branch", &sente::GoGame::playDefaultBranch)
             .def("get_board", &sente::GoGame::getBoard,
                  py::return_value_policy::reference,
@@ -188,14 +191,31 @@ PYBIND11_MODULE(sente, module){
 
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
         .def("load", [](const std::string& fileName){
-                return sente::GoGame(fileName);
+
+                // load the text from the file
+                std::ifstream filePointer(fileName);
+                std::string SGFText((std::istreambuf_iterator<char>(filePointer)),
+                                     std::istreambuf_iterator<char>());
+
+                try{
+                    return sente::GoGame(SGFText);
+                }
+                catch (const sente_utils::InvalidSGFException& E){
+                    throw sente_utils::InvalidSGFException(E, fileName);
+                }
             },
             py::arg("filename"),
             "Loads a go game from an SGF file")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName, std::unordered_map<std::string, std::string> params){
                 std::ofstream output(fileName);
                 output << game.toSGF(params);
-            });
+            })
+        .def("loads", [](const std::string& SGFText){
+            return sente::GoGame(SGFText);
+        })
+        .def("dumps", [](const sente::GoGame& game, std::unordered_map<std::string, std::string> params){
+            return game.toSGF(params);
+        });
 
     py::register_exception<sente_utils::InvalidSGFException>(sgf, "InvalidSGFException");
 

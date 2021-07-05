@@ -3,8 +3,6 @@
 Author: Arthur Wesley
 
 """
-import opcode
-import os
 from unittest import TestCase
 
 from assert_does_not_raise import DoesNotRaiseTestCase
@@ -53,99 +51,101 @@ class TestBasicMethods(DoesNotRaiseTestCase):
             game.play(3, 15)
 
 
-class TestSGF(DoesNotRaiseTestCase):
+class TestTreeNavigation(TestCase):
 
-    def test_all_sgfs(self):
+    def test_undo_move(self):
         """
 
-        tests to see if any of the sgf files in the directory raise any exceptions
+        tests to see if moves can be undone
 
         :return:
         """
 
-        files = os.listdir("sgf")
+        game = GoGame()
 
-        # sgf.load(os.path.join("sgf", "34839594-255-IDW64-noob_bot_3.sgf"))
+        # create a basic tree
+        game.play(3, 3)
+        game.play(3, 15)
 
-        for file in files:
-            with self.assertDoesNotRaise(Exception):
-                game = sgf.load(os.path.join("sgf", file))
-                game.play_default_branch()
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.WHITE, game.get_point(3, 15))
+        game.step_up()
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
 
-    def test_simple_single_branch_file(self):
+    def test_undo_redo(self):
         """
 
-        tests to see if we can import a sgf file with a single branch
+        tests to see if a game
 
         :return:
         """
 
-        B = BLACK
-        W = WHITE
-        _ = EMPTY
+        game = GoGame()
 
-        game = sgf.load("sgf/simple_sequence.sgf")
-        game.play_default_branch()
+        # create a basic tree
+        game.play(3, 3)
+        game.play(3, 15)
 
-        expected_game = Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, B, W, W],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, W]])
+        game.step_up()
+        game.play(3, 15)
 
-        self.assertEqual(expected_game, game.get_board())
-
-    def test_full_single_branch_game(self):
-        """
-
-        tests to see if the module can keep track of an entire game
-
-        :return:
-        """
-
-        B = BLACK
-        W = WHITE
-        _ = EMPTY
-
-        game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
-        game.play_default_branch()
-
-        expected_game = Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
-                                 [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
-                                 [_, _, W, _, W, W, B, B, B, _, B, B, W, B, B, _, W, _, _],
-                                 [_, _, _, W, _, _, W, B, B, _, B, W, W, W, B, B, W, _, _],
-                                 [W, W, W, B, W, W, W, W, B, W, W, _, W, W, B, _, _, _, _],
-                                 [B, B, B, B, B, W, B, B, W, _, W, _, _, _, W, W, _, _, _],
-                                 [_, _, _, _, B, W, B, B, W, _, W, W, W, W, _, W, _, _, _],
-                                 [W, W, W, W, W, B, B, W, W, _, _, _, W, _, W, W, B, _, _],
-                                 [B, B, B, W, B, B, B, B, W, _, _, W, B, B, _, _, _, _, _],
-                                 [_, _, B, W, W, B, _, B, W, _, _, W, _, _, _, W, W, W, _],
-                                 [_, _, B, B, W, B, _, W, _, _, _, W, _, B, B, W, B, W, W],
-                                 [W, W, B, B, W, B, _, W, _, _, W, B, B, B, W, B, B, B, W],
-                                 [B, W, W, B, W, B, B, B, W, _, _, _, _, B, W, _, B, B, W],
-                                 [B, _, _, W, W, B, B, B, W, _, _, W, W, W, W, _, _, _, B],
-                                 [B, B, B, B, B, W, W, W, _, _, W, W, B, W, _, W, B, B, B],
-                                 [W, W, W, W, W, W, B, B, W, W, B, B, B, B, B, W, W, W, W],
-                                 [B, B, B, W, B, _, _, B, B, B, _, B, _, B, _, W, B, _, _],
-                                 [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
-                                 [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
-
-        print(expected_game)
         print(game)
 
-        self.assertEqual(str(expected_game), str(game))
-        self.assertEqual(expected_game, game.get_board())
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.WHITE, game.get_point(3, 15))
+
+    def test_undo_multiple(self):
+        """
+
+        tests to see if multiple undos works
+
+        :return:
+        """
+
+        game = GoGame()
+
+        game.play(3, 3)
+        game.play(3, 15)
+        game.play(15, 3)
+        game.play(15, 15)
+
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.WHITE, game.get_point(3, 15))
+        self.assertEqual(stone.BLACK, game.get_point(15, 3))
+        self.assertEqual(stone.WHITE, game.get_point(15, 15))
+
+        game.step_up(3)
+
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
+        self.assertEqual(stone.EMPTY, game.get_point(15, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(15, 15))
+
+    def test_simple_fork(self):
+        """
+
+        tests to see if the tree can navigate a simple fork
+
+        :return:
+        """
+
+        game = GoGame()
+
+        game.play(3, 3)
+        game.play(3, 15)
+
+        game.step_up()
+        game.play(15, 3)
+
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.WHITE, game.get_point(15, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
+
+        # switch back to the other branch
+        game.step_up()
+        game.play(3, 15)
+
+        self.assertEqual(stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(stone.EMPTY, game.get_point(15, 3))
+        self.assertEqual(stone.WHITE, game.get_point(3, 15))

@@ -43,22 +43,12 @@ namespace sente {
      *
      * @param filePointer
      */
-    GoGame::GoGame(const std::string& SGFFile) {
-
-        // load the text from the file
-        std::ifstream filePointer(SGFFile);
-        std::string SGFText((std::istreambuf_iterator<char>(filePointer)),
-                         std::istreambuf_iterator<char>());
+    GoGame::GoGame(const std::string& SGFText) {
 
         // extract the move tree
-        try{
-            board = sente_utils::getSGFBoardSize(SGFText);
-            rules = sente_utils::getSGFRules(SGFText);
-            moveTree = sente_utils::getSGFMoves(SGFText);
-        }
-        catch (const sente_utils::InvalidSGFException& E){
-            throw sente_utils::InvalidSGFException(E, SGFFile);
-        }
+        board = sente_utils::getSGFBoardSize(SGFText);
+        rules = sente_utils::getSGFRules(SGFText);
+        moveTree = sente_utils::getSGFMoves(SGFText);
 
         // some book-keeping
 
@@ -182,7 +172,7 @@ namespace sente {
 
     void GoGame::playDefaultBranch(){
 
-        moveTree.advanceToRoot();
+        resetBoard();
 
         while(not moveTree.isAtLeaf()){
             moveTree.stepDown(); // step into the next move
