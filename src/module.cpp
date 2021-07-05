@@ -51,7 +51,7 @@ PYBIND11_MODULE(sente, module){
             .def("get_stone", &sente::Move::getStone, "get the stone that the player will place on the board")
             .def("__eq__", &sente::Move::operator==)
             .def("__ne__", &sente::Move::operator!=)
-            .def("__str__", [](const sente::Move& move){
+            .def("__repr__", [](const sente::Move& move){
                 return std::string(move);
             });
 

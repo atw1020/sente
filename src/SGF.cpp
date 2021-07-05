@@ -2,6 +2,7 @@
 // Created by arthur wesley on 7/2/21.
 //
 
+#include <stack>
 #include <regex>
 #include <sstream>
 
@@ -25,6 +26,9 @@ namespace sente_utils {
         std::string currentSegment;
         auto previousIndex = SGFText.begin();
         std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
+        std::stack<unsigned> branchDepths{};
+
+        py::print("entering getSGFMoves");
 
         // for each letter in the SGF
         for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
@@ -33,22 +37,25 @@ namespace sente_utils {
 
                 // find the moves in the current segment
                 currentSegment = std::string(previousIndex, cursor);
-                sente::Move temp;
+                auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
 
-                bool noMatches = true;
+                py::print("entering parentheses and looking at string", currentSegment);
 
-                // go through all the matches
-                for (auto iter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
-                     iter != std::sregex_iterator(); iter++){
-                    // insert the move but don't advance to the new node
-                    temp = sente::Move(iter->str());
-                    moves.insertNoStep(temp);
-                    noMatches = false;
-                }
+                // only insert moves if we find one
+                if (regexIter != std::sregex_iterator()){
 
-                if (not noMatches){
-                    // step into the last match
-                    moves.stepTo(temp);
+                    sente::Move temp((regexIter++)->str());
+
+                    // insert the move into the tree and record the step we take
+                    branchDepths.push(moves.getDepth());
+                    moves.insert(temp);
+
+                    // go through all the matches
+                    for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
+                        // insert the move but don't advance to the new node
+                        temp = sente::Move(iter->str());
+                        moves.insert(temp);
+                    }
                 }
 
                 // update the previous index
@@ -58,19 +65,34 @@ namespace sente_utils {
 
                 // find the moves in the current segment
                 currentSegment = std::string(previousIndex, cursor);
-                sente::Move temp;
+                auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
 
-                // go through all the matches
-                for (auto iter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
-                     iter != std::sregex_iterator(); iter++){
-                    // insert the move but don't advance to the new node
-                    temp = sente::Move(iter->str());
-                    moves.insertNoStep(temp);
+                if (regexIter != std::sregex_iterator()){
+
+                    // if there are any moves, insert them
+                    sente::Move temp((regexIter++)->str());
+
+                    py::print("leaving parentheses and looking at string", currentSegment);
+
+                    branchDepths.push(moves.getDepth());
+                    moves.insert(temp);
+
+                    // go through all the matches
+                    for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
+                        // insert the move but don't advance to the new node
+                        temp = sente::Move(iter->str());
+                        moves.insert(temp);
+                    }
                 }
 
-                if (not moves.isAtRoot()){
-                    // step up a move if we see a closing parentheses
-                    moves.stepUp();
+                // unless the branch depths are empty
+                if (not branchDepths.empty()){
+                    while (moves.getDepth() != branchDepths.top()){
+                        // step up until we reach the depth of the last branch
+                        moves.stepUp();
+                    }
+                    // pop the depth off of the stack once we get it
+                    branchDepths.pop();
                 }
 
                 // update the previous index
@@ -80,6 +102,8 @@ namespace sente_utils {
         }
 
         moves.advanceToRoot();
+
+        py::print("leaving getSGFMoves");
 
         return moves;
 
