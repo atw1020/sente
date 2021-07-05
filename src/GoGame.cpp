@@ -6,8 +6,9 @@
 
 #include "pybind11/pybind11.h"
 
-#include "include/GoGame.h"
 #include "include/SGF.h"
+#include "include/GoGame.h"
+#include "include/SenteExceptions.h"
 
 namespace py = pybind11;
 
@@ -46,9 +47,9 @@ namespace sente {
     GoGame::GoGame(const std::string& SGFText) {
 
         // extract the move tree
-        board = sente_utils::getSGFBoardSize(SGFText);
-        rules = sente_utils::getSGFRules(SGFText);
-        moveTree = sente_utils::getSGFMoves(SGFText);
+        board = utils::getSGFBoardSize(SGFText);
+        rules = utils::getSGFRules(SGFText);
+        moveTree = utils::getSGFMoves(SGFText);
 
         // some book-keeping
 
@@ -131,16 +132,16 @@ namespace sente {
         // error handling
         if (not isLegal(move)){
             if (not board->isOnBoard(move)){
-                throw IllegalMoveException(OFF_BOARD, move);
+                throw utils::IllegalMoveException(utils::OFF_BOARD, move);
             }
             if (not board->isEmpty(move)){
-                throw IllegalMoveException(OCCUPIED_POINT, move);
+                throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
             }
             if (not isNotSelfCapture(move)){
-                throw IllegalMoveException(SELF_CAPTURE, move);
+                throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
             }
             if (not isNotKoPoint(move)){
-                throw IllegalMoveException(KO_POINT, move);
+                throw utils::IllegalMoveException(utils::KO_POINT, move);
             }
         }
 
@@ -224,7 +225,7 @@ namespace sente {
         }
         attributes["SZ"] = std::to_string(board->getSide());
 
-        return sente_utils::toSGF(moveTree, attributes);
+        return utils::toSGF(moveTree, attributes);
 
     }
 

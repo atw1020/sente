@@ -152,32 +152,6 @@ namespace sente {
         return str.str();
 
     }
-
-    IllegalMoveException::IllegalMoveException(IllegalMoveType type, const Move& move) {
-        this->type = type;
-        this->move = move;
-    }
-
-    const char* IllegalMoveException::what() const noexcept {
-
-        std::string message;
-
-        switch (type){
-            case OFF_BOARD:
-                message = "The Desired move " + std::string(move) + " is beyond the edge of the go board (check your board size)\n";
-                break;
-            case OCCUPIED_POINT:
-                message = "The Desired move " + std::string(move) + " lies on an occupied point\n";
-                break;
-            case SELF_CAPTURE:
-                message = "The Desired move " + std::string(move) + " would result in a self-capture\n";
-                break;
-            case KO_POINT:
-                message = "The Desired move " + std::string(move) + " lies on a Ko point\n";
-        }
-
-        return message.c_str();
-    }
 }
 
 namespace std {

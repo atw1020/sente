@@ -8,7 +8,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <exception>
 #include <functional>
 #include <pybind11/pytypes.h>
 
@@ -28,13 +27,6 @@ namespace sente {
     };
 
     Stone getOpponent(Stone player);
-
-    enum IllegalMoveType {
-        OFF_BOARD,
-        OCCUPIED_POINT,
-        SELF_CAPTURE,
-        KO_POINT
-    };
 
     class Move {
     public:
@@ -64,20 +56,6 @@ namespace sente {
         unsigned y;
 
         Stone stone;
-
-    };
-
-    class IllegalMoveException : public std::exception{
-    public:
-
-        IllegalMoveException(IllegalMoveType type, const Move& move);
-
-        const char* what() const noexcept override;
-
-    private:
-
-        IllegalMoveType type;
-        Move move;
 
     };
 }

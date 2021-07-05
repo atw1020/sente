@@ -6,8 +6,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "include/GoGame.h"
 #include "include/SGF.h"
+#include "include/GoGame.h"
+#include "include/SenteExceptions.h"
 
 #include <fstream>
 
@@ -26,7 +27,7 @@ PYBIND11_MODULE(sente, module){
     module.doc() = "Sente: an open source API for go";
     module.def("opposite_player", &sente::getOpponent, "get the opponent of a particular stone color");
 
-    py::register_exception<sente::IllegalMoveException>(module, "IllegalMoveException");
+    py::register_exception<sente::utils::IllegalMoveException>(module, "IllegalMoveException");
 
     py::enum_<sente::Stone>(module, "stone")
             .value("BLACK", sente::BLACK)
@@ -207,12 +208,9 @@ PYBIND11_MODULE(sente, module){
                 std::string SGFText((std::istreambuf_iterator<char>(filePointer)),
                                      std::istreambuf_iterator<char>());
 
-                try{
-                    return sente::GoGame(SGFText);
-                }
-                catch (const sente_utils::InvalidSGFException& E){
-                    throw sente_utils::InvalidSGFException(E, fileName);
-                }
+
+
+                return sente::GoGame(SGFText);
             },
             py::arg("filename"),
             "Loads a go game from an SGF file")
@@ -227,6 +225,6 @@ PYBIND11_MODULE(sente, module){
             return game.toSGF(params);
         });
 
-    py::register_exception<sente_utils::InvalidSGFException>(sgf, "InvalidSGFException");
+    py::register_exception<sente::utils::InvalidSGFException>(sgf, "InvalidSGFException");
 
 }

@@ -9,211 +9,209 @@
 #include <pybind11/pybind11.h>
 
 #include "include/SGF.h"
+#include "include/SenteExceptions.h"
 
 namespace py = pybind11;
 
-namespace sente_utils {
+namespace sente {
+    namespace utils {
 
-    InvalidSGFException::InvalidSGFException(const std::string &message)
-    : std::domain_error(message){}
+        Tree<Move> getSGFMoves(const std::string& SGFText){
 
-    InvalidSGFException::InvalidSGFException(const InvalidSGFException &other, const std::string &fileName)
-    : std::domain_error(std::string(other.what()) + " in file: " + fileName) {}
+            auto moves = Tree<Move>();
+            std::string currentSegment;
+            auto previousIndex = SGFText.begin();
+            std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
+            std::stack<unsigned> branchDepths{};
 
-    Tree<sente::Move> getSGFMoves(const std::string& SGFText){
+            py::print("entering getSGFMoves");
 
-        auto moves = Tree<sente::Move>();
-        std::string currentSegment;
-        auto previousIndex = SGFText.begin();
-        std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
-        std::stack<unsigned> branchDepths{};
+            // for each letter in the SGF
+            for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
 
-        py::print("entering getSGFMoves");
+                if (*cursor == '('){
 
-        // for each letter in the SGF
-        for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
+                    // find the moves in the current segment
+                    currentSegment = std::string(previousIndex, cursor);
+                    auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
 
-            if (*cursor == '('){
+                    py::print("entering parentheses and looking at string", currentSegment);
 
-                // find the moves in the current segment
-                currentSegment = std::string(previousIndex, cursor);
-                auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                    // only insert moves if we find one
+                    if (regexIter != std::sregex_iterator()){
 
-                py::print("entering parentheses and looking at string", currentSegment);
+                        Move temp((regexIter++)->str());
 
-                // only insert moves if we find one
-                if (regexIter != std::sregex_iterator()){
-
-                    sente::Move temp((regexIter++)->str());
-
-                    // insert the move into the tree and record the step we take
-                    branchDepths.push(moves.getDepth());
-                    moves.insert(temp);
-
-                    // go through all the matches
-                    for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
-                        // insert the move but don't advance to the new node
-                        temp = sente::Move(iter->str());
+                        // insert the move into the tree and record the step we take
+                        branchDepths.push(moves.getDepth());
                         moves.insert(temp);
+
+                        // go through all the matches
+                        for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
+                            // insert the move but don't advance to the new node
+                            temp = Move(iter->str());
+                            moves.insert(temp);
+                        }
                     }
+
+                    // update the previous index
+                    previousIndex = cursor;
                 }
+                else if (*cursor == ')'){
 
-                // update the previous index
-                previousIndex = cursor;
-            }
-            else if (*cursor == ')'){
+                    // find the moves in the current segment
+                    currentSegment = std::string(previousIndex, cursor);
+                    auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
 
-                // find the moves in the current segment
-                currentSegment = std::string(previousIndex, cursor);
-                auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                    if (regexIter != std::sregex_iterator()){
 
-                if (regexIter != std::sregex_iterator()){
+                        // if there are any moves, insert them
+                        Move temp((regexIter++)->str());
 
-                    // if there are any moves, insert them
-                    sente::Move temp((regexIter++)->str());
+                        py::print("leaving parentheses and looking at string", currentSegment);
 
-                    py::print("leaving parentheses and looking at string", currentSegment);
-
-                    branchDepths.push(moves.getDepth());
-                    moves.insert(temp);
-
-                    // go through all the matches
-                    for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
-                        // insert the move but don't advance to the new node
-                        temp = sente::Move(iter->str());
+                        branchDepths.push(moves.getDepth());
                         moves.insert(temp);
+
+                        // go through all the matches
+                        for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
+                            // insert the move but don't advance to the new node
+                            temp = Move(iter->str());
+                            moves.insert(temp);
+                        }
                     }
+
+                    // unless the branch depths are empty
+                    if (not branchDepths.empty()){
+                        while (moves.getDepth() != branchDepths.top()){
+                            // step up until we reach the depth of the last branch
+                            moves.stepUp();
+                        }
+                        // pop the depth off of the stack once we get it
+                        branchDepths.pop();
+                    }
+
+                    // update the previous index
+                    previousIndex = cursor;
                 }
 
-                // unless the branch depths are empty
-                if (not branchDepths.empty()){
-                    while (moves.getDepth() != branchDepths.top()){
-                        // step up until we reach the depth of the last branch
-                        moves.stepUp();
-                    }
-                    // pop the depth off of the stack once we get it
-                    branchDepths.pop();
-                }
+            }
 
-                // update the previous index
-                previousIndex = cursor;
+            moves.advanceToRoot();
+
+            py::print("leaving getSGFMoves");
+
+            return moves;
+
+        }
+
+        Rules getSGFRules(const std::string& SGFText){
+
+            // py::print("the full SGF text was", SGFText);
+
+            using namespace std::regex_constants;
+
+            // find the rules and board size to initialize the game
+            std::smatch result;
+            std::regex rulesRegex("RU\\[((Chinese|Japanese))\\]", icase);
+
+            // extract the rules from the string
+            std::regex_search(SGFText, result, rulesRegex);
+
+            std::string temp = result[0].str();
+            std::string rulesString(temp.begin() + 3, temp.end() - 1);// create the board from the results
+
+            // convert the rules to lowercase
+            std::transform(rulesString.begin(), rulesString.end(), rulesString.begin(), ::tolower);
+
+            if (rulesString == "japanese"){
+                return JAPANESE;
+            }
+            else if (rulesString == "chinese"){
+                return CHINESE;
+            }
+            else {
+                throw InvalidSGFException("Could not determine Rules");
+            }
+
+        }
+        std::unique_ptr<_board> getSGFBoardSize(const std::string& SGFText){
+
+            std::smatch result;
+            std::regex boardSizeRegex("SZ\\[\\d{1,2}\\]");
+
+            // extract the board size from the string
+            std::regex_search(SGFText, result, boardSizeRegex);
+
+            std::string temp = result[0].str();
+
+            unsigned side = std::stol(std::string(temp.begin() + 3, temp.end() - 1));
+
+            switch (side){
+                case 19:
+                    return std::unique_ptr<Board<19>>(new Board<19>());
+                case 13:
+                    return std::unique_ptr<Board<13>>(new Board<13>());
+                case 9:
+                    return std::unique_ptr<Board<9>>(new Board<9>());
+                default:
+                    throw std::domain_error("Invalid Board size " + std::to_string(side));
             }
 
         }
 
-        moves.advanceToRoot();
-
-        py::print("leaving getSGFMoves");
-
-        return moves;
-
-    }
-
-    sente::Rules getSGFRules(const std::string& SGFText){
-
-        // py::print("the full SGF text was", SGFText);
-
-        using namespace std::regex_constants;
-
-        // find the rules and board size to initialize the game
-        std::smatch result;
-        std::regex rulesRegex("RU\\[((Chinese|Japanese))\\]", icase);
-
-        // extract the rules from the string
-        std::regex_search(SGFText, result, rulesRegex);
-
-        std::string temp = result[0].str();
-        std::string rulesString(temp.begin() + 3, temp.end() - 1);// create the board from the results
-
-        // convert the rules to lowercase
-        std::transform(rulesString.begin(), rulesString.end(), rulesString.begin(), ::tolower);
-
-        if (rulesString == "japanese"){
-            return sente::JAPANESE;
-        }
-        else if (rulesString == "chinese"){
-            return sente::CHINESE;
-        }
-        else {
-            throw InvalidSGFException("Could not determine Rules");
-        }
-
-    }
-    std::unique_ptr<sente::_board> getSGFBoardSize(const std::string& SGFText){
-
-        std::smatch result;
-        std::regex boardSizeRegex("SZ\\[\\d{1,2}\\]");
-
-        // extract the board size from the string
-        std::regex_search(SGFText, result, boardSizeRegex);
-
-        std::string temp = result[0].str();
-
-        unsigned side = std::stol(std::string(temp.begin() + 3, temp.end() - 1));
-
-        switch (side){
-            case 19:
-                return std::unique_ptr<sente::Board<19>>(new sente::Board<19>());
-            case 13:
-                return std::unique_ptr<sente::Board<13>>(new sente::Board<13>());
-            case 9:
-                return std::unique_ptr<sente::Board<9>>(new sente::Board<9>());
-            default:
-                throw std::domain_error("Invalid Board size " + std::to_string(side));
-        }
-
-    }
-
-    void insertIntoSGF(Tree<sente::Move>& moves, std::stringstream& SGF){
-        // for each child
-        for (auto& child : moves.getChildren()){
-            // serialize the move
-            SGF << ";" << std::string(child);
-            // step to the child
-            moves.stepTo(child);
-            if (not moves.isAtLeaf()){
-                SGF << "(";
-                insertIntoSGF(moves, SGF);
-                SGF << ")";
+        void insertIntoSGF(Tree<Move>& moves, std::stringstream& SGF){
+            // for each child
+            for (auto& child : moves.getChildren()){
+                // serialize the move
+                SGF << ";" << std::string(child);
+                // step to the child
+                moves.stepTo(child);
+                if (not moves.isAtLeaf()){
+                    SGF << "(";
+                    insertIntoSGF(moves, SGF);
+                    SGF << ")";
+                }
+                // step up
+                moves.stepUp();
             }
-            // step up
-            moves.stepUp();
         }
+
+        std::string toSGF(Tree<Move> moves, std::unordered_map<std::string, std::string>& attributes){
+
+            // add some default attributes
+            attributes["FF"] = "4";
+
+            // create the string stream to use
+            std::stringstream SGF;
+
+            // backup the current position of the board and advance to the root node
+            auto moveSequence = moves.getSequence();
+            moves.advanceToRoot();
+
+            SGF << "(";
+
+            if (not attributes.empty()){
+                SGF << ";";
+            }
+
+            for (const auto& attribute : attributes){
+                SGF << attribute.first << "[" << attribute.second << "]\n";
+            }
+
+            insertIntoSGF(moves, SGF);
+
+            SGF << ")";
+
+            // return the board to it's original state
+            moves.advanceToRoot();
+            for (const auto& move : moveSequence){
+                moves.stepTo(move);
+            }
+
+            return SGF.str();
+        }
+
     }
-
-    std::string toSGF(Tree<sente::Move> moves, std::unordered_map<std::string, std::string>& attributes){
-
-        // add some default attributes
-        attributes["FF"] = "4";
-
-        // create the string stream to use
-        std::stringstream SGF;
-
-        // backup the current position of the board and advance to the root node
-        auto moveSequence = moves.getSequence();
-        moves.advanceToRoot();
-
-        SGF << "(";
-
-        if (not attributes.empty()){
-            SGF << ";";
-        }
-
-        for (const auto& attribute : attributes){
-            SGF << attribute.first << "[" << attribute.second << "]\n";
-        }
-
-        insertIntoSGF(moves, SGF);
-
-        SGF << ")";
-
-        // return the board to it's original state
-        moves.advanceToRoot();
-        for (const auto& move : moveSequence){
-            moves.stepTo(move);
-        }
-
-        return SGF.str();
-    }
-
 }
+

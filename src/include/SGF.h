@@ -10,20 +10,26 @@
 #include "Tree.h"
 #include "GoComponents.h"
 
-namespace sente_utils {
+/**
+ *
+ * SGF file format specifications
+ *
+ * https://www.red-bean.com/sgf/go.html
+ *
+ */
+namespace sente {
+    namespace utils {
 
-    class InvalidSGFException : public std::domain_error{
-    public:
-        explicit InvalidSGFException(const std::string &message);
-        InvalidSGFException(const InvalidSGFException& other, const std::string& fileName);
-    };
+        Tree <Move> getSGFMoves(const std::string &SGFText);
 
-    Tree<sente::Move> getSGFMoves(const std::string& SGFText);
-    sente::Rules getSGFRules(const std::string& SGFText);
-    std::unique_ptr<sente::_board> getSGFBoardSize(const std::string& SGFText);
+        Rules getSGFRules(const std::string &SGFText);
 
-    std::string toSGF(Tree<sente::Move> moves, std::unordered_map<std::string, std::string>& attributes);
+        std::unique_ptr<_board> getSGFBoardSize(const std::string &SGFText);
 
+        std::string toSGF(Tree <Move> moves, std::unordered_map<std::string, std::string> &attributes);
+
+    }
 }
+
 
 #endif //SENTE_SGF_H

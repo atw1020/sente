@@ -5,12 +5,13 @@ Author: Arthur Wesley
 """
 
 import os
+from unittest import TestCase
 from sente import *
 
 from assert_does_not_raise import DoesNotRaiseTestCase
 
 
-class TestSGF(DoesNotRaiseTestCase):
+class BasicSGF(DoesNotRaiseTestCase):
 
     def test_all_sgfs(self):
         """
@@ -66,14 +67,6 @@ class TestSGF(DoesNotRaiseTestCase):
 
         self.assertEqual(expected_game, game.get_board())
 
-    def test_throws_invalid_sgf(self):
-        """
-
-        tests to see if the program throws an exception if an invalid SGF is provided
-
-        :return:
-        """
-
     def test_full_single_branch_game(self):
         """
 
@@ -115,6 +108,9 @@ class TestSGF(DoesNotRaiseTestCase):
         self.assertEqual(str(expected_game), str(game))
         self.assertEqual(expected_game, game.get_board())
 
+
+class BranchedSGF(TestCase):
+
     def test_simple_branched_sgf(self):
         """
 
@@ -144,3 +140,41 @@ class TestSGF(DoesNotRaiseTestCase):
         game.play(3, 16)
 
         self.assertEqual([Move(3, 14, stone.WHITE), Move(2, 14, stone.WHITE)], game.get_branches())
+
+
+class InvalidSGF(TestCase):
+
+    def test_all_invalid_sgf(self):
+        """
+
+        tests to see if all of the files in the invalid SGF directory raise exceptions
+
+        :return:
+        """
+
+    def test_invalid_move(self):
+        """
+
+        tests to see if moves that have invalid formatting throw an exception
+
+        :return:
+        """
+
+    def test_incorrect_parentheses(self):
+        """
+
+        tests to see if the
+
+        :return:
+        """
+
+    def test_nonexistent_file(self):
+        """
+
+        tests to see if if we raises a fileNotFound Exception
+
+        :return:
+        """
+
+        self.assertRaises(sgf.load("invalid sgf/potato.sgf"), FileNotFoundError)
+
