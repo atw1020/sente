@@ -135,7 +135,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
 
         game = GoGame()
 
-        with self.assertDoesNotRaise(IllegalMoveException):
+        with self.assertDoesNotRaise(utils.IllegalMoveException):
             game.play(None)
             game.play_pass()
 

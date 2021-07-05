@@ -45,7 +45,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
             game.play(3, 15, BLACK)
             game.play(15, 15)
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(3, 15)
 
 

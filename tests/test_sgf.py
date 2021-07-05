@@ -268,10 +268,14 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        self.assertRaises(sgf.load("invalid sgf/extra letter in move.sgf"), utils.InvalidSGFException)
-        self.assertRaises(sgf.load("invalid sgf/extra square bracket.sgf"), utils.InvalidSGFException)
-        self.assertRaises(sgf.load("invalid sgf/missing letter in move.sgf"), utils.InvalidSGFException)
-        self.assertRaises(sgf.load("invalid sgf/missing square bracket.sgf"), utils.InvalidSGFException)
+        with self.assertRaises(utils.InvalidSGFException):
+            sgf.load("invalid sgf/extra letter in move.sgf")
+        with self.assertRaises(utils.InvalidSGFException):
+            sgf.load("invalid sgf/extra square bracket.sgf")
+        with self.assertRaises(utils.InvalidSGFException):
+            sgf.load("invalid sgf/missing letter in move.sgf")
+        with self.assertRaises(utils.InvalidSGFException):
+            sgf.load("invalid sgf/missing square bracket.sgf")
 
     def test_incorrect_parentheses(self):
         """
@@ -281,7 +285,8 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        self.assertRaises(sgf.load("invalid sgf/branched missing 2 parens.sgf"), utils.InvalidSGFException)
+        with self.assertRaises(utils.InvalidSGFException):
+            sgf.load("invalid sgf/branched missing 2 parens.sgf")
 
     def test_nonexistent_file(self):
         """
