@@ -65,7 +65,7 @@ PYBIND11_MODULE(sente, module){
                  py::arg("move"),
                  "play a stone on the board")
             .def("get_stone", [](const sente::Board<19>& board, unsigned x, unsigned y){
-                return board.getSpace(x, y).getStone();
+                return board.getSpace(x - 1, y - 1).getStone();
             }, "get the stone ")
             .def("__str__", [](const sente::Board<19>& board){
                 return std::string(board);
@@ -85,7 +85,7 @@ PYBIND11_MODULE(sente, module){
                  py::arg("move"),
                  "play a stone on the board")
             .def("get_stone", [](const sente::Board<13>& board, unsigned x, unsigned y){
-                return board.getSpace(x, y).getStone();
+                return board.getSpace(x - 1, y - 1).getStone();
             }, "get the stone ")
             .def("__str__", [](const sente::Board<13>& board){
                 return std::string(board);
@@ -105,7 +105,7 @@ PYBIND11_MODULE(sente, module){
                  py::arg("move"),
                  "play a stone on the board")
             .def("get_stone", [](const sente::Board<9>& board, unsigned x, unsigned y){
-                return board.getSpace(x, y).getStone();
+                return board.getSpace(x - 1, y - 1).getStone();
             }, "get the stone ")
             .def("__str__", [](const sente::Board<9>& board){
                 return std::string(board);
@@ -116,19 +116,19 @@ PYBIND11_MODULE(sente, module){
                 return not (us == other);
             });
 
-    py::class_<sente::GoGame>(module, "GoGame")
+    py::class_<sente::GoGame>(module, "Game")
             .def(py::init<unsigned, sente::Rules>(),
                 py::arg("board_size") = 19,
                 py::arg("rules") = sente::Rules::CHINESE,
                 "initializes a go game with a specified board size and rules")
             .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
-                    return game.isLegal(x, y);
+                    return game.isLegal(x - 1, y - 1);
                 },
                 py::arg("x"),
                 py::arg("y"),
                 "checks to see if a move is legal")
             .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
-                    return game.isLegal(x, y, stone);
+                    return game.isLegal(x - 1, y - 1, stone);
                 },
                 py::arg("x"),
                 py::arg("y"),
@@ -142,18 +142,20 @@ PYBIND11_MODULE(sente, module){
             .def("is_legal", [](sente::GoGame& game, const py::object& obj){
                 return obj.is_none();
             })
-            .def("get_point", &sente::GoGame::getSpace,
+            .def("get_point", [](const sente::GoGame& game, unsigned x, unsigned y){
+                    return game.getSpace(x - 1, y - 1);
+                },
                 py::arg("x"),
                 py::arg("y"),
                 "get move played at the specified position")
             .def("play", [](sente::GoGame& game, unsigned x, unsigned y){
-                    game.playStone(x, y);
+                    game.playStone(x - 1, y - 1);
                 },
                 py::arg("x"),
                 py::arg("y"),
                 "plays a stone in the game and updates the board to remove any captured stones")
             .def("play", [](sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
-                    return game.playStone(x, y, stone);
+                    return game.playStone(x - 1, y - 1, stone);
                 },
                 py::arg("x"),
                 py::arg("y"),

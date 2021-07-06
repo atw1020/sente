@@ -19,7 +19,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(3, 3, BLACK)
 
@@ -33,7 +33,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(2, 3, BLACK)
         game.play(3, 3, WHITE)
@@ -56,7 +56,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(2, 3, BLACK)
         game.play(3, 3, WHITE)
@@ -86,7 +86,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(0, 2, BLACK)
         game.play(0, 1, WHITE)
@@ -110,7 +110,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(0, 0, BLACK)
         game.play(1, 1, WHITE)
@@ -133,7 +133,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         with self.assertDoesNotRaise(utils.IllegalMoveException):
             game.play(None)
@@ -151,7 +151,7 @@ class TestLegalMove(TestCase):
         """
 
         # create a 19x19 board
-        game = GoGame()
+        game = Game()
 
         self.assertTrue(game.is_legal(3, 3, BLACK))
         self.assertFalse(game.is_legal(3, 3, WHITE))
@@ -167,7 +167,7 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(3, 3, BLACK)
 
@@ -185,15 +185,15 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
-        self.assertTrue(game.is_legal(18, 18, BLACK))
-        self.assertFalse(game.is_legal(19, 18, BLACK))
-        self.assertFalse(game.is_legal(18, 19, BLACK))
+        self.assertTrue(game.is_legal(19, 19, BLACK))
+        self.assertFalse(game.is_legal(20, 19, BLACK))
+        self.assertFalse(game.is_legal(19, 20, BLACK))
 
-        self.assertTrue(game.is_legal(Move(18, 18, BLACK)))
-        self.assertFalse(game.is_legal(Move(19, 18, BLACK)))
-        self.assertFalse(game.is_legal(Move(18, 19, BLACK)))
+        self.assertTrue(game.is_legal(Move(19, 19, BLACK)))
+        self.assertFalse(game.is_legal(Move(20, 19, BLACK)))
+        self.assertFalse(game.is_legal(Move(19, 20, BLACK)))
 
     def test_occupied_space(self):
         """
@@ -203,7 +203,7 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(2, 3, BLACK)
         game.play(15, 3, WHITE)
@@ -219,7 +219,7 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(0, 1, BLACK)
         game.play(18, 18, WHITE)
@@ -236,7 +236,9 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        # TODO: Implement
+
+        game = Game()
 
         game.play(0, 1, BLACK)
 
@@ -248,16 +250,24 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
+
+        print("starting game!")
 
         game.play(0, 2)
         game.play(0, 1)
 
+        print(game)
+
         game.play(1, 2)
         game.play(1, 1)
 
+        print(game)
+
         game.play(2, 1)
         game.play(1, 0)
+
+        print(game)
 
         game.play(2, 0)
         game.play(18, 18)
@@ -272,7 +282,7 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(2, 3, BLACK)
         game.play(3, 3, WHITE)
@@ -301,7 +311,7 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(2, 3, BLACK)
         game.play(3, 3, WHITE)
@@ -332,3 +342,181 @@ class TestLegalMove(TestCase):
         # it should now be illegal for white to play here
         self.assertFalse(game.is_legal(3, 3, WHITE))
 
+
+class IllegalMoveThrowsException(TestCase):
+    """
+
+    makes sure that making illegal moves throws an exception
+
+    """
+
+    def test_empty_correct_color(self):
+        """
+
+        tests to if the correct color is detected (assuming MakeMove does not work
+
+        :return:
+        """
+
+        # create a 19x19 board
+        game = Game()
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(3, 3, WHITE)
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(15, 15, WHITE)
+
+    def test_correct_color(self):
+        """
+
+        tests to see if the color is detected
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(3, 3, BLACK)
+
+        with self.assertDoesNotRaise(IllegalMoveException):
+            game.play(15, 3, BLACK)
+
+        with self.assertDoesNotRaise(IllegalMoveException):
+            game.play(Move(15, 3, BLACK))
+
+    def test_empty_out_of_bounds(self):
+        """
+
+        checks to see if out of bounds coords are illegal
+
+        :return:
+        """
+
+        game = Game()
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(20, 19, BLACK)
+            game.play(19, 20, BLACK)
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(Move(20, 19, BLACK))
+            game.play(Move(19, 20, BLACK))
+
+    def test_occupied_space(self):
+        """
+
+        checks to see if playing on an occupied space is illegal
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(2, 3, BLACK)
+        game.play(15, 3, WHITE)
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(2, 3, BLACK)
+            game.play(15, 3, BLACK)
+
+    def test_self_capture(self):
+        """
+
+        checks to see if a self-capture move is illegal
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(0, 1, BLACK)
+        game.play(18, 18, WHITE)
+
+        game.play(1, 0, BLACK)
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(0, 0, WHITE)
+
+    def test_group_self_capture(self):
+        """
+
+        checks to see self capture moves are illegal for groups of stones
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(0, 1, BLACK)
+
+    def test_ko(self):
+        """
+
+        checks to see if the game correctly recognizes a Ko move as illegal
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(2, 3, BLACK)
+        game.play(3, 3, WHITE)
+
+        game.play(4, 3, BLACK)
+        game.play(1, 3, WHITE)
+
+        game.play(3, 2, BLACK)
+        game.play(2, 4, WHITE)
+
+        game.play(3, 4, BLACK)
+        game.play(2, 2, WHITE)
+
+        # play away before taking the ko
+
+        game.play(18, 18, BLACK)
+        game.play(3, 3, WHITE)  # take the Ko
+
+        with self.assertRaises(IllegalMoveException):
+            game.play(2, 3, BLACK)
+
+    def test_inactive_ko(self):
+        """
+
+        checks to see if a ko gos inactive after making a ko threat
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(2, 3, BLACK)
+        game.play(3, 3, WHITE)
+
+        game.play(4, 3, BLACK)
+        game.play(1, 3, WHITE)
+
+        game.play(3, 2, BLACK)
+        game.play(2, 4, WHITE)
+
+        game.play(3, 4, BLACK)
+        game.play(2, 2, WHITE)
+
+        # play away before taking the ko
+
+        game.play(18, 18, BLACK)
+        game.play(3, 3, WHITE)  # take the Ko
+
+        # simulate a ko threat
+        game.play(18, 0, BLACK)
+        game.play(17, 0, WHITE)
+
+        # the Ko should no longer be active
+        with self.assertRaises(IllegalMoveException):
+            game.play(2, 3, BLACK)
+
+        game.play(2, 3, BLACK)
+
+        # it should now be illegal for white to play here
+        with self.assertRaises(IllegalMoveException):
+            game.play(3, 3, WHITE)

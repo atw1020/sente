@@ -60,7 +60,7 @@ class BoardTest19(TestCase):
         board.play(Move(3, 3, stone.BLACK))
 
         self.assertEqual(board.get_stone(5, 5), stone.EMPTY)
-        self.assertEqual(board.get_stone(3, 3), stone.BLACK)
+        self.assertEqual(board.get_stone(4, 4), stone.BLACK)
 
     def test__str__(self):
         """
@@ -149,7 +149,7 @@ class BoardTest13(TestCase):
         board.play(Move(3, 3, stone.BLACK))
 
         self.assertEqual(board.get_stone(5, 5), stone.EMPTY)
-        self.assertEqual(board.get_stone(3, 3), stone.BLACK)
+        self.assertEqual(board.get_stone(4, 4), stone.BLACK)
 
     def test__str__(self):
         """
@@ -232,7 +232,7 @@ class BoardTest9(TestCase):
         board.play(Move(3, 3, stone.BLACK))
 
         self.assertEqual(board.get_stone(5, 5), stone.EMPTY)
-        self.assertEqual(board.get_stone(3, 3), stone.BLACK)
+        self.assertEqual(board.get_stone(4, 4), stone.BLACK)
 
     def test__str__(self):
         """

@@ -20,16 +20,16 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         """
 
         with self.assertDoesNotRaise(Exception):
-            GoGame()
-            GoGame(13)
-            GoGame(19)
-            GoGame(9, CHINESE)
-            GoGame(rules=CHINESE)
-            GoGame(rules=JAPANESE)
-            GoGame(rules=JAPANESE, board_size=13)
+            Game()
+            Game(13)
+            Game(19)
+            Game(9, CHINESE)
+            Game(rules=CHINESE)
+            Game(rules=JAPANESE)
+            Game(rules=JAPANESE, board_size=13)
 
         with self.assertRaises(ValueError):
-            GoGame(15, JAPANESE)
+            Game(15, JAPANESE)
 
     def test_play(self):
         """
@@ -39,7 +39,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         with self.assertDoesNotRaise(Exception):
             game.play(3, 15, BLACK)
@@ -59,7 +59,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(3, 3)
         game.play(3, 4)
@@ -87,7 +87,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         # create a basic tree
         game.play(3, 3)
@@ -107,7 +107,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         # create a basic tree
         game.play(3, 3)
@@ -127,7 +127,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(3, 3)
         game.play(3, 15)
@@ -154,7 +154,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         game.play(3, 3)
         game.play(3, 15)
@@ -182,11 +182,12 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
-        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(7, 7, stone.BLACK)]
+        moves = [Move(2, 2, stone.BLACK), Move(4, 4, stone.WHITE), Move(6, 6, stone.BLACK)]
 
         game.play_moves(moves)
+        print(game)
 
         self.assertEqual(stone.BLACK, game.get_point(3, 3))
         self.assertEqual(stone.WHITE, game.get_point(5, 5))
@@ -200,7 +201,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(7, 7, stone.BLACK)]
 
@@ -216,7 +217,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = GoGame()
+        game = Game()
 
         self.assertEqual(game.get_branches(), [])
 
@@ -226,4 +227,4 @@ class TestTreeNavigation(TestCase):
         game.play(2, 3)
         game.step_up()
 
-        self.assertEqual(game.get_branches(), [Move(3, 3, stone.BLACK), Move(2, 3, stone.BLACK)])
+        self.assertEqual(game.get_branches(), [Move(2, 2, stone.BLACK), Move(1, 2, stone.BLACK)])
