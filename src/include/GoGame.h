@@ -14,8 +14,8 @@
 #include <unordered_set>
 
 #include "Tree.h"
-#include "GoComponents.h"
 #include "Group.h"
+#include "GoComponents.h"
 
 namespace std {
 
@@ -97,8 +97,6 @@ namespace sente {
         bool isCorrectColor(const Move& move) const;
         bool isNotSelfCapture(const Move& move) const;
         bool isNotKoPoint(const Move& move) const;
-
-        unsigned getLiberties(const Group& group) const;
 
     };
 }

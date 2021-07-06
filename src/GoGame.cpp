@@ -8,6 +8,7 @@
 
 #include "include/SGF.h"
 #include "include/GoGame.h"
+#include "include/Territory.h"
 #include "include/SenteExceptions.h"
 
 namespace py = pybind11;
@@ -242,7 +243,8 @@ namespace sente {
                 board = std::unique_ptr<Board<9>>(new Board<9>());
                 break;
             default:
-                throw std::domain_error("Invalid Board size " + std::to_string(side) + " only 9x9, 13x13 and 19x19 are currently supported");
+                throw std::domain_error("Invalid Board size " +
+                                            std::to_string(side) + " only 9x9, 13x13 and 19x19 are currently supported");
         }
     }
 
@@ -294,9 +296,9 @@ namespace sente {
         // capture stones
         for (const auto& group : theirAffectedGroups){
 #ifdef DEBUG_LOG
-            py::print("group had ", getLiberties(*group), " liberties");
+            py::print("group had ", utils::getLiberties(*group, *board), " liberties");
 #endif
-            if (getLiberties(*group) == 0){
+            if (utils::getLiberties(*group, *board).empty()){
 
 #ifdef DEBUG_LOG
                 py::print("found a group with zero liberties");
@@ -363,7 +365,7 @@ namespace sente {
 
         // first of all check to see if we capture any stones
         for (const auto& group : theirAffectedGroups){
-            if (getLiberties(*group) == 1){
+            if (utils::getLiberties(*group, *board).size() == 1){
                 // if an adjacent group is in atari, then playing on an empty space must capture
                 // any move that captures enemy stones is legal (ignoring kos)
                 return true;
@@ -381,7 +383,7 @@ namespace sente {
 
         // create a temporary group object and merge all of the affected groups into it
 
-        return getLiberties(affectedGroup) > 0;
+        return not utils::getLiberties(affectedGroup, *board).empty();
     }
 
     bool GoGame::isNotKoPoint(const Move &move) const{
@@ -409,23 +411,5 @@ namespace sente {
             groups[stone] = newGroup;
         }
     }
-
-    unsigned GoGame::getLiberties(const Group& group) const {
-
-        std::unordered_set<Move> liberties;
-
-        for (const auto& move : group.getMoves()){
-
-            for (const auto& adjacentSpace : move.getAdjacentMoves(board->getSide())){
-                if (board->getSpace(adjacentSpace.first, adjacentSpace.second).getStone() == EMPTY){
-                    liberties.insert(Move(adjacentSpace.first, adjacentSpace.second, EMPTY));
-                }
-            }
-        }
-
-        return liberties.size();
-
-    }
-
 
 }
