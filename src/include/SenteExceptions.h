@@ -15,6 +15,7 @@ namespace sente{
         enum IllegalMoveType {
             OFF_BOARD,
             OCCUPIED_POINT,
+            WRONG_COLOR,
             SELF_CAPTURE,
             KO_POINT
         };

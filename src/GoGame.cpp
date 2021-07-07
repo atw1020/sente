@@ -141,6 +141,9 @@ namespace sente {
             if (not board->isEmpty(move)){
                 throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
             }
+            if (not isCorrectColor(move)){
+                throw utils::IllegalMoveException(utils::WRONG_COLOR, move);
+            }
             if (not isNotSelfCapture(move)){
                 throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
             }
@@ -345,7 +348,7 @@ namespace sente {
     }
 
     bool GoGame::isCorrectColor(const Move &move) const {
-        return (moveTree.getDepth() % 2 == 0) ? move.getStone() == BLACK : move.getStone() == WHITE;
+        return move.getStone() == ((moveTree.getDepth() % 2 == 0) ? BLACK : WHITE);
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{

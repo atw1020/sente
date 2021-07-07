@@ -191,9 +191,10 @@ class TestLegalMove(TestCase):
         self.assertFalse(game.is_legal(20, 19, BLACK))
         self.assertFalse(game.is_legal(19, 20, BLACK))
 
-        self.assertTrue(game.is_legal(Move(19, 19, BLACK)))
-        self.assertFalse(game.is_legal(Move(20, 19, BLACK)))
-        self.assertFalse(game.is_legal(Move(19, 20, BLACK)))
+        # internal indexing
+        self.assertTrue(game.is_legal(Move(18, 18, BLACK)))
+        self.assertFalse(game.is_legal(Move(19, 18, BLACK)))
+        self.assertFalse(game.is_legal(Move(18, 19, BLACK)))
 
     def test_occupied_space(self):
         """
@@ -221,12 +222,12 @@ class TestLegalMove(TestCase):
 
         game = Game()
 
-        game.play(0, 1, BLACK)
-        game.play(18, 18, WHITE)
+        game.play(1, 2, BLACK)
+        game.play(19, 19, WHITE)
 
-        game.play(1, 0, BLACK)
+        game.play(2, 1, BLACK)
 
-        self.assertFalse(game.is_legal(0, 0, WHITE))
+        self.assertFalse(game.is_legal(1, 1, WHITE))
 
     def test_group_self_capture(self):
         """
@@ -254,25 +255,19 @@ class TestLegalMove(TestCase):
 
         print("starting game!")
 
-        game.play(0, 2)
-        game.play(0, 1)
-
-        print(game)
-
+        game.play(1, 3)
         game.play(1, 2)
-        game.play(1, 1)
 
-        print(game)
+        game.play(2, 3)
+        game.play(2, 2)
 
+        game.play(3, 2)
         game.play(2, 1)
-        game.play(1, 0)
 
-        print(game)
+        game.play(3, 1)
+        game.play(19, 19)
 
-        game.play(2, 0)
-        game.play(18, 18)
-
-        self.assertTrue(game.is_legal(0, 0))
+        self.assertTrue(game.is_legal(1, 1))
 
     def test_ko(self):
         """
@@ -313,34 +308,34 @@ class TestLegalMove(TestCase):
 
         game = Game()
 
-        game.play(2, 3, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(3, 4, BLACK)
+        game.play(4, 4, WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(1, 3, WHITE)
-
-        game.play(3, 2, BLACK)
+        game.play(5, 4, BLACK)
         game.play(2, 4, WHITE)
 
-        game.play(3, 4, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(4, 3, BLACK)
+        game.play(3, 5, WHITE)
+
+        game.play(4, 5, BLACK)
+        game.play(3, 3, WHITE)
 
         # play away before taking the ko
 
-        game.play(18, 18, BLACK)
-        game.play(3, 3, WHITE)  # take the Ko
+        game.play(19, 19, BLACK)
+        game.play(4, 4, WHITE)  # take the Ko
 
         # simulate a ko threat
-        game.play(18, 0, BLACK)
-        game.play(17, 0, WHITE)
+        game.play(19, 1, BLACK)
+        game.play(18, 1, WHITE)
 
         # the Ko should no longer be active
-        self.assertTrue(game.is_legal(2, 3, BLACK))
+        self.assertTrue(game.is_legal(3, 4, BLACK))
 
-        game.play(2, 3, BLACK)
+        game.play(3, 4, BLACK)
 
         # it should now be illegal for white to play here
-        self.assertFalse(game.is_legal(3, 3, WHITE))
+        self.assertFalse(game.is_legal(4, 4, WHITE))
 
 
 class IllegalMoveThrowsException(DoesNotRaiseTestCase):
@@ -492,33 +487,31 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
 
         game = Game()
 
-        game.play(2, 3, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(3, 4, BLACK)
+        game.play(4, 4, WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(1, 3, WHITE)
-
-        game.play(3, 2, BLACK)
+        game.play(5, 4, BLACK)
         game.play(2, 4, WHITE)
 
-        game.play(3, 4, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(4, 3, BLACK)
+        game.play(3, 5, WHITE)
+
+        game.play(4, 5, BLACK)
+        game.play(3, 3, WHITE)
 
         # play away before taking the ko
 
-        game.play(18, 18, BLACK)
-        game.play(3, 3, WHITE)  # take the Ko
+        game.play(19, 19, BLACK)
+        game.play(4, 4, WHITE)  # take the Ko
 
         # simulate a ko threat
-        game.play(18, 1, BLACK)
-        game.play(17, 1, WHITE)
+        game.play(19, 1, BLACK)
+        game.play(18, 1, WHITE)
 
         # the Ko should no longer be active
         with self.assertDoesNotRaise(utils.IllegalMoveException):
-            game.play(2, 3, BLACK)
-
-        game.play(2, 3, BLACK)
+            game.play(3, 4, BLACK)
 
         # it should now be illegal for white to play here
         with self.assertRaises(utils.IllegalMoveException):
-            game.play(3, 3, WHITE)
+            game.play(4, 4, WHITE)
