@@ -30,8 +30,7 @@ Getting Started
 ---
 
 The Basic element in Sente is the `sente.Game` object
-which represents a Simple Go Game
-
+which represents a Simple Game.
 
 ```python
 >>> import sente
@@ -80,7 +79,16 @@ A hash (`#`) denotes a Black stone and an "O" (`O`)
 denotes a white stone. The star points are denoted
 using an asterisk (`*`)
 
-The last part of the 
+Finally, Sente also provides the ability to check if a move 
+is legal using the `is_legal()` method
+
+```python
+>>> import sente
+>>> game = sente.Game()
+>>> game.play(4, 4)
+>>> game.is_legal(4, 4)
+False
+```
 
 ### Further Reading
 
@@ -100,20 +108,30 @@ Building & Contributing
 
 Sente uses [CMake](https://cmake.org), [git](https://git-scm.com) and C++11. In order to 
 build the library, you will need CMake, and a 
-C++ compiler that supports C++11.
+C++ compiler that supports C++11. You can install these 
+using a software package installer like homebrew or apt.
 
+OSx
 ```zsh
-$ git clone https://github.com/atw1020/sente
-$ cd sente
+$ brew install git
+$ brew install cmake
+$ brew install clang++
 ```
-
+Debian/Ubuntu
+```zsh
+$ sudo apt-get install git
+$ sudo apt-get install cmake
+$ sudo apt-get install g++
+```
 Be sure to create a virtual that you can install any
 custom Sente builds in so that they don't interfere
 with any projects you have that use Sente.
 
 ```zsh
+$ git clone https://github.com/atw1020/sente
+$ cd sente
 $ python3 -m venv venv
-$ source venv/bin/activate # (OSx and Linux Only, see python docs for windows)
+$ source venv/bin/activate # (OSx and Linux Only, see python docs for windows equivalent)
 ```
 
 To build the library and install it into your activated
@@ -122,3 +140,4 @@ environment, run the setup.py file
 ```zsh
 $ python3 setup.py install
 ```
+
