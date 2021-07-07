@@ -2,13 +2,14 @@ Sente
 ---
 
 Sente (from the Japanese せんて/先手) is a general-purpose
-open source python library for the ancient asian board
+open-source python library for the ancient asian board
 game Go/Badok/Weiqi. Sente is designed to be a Python 3
 replacement for the [gomill](https://github.com/mattheww/gomill)
 library. 
 
 In addition to supporting Python 3, Sente is written in C++
-which allows AIs that use Sente to have comparable to
+which allows AIs that use Sente to take advantage of C++'s
+superior performance.
 
 
 Installation & Requirements
@@ -18,11 +19,11 @@ Sente runs on any operating system with python 3.x
 and can be installed via pip
 
 ```zsh
-pip install sente
+$ pip install sente
 ```
 -- or --
 ```zsh
-python3 -m pip install sente
+$ python3 -m pip install sente
 ```
 
 Getting Started
@@ -79,8 +80,14 @@ A hash (`#`) denotes a Black stone and an "O" (`O`)
 denotes a white stone. The star points are denoted
 using an asterisk (`*`)
 
-Sente records all moves played in a game in a tree
-structure. the sente.Game 
+The last part of the 
+
+### Further Reading
+
+* [Game Trees]()
+* [SFG file reader]()
+* [NumPy conversion]() (Coming Soon!)
+* [GTP (Go Text Protocol)]() (Coming Soon!)
 
 Documentation
 ---
@@ -91,5 +98,27 @@ readthedocs.io]
 Building & Contributing
 ---
 
-Sente uses a [cmake](https://cmake.org) system for
-building 
+Sente uses [CMake](https://cmake.org), [git](https://git-scm.com) and C++11. In order to 
+build the library, you will need CMake, and a 
+C++ compiler that supports C++11.
+
+```zsh
+$ git clone https://github.com/atw1020/sente
+$ cd sente
+```
+
+Be sure to create a virtual that you can install any
+custom Sente builds in so that they don't interfere
+with any projects you have that use Sente.
+
+```zsh
+$ python3 -m venv venv
+$ source venv/bin/activate # (OSx and Linux Only, see python docs for windows)
+```
+
+To build the library and install it into your activated
+environment, run the setup.py file
+
+```zsh
+$ python3 setup.py install
+```
