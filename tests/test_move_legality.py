@@ -343,7 +343,7 @@ class TestLegalMove(TestCase):
         self.assertFalse(game.is_legal(3, 3, WHITE))
 
 
-class IllegalMoveThrowsException(TestCase):
+class IllegalMoveThrowsException(DoesNotRaiseTestCase):
     """
 
     makes sure that making illegal moves throws an exception
@@ -361,10 +361,10 @@ class IllegalMoveThrowsException(TestCase):
         # create a 19x19 board
         game = Game()
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(3, 3, WHITE)
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(15, 15, WHITE)
 
     def test_correct_color(self):
@@ -379,10 +379,10 @@ class IllegalMoveThrowsException(TestCase):
 
         game.play(3, 3, BLACK)
 
-        with self.assertDoesNotRaise(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(15, 3, BLACK)
 
-        with self.assertDoesNotRaise(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(Move(15, 3, BLACK))
 
     def test_empty_out_of_bounds(self):
@@ -395,11 +395,11 @@ class IllegalMoveThrowsException(TestCase):
 
         game = Game()
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(20, 19, BLACK)
             game.play(19, 20, BLACK)
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(Move(20, 19, BLACK))
             game.play(Move(19, 20, BLACK))
 
@@ -416,7 +416,7 @@ class IllegalMoveThrowsException(TestCase):
         game.play(2, 3, BLACK)
         game.play(15, 3, WHITE)
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(2, 3, BLACK)
             game.play(15, 3, BLACK)
 
@@ -430,13 +430,13 @@ class IllegalMoveThrowsException(TestCase):
 
         game = Game()
 
-        game.play(0, 1, BLACK)
-        game.play(18, 18, WHITE)
+        game.play(1, 2, BLACK)
+        game.play(19, 19, WHITE)
 
-        game.play(1, 0, BLACK)
+        game.play(2, 1, BLACK)
 
-        with self.assertRaises(IllegalMoveException):
-            game.play(0, 0, WHITE)
+        with self.assertRaises(utils.IllegalMoveException):
+            game.play(1, 1, WHITE)
 
     def test_group_self_capture(self):
         """
@@ -445,6 +445,8 @@ class IllegalMoveThrowsException(TestCase):
 
         :return:
         """
+
+        # TODO: Implement
 
         game = Game()
 
@@ -477,7 +479,7 @@ class IllegalMoveThrowsException(TestCase):
         game.play(18, 18, BLACK)
         game.play(3, 3, WHITE)  # take the Ko
 
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(2, 3, BLACK)
 
     def test_inactive_ko(self):
@@ -508,15 +510,15 @@ class IllegalMoveThrowsException(TestCase):
         game.play(3, 3, WHITE)  # take the Ko
 
         # simulate a ko threat
-        game.play(18, 0, BLACK)
-        game.play(17, 0, WHITE)
+        game.play(18, 1, BLACK)
+        game.play(17, 1, WHITE)
 
         # the Ko should no longer be active
-        with self.assertRaises(IllegalMoveException):
+        with self.assertDoesNotRaise(utils.IllegalMoveException):
             game.play(2, 3, BLACK)
 
         game.play(2, 3, BLACK)
 
         # it should now be illegal for white to play here
-        with self.assertRaises(IllegalMoveException):
+        with self.assertRaises(utils.IllegalMoveException):
             game.play(3, 3, WHITE)

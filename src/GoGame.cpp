@@ -92,6 +92,9 @@ namespace sente {
     bool GoGame::isLegal(const Move& move) const {
 
         bool onBoard = board->isOnBoard(move);
+        if (not onBoard){
+            return false;
+        }
         bool isEmpty = board->isEmpty(move);
         bool notSelfCapture = isNotSelfCapture(move);
         bool notKoPoint = isNotKoPoint(move);
