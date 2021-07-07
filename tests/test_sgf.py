@@ -238,8 +238,8 @@ class BranchedSGF(TestCase):
 
         game.advance_to_root()
 
-        self.assertEqual([Move(2, 15, stone.BLACK)], game.get_branches())
-        game.play(3, 16)
+        self.assertEqual([Move(3, 16, stone.BLACK)], game.get_branches())
+        game.play(4, 17)
 
         self.assertEqual([Move(3, 14, stone.WHITE), Move(2, 14, stone.WHITE)], game.get_branches())
 

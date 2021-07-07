@@ -91,6 +91,8 @@ namespace sente {
 
     bool GoGame::isLegal(const Move& move) const {
 
+        py::print(move.getX());
+
         bool onBoard = board->isOnBoard(move);
         if (not onBoard){
             return false;
@@ -100,7 +102,7 @@ namespace sente {
         bool notKoPoint = isNotKoPoint(move);
         bool correctColor = isCorrectColor(move);
 
-        return onBoard and isEmpty and notSelfCapture and notKoPoint and correctColor;
+        return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
@@ -378,18 +380,27 @@ namespace sente {
             }
         }
 
+        // create a temporary group object and merge all of the affected groups into it
         Group affectedGroup;
 
-        if (ourAffectedGroups.size() > 0){
+        if (not ourAffectedGroups.empty()){
             affectedGroup = Group(move, ourAffectedGroups);
         }
         else {
             affectedGroup = Group(move);
         }
 
-        // create a temporary group object and merge all of the affected groups into it
+        // temporarily put the stone on the board and count the liberties
+        auto liberties = utils::getLiberties(affectedGroup, *board);
 
-        return not utils::getLiberties(affectedGroup, *board).empty();
+        // check to see if this move fills the last liberty
+        bool filledLastLiberty = false;
+        if (liberties.size() == 1){
+            auto liberty = *liberties.begin();
+            filledLastLiberty = liberty.getX() == move.getX() and liberty.getY() == move.getY();
+        }
+
+        return not liberties.empty() and not filledLastLiberty;
     }
 
     bool GoGame::isNotKoPoint(const Move &move) const{

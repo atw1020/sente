@@ -88,19 +88,19 @@ class TestMakeMove(DoesNotRaiseTestCase):
 
         game = Game()
 
-        game.play(0, 2, BLACK)
-        game.play(0, 1, WHITE)
+        game.play(1, 3, BLACK)
+        game.play(1, 2, WHITE)
+
+        game.play(2, 2, BLACK)
+        game.play(2, 1, WHITE)
+
+        game.play(3, 1, BLACK)
+        game.play(19, 19, WHITE)
 
         game.play(1, 1, BLACK)
-        game.play(1, 0, WHITE)
 
-        game.play(2, 0, BLACK)
-        game.play(18, 18, WHITE)
-
-        game.play(0, 0, BLACK)
-
-        self.assertEqual(EMPTY, game.get_point(0, 1))
-        self.assertEqual(EMPTY, game.get_point(1, 0))
+        self.assertEqual(EMPTY, game.get_point(1, 2))
+        self.assertEqual(EMPTY, game.get_point(2, 1))
 
     def test_capture_edge(self):
         """
@@ -112,18 +112,18 @@ class TestMakeMove(DoesNotRaiseTestCase):
 
         game = Game()
 
-        game.play(0, 0, BLACK)
-        game.play(1, 1, WHITE)
+        game.play(1, 1, BLACK)
+        game.play(2, 2, WHITE)
 
-        game.play(0, 1, BLACK)
-        game.play(0, 2, WHITE)
+        game.play(1, 2, BLACK)
+        game.play(1, 3, WHITE)
 
-        game.play(1, 0, BLACK)
-        game.play(2, 0, WHITE)
+        game.play(2, 1, BLACK)
+        game.play(3, 1, WHITE)
 
-        self.assertEqual(EMPTY, game.get_point(0, 0))
-        self.assertEqual(EMPTY, game.get_point(1, 0))
-        self.assertEqual(EMPTY, game.get_point(0, 1))
+        self.assertEqual(EMPTY, game.get_point(1, 1))
+        self.assertEqual(EMPTY, game.get_point(2, 1))
+        self.assertEqual(EMPTY, game.get_point(1, 2))
 
     def test_pass(self):
         """
@@ -138,6 +138,23 @@ class TestMakeMove(DoesNotRaiseTestCase):
         with self.assertDoesNotRaise(utils.IllegalMoveException):
             game.play(None)
             game.play_pass()
+
+    def test_self_atari_legal(self):
+        """
+
+        makes sure that self atari is a legal move
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(1, 2)
+
+        self.assertTrue(game.is_legal(1, 1))
+
+        with self.assertDoesNotRaise(utils.IllegalMoveException):
+            game.play(1, 1)
 
 
 class TestLegalMove(TestCase):
@@ -237,11 +254,20 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        # TODO: Implement
-
         game = Game()
 
-        game.play(0, 1, BLACK)
+        game.play(1, 3, BLACK)
+        game.play(1, 2, WHITE)
+
+        game.play(2, 3, BLACK)
+        game.play(2, 2, WHITE)
+
+        game.play(3, 2, BLACK)
+        game.play(2, 1, WHITE)
+
+        game.play(3, 1, BLACK)
+
+        self.assertFalse(game.is_legal(1, 1))
 
     def test_empty_triangle_liberties(self):
         """
@@ -441,11 +467,21 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        # TODO: Implement
-
         game = Game()
 
-        game.play(0, 1, BLACK)
+        game.play(1, 3, BLACK)
+        game.play(1, 2, WHITE)
+
+        game.play(2, 3, BLACK)
+        game.play(2, 2, WHITE)
+
+        game.play(3, 2, BLACK)
+        game.play(2, 1, WHITE)
+
+        game.play(3, 1, BLACK)
+
+        with self.assertRaises(utils.IllegalMoveException):
+            game.play(1, 1)
 
     def test_ko(self):
         """
