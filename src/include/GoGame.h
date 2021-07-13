@@ -5,7 +5,6 @@
 #ifndef SENTE_GOGAME_H
 #define SENTE_GOGAME_H
 
-#include <map>
 #include <array>
 #include <vector>
 #include <memory>
@@ -64,7 +63,7 @@ namespace sente {
 
         const _board& getBoard() const;
 
-        std::map<Stone, double> score() const;
+        gameResult score() const;
         std::unordered_set<Move> getLegalMoves() const;
 
         explicit operator std::string() const;

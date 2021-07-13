@@ -58,6 +58,8 @@ namespace sente {
 
         }
 
+
+
         std::unordered_set<Move> getConnectedPoints(const Move& startMove,
                                                     const _board& board) {
             auto connections = std::unordered_set<Move>{};
@@ -88,6 +90,28 @@ namespace sente {
                     getConnectedPoints(move, board, foundConnections);
                 }
             }
+        }
+
+        std::vector<std::unordered_set<Move>> getEmptySpaces(const _board& board){
+
+            std::vector<std::unordered_set<Move>> regions;
+            std::unordered_set<Move> foundEmptyPoints;
+
+            for (unsigned i = 0; i < board.getSide(); i++){
+                for (unsigned j = 0; j < board.getSide(); j++){
+                    if (board.getStone(i, j) == EMPTY){
+                        if (foundEmptyPoints.find(board.getSpace(i, j)) == foundEmptyPoints.end()){
+                            // add the region to the results
+                            regions.push_back(getConnectedPoints(board.getSpace(i, j), board));
+                            // skip any future moves in this region
+                            foundEmptyPoints.insert(regions.back().begin(), regions.back().end());
+                        }
+                    }
+                }
+            }
+
+            return regions;
+
         }
     }
 }

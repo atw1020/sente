@@ -68,6 +68,11 @@ namespace std {
     struct hash<sente::Move> {
         size_t operator()(const sente::Move& move) const noexcept;
     };
+
+    template<>
+    struct hash<sente::Stone> {
+        size_t operator()(const sente::Stone& stone) const noexcept;
+    };
 }
 
 #endif //SENTE_MOVE_H

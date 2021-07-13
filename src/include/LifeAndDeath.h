@@ -25,6 +25,8 @@ namespace sente {
                                 const _board& board,
                                 std::unordered_set<Move>& foundConnections);
 
+        std::vector<std::unordered_set<Move>> getEmptySpaces(const _board& board);
+
     }
 }
 

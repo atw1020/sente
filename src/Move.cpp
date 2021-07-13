@@ -164,4 +164,8 @@ namespace std {
 
         return ((hash1 xor (hash2 << 1)) >> 1) xor (hash3 << 1);
     }
+
+    size_t std::hash<sente::Stone>::operator()(const sente::Stone &stone) const noexcept {
+        return size_t(stone);
+    }
 }

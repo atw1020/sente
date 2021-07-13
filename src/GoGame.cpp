@@ -241,8 +241,72 @@ namespace sente {
      * @param komi
      * @return
      */
-    std::map<Stone, double> GoGame::score() const {
-        return std::map<Stone, double>();
+    gameResult GoGame::score() const {
+
+        unsigned blackTerritory = 0;
+        unsigned whiteTerritory = 0;
+
+        unsigned blackStones = 0;
+        unsigned whiteStones = 0;
+
+        // TODO: add functionality to remove dead stones
+
+        // generate a list of all the regions in the board
+        auto regions = utils::getEmptySpaces(*board);
+
+        for (const auto& region : regions){
+            // go through all of the adjacent groups
+            auto adjacentGroups = utils::getAdjacentGroups(region, *board, groups);
+
+            auto iter = adjacentGroups.begin();
+            Stone firstColor = (*iter)->getColor();
+
+            bool isTerritory = true;
+
+            for (iter++; iter != adjacentGroups.begin(); iter++){
+                if ((*iter)->getColor() != firstColor){
+                    isTerritory = false;
+                    break;
+                }
+            }
+
+            if (isTerritory){
+                if (firstColor == BLACK){
+                    blackTerritory += region.size();
+                }
+                if (firstColor == WHITE){
+                    whiteTerritory += region.size();
+                }
+            }
+
+        }
+
+        if (rules == CHINESE){
+            // if we have chinese rules, we score a point for every stone we've played on the board
+            for (unsigned i = 0; i < board->getSide(); i++){
+                for (unsigned j = 0; j < board->getSide(); j++){
+                    if (board->getStone(i, j) == BLACK){
+                        blackStones++;
+                    }
+                    if (board->getStone(i, j) == WHITE){
+                        whiteStones++;
+                    }
+                }
+            }
+        }
+        else {
+            // for japanese rules, subtract a point for each captured stone
+            for (const auto& group : capturedStones){
+                if (group.second.begin()->getStone() == BLACK){
+                    blackTerritory -= group.second.size();
+                }
+                if (group.second.begin()->getStone() == WHITE){
+                    whiteTerritory -= group.second.size();
+                }
+            }
+        }
+
+        return {rules, komi, blackTerritory, whiteTerritory, blackStones, whiteStones};
     }
 
     GoGame::operator std::string() const {
