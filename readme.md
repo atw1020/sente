@@ -1,22 +1,16 @@
 Sente 
 ---
 
-Sente (from the Japanese せんて/先手) is a general-purpose
-open-source python library for the ancient asian board
-game Go/Badok/Weiqi. Sente is designed to be a Python 3
-replacement for the [gomill](https://github.com/mattheww/gomill)
-library. 
+Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient asian board game Go/Badok/Weiqi. 
+Sente is designed to be a Python 3 replacement for the [gomill](https://github.com/mattheww/gomill) library. 
 
-In addition to supporting Python 3, Sente is written in C++
-which allows AIs that use Sente to take advantage of C++'s
-superior performance.
+In addition to supporting Python 3, Sente is written in C++ which allows AIs that use Sente to take advantage of C++'s superior performance.
 
 
 Installation & Requirements
 ---
 
-Sente runs on any operating system with python 3.x
-and can be installed via pip
+Sente runs on any operating system with python 3.x and can be installed via pip
 
 ```zsh
 $ pip install sente
@@ -29,8 +23,7 @@ $ python3 -m pip install sente
 Getting Started
 ---
 
-The Basic element in Sente is the `sente.Game` object
-which represents a Simple Game.
+The Basic element in Sente is the `sente.Game` object which represents a Simple Game.
 
 ```python
 >>> import sente
@@ -38,6 +31,8 @@ which represents a Simple Game.
 ```
 by default, sente creates a 19x19 game with Chinese Rules.
 9x9 and 13x13 board sizes and Japanese rules can be specified if desired.
+
+_note: japanese rules are not reccomended as sente does not currently include automatic dead stone removal._
 ```python
 >>> game = sente.Game(13)
 >>> game = sente.Game(19, sente.rules.JAPANESE)
@@ -96,6 +91,7 @@ False
 * [SFG file reader]()
 * [NumPy conversion]() (Coming Soon!)
 * [GTP (Go Text Protocol)]() (Coming Soon!)
+* [Automatic Dead Stone removal]() (Coming Soon!)
 
 Documentation
 ---
