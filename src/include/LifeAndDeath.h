@@ -15,7 +15,9 @@ namespace sente {
 
         std::unordered_set<Move> getLiberties(const Group& group, const _board& board);
 
-        unsigned countRawEyes(const Group& group, const _board& board);
+        std::unordered_set<std::shared_ptr<Group>> getAdjacentGroups(const std::unordered_set<Move>& territory,
+                                                                const _board& board,
+                                                                const std::unordered_map<Move, std::shared_ptr<Group>>& groups);
 
         std::unordered_set<Move> getConnectedPoints(const Move& startMove,
                                                     const _board& board);

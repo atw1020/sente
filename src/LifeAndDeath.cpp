@@ -35,27 +35,27 @@ namespace sente {
 
         /**
          *
-         * counts the number of raw eyes (eyes that contain no enemy stones)
+         * generates a list of all groups that are adjacent to a territory
          *
-         * @param group
+         * @param territory territory to look for adjacent groups in
+         * @param board board to look on
+         * @param groups map from moves to the group they belong to
          * @return
          */
-        unsigned countRawEyes(const Group& group, const _board& board) {
+        std::unordered_set<std::shared_ptr<Group>> getAdjacentGroups(const std::unordered_set<Move>& territory,
+                                                    const _board& board,
+                                                    const std::unordered_map<Move, std::shared_ptr<Group>>& groupMap){
 
-            auto liberties = getLiberties(group, board);
-            std::vector<std::unordered_set<Move>> eyes;
+            std::unordered_set<std::shared_ptr<Group>> groups;
 
-            // go through all of the group's liberties
-            for (const auto& liberty : liberties){
-                // find all of the adjacent empty spaces
-                auto connectedStones = getConnectedPoints(liberty, board);
-
-                if (std::find(eyes.begin(), eyes.end(), connectedStones) != eyes.end()){
-                    eyes.push_back(connectedStones);
+            for (const Move& move : territory){
+                for (const Point neighbor : move.getAdjacentMoves(board.getSide())){
+                    groups.insert(groupMap.at(board.getSpace(neighbor)));
                 }
             }
 
-            return eyes.size();
+            return groups;
+
         }
 
         std::unordered_set<Move> getConnectedPoints(const Move& startMove,

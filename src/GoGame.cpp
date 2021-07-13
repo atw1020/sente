@@ -91,8 +91,6 @@ namespace sente {
 
     bool GoGame::isLegal(const Move& move) const {
 
-        py::print(move.getX());
-
         bool onBoard = board->isOnBoard(move);
         if (not onBoard){
             return false;
@@ -273,7 +271,7 @@ namespace sente {
 
         // check to see if this move extends a group
         for (const auto& adjacentSpace : move.getAdjacentMoves(board->getSide())) {
-            Move temp = board->getSpace(adjacentSpace.first, adjacentSpace.second);
+            Move temp = board->getSpace(adjacentSpace);
             if (groups.find(temp) != groups.end()) {
                 if (groups.at(temp)->getColor() == move.getStone()) {
                     ourAffectedGroups.insert(groups.at(temp));
@@ -322,7 +320,7 @@ namespace sente {
 
                     // make sure that the capturing stone is captured before the stone is removed
                     for (const auto& adjacentSpace : move.getAdjacentMoves(board->getSide())){
-                        ko = ko and board->getSpace(adjacentSpace.first, adjacentSpace.second).getStone()
+                        ko = ko and board->getSpace(adjacentSpace).getStone()
                                     == getOpponent(move.getStone());
 
                     }
@@ -360,7 +358,7 @@ namespace sente {
 
         // check to see if this move extends a group
         for (const auto& adjacentSpace : move.getAdjacentMoves(board->getSide())) {
-            Move temp = board->getSpace(adjacentSpace.first, adjacentSpace.second);
+            Move temp = board->getSpace(adjacentSpace);
             if (groups.find(temp) != groups.end()) {
                 if (groups.at(temp)->getColor() == move.getStone()) {
                     ourAffectedGroups.insert(groups.at(temp));

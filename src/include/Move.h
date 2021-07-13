@@ -26,6 +26,8 @@ namespace sente {
         RESIGN
     };
 
+    typedef std::pair<unsigned, unsigned> Point;
+
     Stone getOpponent(Stone player);
 
     class Move {

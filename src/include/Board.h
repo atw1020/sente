@@ -28,6 +28,7 @@ namespace sente {
         virtual unsigned getSide() const = 0;
 
         virtual Move getSpace(unsigned x, unsigned y) const = 0;
+        virtual Move getSpace(Point point) const = 0;
 
         virtual explicit operator std::string() const = 0;
 
@@ -74,6 +75,9 @@ namespace sente {
 
         Move getSpace(unsigned int x, unsigned int y) const override {
             return board[x][y];
+        }
+        Move getSpace(Point point) const override {
+            return board[point.first][point.second];
         }
 
         bool operator==(const Board<side>& other) const{
