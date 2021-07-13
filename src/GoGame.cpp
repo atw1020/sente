@@ -340,7 +340,7 @@ namespace sente {
                     py::print("capturing stone ", std::string(stone));
 #endif
                     // erase the item
-                    groups[stone] = nullptr;
+                    groups.erase(stone);
                     board->captureStone(stone);
                     capturedStones[moveTree.getDepth()].insert(stone);
                 }
