@@ -5,6 +5,8 @@ Author: Arthur Wesley
 """
 from unittest import TestCase
 
+import sente.utils
+
 from assert_does_not_raise import DoesNotRaiseTestCase
 from sente import *
 
@@ -207,6 +209,32 @@ class TestTreeNavigation(TestCase):
         game.play_moves(moves)
 
         self.assertEqual(moves, game.get_moves())
+
+    def test_illegal_move_sequence(self):
+        """
+
+        checks to see if playing an illegal sequence of moves does not play a single move
+
+        :return:
+        """
+
+        game = Game()
+
+        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE)]
+
+        self.assertRaises(game.play_moves(moves), sente.utils.IllegalMoveException)
+        self.assertEqual(stone.EMPTY, game.get_point(3, 3))
+
+    def test_resign(self):
+        """
+
+        tests to see if resignation works
+
+        :return:
+        """
+
+        game = Game()
+        game.resign()
 
     def test_get_children(self):
         """

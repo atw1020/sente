@@ -21,7 +21,7 @@ namespace sente {
         WHITE
     };
 
-    enum MoveType {
+    enum Action {
         PASS,
         RESIGN
     };
@@ -35,7 +35,7 @@ namespace sente {
 
         Move();
         // Move(const Move& move);
-        Move(Stone stone, MoveType move);
+        Move(Stone stone, Action action);
         explicit Move(std::string sgf);
         Move(unsigned x, unsigned y, Stone stone);
 
@@ -44,6 +44,9 @@ namespace sente {
         unsigned getY() const;
 
         Stone getStone() const;
+
+        bool isPass() const;
+        bool isResign() const;
 
         bool operator==(const Move& other) const;
         bool operator!=(const Move& other) const;

@@ -36,8 +36,8 @@ namespace sente {
         stone = EMPTY;
     }
 
-    Move::Move(Stone stone, MoveType type){
-        if (type == PASS){
+    Move::Move(Stone stone, Action action){
+        if (action == PASS){
             // return a pass move for the player (move at unsigned -1, -1)
             x = -1;
             y = -1;
@@ -105,6 +105,14 @@ namespace sente {
         return stone;
     }
 
+    bool Move::isPass() const {
+        return x == unsigned(-1) and y == unsigned(-1);
+    }
+
+    bool Move::isResign() const {
+        return x == unsigned(-2) and y == unsigned(-2);
+    }
+
     bool Move::operator==(const Move& other) const{
         return other.x == x and other.y == y and other.stone == stone;
     }
@@ -148,7 +156,16 @@ namespace sente {
                 return "[Placeholder Move]";
         }
 
-        str << '[' << char('a' + x) << char('a' + y) << ']';
+        if (isPass()){
+            str << "[]";
+        }
+        else if (isResign()){
+            
+        }
+        else {
+            str << '[' << char('a' + x) << char('a' + y) << ']';
+        }
+
         return str.str();
 
     }

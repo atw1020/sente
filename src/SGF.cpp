@@ -157,17 +157,20 @@ namespace sente {
         void insertIntoSGF(Tree<Move>& moves, std::stringstream& SGF){
             // for each child
             for (auto& child : moves.getChildren()){
-                // serialize the move
-                SGF << ";" << std::string(child);
-                // step to the child
-                moves.stepTo(child);
-                if (not moves.isAtLeaf()){
-                    SGF << "(";
-                    insertIntoSGF(moves, SGF);
-                    SGF << ")";
+                if (not child.isResign()){
+
+                    // serialize the move
+                    SGF << ";" << std::string(child);
+                    // step to the child
+                    moves.stepTo(child);
+                    if (not moves.isAtLeaf()){
+                        SGF << "(";
+                        insertIntoSGF(moves, SGF);
+                        SGF << ")";
+                    }
+                    // step up
+                    moves.stepUp();
                 }
-                // step up
-                moves.stepUp();
             }
         }
 
