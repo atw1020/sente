@@ -12,9 +12,13 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <pybind11/pybind11.h>
+
 #include "Tree.h"
 #include "Group.h"
 #include "GoComponents.h"
+
+namespace py = pybind11;
 
 namespace std {
 
@@ -66,6 +70,7 @@ namespace sente {
         Results getResults() const;
         Results score() const;
         std::vector<Move> getLegalMoves() const;
+        py::list getLegalMovesPy() const;
 
         explicit operator std::string() const;
 

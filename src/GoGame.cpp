@@ -11,8 +11,6 @@
 #include "include/LifeAndDeath.h"
 #include "include/SenteExceptions.h"
 
-namespace py = pybind11;
-
 namespace std {
 
     size_t hash<pair<unsigned, unsigned>>::operator()(const pair<unsigned int, unsigned int> &toHash) const noexcept {
@@ -107,6 +105,10 @@ namespace sente {
     }
 
     bool GoGame::isLegal(const Move& move) const {
+
+        if (isOver()){
+            return false;
+        }
 
         bool onBoard = board->isOnBoard(move);
         if (not onBoard){

@@ -215,6 +215,8 @@ PYBIND11_MODULE(sente, module){
                  "plays all of the moves in a given list of moves")
             .def("get_legal_moves", &sente::GoGame::getLegalMoves,
                  "generates a list of all legal moves")
+            .def("is_over", &sente::GoGame::isOver,
+                 "determine if the game is over yet")
             .def("get_previous_moves", &sente::GoGame::getMoveSequence,
                  "get a list containing all of the moves on the current branch of the tree")
             .def("get_branches", &sente::GoGame::getBranches,
@@ -248,7 +250,11 @@ PYBIND11_MODULE(sente, module){
         .def("dump", [](const sente::GoGame& game, const std::string& fileName, std::unordered_map<std::string, std::string> params){
                 std::ofstream output(fileName);
                 output << game.toSGF(params);
-            })
+            },
+             py::arg("game"),
+             py::arg("file_name"),
+             py::arg("params") = py::dict(),
+             "saves a game as an SGF")
         .def("loads", [](const std::string& SGFText){
             return sente::GoGame(SGFText);
         })
