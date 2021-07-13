@@ -31,7 +31,7 @@ namespace sente {
     class GoGame {
     public:
 
-        GoGame(unsigned side, Rules rules);
+        GoGame(unsigned side, Rules rules, double komi);
         explicit GoGame(const std::string& SGFText);
         void resetBoard();
 
@@ -64,7 +64,7 @@ namespace sente {
 
         const _board& getBoard() const;
 
-        std::map<Stone, double> score(double komi) const;
+        std::map<Stone, double> score() const;
         std::unordered_set<Move> getLegalMoves() const;
 
         explicit operator std::string() const;
@@ -75,6 +75,8 @@ namespace sente {
 
         Rules rules;
         Stone resigned;
+
+        double komi;
 
         unsigned passCount = 0;
 

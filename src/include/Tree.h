@@ -77,17 +77,18 @@ namespace sente {
                     cursor->children.push_back(std::make_shared<TreeNode<Type>>(payload, cursor));
                     cursor = cursor->children.back();
                     depth++;
+                    size++;
                 }
                 else {
                     // if we already have this move, step down to it
                     stepTo(payload);
-                    depth++;
                 }
             }
             void insertNoStep(const Type& payload){
                 // only insert if the payload doesn't already exist
                 if (not cursor->hasChild(payload)) {
                     cursor->children.push_back(std::make_shared<TreeNode<Type>>(payload, cursor));
+                    size++;
                 }
             }
 
@@ -110,9 +111,9 @@ namespace sente {
                 }
             }
             void stepTo(const Type& value){
-
                 if (cursor->hasChild(value)){
                     cursor = *cursor->findChild(value);
+                    depth++;
                 }
                 else {
                     throw std::domain_error("could not step to child node: the desired value " + std::string(value) + " could not be located");
@@ -135,6 +136,9 @@ namespace sente {
 
             unsigned getDepth() const{
                 return depth;
+            }
+            unsigned getSize() const{
+                return size;
             }
 
             /**
@@ -185,6 +189,7 @@ namespace sente {
             std::shared_ptr<TreeNode<Type>> cursor;
             std::shared_ptr<TreeNode<Type>> root;
             unsigned depth;
+            unsigned size;
 
         };
 

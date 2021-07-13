@@ -28,22 +28,38 @@ namespace std {
 
 namespace sente {
 
-    GoGame::GoGame(unsigned side, Rules rules) {
+    GoGame::GoGame(unsigned side, Rules rules, double komi) {
+
+        // default Komi values
+        if (komi == NAN){
+            switch (rules){
+                case CHINESE:
+                    this->komi = 7.5;
+                    break;
+                case JAPANESE:
+                    this->komi = 6.5;
+                    break;
+            }
+        }
+        else {
+            this->komi = komi;
+        }
+
         this->rules = rules;
+
         makeBoard(side);
+        resetKoPoint();
 
         // some book-keeping
 
-        resetKoPoint();
         resigned = EMPTY;
     }
 
     /**
      *
-     * Regular Expressions visualizer
-     * http://www.regexplained.co.uk
+     * text from the SGF
      *
-     * @param filePointer
+     * @param SGFText
      */
     GoGame::GoGame(const std::string& SGFText) {
 
@@ -51,6 +67,7 @@ namespace sente {
         board = utils::getSGFBoardSize(SGFText);
         rules = utils::getSGFRules(SGFText);
         moveTree = utils::getSGFMoves(SGFText);
+        komi = 7.5; // utils::getSGFKomi(SGFText);
 
         // some book-keeping
 
@@ -214,6 +231,18 @@ namespace sente {
 
     const _board& GoGame::getBoard() const {
         return *board;
+    }
+
+
+    /**
+     *
+     * Score the game with the specified Komi
+     *
+     * @param komi
+     * @return
+     */
+    std::map<Stone, double> GoGame::score() const {
+        return std::map<Stone, double>();
     }
 
     GoGame::operator std::string() const {
