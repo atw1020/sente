@@ -63,6 +63,7 @@ namespace sente {
 
         const _board& getBoard() const;
 
+        Results getResults() const;
         Results score() const;
         std::unordered_set<Move> getLegalMoves() const;
 
@@ -73,7 +74,7 @@ namespace sente {
     private:
 
         Rules rules;
-        Stone resigned;
+        Stone resignedPlayer;
 
         double komi;
 

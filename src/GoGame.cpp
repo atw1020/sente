@@ -52,7 +52,7 @@ namespace sente {
 
         // some book-keeping
 
-        resigned = EMPTY;
+        resignedPlayer = EMPTY;
     }
 
     /**
@@ -72,7 +72,7 @@ namespace sente {
         // some book-keeping
 
         resetKoPoint();
-        resigned = EMPTY;
+        resignedPlayer = EMPTY;
 
     }
 
@@ -94,7 +94,7 @@ namespace sente {
 
         // reset the ko point
         resetKoPoint();
-        resigned = EMPTY;
+        resignedPlayer = EMPTY;
 
     }
 
@@ -136,6 +136,10 @@ namespace sente {
      */
     void GoGame::playStone(const Move &move) {
 
+        if (isOver()){
+            throw std::domain_error("game is finished, cannot play another move");
+        }
+
         // check for pass/resign
         if (move.isPass()){
             passCount++;
@@ -147,7 +151,7 @@ namespace sente {
         }
 
         if (move.isResign()){
-            resigned = move.getStone();
+            resignedPlayer = move.getStone();
             return;
         }
 
@@ -249,6 +253,21 @@ namespace sente {
         return *board;
     }
 
+    Results GoGame::getResults() const {
+
+        if (not isOver()){
+            throw std::domain_error("could not get results of game, the game is still ongoing");
+        }
+
+        if (passCount >= 2){
+            return score();
+        }
+        else {
+            return Results(resignedPlayer);
+        }
+
+    }
+
 
     /**
      *
@@ -258,6 +277,10 @@ namespace sente {
      * @return
      */
     Results GoGame::score() const {
+
+        if (passCount < 2){
+            throw std::domain_error("game did not end from passing; could not score");
+        }
 
         unsigned blackTerritory = 0;
         unsigned whiteTerritory = 0;
@@ -516,7 +539,7 @@ namespace sente {
     }
 
     bool GoGame::isOver() const {
-        return passCount >= 2;
+        return passCount >= 2 or resignedPlayer != EMPTY;
     }
 
     /**

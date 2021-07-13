@@ -195,10 +195,12 @@ PYBIND11_MODULE(sente, module){
             .def("resign", [](sente::GoGame& game){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
+            .def("get_results", &sente::GoGame::getResults,
+                 "returns a results object for a game WITHOUT removing dead stones")
             .def("score", &sente::GoGame::score,
                  "scores the game WITHOUT removing dead stones")
             .def("get_winner", [](const sente::GoGame& game){
-                    return game.score().winner();
+                    return game.getResults().winner();
                 },
                 "determines the winner of the game")
             .def("advance_to_root", &sente::GoGame::advanceToRoot,

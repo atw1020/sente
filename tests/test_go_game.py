@@ -50,6 +50,39 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         with self.assertRaises(utils.IllegalMoveException):
             game.play(3, 15)
 
+    def test_score_unfinished_game(self):
+        """
+
+        try to score an unfinished game
+
+        :return:
+        """
+
+        game = Game()
+
+        with self.assertRaises(ValueError):
+            game.score()
+
+        with self.assertRaises(ValueError):
+            game.get_winner()
+
+    def test_score_resigned_game(self):
+        """
+
+        try to score a game that has been resigned
+
+        :return:
+        """
+
+        game = Game()
+        game.resign()
+
+        with self.assertRaises(ValueError):
+            game.score()
+
+        with self.assertDoesNotRaise(ValueError):
+            game.get_winner()
+
 
 class TestTreeNavigation(TestCase):
 
@@ -236,6 +269,8 @@ class TestTreeNavigation(TestCase):
 
         game = Game()
         game.resign()
+
+        self.assertEqual(stone.WHITE, game.get_winner())
 
     def test_get_children(self):
         """

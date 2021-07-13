@@ -37,8 +37,6 @@ class TestNoDeadStones(TestCase):
         game.play(6, 1)
         game.play(1, 6)
 
-        return game
-
     def play_capture_stones_game(self, game):
         """
 
@@ -57,7 +55,16 @@ class TestNoDeadStones(TestCase):
         game.play(19, 18)
         game.play(1, 2)
 
-        return game
+    def end_game(self, game):
+        """
+
+
+        :param game:
+        :return:
+        """
+
+        game.pss()
+        game.pss()
 
     def test_simple_chinese(self):
         """
@@ -67,7 +74,10 @@ class TestNoDeadStones(TestCase):
         :return:
         """
 
-        game = self.play_simple_game(sente.Game(19, sente.CHINESE))
+        game = sente.Game(19, sente.CHINESE)
+        self.play_simple_game(game)
+        self.end_game(game)
+
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
@@ -82,7 +92,10 @@ class TestNoDeadStones(TestCase):
         :return:
         """
 
-        game = self.play_simple_game(sente.Game(19, sente.JAPANESE))
+        game = sente.Game(19, sente.JAPANESE)
+        self.play_simple_game(game)
+        self.end_game(game)
+
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
@@ -97,7 +110,10 @@ class TestNoDeadStones(TestCase):
         :return:
         """
 
-        game = self.play_capture_stones_game(sente.Game(19, sente.CHINESE))
+        game = sente.Game(19, sente.CHINESE)
+        self.play_capture_stones_game(game)
+        self.end_game(game)
+
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
@@ -112,7 +128,10 @@ class TestNoDeadStones(TestCase):
         :return:
         """
 
-        game = self.play_capture_stones_game(sente.Game(19, sente.JAPANESE))
+        game = sente.Game(19, sente.JAPANESE)
+        self.play_capture_stones_game(game)
+        self.end_game(game)
+
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
