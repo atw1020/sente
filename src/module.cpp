@@ -56,6 +56,19 @@ PYBIND11_MODULE(sente, module){
                 return std::string(move);
             });
 
+    py::class_<sente::Results>(module, "result")
+            .def("get_winner", &sente::Results::winner,
+                 "gets the winner of the game")
+            .def("get_black_score", [](const sente::Results& results){
+                return results.blackScore;
+            })
+            .def("get_white_score", [](const sente::Results& results){
+                return results.whiteScore + results.komi;
+            })
+            .def("__repr__", [](const sente::Results& results){
+                return "<sente.result \"" + std::string(results) + "\">";
+            });
+
     py::class_<sente::Board<19>>(module, "Board19")
             .def(py::init<>())
             .def(py::init<std::array<std::array<sente::Stone, 19>, 19>>())
@@ -182,6 +195,8 @@ PYBIND11_MODULE(sente, module){
             .def("play_resign", [](sente::GoGame& game){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
             })
+            .def("score", &sente::GoGame::score,
+                 "scores the game WITHOUT removing dead stones")
             .def("advance_to_root", &sente::GoGame::advanceToRoot,
                  "advance to the root node")
             .def("step_up", &sente::GoGame::stepUp,

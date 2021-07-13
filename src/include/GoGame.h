@@ -63,7 +63,7 @@ namespace sente {
 
         const _board& getBoard() const;
 
-        gameResult score() const;
+        Results score() const;
         std::unordered_set<Move> getLegalMoves() const;
 
         explicit operator std::string() const;

@@ -241,7 +241,7 @@ namespace sente {
      * @param komi
      * @return
      */
-    gameResult GoGame::score() const {
+    Results GoGame::score() const {
 
         unsigned blackTerritory = 0;
         unsigned whiteTerritory = 0;
@@ -255,6 +255,7 @@ namespace sente {
         auto regions = utils::getEmptySpaces(*board);
 
         for (const auto& region : regions){
+
             // go through all of the adjacent groups
             auto adjacentGroups = utils::getAdjacentGroups(region, *board, groups);
 
@@ -263,7 +264,7 @@ namespace sente {
 
             bool isTerritory = true;
 
-            for (iter++; iter != adjacentGroups.begin(); iter++){
+            for (iter++; iter != adjacentGroups.end(); iter++){
                 if ((*iter)->getColor() != firstColor){
                     isTerritory = false;
                     break;

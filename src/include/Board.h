@@ -46,7 +46,7 @@ namespace sente {
         explicit Board(std::array<std::array<Stone, side>, side> stones){
             for (unsigned i = 0; i < side; i++){
                 for (unsigned j = 0; j < side; j++){
-                    board[i][j] = Move(i, j, stones[i][j]);
+                    board[i][j] = stones[i][j];
                 }
             }
         }
@@ -59,15 +59,15 @@ namespace sente {
             return xInRange and yInRange;
         }
         bool isEmpty(const Move& move) const override {
-            return board[move.getX()][move.getY()].getStone() == EMPTY;
+            return board[move.getX()][move.getY()] == EMPTY;
         }
 
         void playStone(const Move& move) override{
-            board[move.getX()][move.getY()] = move;
+            board[move.getX()][move.getY()] = move.getStone();
         }
 
         void captureStone(const Move& move) override{
-            board[move.getX()][move.getY()] = Move(move.getX(), move.getY(), EMPTY);
+            board[move.getX()][move.getY()] = EMPTY;
         }
 
         bool isStar(unsigned x, unsigned y) const;
@@ -77,14 +77,14 @@ namespace sente {
         }
 
         Move getSpace(unsigned int x, unsigned int y) const override {
-            return board[x][y];
+            return Move(x, y, board[x][y]);
         }
         Move getSpace(Point point) const override {
-            return board[point.first][point.second];
+            return getSpace(point.first, point.second);
         }
 
         Stone getStone(unsigned x, unsigned y) const override {
-            return board[x][y].getStone();
+            return board[x][y];
         }
         Stone getStone(Point point) const override {
             return getStone(point.first, point.second);
@@ -94,7 +94,7 @@ namespace sente {
 
             for (unsigned i = 0; i < side; i++){
                 for (unsigned j = 0; j < side; j++){
-                    if (board[i][j].getStone() != other.board[i][j].getStone()){
+                    if (board[i][j] != other.board[i][j]){
                         return false;
                     }
                 }
@@ -119,7 +119,7 @@ namespace sente {
 
                     accumulator << "  ";
 
-                    switch(board[i][j].getStone()){
+                    switch(board[i][j]){
                         case BLACK:
                             accumulator << "#";
                             break;
@@ -142,7 +142,12 @@ namespace sente {
             accumulator << "  ";
 
             for (unsigned j = 0; j < side; j++){
-                accumulator << "  " << char('A' + j);
+                if ('A' + j < 'I'){
+                    accumulator << "  " << char('A' + j);
+                }
+                else {
+                    accumulator << "  " << char('B' + j);
+                }
             }
 
             accumulator << std::endl;
@@ -153,7 +158,7 @@ namespace sente {
 
     private:
 
-        std::array<std::array<Move, side>, side> board;
+        std::array<std::array<Stone, side>, side> board;
 
     };
 

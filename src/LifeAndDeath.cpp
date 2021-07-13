@@ -50,7 +50,9 @@ namespace sente {
 
             for (const Move& move : territory){
                 for (const Point neighbor : move.getAdjacentMoves(board.getSide())){
-                    groups.insert(groupMap.at(board.getSpace(neighbor)));
+                    if (groupMap.find(board.getSpace(neighbor)) != groupMap.end()){
+                        groups.insert(groupMap.at(board.getSpace(neighbor)));
+                    }
                 }
             }
 
@@ -83,7 +85,7 @@ namespace sente {
             foundConnections.insert(startMove);
 
             for (const auto& point : startMove.getAdjacentMoves(board.getSide())){
-                Move move = board.getSpace(point.first, point.second);
+                Move move = board.getSpace(point);
                 // if we haven't seen the move before and the color of the stone is correct
                 if (foundConnections.find(move) == foundConnections.end() and move.getStone() == startMove.getStone()){
                     // insert this stone and all of it's children into the set

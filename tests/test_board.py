@@ -94,7 +94,7 @@ class BoardTest19(TestCase):
                          "17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S\n",
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n",
                          str(board))
 
 
@@ -177,7 +177,7 @@ class BoardTest13(TestCase):
                          "11  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "12  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "13  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  I  J  K  L  M\n",
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N\n",
                          str(board))
 
 
@@ -257,6 +257,6 @@ class BoardTest9(TestCase):
                          " 7  .  .  *  .  .  .  *  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
                          " 9  .  .  .  O  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  I\n",
+                         "    A  B  C  D  E  F  G  H  J\n",
                          str(board))
 

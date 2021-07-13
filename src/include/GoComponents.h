@@ -5,6 +5,8 @@
 #ifndef SENTE_COMPONENTS_H
 #define SENTE_COMPONENTS_H
 
+#include <sstream>
+
 #include "Board.h"
 #include "Move.h"
 
@@ -15,28 +17,61 @@ namespace sente {
         JAPANESE
     };
 
-    struct gameResult{
+    struct Results{
 
-        gameResult(Rules rules, double komi, unsigned blackTerritory, unsigned whiteTerritory,
+        explicit Results(Stone resigningPlayer){
+            resignedPlayer = resigningPlayer;
+        }
+
+        Results(Rules rules, double komi, unsigned blackTerritory, unsigned whiteTerritory,
                    unsigned blackStones, unsigned whiteStones){
             this->rules = rules;
             this->komi = komi;
 
             if (rules == CHINESE){
                 this->blackScore = blackTerritory + blackStones;
-                this->whiteScore = whiteTerritory + komi + whiteStones;
+                this->whiteScore = whiteTerritory+ whiteStones;
             }
             if (rules == JAPANESE){
                 this->blackScore = blackTerritory;
-                this->whiteScore = whiteTerritory + komi;
+                this->whiteScore = whiteTerritory;
+            }
+
+            resignedPlayer = EMPTY;
+        }
+
+        Stone winner() const{
+            if (resignedPlayer == EMPTY){
+                return getOpponent(resignedPlayer);
+            }
+            else {
+                return blackScore > whiteScore + komi ? BLACK : WHITE;
             }
         }
 
         Rules rules;
         double komi;
 
-        double blackScore;
-        double whiteScore;
+        unsigned blackScore;
+        unsigned whiteScore;
+
+        Stone resignedPlayer;
+
+        explicit operator std::string() const{
+
+            std::stringstream rep;
+            rep << (winner() == BLACK ? "B+" : "W+");
+
+            if (resignedPlayer == EMPTY){
+                rep << fabs(blackScore - whiteScore - komi);
+            }
+            else {
+                rep << "R";
+            }
+
+            return rep.str();
+
+        }
 
     };
 

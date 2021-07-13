@@ -16,9 +16,9 @@ namespace py = pybind11;
 namespace sente {
 
     enum Stone {
+        EMPTY,
         BLACK,
-        WHITE,
-        EMPTY
+        WHITE
     };
 
     enum MoveType {
