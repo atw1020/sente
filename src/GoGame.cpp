@@ -8,7 +8,7 @@
 
 #include "include/SGF.h"
 #include "include/GoGame.h"
-#include "include/Territory.h"
+#include "include/LifeAndDeath.h"
 #include "include/SenteExceptions.h"
 
 namespace py = pybind11;

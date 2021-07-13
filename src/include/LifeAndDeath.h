@@ -2,8 +2,8 @@
 // Created by arthur wesley on 7/5/21.
 //
 
-#ifndef SENTE_TERRITORY_H
-#define SENTE_TERRITORY_H
+#ifndef SENTE_LIFEANDDEATH_H
+#define SENTE_LIFEANDDEATH_H
 
 #include <unordered_set>
 
@@ -27,4 +27,4 @@ namespace sente {
 }
 
 
-#endif //SENTE_TERRITORY_H
+#endif //SENTE_LIFEANDDEATH_H

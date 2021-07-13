@@ -9,8 +9,13 @@
 namespace std {
 
     size_t hash<sente::Group>::operator()(const sente::Group &group) const noexcept {
-        // TODO: implement
-        return 0;
+        size_t digest;
+
+        for (const auto& move : group.getMoves()){
+            digest = digest xor hash<sente::Move>()(move);
+        }
+
+        return digest;
     }
 
 }

@@ -2,7 +2,7 @@
 // Created by arthur wesley on 7/5/21.
 //
 
-#include "include/Territory.h"
+#include "include/LifeAndDeath.h"
 
 namespace sente {
 
