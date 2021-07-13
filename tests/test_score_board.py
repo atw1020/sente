@@ -39,6 +39,26 @@ class TestNoDeadStones(TestCase):
 
         return game
 
+    def play_capture_stones_game(self, game):
+        """
+
+        plays out a game in which both player capture some stones
+
+        :param game:
+        :return:
+        """
+
+        game.play(1, 1)
+        game.play(19, 19)
+
+        game.play(18, 19)
+        game.play(2, 1)
+
+        game.play(19, 18)
+        game.play(1, 2)
+
+        return game
+
     def test_simple_chinese(self):
         """
 
@@ -68,3 +88,33 @@ class TestNoDeadStones(TestCase):
         self.assertEqual(sente.stone.WHITE, game.get_winner())
         self.assertEqual(4, result.get_black_score())
         self.assertEqual(10.5, result.get_white_score())
+
+    def test_count_captured_stones_chinese(self):
+        """
+
+        tests to see if captured stones are accurately recorded with chinese rules
+
+        :return:
+        """
+
+        game = self.play_capture_stones_game(sente.Game(19, sente.CHINESE))
+        result = game.score()
+
+        self.assertEqual(sente.stone.WHITE, game.get_winner())
+        self.assertEqual(3, result.get_black_score())
+        self.assertEqual(10.5, result.get_white_score())
+
+    def test_count_captured_stones_japanese(self):
+        """
+
+        tests to see if captured stones are accurately recorded with japanese rules
+
+        :return:
+        """
+
+        game = self.play_capture_stones_game(sente.Game(19, sente.JAPANESE))
+        result = game.score()
+
+        self.assertEqual(sente.stone.WHITE, game.get_winner())
+        self.assertEqual(0, result.get_black_score())
+        self.assertEqual(6.5, result.get_white_score())

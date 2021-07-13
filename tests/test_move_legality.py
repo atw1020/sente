@@ -279,8 +279,6 @@ class TestLegalMove(TestCase):
 
         game = Game()
 
-        print("starting game!")
-
         game.play(1, 3)
         game.play(1, 2)
 

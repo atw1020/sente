@@ -187,7 +187,6 @@ class TestTreeNavigation(TestCase):
         moves = [Move(2, 2, stone.BLACK), Move(4, 4, stone.WHITE), Move(6, 6, stone.BLACK)]
 
         game.play_moves(moves)
-        print(game)
 
         self.assertEqual(stone.BLACK, game.get_point(3, 3))
         self.assertEqual(stone.WHITE, game.get_point(5, 5))
