@@ -16,7 +16,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath("../build/lib.macosx-10.9-x86_64-3.8/sente.cpython-38-darwin.so"))
+# sys.path.insert(0, os.path.abspath("../build/lib.macosx-10.9-x86_64-3.8"))
 
 
 # -- Project information -----------------------------------------------------

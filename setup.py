@@ -103,14 +103,7 @@ setup(
     description="a c++ optimized library for go games",
     ext_modules=[CMakeExtension("sente")],
     test_suite="tests",
-    cmdclass={"build_ext": CMakeBuild,
-              "build_sphinx": BuildDoc},
-    command_options={"build_sphinx": {
-        "project": ("setup.py", name),
-        "version": ("setup.py", version),
-        "release": ("setup.py", release),
-        "source_dir": ("setup.py", "docs")
-    }},
+    cmdclass={"build_ext": CMakeBuild},
     zip_safe=False
 )
 
