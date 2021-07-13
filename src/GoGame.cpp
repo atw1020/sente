@@ -349,6 +349,28 @@ namespace sente {
         return {rules, komi, blackTerritory, whiteTerritory, blackStones, whiteStones};
     }
 
+    std::vector<Move> GoGame::getLegalMoves() const {
+
+        // go through the entire board
+        Stone player = getActivePlayer();
+        std::vector<Move> moves;
+
+        for (unsigned i = 0; i < board->getSide(); i++){
+            for (unsigned j = 0; j < board->getSide(); j++){
+                if (isLegal(i, j)){
+                    moves.emplace_back(i, j, player);
+                }
+            }
+        }
+
+        // add resignation and passing
+        moves.emplace_back(player, PASS);
+        moves.emplace_back(player, RESIGN);
+
+        return moves;
+
+    }
+
     GoGame::operator std::string() const {
         return std::string(*board);
     }

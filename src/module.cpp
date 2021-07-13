@@ -213,7 +213,9 @@ PYBIND11_MODULE(sente, module){
             .def("play_moves", &sente::GoGame::playMoveSequence,
                  py::arg("moves"),
                  "plays all of the moves in a given list of moves")
-            .def("get_moves", &sente::GoGame::getMoveSequence,
+            .def("get_legal_moves", &sente::GoGame::getLegalMoves,
+                 "generates a list of all legal moves")
+            .def("get_previous_moves", &sente::GoGame::getMoveSequence,
                  "get a list containing all of the moves on the current branch of the tree")
             .def("get_branches", &sente::GoGame::getBranches,
                  "get a list of the next moves that are currently in the move tree")

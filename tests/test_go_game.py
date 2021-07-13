@@ -83,6 +83,18 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         with self.assertDoesNotRaise(ValueError):
             game.get_winner()
 
+    def test_get_legal_moves(self):
+        """
+
+        tests to see if the legal moves
+
+        :return:
+        """
+
+        game = Game(9)
+
+        self.assertEqual(83, len(game.get_legal_moves()))
+
 
 class TestTreeNavigation(TestCase):
 
@@ -241,7 +253,7 @@ class TestTreeNavigation(TestCase):
 
         game.play_moves(moves)
 
-        self.assertEqual(moves, game.get_moves())
+        self.assertEqual(moves, game.get_previous_moves())
 
     def test_illegal_move_sequence(self):
         """

@@ -65,7 +65,7 @@ namespace sente {
 
         Results getResults() const;
         Results score() const;
-        std::unordered_set<Move> getLegalMoves() const;
+        std::vector<Move> getLegalMoves() const;
 
         explicit operator std::string() const;
 
