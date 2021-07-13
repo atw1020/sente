@@ -31,7 +31,7 @@ namespace sente {
     GoGame::GoGame(unsigned side, Rules rules, double komi) {
 
         // default Komi values
-        if (komi == NAN){
+        if (std::isinf(komi)){
             switch (rules){
                 case CHINESE:
                     this->komi = 7.5;

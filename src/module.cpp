@@ -133,7 +133,7 @@ PYBIND11_MODULE(sente, module){
             .def(py::init<unsigned, sente::Rules, double>(),
                 py::arg("board_size") = 19,
                 py::arg("rules") = sente::Rules::CHINESE,
-                py::arg("komi") = NAN,
+                py::arg("komi") = INFINITY,
                 "initializes a go game with a specified board size and rules")
             .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
                     return game.isLegal(x - 1, y - 1);
