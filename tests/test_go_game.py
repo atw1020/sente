@@ -220,9 +220,10 @@ class TestTreeNavigation(TestCase):
 
         game = Game()
 
-        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE)]
+        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(3, 3, stone.BLACK)]
 
-        self.assertRaises(game.play_moves(moves), sente.utils.IllegalMoveException)
+        with self.assertRaises(sente.utils.IllegalMoveException):
+            game.play_moves(moves)
         self.assertEqual(stone.EMPTY, game.get_point(3, 3))
 
     def test_resign(self):

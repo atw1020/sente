@@ -137,7 +137,7 @@ class TestMakeMove(DoesNotRaiseTestCase):
 
         with self.assertDoesNotRaise(utils.IllegalMoveException):
             game.play(None)
-            game.play_pass()
+            game.pss()
 
     def test_self_atari_legal(self):
         """

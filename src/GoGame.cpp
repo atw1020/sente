@@ -137,7 +137,7 @@ namespace sente {
     void GoGame::playStone(const Move &move) {
 
         // check for pass/resign
-        if (move == Move(move.getStone(), PASS)){
+        if (move.isPass()){
             passCount++;
             moveTree.insert(move);
             return;
@@ -146,8 +146,9 @@ namespace sente {
             passCount = 0;
         }
 
-        if (move == Move(move.getStone(), RESIGN)){
-            // TODO: implement
+        if (move.isResign()){
+            resigned = move.getStone();
+            return;
         }
 
         // error handling
@@ -208,9 +209,24 @@ namespace sente {
     }
 
     void GoGame::playMoveSequence(const std::vector<Move>& moves) {
-        // play all of the stones in the sequence
-        for (const auto& move : moves){
-            playStone(move);
+
+        auto baseMoveSequence = getMoveSequence();
+
+        try {
+            // play all of the stones in the sequence
+            for (const auto& move : moves){
+                playStone(move);
+            }
+        }
+        catch (const utils::IllegalMoveException& except){
+            // reset to the original position
+            resetBoard();
+            for (const auto& move : baseMoveSequence){
+                playStone(move);
+            }
+
+            // throw the exception again
+            throw except;
         }
     }
 

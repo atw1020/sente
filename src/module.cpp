@@ -189,7 +189,7 @@ PYBIND11_MODULE(sente, module){
                     throw std::domain_error("cannot play " + std::string(py::str(obj)));
                 }
             })
-            .def("pass", [](sente::GoGame& game){
+            .def("pss", [](sente::GoGame& game){
                 game.playStone(sente::Move(game.getActivePlayer(), sente::PASS));
             })
             .def("resign", [](sente::GoGame& game){
