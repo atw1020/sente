@@ -8,7 +8,7 @@ import os
 import sys
 import subprocess
 
-from glob import glob
+from sphinx.setup_command import BuildDoc
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 
@@ -91,15 +91,26 @@ class CMakeBuild(build_ext):
         )
 
 
+name = "sente"
+version = "alpha-0.1"
+release = version + ".0"
+
 setup(
-    name="sente",
-    version="0.0.1",
+    name=name,
+    version=release,
     author="Arthur Wesley",
     author_email="arthur@electricfish.com",
-    description="a fast c++ optimized library for go games",
+    description="a c++ optimized library for go games",
     ext_modules=[CMakeExtension("sente")],
     test_suite="tests",
-    cmdclass={"build_ext": CMakeBuild},
+    cmdclass={"build_ext": CMakeBuild,
+              "build_sphinx": BuildDoc},
+    command_options={"build_sphinx": {
+        "project": ("setup.py", name),
+        "version": ("setup.py", version),
+        "release": ("setup.py", release),
+        "source_dir": ("setup.py", "docs")
+    }},
     zip_safe=False
 )
 
