@@ -197,6 +197,10 @@ PYBIND11_MODULE(sente, module){
             })
             .def("score", &sente::GoGame::score,
                  "scores the game WITHOUT removing dead stones")
+            .def("get_winner", [](const sente::GoGame& game){
+                    return game.score().winner();
+                },
+                "determines the winner of the game")
             .def("advance_to_root", &sente::GoGame::advanceToRoot,
                  "advance to the root node")
             .def("step_up", &sente::GoGame::stepUp,

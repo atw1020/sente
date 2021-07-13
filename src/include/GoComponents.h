@@ -41,12 +41,16 @@ namespace sente {
         }
 
         Stone winner() const{
-            if (resignedPlayer == EMPTY){
+            if (resignedPlayer != EMPTY){
                 return getOpponent(resignedPlayer);
             }
             else {
-                return blackScore > whiteScore + komi ? BLACK : WHITE;
+                return (blackScore > whiteScore + komi) ? BLACK : WHITE;
             }
+        }
+
+        double margin() const {
+            fabs(blackScore - whiteScore - komi);
         }
 
         Rules rules;
@@ -63,7 +67,7 @@ namespace sente {
             rep << (winner() == BLACK ? "B+" : "W+");
 
             if (resignedPlayer == EMPTY){
-                rep << fabs(blackScore - whiteScore - komi);
+                rep << margin();
             }
             else {
                 rep << "R";

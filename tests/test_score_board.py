@@ -11,15 +11,13 @@ import sente
 
 class TestNoDeadStones(TestCase):
 
-    def play_simple_game(self):
+    def play_simple_game(self, game):
         """
 
         plays out a simple game in a cordner
 
         :return:
         """
-
-        game = sente.Game()
 
         game.play(3, 1)
         game.play(1, 3)
@@ -49,6 +47,24 @@ class TestNoDeadStones(TestCase):
         :return:
         """
 
-        game = self.play_simple_game()
+        game = self.play_simple_game(sente.Game(19, sente.CHINESE))
+        result = game.score()
 
-        print(game.score())
+        self.assertEqual(sente.stone.WHITE, game.get_winner())
+        self.assertEqual(10, result.get_black_score())
+        self.assertEqual(17.5, result.get_white_score())
+
+    def test_simple_japanese(self):
+        """
+
+
+
+        :return:
+        """
+
+        game = self.play_simple_game(sente.Game(19, sente.JAPANESE))
+        result = game.score()
+
+        self.assertEqual(sente.stone.WHITE, game.get_winner())
+        self.assertEqual(4, result.get_black_score())
+        self.assertEqual(10.5, result.get_white_score())
