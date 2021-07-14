@@ -221,6 +221,34 @@ class TestTreeNavigation(TestCase):
         self.assertEqual(stone.EMPTY, game.get_point(15, 3))
         self.assertEqual(stone.WHITE, game.get_point(3, 15))
 
+    def test_get_branches(self):
+        """
+
+        tests to see if the get_branches() method works
+
+        :return:
+        """
+
+        game = Game()
+
+        game.play(3, 3)
+        game.play(3, 15)
+
+        game.step_up()
+        game.play(15, 3)
+
+        game.step_up()
+        game.play(15, 15)
+
+        game.step_up()
+        branches = game.get_branches()
+
+        self.assertEqual(3, len(branches))
+
+        self.assertIn(Move(14, 2, stone.WHITE), branches)
+        self.assertIn(Move(14, 14, stone.WHITE), branches)
+        self.assertIn(Move(2, 14, stone.WHITE), branches)
+
     def test_play_moves(self):
         """
 

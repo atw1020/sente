@@ -206,8 +206,10 @@ PYBIND11_MODULE(sente, module){
             .def("advance_to_root", &sente::GoGame::advanceToRoot,
                  "advance to the root node")
             .def("step_up", &sente::GoGame::stepUp,
-                 py::arg("steps") = 1,
-                 "step up the tree the specified number of steps")
+                py::arg("steps") = 1,
+                "step up the tree the specified number of steps")
+            .def("get_branches", &sente::GoGame::getBranches,
+                 "generates a list of the branches at the curren node of the game tree")
             .def("play_default_branch", &sente::GoGame::playDefaultBranch,
                  "plays out the moves in the default (first) branch of the tree")
             .def("play_moves", &sente::GoGame::playMoveSequence,

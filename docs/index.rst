@@ -11,7 +11,7 @@ Welcome to Sente's documentation!
    :caption: Contents:
 
    tutorial
-   game tree navigation.rst
+   game tree navigation
 
 
 
