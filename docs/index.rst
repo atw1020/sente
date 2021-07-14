@@ -10,6 +10,9 @@ Welcome to sente's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   tutorial
+   game tree navigation.rst
+
 
 
 Indices and tables

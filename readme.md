@@ -10,7 +10,7 @@ In addition to supporting Python 3, Sente is written in C++ which allows AIs tha
 Installation & Requirements
 ---
 
-Sente runs on any operating system with python 3.x and can be installed via pip
+Sente runs on any operating system with python 3.x and can be installed via pip.
 
 ```zsh
 $ pip install sente
@@ -29,7 +29,7 @@ The Basic element in Sente is the `sente.Game` object which represents a Simple 
 >>> import sente
 >>> game = sente.Game()
 ```
-by default, sente creates a 19x19 game with Chinese Rules.
+By default, sente creates a 19x19 game with Chinese Rules.
 9x9 and 13x13 board sizes and Japanese rules can be specified if desired.
 
 _note: japanese rules are not reccomended as sente does not currently include automatic dead stone removal._
@@ -37,8 +37,7 @@ _note: japanese rules are not reccomended as sente does not currently include au
 >>> game = sente.Game(13)
 >>> game = sente.Game(19, sente.rules.JAPANESE)
 ```
-moves can be played on the game using the `play()` method
-and the board can be printed using the python print() function
+moves can be played on the game using the `play()` method, and the board can be printed using the python `print()` function.
 ```python
 >>> game.play(4, 4)
 >>> game.play(16, 4)
@@ -65,17 +64,14 @@ and the board can be printed using the python print() function
 17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
 18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
 19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S
+    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
 ```
-The Sente board display is designed to be similar to the 
-[gomill ascii boards output](https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html).
-A hash (`#`) denotes a Black stone and an "O" (`O`) 
-denotes a white stone. The star points are denoted
-using an asterisk (`*`)
+The Sente board display is designed to be similar to the [gomill ascii boards output](https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html).
+A hash (`#`) denotes a Black stone and an "O" (`O`) denotes a white stone. 
+One difference between sente and gomill is that in sente, the star points are denoted using an asterisk (`*`)
 
-Finally, Sente also provides the ability to check if a move 
-is legal using the `is_legal()` method
+Finally, Sente also provides the ability to check if a move is legal using the `is_legal()` method
 
 ```python
 >>> import sente
