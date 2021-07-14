@@ -261,7 +261,7 @@ class TestTreeNavigation(TestCase):
 
         moves = [Move(2, 2, stone.BLACK), Move(4, 4, stone.WHITE), Move(6, 6, stone.BLACK)]
 
-        game.play_moves(moves)
+        game.play_sequence(moves)
 
         self.assertEqual(stone.BLACK, game.get_point(3, 3))
         self.assertEqual(stone.WHITE, game.get_point(5, 5))
@@ -279,9 +279,9 @@ class TestTreeNavigation(TestCase):
 
         moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(7, 7, stone.BLACK)]
 
-        game.play_moves(moves)
+        game.play_sequence(moves)
 
-        self.assertEqual(moves, game.get_previous_moves())
+        self.assertEqual(moves, game.get_sequence())
 
     def test_illegal_move_sequence(self):
         """
@@ -296,7 +296,7 @@ class TestTreeNavigation(TestCase):
         moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(3, 3, stone.BLACK)]
 
         with self.assertRaises(sente.utils.IllegalMoveException):
-            game.play_moves(moves)
+            game.play_sequence(moves)
         self.assertEqual(stone.EMPTY, game.get_point(3, 3))
 
     def test_resign(self):

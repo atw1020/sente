@@ -373,6 +373,28 @@ namespace sente {
 
     }
 
+    py::list GoGame::getLegalMovesPy() const {
+
+      // go through the entire board
+      Stone player = getActivePlayer();
+      py::list moves;
+
+      for (unsigned i = 0; i < board->getSide(); i++){
+        for (unsigned j = 0; j < board->getSide(); j++){
+          if (isLegal(i, j)){
+            moves.append(Move(i, j, player));
+          }
+        }
+      }
+
+      // add resignation and passing
+      moves.append(Move(player, PASS));
+      moves.append(Move(player, RESIGN));
+
+      return moves;
+
+    }
+
     GoGame::operator std::string() const {
         return std::string(*board);
     }

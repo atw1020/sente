@@ -215,7 +215,7 @@ PYBIND11_MODULE(sente, module){
             .def("play_sequence", &sente::GoGame::playMoveSequence,
                  py::arg("moves"),
                  "plays all of the moves in a given list of moves")
-            .def("get_legal_moves", &sente::GoGame::getLegalMoves,
+            .def("get_legal_moves", &sente::GoGame::getLegalMovesPy,
                  "generates a list of all legal moves")
             .def("is_over", &sente::GoGame::isOver,
                  "determine if the game is over yet")

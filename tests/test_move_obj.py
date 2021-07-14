@@ -73,7 +73,7 @@ class MoveTest(TestCase):
         self.assertEqual(sente.stone.BLACK, self.move1.get_stone())
         self.assertEqual(sente.stone.WHITE, self.move4.get_stone())
 
-    def test__str__(self):
+    def test__repr__(self):
         """
 
         checks to see if the string casting works correctly

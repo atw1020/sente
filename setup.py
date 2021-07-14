@@ -91,7 +91,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="sente",
-    version="0.1.0",
+    version="0.1.1",
     author="Arthur Wesley",
     author_email="arthur@electricfish.com",
     description="a c++ optimized library for go games",
