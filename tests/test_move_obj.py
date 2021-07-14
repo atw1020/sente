@@ -85,3 +85,13 @@ class MoveTest(TestCase):
         self.assertEqual("B[de]", str(self.move3))
         self.assertEqual("W[de]", str(self.move4))
         self.assertEqual("[Placeholder Move]", str(self.move5))
+
+    def test__repr__(self):
+        """
+
+        tests to see if the representation of the string for prints is correct
+
+        :return:
+        """
+
+        self.assertEqual("<sente.Move B[ee]>", self.move1.__repr__())

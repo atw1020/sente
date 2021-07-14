@@ -53,7 +53,7 @@ PYBIND11_MODULE(sente, module){
             .def("__eq__", &sente::Move::operator==)
             .def("__ne__", &sente::Move::operator!=)
             .def("__repr__", [](const sente::Move& move){
-                return std::string(move);
+                return "<sente.Move " + std::string(move) + ">";
             });
 
     py::class_<sente::Results>(module, "result")
@@ -212,14 +212,14 @@ PYBIND11_MODULE(sente, module){
                  "generates a list of the branches at the curren node of the game tree")
             .def("play_default_branch", &sente::GoGame::playDefaultBranch,
                  "plays out the moves in the default (first) branch of the tree")
-            .def("play_moves", &sente::GoGame::playMoveSequence,
+            .def("play_sequence", &sente::GoGame::playMoveSequence,
                  py::arg("moves"),
                  "plays all of the moves in a given list of moves")
             .def("get_legal_moves", &sente::GoGame::getLegalMoves,
                  "generates a list of all legal moves")
             .def("is_over", &sente::GoGame::isOver,
                  "determine if the game is over yet")
-            .def("get_previous_moves", &sente::GoGame::getMoveSequence,
+            .def("get_sequence", &sente::GoGame::getMoveSequence,
                  "get a list containing all of the moves on the current branch of the tree")
             .def("get_branches", &sente::GoGame::getBranches,
                  "get a list of the next moves that are currently in the move tree")
