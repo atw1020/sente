@@ -8,13 +8,13 @@ Sente runs on any operating system with python 3.x and can be installed via pip.
 
 .. code-block:: zsh
 
-    pip install sente
+    $ pip install sente
 
 -- or --
 
 .. code-block:: zsh
 
-    python3 -m install sente
+    $ python3 -m install sente
 
 Getting Started
 ---------------
