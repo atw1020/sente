@@ -375,6 +375,8 @@ namespace sente {
 
     py::list GoGame::getLegalMovesPy() const {
 
+      // py::print("entering getLegalMovesPy");
+
       // go through the entire board
       Stone player = getActivePlayer();
       py::list moves;
@@ -443,7 +445,7 @@ namespace sente {
      *
      * @param move
      */
-    void GoGame::updateBoard(Move move) {
+    void GoGame::updateBoard(const Move& move) {
 
         std::unordered_set<std::shared_ptr<Group>> ourAffectedGroups{};
         std::unordered_set<std::shared_ptr<Group>> theirAffectedGroups{};
@@ -595,7 +597,7 @@ namespace sente {
      * @param move
      * @param groups
      */
-    void GoGame::connectGroups(Move move, const std::unordered_set<std::shared_ptr<Group>>& toConnect) {
+    void GoGame::connectGroups(const Move& move, const std::unordered_set<std::shared_ptr<Group>>& toConnect) {
 
         // create the new group object
         auto newGroup = std::make_shared<Group>(move, toConnect);

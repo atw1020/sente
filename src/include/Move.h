@@ -34,7 +34,8 @@ namespace sente {
     public:
 
         Move();
-        // Move(const Move& move);
+        // Move(const Move& move) = delete;
+        Move(const Move& other);
         Move(Stone stone, Action action);
         explicit Move(std::string sgf);
         Move(unsigned x, unsigned y, Stone stone);

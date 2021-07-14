@@ -36,6 +36,13 @@ namespace sente {
         stone = EMPTY;
     }
 
+    Move::Move(const Move& other){
+        // py::print("copying a move WE SHOULD NEVER DO THIS");
+        x = other.x;
+        y = other.y;
+        stone = other.stone;
+    }
+
     Move::Move(Stone stone, Action action){
         if (action == PASS){
             // return a pass move for the player (move at unsigned -1, -1)
@@ -160,7 +167,7 @@ namespace sente {
             str << "[]";
         }
         else if (isResign()){
-            
+
         }
         else {
             str << '[' << char('a' + x) << char('a' + y) << ']';

@@ -19,6 +19,9 @@ int add(int x, int y){
 
 namespace py = pybind11;
 
+// PYBIND11_MAKE_OPAQUE(sente::Stone)
+// PYBIND11_MAKE_OPAQUE(sente::Move)
+
 PYBIND11_MODULE(sente, module){
 
     // m.doc() = ""; // todo: add a better description

@@ -1,6 +1,6 @@
 //
 // Created by arthur wesley on 6/27/21.
-//
+// tonight
 
 #ifndef SENTE_GOGAME_H
 #define SENTE_GOGAME_H
@@ -98,8 +98,8 @@ namespace sente {
         void makeBoard(unsigned side);
         void resetKoPoint();
 
-        void updateBoard(Move move);
-        void connectGroups(Move move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);
+        void updateBoard(const Move& move);
+        void connectGroups(const Move& move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);
 
         bool isCorrectColor(const Move& move) const;
         bool isNotSelfCapture(const Move& move) const;
