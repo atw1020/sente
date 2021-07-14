@@ -137,3 +137,12 @@ environment, run the setup.py file
 $ python3 setup.py install
 ```
 
+### Building documentation
+
+in order to build the documentation, you will need to have [sphinx](https://www.sphinx-doc.org/en/master/) installed and build a development version of sente.
+```zsh
+$ pip install sphinx # install sphinx
+$ python setup.py develop # build a development version of sente
+$ cd docs
+$ make html # make the html
+```

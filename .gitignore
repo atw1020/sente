@@ -1,7 +1,19 @@
 # Project exclude paths
+
+# CLion created directories
+/.idea/
 /cmake-build-debug/
+
+# python enviroment
 /venv/
+
+# various build files
+*.so
 /dist/
 /sente.egg-info/
 /build/
+
+# documentation
 /docs/_build/
+/docs/build
+/docs/sente.egg-info

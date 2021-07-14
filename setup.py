@@ -89,14 +89,9 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", "."] + build_args, cwd=self.build_temp
         )
 
-
-name = "sente"
-version = "alpha-0.1"
-release = version + ".0"
-
 setup(
-    name=name,
-    version=release,
+    name="sente",
+    version="0.1.0",
     author="Arthur Wesley",
     author_email="arthur@electricfish.com",
     description="a c++ optimized library for go games",
