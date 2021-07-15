@@ -43,47 +43,38 @@ namespace sente {
         stone = other.stone;
     }
 
-    Move::Move(Stone stone, Action action){
-        if (action == PASS){
-            // return a pass move for the player (move at unsigned -1, -1)
-            x = -1;
-            y = -1;
-            this->stone = stone;
-        }
-        else {
-            // return a resign move for the player (move at unsigned -2, -2)
-            x = -2;
-            y = -2;
-            this->stone = stone;
-        }
-    }
+    const Move Move::passBlack = Move(-1, 19, BLACK);
+    const Move Move::passWhite = Move(-1, 19, WHITE);
 
-    Move::Move(std::string sgf){
+    const Move Move::resignBlack = Move(19, -1, BLACK);
+    const Move Move::resignWhite = Move(19, -1, WHITE);
+
+    Move Move::fromSGF(std::string sgf){
+
+        Stone stone = sgf[1] == 'B' ? BLACK : WHITE;
 
         // check to see if the brackets are empty
         if (sgf[3] == ']'){
-            // instantiate a pass move
-            x = -1;
-            y = -1;
-            if (sgf[1] == 'B'){
-                stone = BLACK;
+            if (stone == BLACK){
+                return passBlack;
             }
             else {
-                stone = WHITE;
+                return passWhite;
             }
         }
         else {
             // reverse the order of the co-ordinates
-            x = unsigned(sgf[4] - 'a');
-            y = unsigned(sgf[3] - 'a');
-            if (sgf[1] == 'B'){
-                stone = BLACK;
-            }
-            else {
-                stone = WHITE;
-            }
+            return Move(unsigned(sgf[4] - 'a'), unsigned(sgf[3] - 'a'), stone);
         }
 
+    }
+
+    Move Move::pass(Stone player) {
+        return player == BLACK ? passBlack : passWhite;
+    }
+
+    Move Move::resign(Stone player){
+        return player == BLACK ? resignBlack : resignWhite;
     }
 
     /**
@@ -113,11 +104,11 @@ namespace sente {
     }
 
     bool Move::isPass() const {
-        return x == unsigned(-1) and y == unsigned(-1);
+        return *this == passBlack or *this == passWhite;
     }
 
     bool Move::isResign() const {
-        return x == unsigned(-2) and y == unsigned(-2);
+        return *this == resignBlack or *this == resignWhite;
     }
 
     bool Move::operator==(const Move& other) const{

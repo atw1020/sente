@@ -95,11 +95,13 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
             .export_values();
 
-    py::class_<sente::Move>(module, "Move")
+    py::class_<sente::Move>(module, "Move", R"pbdoc(
+                A class that represents a move that can be played on a go board, consisting of a position and a stone.
+            )pbdoc")
             .def(py::init<unsigned, unsigned, sente::Stone>(),
                     py::arg("x"),
                     py::arg("y"),
-                    py::arg("stone"))
+                    py::arg("stone"), R"pbdoc()pbdoc")
             .def("get_x", &sente::Move::getX,
                  "get the x-coordinate of the move (zero based indices)")
             .def("get_y", &sente::Move::getY,
@@ -238,17 +240,17 @@ PYBIND11_MODULE(sente, module){
             .def("play", [](sente::GoGame& game, const py::object& obj){
                 if (obj.is_none()){
                     // pass if the object is none
-                    game.playStone(sente::Move(game.getActivePlayer(), sente::PASS));
+                    game.playStone(sente::Move::pass(game.getActivePlayer()));
                 }
                 else {
                     throw std::domain_error("cannot play " + std::string(py::str(obj)));
                 }
             })
             .def("pss", [](sente::GoGame& game){
-                game.playStone(sente::Move(game.getActivePlayer(), sente::PASS));
+                game.playStone(sente::Move::pass(game.getActivePlayer()));
             })
             .def("resign", [](sente::GoGame& game){
-                game.playStone(sente::Move(game.getActivePlayer(), sente::RESIGN));
+                game.playStone(sente::Move::resign(game.getActivePlayer()));
             })
             .def("get_results", &sente::GoGame::getResults,
                  "returns a results object for a game WITHOUT removing dead stones")

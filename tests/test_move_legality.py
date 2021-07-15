@@ -5,11 +5,11 @@ Author: Arthur Wesley
 """
 from unittest import TestCase
 
-from sente import *
+import sente
 from assert_does_not_raise import DoesNotRaiseTestCase
 
 
-class TestMakeMove(DoesNotRaiseTestCase):
+class TestMove(DoesNotRaiseTestCase):
 
     def test_make_move(self):
         """
@@ -19,11 +19,11 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(3, 3, BLACK)
+        game.play(3, 3, sente.stone.BLACK)
 
-        self.assertEqual(BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
 
     def test_capture_stone(self):
         """
@@ -33,20 +33,20 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(2, 3, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(18, 18, WHITE)
+        game.play(4, 3, sente.stone.BLACK)
+        game.play(18, 18, sente.stone.WHITE)
 
-        game.play(3, 2, BLACK)
-        game.play(18, 17, WHITE)
+        game.play(3, 2, sente.stone.BLACK)
+        game.play(18, 17, sente.stone.WHITE)
 
-        game.play(3, 4, BLACK)
+        game.play(3, 4, sente.stone.BLACK)
 
-        self.assertEqual(EMPTY, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
 
     def test_capture_multiple_stones(self):
         """
@@ -56,27 +56,27 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(2, 3, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(3, 2, WHITE)
+        game.play(4, 3, sente.stone.BLACK)
+        game.play(3, 2, sente.stone.WHITE)
 
-        game.play(2, 2, BLACK)
-        game.play(18, 18, WHITE)
+        game.play(2, 2, sente.stone.BLACK)
+        game.play(18, 18, sente.stone.WHITE)
 
-        game.play(4, 2, BLACK)
-        game.play(18, 17, WHITE)
+        game.play(4, 2, sente.stone.BLACK)
+        game.play(18, 17, sente.stone.WHITE)
 
-        game.play(3, 1, BLACK)
-        game.play(18, 16, WHITE)
+        game.play(3, 1, sente.stone.BLACK)
+        game.play(18, 16, sente.stone.WHITE)
 
-        game.play(3, 4, BLACK)
+        game.play(3, 4, sente.stone.BLACK)
 
-        self.assertEqual(EMPTY, game.get_point(3, 3))
-        self.assertEqual(EMPTY, game.get_point(3, 2))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 2))
 
     def test_capture_multiple_groups(self):
         """
@@ -86,21 +86,21 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(1, 3, BLACK)
-        game.play(1, 2, WHITE)
+        game.play(1, 3, sente.stone.BLACK)
+        game.play(1, 2, sente.stone.WHITE)
 
-        game.play(2, 2, BLACK)
-        game.play(2, 1, WHITE)
+        game.play(2, 2, sente.stone.BLACK)
+        game.play(2, 1, sente.stone.WHITE)
 
-        game.play(3, 1, BLACK)
-        game.play(19, 19, WHITE)
+        game.play(3, 1, sente.stone.BLACK)
+        game.play(19, 19, sente.stone.WHITE)
 
-        game.play(1, 1, BLACK)
+        game.play(1, 1, sente.stone.BLACK)
 
-        self.assertEqual(EMPTY, game.get_point(1, 2))
-        self.assertEqual(EMPTY, game.get_point(2, 1))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(1, 2))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(2, 1))
 
     def test_capture_edge(self):
         """
@@ -110,20 +110,20 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(1, 1, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(1, 1, sente.stone.BLACK)
+        game.play(2, 2, sente.stone.WHITE)
 
-        game.play(1, 2, BLACK)
-        game.play(1, 3, WHITE)
+        game.play(1, 2, sente.stone.BLACK)
+        game.play(1, 3, sente.stone.WHITE)
 
-        game.play(2, 1, BLACK)
-        game.play(3, 1, WHITE)
+        game.play(2, 1, sente.stone.BLACK)
+        game.play(3, 1, sente.stone.WHITE)
 
-        self.assertEqual(EMPTY, game.get_point(1, 1))
-        self.assertEqual(EMPTY, game.get_point(2, 1))
-        self.assertEqual(EMPTY, game.get_point(1, 2))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(1, 1))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(2, 1))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(1, 2))
 
     def test_pass(self):
         """
@@ -133,9 +133,9 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        with self.assertDoesNotRaise(utils.IllegalMoveException):
+        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
             game.play(None)
             game.pss()
 
@@ -147,13 +147,13 @@ class TestMakeMove(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         game.play(1, 2)
 
         self.assertTrue(game.is_legal(1, 1))
 
-        with self.assertDoesNotRaise(utils.IllegalMoveException):
+        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
             game.play(1, 1)
 
 
@@ -168,13 +168,13 @@ class TestLegalMove(TestCase):
         """
 
         # create a 19x19 board
-        game = Game()
+        game = sente.Game()
 
-        self.assertTrue(game.is_legal(3, 3, BLACK))
-        self.assertFalse(game.is_legal(3, 3, WHITE))
+        self.assertTrue(game.is_legal(3, 3, sente.stone.BLACK))
+        self.assertFalse(game.is_legal(3, 3, sente.stone.WHITE))
 
-        self.assertTrue(game.is_legal(Move(15, 15, BLACK)))
-        self.assertFalse(game.is_legal(Move(15, 15, WHITE)))
+        self.assertTrue(game.is_legal(sente.Move(15, 15, sente.stone.BLACK)))
+        self.assertFalse(game.is_legal(sente.Move(15, 15, sente.stone.WHITE)))
 
     def test_correct_color(self):
         """
@@ -184,15 +184,15 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(3, 3, BLACK)
+        game.play(3, 3, sente.stone.BLACK)
 
-        self.assertTrue(game.is_legal(15, 3, WHITE))
-        self.assertFalse(game.is_legal(15, 3, BLACK))
+        self.assertTrue(game.is_legal(15, 3, sente.stone.WHITE))
+        self.assertFalse(game.is_legal(15, 3, sente.stone.BLACK))
 
-        self.assertTrue(game.is_legal(Move(15, 3, WHITE)))
-        self.assertFalse(game.is_legal(Move(15, 3, BLACK)))
+        self.assertTrue(game.is_legal(sente.Move(15, 3, sente.stone.WHITE)))
+        self.assertFalse(game.is_legal(sente.Move(15, 3, sente.stone.BLACK)))
 
     def test_empty_out_of_bounds(self):
         """
@@ -202,16 +202,16 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        self.assertTrue(game.is_legal(19, 19, BLACK))
-        self.assertFalse(game.is_legal(20, 19, BLACK))
-        self.assertFalse(game.is_legal(19, 20, BLACK))
+        self.assertTrue(game.is_legal(19, 19, sente.stone.BLACK))
+        self.assertFalse(game.is_legal(20, 19, sente.stone.BLACK))
+        self.assertFalse(game.is_legal(19, 20, sente.stone.BLACK))
 
         # internal indexing
-        self.assertTrue(game.is_legal(Move(18, 18, BLACK)))
-        self.assertFalse(game.is_legal(Move(19, 18, BLACK)))
-        self.assertFalse(game.is_legal(Move(18, 19, BLACK)))
+        self.assertTrue(game.is_legal(sente.Move(18, 18, sente.stone.BLACK)))
+        self.assertFalse(game.is_legal(sente.Move(19, 18, sente.stone.BLACK)))
+        self.assertFalse(game.is_legal(sente.Move(18, 19, sente.stone.BLACK)))
 
     def test_occupied_space(self):
         """
@@ -221,13 +221,13 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(2, 3, BLACK)
-        game.play(15, 3, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(15, 3, sente.stone.WHITE)
 
-        self.assertFalse(game.is_legal(2, 3, BLACK))
-        self.assertFalse(game.is_legal(15, 3, BLACK))
+        self.assertFalse(game.is_legal(2, 3, sente.stone.BLACK))
+        self.assertFalse(game.is_legal(15, 3, sente.stone.BLACK))
 
     def test_self_capture(self):
         """
@@ -237,14 +237,14 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(1, 2, BLACK)
-        game.play(19, 19, WHITE)
+        game.play(1, 2, sente.stone.BLACK)
+        game.play(19, 19, sente.stone.WHITE)
 
-        game.play(2, 1, BLACK)
+        game.play(2, 1, sente.stone.BLACK)
 
-        self.assertFalse(game.is_legal(1, 1, WHITE))
+        self.assertFalse(game.is_legal(1, 1, sente.stone.WHITE))
 
     def test_group_self_capture(self):
         """
@@ -254,18 +254,18 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(1, 3, BLACK)
-        game.play(1, 2, WHITE)
+        game.play(1, 3, sente.stone.BLACK)
+        game.play(1, 2, sente.stone.WHITE)
 
-        game.play(2, 3, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(2, 2, sente.stone.WHITE)
 
-        game.play(3, 2, BLACK)
-        game.play(2, 1, WHITE)
+        game.play(3, 2, sente.stone.BLACK)
+        game.play(2, 1, sente.stone.WHITE)
 
-        game.play(3, 1, BLACK)
+        game.play(3, 1, sente.stone.BLACK)
 
         self.assertFalse(game.is_legal(1, 1))
 
@@ -277,7 +277,7 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         game.play(1, 3)
         game.play(1, 2)
@@ -301,26 +301,26 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(2, 3, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(1, 3, WHITE)
+        game.play(4, 3, sente.stone.BLACK)
+        game.play(1, 3, sente.stone.WHITE)
 
-        game.play(3, 2, BLACK)
-        game.play(2, 4, WHITE)
+        game.play(3, 2, sente.stone.BLACK)
+        game.play(2, 4, sente.stone.WHITE)
 
-        game.play(3, 4, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(3, 4, sente.stone.BLACK)
+        game.play(2, 2, sente.stone.WHITE)
 
         # play away before taking the ko
 
-        game.play(18, 18, BLACK)
-        game.play(3, 3, WHITE)  # take the Ko
+        game.play(18, 18, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)  # take the Ko
 
-        self.assertFalse(game.is_legal(2, 3, BLACK))
+        self.assertFalse(game.is_legal(2, 3, sente.stone.BLACK))
 
     def test_inactive_ko(self):
         """
@@ -330,36 +330,48 @@ class TestLegalMove(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(3, 4, BLACK)
-        game.play(4, 4, WHITE)
+        game.play(3, 4, sente.stone.BLACK)
+        game.play(4, 4, sente.stone.WHITE)
 
-        game.play(5, 4, BLACK)
-        game.play(2, 4, WHITE)
+        game.play(5, 4, sente.stone.BLACK)
+        game.play(2, 4, sente.stone.WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(3, 5, WHITE)
+        game.play(4, 3, sente.stone.BLACK)
+        game.play(3, 5, sente.stone.WHITE)
 
-        game.play(4, 5, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(4, 5, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)
 
         # play away before taking the ko
 
-        game.play(19, 19, BLACK)
-        game.play(4, 4, WHITE)  # take the Ko
+        game.play(19, 19, sente.stone.BLACK)
+        game.play(4, 4, sente.stone.WHITE)  # take the Ko
 
         # simulate a ko threat
-        game.play(19, 1, BLACK)
-        game.play(18, 1, WHITE)
+        game.play(19, 1, sente.stone.BLACK)
+        game.play(18, 1, sente.stone.WHITE)
 
         # the Ko should no longer be active
-        self.assertTrue(game.is_legal(3, 4, BLACK))
+        self.assertTrue(game.is_legal(3, 4, sente.stone.BLACK))
 
-        game.play(3, 4, BLACK)
+        game.play(3, 4, sente.stone.BLACK)
 
         # it should now be illegal for white to play here
-        self.assertFalse(game.is_legal(4, 4, WHITE))
+        self.assertFalse(game.is_legal(4, 4, sente.stone.WHITE))
+        
+    def test_zero_zero_illegal(self):
+        """
+        
+        tests to see if playing on the zero zero point is illegal
+        
+        :return: 
+        """
+        
+        game = sente.Game()
+        
+        self.assertFalse(game.is_legal(0, 0))
 
 
 class IllegalMoveThrowsException(DoesNotRaiseTestCase):
@@ -378,13 +390,13 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         """
 
         # create a 19x19 board
-        game = Game()
+        game = sente.Game()
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(3, 3, WHITE)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(3, 3, sente.stone.WHITE)
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(15, 15, WHITE)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(15, 15, sente.stone.WHITE)
 
     def test_correct_color(self):
         """
@@ -394,15 +406,15 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(3, 3, BLACK)
+        game.play(3, 3, sente.stone.BLACK)
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(15, 3, BLACK)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(15, 3, sente.stone.BLACK)
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(Move(15, 3, BLACK))
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(sente.Move(15, 3, sente.stone.BLACK))
 
     def test_empty_out_of_bounds(self):
         """
@@ -412,15 +424,15 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(20, 19, BLACK)
-            game.play(19, 20, BLACK)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(20, 19, sente.stone.BLACK)
+            game.play(19, 20, sente.stone.BLACK)
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(Move(20, 19, BLACK))
-            game.play(Move(19, 20, BLACK))
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(sente.Move(20, 19, sente.stone.BLACK))
+            game.play(sente.Move(19, 20, sente.stone.BLACK))
 
     def test_occupied_space(self):
         """
@@ -430,14 +442,14 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(2, 3, BLACK)
-        game.play(15, 3, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(15, 3, sente.stone.WHITE)
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(2, 3, BLACK)
-            game.play(15, 3, BLACK)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(2, 3, sente.stone.BLACK)
+            game.play(15, 3, sente.stone.BLACK)
 
     def test_self_capture(self):
         """
@@ -447,15 +459,15 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(1, 2, BLACK)
-        game.play(19, 19, WHITE)
+        game.play(1, 2, sente.stone.BLACK)
+        game.play(19, 19, sente.stone.WHITE)
 
-        game.play(2, 1, BLACK)
+        game.play(2, 1, sente.stone.BLACK)
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(1, 1, WHITE)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(1, 1, sente.stone.WHITE)
 
     def test_group_self_capture(self):
         """
@@ -465,20 +477,20 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(1, 3, BLACK)
-        game.play(1, 2, WHITE)
+        game.play(1, 3, sente.stone.BLACK)
+        game.play(1, 2, sente.stone.WHITE)
 
-        game.play(2, 3, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(2, 2, sente.stone.WHITE)
 
-        game.play(3, 2, BLACK)
-        game.play(2, 1, WHITE)
+        game.play(3, 2, sente.stone.BLACK)
+        game.play(2, 1, sente.stone.WHITE)
 
-        game.play(3, 1, BLACK)
+        game.play(3, 1, sente.stone.BLACK)
 
-        with self.assertRaises(utils.IllegalMoveException):
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play(1, 1)
 
     def test_ko(self):
@@ -489,27 +501,27 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(2, 3, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(2, 3, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(1, 3, WHITE)
+        game.play(4, 3, sente.stone.BLACK)
+        game.play(1, 3, sente.stone.WHITE)
 
-        game.play(3, 2, BLACK)
-        game.play(2, 4, WHITE)
+        game.play(3, 2, sente.stone.BLACK)
+        game.play(2, 4, sente.stone.WHITE)
 
-        game.play(3, 4, BLACK)
-        game.play(2, 2, WHITE)
+        game.play(3, 4, sente.stone.BLACK)
+        game.play(2, 2, sente.stone.WHITE)
 
         # play away before taking the ko
 
-        game.play(18, 18, BLACK)
-        game.play(3, 3, WHITE)  # take the Ko
+        game.play(18, 18, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)  # take the Ko
 
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(2, 3, BLACK)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(2, 3, sente.stone.BLACK)
 
     def test_inactive_ko(self):
         """
@@ -519,33 +531,46 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        game.play(3, 4, BLACK)
-        game.play(4, 4, WHITE)
+        game.play(3, 4, sente.stone.BLACK)
+        game.play(4, 4, sente.stone.WHITE)
 
-        game.play(5, 4, BLACK)
-        game.play(2, 4, WHITE)
+        game.play(5, 4, sente.stone.BLACK)
+        game.play(2, 4, sente.stone.WHITE)
 
-        game.play(4, 3, BLACK)
-        game.play(3, 5, WHITE)
+        game.play(4, 3, sente.stone.BLACK)
+        game.play(3, 5, sente.stone.WHITE)
 
-        game.play(4, 5, BLACK)
-        game.play(3, 3, WHITE)
+        game.play(4, 5, sente.stone.BLACK)
+        game.play(3, 3, sente.stone.WHITE)
 
         # play away before taking the ko
 
-        game.play(19, 19, BLACK)
-        game.play(4, 4, WHITE)  # take the Ko
+        game.play(19, 19, sente.stone.BLACK)
+        game.play(4, 4, sente.stone.WHITE)  # take the Ko
 
         # simulate a ko threat
-        game.play(19, 1, BLACK)
-        game.play(18, 1, WHITE)
+        game.play(19, 1, sente.stone.BLACK)
+        game.play(18, 1, sente.stone.WHITE)
 
         # the Ko should no longer be active
-        with self.assertDoesNotRaise(utils.IllegalMoveException):
-            game.play(3, 4, BLACK)
+        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
+            game.play(3, 4, sente.stone.BLACK)
 
         # it should now be illegal for white to play here
-        with self.assertRaises(utils.IllegalMoveException):
-            game.play(4, 4, WHITE)
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(4, 4, sente.stone.WHITE)
+
+    def test_zero_zero_illegal(self):
+        """
+        
+        tests to see if playing on the zero zero point is illegal
+        
+        :return: 
+        """
+
+        game = sente.Game()
+
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
+            game.play(0, 0)

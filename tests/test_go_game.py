@@ -5,10 +5,8 @@ Author: Arthur Wesley
 """
 from unittest import TestCase
 
-import sente.utils
-
 from assert_does_not_raise import DoesNotRaiseTestCase
-from sente import *
+import sente
 
 
 class TestBasicMethods(DoesNotRaiseTestCase):
@@ -22,16 +20,16 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         """
 
         with self.assertDoesNotRaise(Exception):
-            Game()
-            Game(13)
-            Game(19)
-            Game(9, CHINESE)
-            Game(rules=CHINESE)
-            Game(rules=JAPANESE)
-            Game(rules=JAPANESE, board_size=13)
+            sente.Game()
+            sente.Game(13)
+            sente.Game(19)
+            sente.Game(9, sente.rules.CHINESE)
+            sente.Game(rules=sente.rules.CHINESE)
+            sente.Game(rules=sente.rules.JAPANESE)
+            sente.Game(rules=sente.rules.JAPANESE, board_size=13)
 
         with self.assertRaises(ValueError):
-            Game(15, JAPANESE)
+            sente.Game(15, sente.rules.JAPANESE)
 
     def test_play(self):
         """
@@ -41,13 +39,13 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         with self.assertDoesNotRaise(Exception):
-            game.play(3, 15, BLACK)
+            game.play(3, 15, sente.stone.BLACK)
             game.play(15, 15)
 
-        with self.assertRaises(utils.IllegalMoveException):
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play(3, 15)
 
     def test_score_unfinished_game(self):
@@ -58,7 +56,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         with self.assertRaises(ValueError):
             game.score()
@@ -74,7 +72,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
         game.resign()
 
         with self.assertRaises(ValueError):
@@ -91,7 +89,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = Game(9)
+        game = sente.Game(9)
 
         self.assertEqual(83, len(game.get_legal_moves()))
 
@@ -106,7 +104,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         game.play(3, 3)
         game.play(3, 4)
@@ -118,13 +116,13 @@ class TestTreeNavigation(TestCase):
 
         game.advance_to_root()
 
-        self.assertEqual(stone.EMPTY, game.get_point(3, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(3, 4))
-        self.assertEqual(stone.EMPTY, game.get_point(4, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(4, 4))
-        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
-        self.assertEqual(stone.EMPTY, game.get_point(15, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(15, 15))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 4))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(4, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(4, 4))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 15))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(15, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(15, 15))
 
     def test_undo_move(self):
         """
@@ -134,17 +132,17 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         # create a basic tree
         game.play(3, 3)
         game.play(3, 15)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.WHITE, game.get_point(3, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(3, 15))
         game.step_up()
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 15))
 
     def test_undo_redo(self):
         """
@@ -154,7 +152,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         # create a basic tree
         game.play(3, 3)
@@ -163,8 +161,8 @@ class TestTreeNavigation(TestCase):
         game.step_up()
         game.play(3, 15)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.WHITE, game.get_point(3, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(3, 15))
 
     def test_undo_multiple(self):
         """
@@ -174,24 +172,24 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         game.play(3, 3)
         game.play(3, 15)
         game.play(15, 3)
         game.play(15, 15)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.WHITE, game.get_point(3, 15))
-        self.assertEqual(stone.BLACK, game.get_point(15, 3))
-        self.assertEqual(stone.WHITE, game.get_point(15, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(3, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(15, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(15, 15))
 
         game.step_up(3)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
-        self.assertEqual(stone.EMPTY, game.get_point(15, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(15, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 15))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(15, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(15, 15))
 
     def test_simple_fork(self):
         """
@@ -201,7 +199,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         game.play(3, 3)
         game.play(3, 15)
@@ -209,17 +207,17 @@ class TestTreeNavigation(TestCase):
         game.step_up()
         game.play(15, 3)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.WHITE, game.get_point(15, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(3, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(15, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 15))
 
         # switch back to the other branch
         game.step_up()
         game.play(3, 15)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.EMPTY, game.get_point(15, 3))
-        self.assertEqual(stone.WHITE, game.get_point(3, 15))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(15, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(3, 15))
 
     def test_get_branches(self):
         """
@@ -229,7 +227,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         game.play(3, 3)
         game.play(3, 15)
@@ -245,9 +243,9 @@ class TestTreeNavigation(TestCase):
 
         self.assertEqual(3, len(branches))
 
-        self.assertIn(Move(14, 2, stone.WHITE), branches)
-        self.assertIn(Move(14, 14, stone.WHITE), branches)
-        self.assertIn(Move(2, 14, stone.WHITE), branches)
+        self.assertIn(sente.Move(14, 2, sente.stone.WHITE), branches)
+        self.assertIn(sente.Move(14, 14, sente.stone.WHITE), branches)
+        self.assertIn(sente.Move(2, 14, sente.stone.WHITE), branches)
 
     def test_play_moves(self):
         """
@@ -257,15 +255,15 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        moves = [Move(2, 2, stone.BLACK), Move(4, 4, stone.WHITE), Move(6, 6, stone.BLACK)]
+        moves = [sente.Move(2, 2, sente.stone.BLACK), sente.Move(4, 4, sente.stone.WHITE), sente.Move(6, 6, sente.stone.BLACK)]
 
         game.play_sequence(moves)
 
-        self.assertEqual(stone.BLACK, game.get_point(3, 3))
-        self.assertEqual(stone.WHITE, game.get_point(5, 5))
-        self.assertEqual(stone.BLACK, game.get_point(7, 7))
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+        self.assertEqual(sente.stone.WHITE, game.get_point(5, 5))
+        self.assertEqual(sente.stone.BLACK, game.get_point(7, 7))
 
     def test_get_move_sequence(self):
         """
@@ -275,9 +273,9 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(7, 7, stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE), sente.Move(7, 7, sente.stone.BLACK)]
 
         game.play_sequence(moves)
 
@@ -291,13 +289,13 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
-        moves = [Move(3, 3, stone.BLACK), Move(5, 5, stone.WHITE), Move(3, 3, stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)]
 
-        with self.assertRaises(sente.utils.IllegalMoveException):
+        with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play_sequence(moves)
-        self.assertEqual(stone.EMPTY, game.get_point(3, 3))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
 
     def test_resign(self):
         """
@@ -307,10 +305,10 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
         game.resign()
 
-        self.assertEqual(stone.WHITE, game.get_winner())
+        self.assertEqual(sente.stone.WHITE, game.get_winner())
 
     def test_get_children(self):
         """
@@ -320,7 +318,7 @@ class TestTreeNavigation(TestCase):
         :return:
         """
 
-        game = Game()
+        game = sente.Game()
 
         self.assertEqual(game.get_branches(), [])
 
@@ -330,4 +328,4 @@ class TestTreeNavigation(TestCase):
         game.play(2, 3)
         game.step_up()
 
-        self.assertEqual(game.get_branches(), [Move(2, 2, stone.BLACK), Move(1, 2, stone.BLACK)])
+        self.assertEqual(game.get_branches(), [sente.Move(2, 2, sente.stone.BLACK), sente.Move(1, 2, sente.stone.BLACK)])

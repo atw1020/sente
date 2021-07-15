@@ -21,11 +21,6 @@ namespace sente {
         WHITE
     };
 
-    enum Action {
-        PASS,
-        RESIGN
-    };
-
     typedef std::pair<unsigned, unsigned> Point;
 
     Stone getOpponent(Stone player);
@@ -36,9 +31,17 @@ namespace sente {
         Move();
         // Move(const Move& move) = delete;
         Move(const Move& other);
-        Move(Stone stone, Action action);
-        explicit Move(std::string sgf);
         Move(unsigned x, unsigned y, Stone stone);
+
+        const static Move passBlack;
+        const static Move resignBlack;
+
+        const static Move passWhite;
+        const static Move resignWhite;
+
+        static Move fromSGF(std::string sgf);
+        static Move pass(Stone player);
+        static Move resign(Stone player);
 
         // TODO: see if making these fields public improves performance
         unsigned getX() const;

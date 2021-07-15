@@ -36,7 +36,7 @@ namespace sente {
                     // only insert moves if we find one
                     if (regexIter != std::sregex_iterator()){
 
-                        Move temp((regexIter++)->str());
+                        Move temp = Move::fromSGF((regexIter++)->str());
 
                         // insert the move into the tree and record the step we take
                         branchDepths.push(moves.getDepth());
@@ -45,7 +45,7 @@ namespace sente {
                         // go through all the matches
                         for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
                             // insert the move but don't advance to the new node
-                            temp = Move(iter->str());
+                            temp = Move::fromSGF(iter->str());
                             moves.insert(temp);
                         }
                     }
@@ -62,7 +62,7 @@ namespace sente {
                     if (regexIter != std::sregex_iterator()){
 
                         // if there are any moves, insert them
-                        Move temp((regexIter++)->str());
+                        Move temp = Move::fromSGF((regexIter++)->str());
 
                         branchDepths.push(moves.getDepth());
                         moves.insert(temp);
@@ -70,7 +70,7 @@ namespace sente {
                         // go through all the matches
                         for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
                             // insert the move but don't advance to the new node
-                            temp = Move(iter->str());
+                            temp = Move::fromSGF(iter->str());
                             moves.insert(temp);
                         }
                     }

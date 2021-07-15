@@ -9,6 +9,7 @@
 
    basics
    game tree navigation
+   gotchas
 
 .. toctree::
    :maxdepth: 2

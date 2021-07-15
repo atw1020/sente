@@ -366,8 +366,8 @@ namespace sente {
         }
 
         // add resignation and passing
-        moves.emplace_back(player, PASS);
-        moves.emplace_back(player, RESIGN);
+        moves.emplace_back(Move::pass(getActivePlayer()));
+        moves.emplace_back(Move::resign(getActivePlayer()));
 
         return moves;
 
@@ -390,8 +390,8 @@ namespace sente {
       }
 
       // add resignation and passing
-      moves.append(Move(player, PASS));
-      moves.append(Move(player, RESIGN));
+      moves.append(Move::pass(getActivePlayer()));
+      moves.append(Move::resign(getActivePlayer()));
 
       return moves;
 
