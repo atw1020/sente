@@ -198,6 +198,7 @@ PYBIND11_MODULE(sente, module){
                 py::arg("rules") = sente::Rules::CHINESE,
                 py::arg("komi") = INFINITY,
                 "initializes a go game with a specified board size and rules")
+            .def("get_active_player", &sente::GoGame::getActivePlayer)
             .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
                     return game.isLegal(x - 1, y - 1);
                 },
