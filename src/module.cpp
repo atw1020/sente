@@ -101,7 +101,13 @@ PYBIND11_MODULE(sente, module){
             .def(py::init<unsigned, unsigned, sente::Stone>(),
                     py::arg("x"),
                     py::arg("y"),
-                    py::arg("stone"), R"pbdoc()pbdoc")
+                    py::arg("stone"), R"pbdoc(
+
+                .. Note:
+
+                    Instantiating the ``sente.Move`` Object is not recommended because it uses :ref:`internal co-ordinates <Gotchas>`_
+
+            )pbdoc")
             .def("get_x", &sente::Move::getX,
                  "get the x-coordinate of the move (zero based indices)")
             .def("get_y", &sente::Move::getY,
