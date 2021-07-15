@@ -48,6 +48,22 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play(3, 15)
 
+    def test_get_active_player(self):
+        """
+
+        tests to see if the get_active_player() method works
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        self.assertEqual(sente.stone.BLACK, game.get_active_player())
+
+        game.play(4, 4)
+
+        self.assertEqual(sente.stone.WHITE, game.get_active_player())
+
     def test_score_unfinished_game(self):
         """
 
