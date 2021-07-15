@@ -5,13 +5,13 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Tutorial:
+   :caption: Tutorial
 
    basics
    game tree navigation
 
 .. toctree::
    :maxdepth: 2
-   :caption: Module:
+   :caption: Reference
 
-   move objects
+   sente

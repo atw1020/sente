@@ -30,19 +30,69 @@ PYBIND11_MODULE(sente, module){
 
     module.def("add", &add, py::arg("x"), py::arg("y"));
 
-    module.doc() = "Sente: an open source API for go";
+    module.doc() = R"pbdoc(
+        Sente library
+        -------------
+
+        .. currentmodule:: sente
+
+        Documentation for the Contents of the ``sente`` library
+
+        .. autosummary::
+           :toctree: _generate
+
+            stone
+            Move
+            Board9
+            Board13
+            Board19
+            rules
+            Game
+            sgf
+
+
+    )pbdoc";
+
     module.def("opposite_player", &sente::getOpponent, "get the opponent of a particular stone color");
 
 
-    py::enum_<sente::Stone>(module, "stone")
-            .value("BLACK", sente::BLACK)
-            .value("WHITE", sente::WHITE)
-            .value("EMPTY", sente::EMPTY)
+    py::enum_<sente::Stone>(module, "stone", R"pbdoc(
+                An enumeration for a Go stone.
+
+                .. code-block:: python
+
+                    >>> stone = sente.stone.BLACK
+                    >>> print(stone)
+                    stone.BLACK
+
+            )pbdoc")
+            .value("BLACK", sente::BLACK, R"pbdoc(
+                Represents a Black Go Stone.
+            )pbdoc")
+            .value("WHITE", sente::WHITE, R"pbdoc(
+                Represents a White Go Stone.
+            )pbdoc")
+            .value("EMPTY", sente::EMPTY, R"pbdoc(
+                Represents an empty point on the grid.
+            )pbdoc")
             .export_values();
 
-    py::enum_<sente::Rules>(module, "rules")
-            .value("CHINESE", sente::Rules::CHINESE)
-            .value("JAPANESE", sente::Rules::JAPANESE)
+    py::enum_<sente::Rules>(module, "rules", R"pbdoc(
+                An enumeration for a Go Rules Set.
+
+                .. code-block:: python
+
+                    >>> rules = sente.rules.CHINESE
+                    >>> print(rules)
+                    rules.CHINESE
+
+            )pbdoc")
+            .value("CHINESE", sente::Rules::CHINESE, R"pbdoc(
+                The `Chinese rules <https://senseis.xmp.net/?ChineseRules>`_ for go.
+            )pbdoc")
+            .value("JAPANESE", sente::Rules::JAPANESE, R"pbdoc(
+                The `Japanese rules <https://senseis.xmp.net/?JapaneseRules>`_ for go.
+            )pbdoc")
             .export_values();
 
     py::class_<sente::Move>(module, "Move")
@@ -269,9 +319,9 @@ PYBIND11_MODULE(sente, module){
             return game.toSGF(params);
         });
 
-    auto utils = module.def_submodule("utils", "various utilities used by sente");
+    auto exceptions = module.def_submodule("exceptions", "various utilities used by sente");
 
-    py::register_exception<sente::utils::InvalidSGFException>(utils, "InvalidSGFException");
-    py::register_exception<sente::utils::IllegalMoveException>(utils, "IllegalMoveException");
+    py::register_exception<sente::utils::InvalidSGFException>(exceptions, "InvalidSGFException");
+    py::register_exception<sente::utils::IllegalMoveException>(exceptions, "IllegalMoveException");
 
 }

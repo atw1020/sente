@@ -15,5 +15,5 @@
 
 # documentation
 /docs/_build/
-/docs/build
+/docs/_generate/
 /docs/sente.egg-info
