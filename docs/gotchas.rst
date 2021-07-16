@@ -23,3 +23,11 @@ However ``sente.Move`` objects use `Internal` Indexing and thus, if you wish to 
 
 
 Because of this, Instantiating the ``sente.Move`` object directly is inadvisable and using ``sente.play(x, y)`` is prefered.
+
+Slicing Sequences of Moves
+--------------------------
+
+As mentioned in game tree navigation, sequences of moves obtained using the ``game.get_sequence()`` method are python lists of ``sente.Move`` objects which means that python list slicing may be used on them.
+However, when you make a slice, you must be very careful about the indices you slice at to ensure that it starts with a move belonging to the correct player.
+
+For example,
