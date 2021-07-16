@@ -9,6 +9,7 @@
 
    basics
    game tree navigation
+   sgf
    gotchas
 
 .. toctree::

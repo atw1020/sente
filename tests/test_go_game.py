@@ -313,6 +313,55 @@ class TestTreeNavigation(TestCase):
             game.play_sequence(moves)
         self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
 
+    def test_get_default_sequence(self):
+        """
+
+        tests to see if the game correctly obtains the default sequence of moves
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.play(16, 4)
+        game.play(4, 16)
+
+        game.step_up()
+
+        default_branch = game.get_default_branch()
+
+        self.assertEqual(game.get_point(4, 16), sente.stone.EMPTY)
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.WHITE)
+
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE), sente.Move(3, 15, sente.stone.BLACK)]
+
+        self.assertEqual(moves, default_branch)
+
+    def test_is_at_root(self):
+        """
+
+        tests to see if the is at root method works
+
+        :return:
+        """
+
+        game = sente.Game()
+        self.assertTrue(game.is_at_root())
+
+        game.play(4, 4)
+        self.assertFalse(game.is_at_root())
+
+        game.play(3, 3)
+        game.step_up()
+
+        self.assertFalse(game.is_at_root())
+
+        game.step_up()
+        self.assertTrue(game.is_at_root())
+
+
     def test_resign(self):
         """
 

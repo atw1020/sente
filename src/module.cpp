@@ -267,6 +267,8 @@ PYBIND11_MODULE(sente, module){
                     return game.getResults().winner();
                 },
                 "determines the winner of the game")
+            .def("is_at_root", &sente::GoGame::isAtRoot,
+                 "determine if the board is currently in the root state")
             .def("advance_to_root", &sente::GoGame::advanceToRoot,
                  "advance to the root node")
             .def("step_up", &sente::GoGame::stepUp,
@@ -274,6 +276,8 @@ PYBIND11_MODULE(sente, module){
                 "step up the tree the specified number of steps")
             .def("get_branches", &sente::GoGame::getBranches,
                  "generates a list of the branches at the curren node of the game tree")
+            .def("get_default_branch", &sente::GoGame::getDefaultBranch,
+                 "generates a list of the moves in the default branch")
             .def("play_default_branch", &sente::GoGame::playDefaultBranch,
                  "plays out the moves in the default (first) branch of the tree")
             .def("play_sequence", &sente::GoGame::playMoveSequence,

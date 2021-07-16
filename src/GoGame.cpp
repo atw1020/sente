@@ -185,11 +185,19 @@ namespace sente {
 
     }
 
+    bool GoGame::isAtRoot() const{
+        return moveTree.isAtRoot();
+    }
+
     void GoGame::advanceToRoot() {
         resetBoard();
     }
 
     void GoGame::stepUp(unsigned steps) {
+
+        if (moveTree.getDepth() < steps){
+            throw std::domain_error("Cannot step up past root");
+        }
 
         // get the moves that lead to this sequence
         auto sequence = getMoveSequence();
@@ -199,6 +207,30 @@ namespace sente {
 
         // play out the move sequence without the last few moves
         playMoveSequence(std::vector<Move>(sequence.begin(), sequence.end() - steps));
+
+    }
+
+    std::vector<Move> GoGame::getDefaultBranch() {
+
+        auto bookmark = moveTree.getSequence();
+        std::vector<Move> defaultBranch;
+
+        // advance the moveTree to the root
+        moveTree.advanceToRoot();
+
+        while (not moveTree.isAtLeaf()){
+            auto child = moveTree.getChildren()[0];
+            defaultBranch.push_back(child);
+            moveTree.stepDown();
+        }
+
+        // now that we have found the sequence, return to our original position
+        moveTree.advanceToRoot();
+        for (const auto& move : bookmark){
+            moveTree.stepTo(move);
+        }
+
+        return defaultBranch;
 
     }
 

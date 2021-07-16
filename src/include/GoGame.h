@@ -55,9 +55,11 @@ namespace sente {
         /// movement through the game tree
         ///
 
+        bool isAtRoot() const;
         void advanceToRoot();
         void stepUp(unsigned steps);
         void playDefaultBranch();
+        std::vector<Move> getDefaultBranch();
         void playMoveSequence(const std::vector<Move>& moves);
         std::vector<Move> getMoveSequence();
         std::vector<Move> getBranches();

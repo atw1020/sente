@@ -173,10 +173,10 @@ namespace sente {
                 return children;
             }
 
-            bool isAtRoot(){
+            bool isAtRoot() const {
                 return cursor->isRoot();
             }
-            bool isAtLeaf(){
+            bool isAtLeaf() const {
                 return cursor->isLeaf();
             }
             bool isChild(const Type& move){
