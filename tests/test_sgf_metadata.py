@@ -65,6 +65,7 @@ class LoadMetadata(TestCase):
             "PW": "White",
             "PB": "Black",
         }
+
         self .assertEqual(correct, metadata)
 
 

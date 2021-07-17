@@ -26,18 +26,20 @@ namespace std {
 
 namespace sente {
 
+    double getKomi(Rules ruleset) {
+        switch (ruleset){
+            case CHINESE:
+                return 7.5;
+            case JAPANESE:
+                return 6.5;
+        }
+    }
+
     GoGame::GoGame(unsigned side, Rules rules, double komi) {
 
         // default Komi values
         if (std::isinf(komi)){
-            switch (rules){
-                case CHINESE:
-                    this->komi = 7.5;
-                    break;
-                case JAPANESE:
-                    this->komi = 6.5;
-                    break;
-            }
+            this->komi = getKomi(rules);
         }
         else {
             this->komi = komi;
@@ -79,10 +81,16 @@ namespace sente {
             throw utils::InvalidSGFException("ruleset not recognized \"" + ruleString + "\" (sente only supports japanese and chinese rules at present)");
         }
 
+        if (metadata.find("KM") != metadata.end()){
+            komi = std::stod(metadata["KM"]);
+        }
+        else {
+            komi = getKomi(rules);
+        }
+
 
         // extract the move tree
         moveTree = utils::getSGFMoves(SGFText);
-        komi = 7.5; // utils::getSGFKomi(SGFText);
 
         // some book-keeping
 
