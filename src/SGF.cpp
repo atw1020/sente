@@ -186,11 +186,11 @@ namespace sente {
 
         std::string toSGF(Tree<Move> moves, std::unordered_map<std::string, std::string>& attributes){
 
-            // add some default attributes
-            attributes["FF"] = "4";
-
             // create the string stream to use
             std::stringstream SGF;
+
+            // make sure that all of the attributes are legal
+
 
             // backup the current position of the board and advance to the root node
             auto moveSequence = moves.getSequence();
@@ -198,9 +198,8 @@ namespace sente {
 
             SGF << "(";
 
-            if (not attributes.empty()){
-                SGF << ";";
-            }
+            // add the file format as the first parameter
+            SGF << ";FF[4]\n";
 
             for (const auto& attribute : attributes){
                 SGF << attribute.first << "[" << attribute.second << "]\n";
