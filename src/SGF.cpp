@@ -106,50 +106,60 @@ namespace sente {
             using namespace std::regex_constants;
 
             // find the rules and board size to initialize the game
-            std::smatch result;
             std::regex rulesRegex("RU\\[((Chinese|Japanese))\\]", icase);
 
             // extract the rules from the string
-            std::regex_search(SGFText, result, rulesRegex);
+            auto regexIterator = std::sregex_iterator(SGFText.begin(), SGFText.end(), rulesRegex);
 
-            std::string temp = result[0].str();
-            std::string rulesString(temp.begin() + 3, temp.end() - 1);// create the board from the results
-
-            // convert the rules to lowercase
-            std::transform(rulesString.begin(), rulesString.end(), rulesString.begin(), ::tolower);
-
-            if (rulesString == "japanese"){
-                return JAPANESE;
-            }
-            else if (rulesString == "chinese"){
+            if (regexIterator == std::sregex_iterator()){
+                // if there were no Rules, assume Chinese rules
                 return CHINESE;
             }
             else {
-                throw InvalidSGFException("Could not determine Rules");
+                std::string temp = regexIterator->str();
+                std::string rulesString(temp.begin() + 3, temp.end() - 1);// create the board from the results
+
+                // convert the rules to lowercase
+                std::transform(rulesString.begin(), rulesString.end(), rulesString.begin(), ::tolower);
+
+                if (rulesString == "japanese"){
+                    return JAPANESE;
+                }
+                else if (rulesString == "chinese"){
+                    return CHINESE;
+                }
+                else {
+                    throw InvalidSGFException("Unknown rule specification \"" + rulesString + "\"");
+                }
             }
 
         }
         std::unique_ptr<_board> getSGFBoardSize(const std::string& SGFText){
 
-            std::smatch result;
             std::regex boardSizeRegex("SZ\\[\\d{1,2}\\]");
 
             // extract the board size from the string
-            std::regex_search(SGFText, result, boardSizeRegex);
+            auto regexIter = std::sregex_iterator(SGFText.begin(), SGFText.end(), boardSizeRegex);
 
-            std::string temp = result[0].str();
+            if (regexIter == std::sregex_iterator()){
+                // we can't find anything so assume 19x19
+                return std::unique_ptr<Board<19>>(new Board<19>());
+            }
+            else {
+                std::string temp = regexIter->str();
 
-            unsigned side = std::stol(std::string(temp.begin() + 3, temp.end() - 1));
+                unsigned side = std::stol(std::string(temp.begin() + 3, temp.end() - 1));
 
-            switch (side){
-                case 19:
-                    return std::unique_ptr<Board<19>>(new Board<19>());
-                case 13:
-                    return std::unique_ptr<Board<13>>(new Board<13>());
-                case 9:
-                    return std::unique_ptr<Board<9>>(new Board<9>());
-                default:
-                    throw std::domain_error("Invalid Board size " + std::to_string(side));
+                switch (side){
+                    case 19:
+                        return std::unique_ptr<Board<19>>(new Board<19>());
+                    case 13:
+                        return std::unique_ptr<Board<13>>(new Board<13>());
+                    case 9:
+                        return std::unique_ptr<Board<9>>(new Board<9>());
+                    default:
+                        throw std::domain_error("Invalid Board size " + std::to_string(side));
+                }
             }
 
         }

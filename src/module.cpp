@@ -101,17 +101,19 @@ PYBIND11_MODULE(sente, module){
             .def(py::init<unsigned, unsigned, sente::Stone>(),
                     py::arg("x"),
                     py::arg("y"),
-                    py::arg("stone"), R"pbdoc(
+                    py::arg("stone"),
+                    R"pbdoc(
+                    .. Note:
 
-                .. Note:
-
-                    Instantiating the ``sente.Move`` Object is not recommended because it uses :ref:`internal co-ordinates <Gotchas>`_
+                        Instantiating the ``sente.Move`` Object is not recommended because it uses :ref:`internal co-ordinates <Gotchas>`_
 
             )pbdoc")
             .def("get_x", &sente::Move::getX,
-                 "get the x-coordinate of the move (zero based indices)")
+                 R"pbdoc(
+                    get the x-coordinate of the move (internal indices)
+            )pbdoc")
             .def("get_y", &sente::Move::getY,
-                 "get the y-coordinate of the move (zero based indices)")
+                 "get the y-coordinate of the move (internal indices)")
             .def("get_stone", &sente::Move::getStone, "get the stone that the player will place on the board")
             .def("__eq__", &sente::Move::operator==)
             .def("__ne__", &sente::Move::operator!=)

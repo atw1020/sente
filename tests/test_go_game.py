@@ -361,7 +361,6 @@ class TestTreeNavigation(TestCase):
         game.step_up()
         self.assertTrue(game.is_at_root())
 
-
     def test_resign(self):
         """
 
@@ -394,3 +393,13 @@ class TestTreeNavigation(TestCase):
         game.step_up()
 
         self.assertEqual(game.get_branches(), [sente.Move(2, 2, sente.stone.BLACK), sente.Move(1, 2, sente.stone.BLACK)])
+
+    def test_undo_resign(self):
+        """
+
+        tests to see if resignation can be undone
+
+        TODO: implement
+
+        :return:
+        """

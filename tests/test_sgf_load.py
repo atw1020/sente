@@ -5,7 +5,9 @@ Author: Arthur Wesley
 """
 
 import os
+from pathlib import Path
 from unittest import TestCase
+
 from sente import *
 
 from assert_does_not_raise import DoesNotRaiseTestCase
@@ -27,7 +29,7 @@ class BasicSGF(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
-                game = sgf.load(os.path.join("sgf", file))
+                game = sgf.load(str(Path("sgf")/file))
                 game.play_default_branch()
 
     def test_simple_single_branch_file(self):
@@ -127,7 +129,7 @@ class StringLoad(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
-                with open(os.path.join("sgf", file)) as sgf_file:
+                with open(Path("sgf")/file) as sgf_file:
                     game = sgf.loads(sgf_file.read())
                     game.play_default_branch()
 
@@ -257,8 +259,8 @@ class InvalidSGF(TestCase):
         files = os.listdir("invalid sgf")
 
         for file in files:
-            with self.assertRaises(Exception):
-                game = sgf.load(os.path.join("invalid sgf", file))
+            with self.assertRaises(exceptions.InvalidSGFException):
+                game = sgf.load(str(Path("invalid sgf")/file))
 
     def test_invalid_moves(self):
         """
@@ -268,11 +270,11 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        with self.assertRaises(utils.InvalidSGFException):
+        with self.assertRaises(exceptions.InvalidSGFException):
             sgf.load("invalid sgf/extra letter in move.sgf")
-        with self.assertRaises(utils.InvalidSGFException):
+        with self.assertRaises(exceptions.InvalidSGFException):
             sgf.load("invalid sgf/extra square bracket.sgf")
-        with self.assertRaises(utils.InvalidSGFException):
+        with self.assertRaises(exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing letter in move.sgf")
         with self.assertRaises(utils.InvalidSGFException):
             sgf.load("invalid sgf/missing square bracket.sgf")
@@ -285,7 +287,7 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        with self.assertRaises(utils.InvalidSGFException):
+        with self.assertRaises(exceptions.InvalidSGFException):
             sgf.load("invalid sgf/branched missing 2 parens.sgf")
 
     def test_nonexistent_file(self):
