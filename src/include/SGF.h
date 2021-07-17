@@ -22,10 +22,6 @@ namespace sente {
 
         Tree <Move> getSGFMoves(const std::string &SGFText);
 
-        Rules getSGFRules(const std::string &SGFText);
-
-        std::unique_ptr<_board> getSGFBoardSize(const std::string &SGFText);
-
         std::string toSGF(Tree <Move> moves, std::unordered_map<std::string, std::string> &attributes);
 
         std::unordered_map<std::string, std::string> getMetadata(const std::string& SGFText);

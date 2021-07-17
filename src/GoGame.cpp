@@ -61,9 +61,26 @@ namespace sente {
      */
     GoGame::GoGame(const std::string& SGFText) {
 
+        auto metadata = utils::getMetadata(SGFText);
+
+        makeBoard(std::stoi(metadata["SZ"]));
+        std::string ruleString = metadata["RU"];
+
+        // convert the rules to lowercase
+        std::transform(ruleString.begin(), ruleString.end(), ruleString.begin(), ::tolower);
+
+        if (ruleString == "chinese"){
+            rules = CHINESE;
+        }
+        else if (ruleString == "japanese"){
+            rules = JAPANESE;
+        }
+        else {
+            throw utils::InvalidSGFException("ruleset not recognized \"" + ruleString + "\" (sente only supports japanese and chinese rules at present)");
+        }
+
+
         // extract the move tree
-        board = utils::getSGFBoardSize(SGFText);
-        rules = utils::getSGFRules(SGFText);
         moveTree = utils::getSGFMoves(SGFText);
         komi = 7.5; // utils::getSGFKomi(SGFText);
 
