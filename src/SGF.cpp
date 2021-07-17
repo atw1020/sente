@@ -204,7 +204,7 @@ namespace sente {
             SGF << "(";
 
             // add the file format as the first parameter
-            SGF << ";FF[4]\n";
+            SGF << ";FF[4]GM[1]CA[UTF-8]\n"; // TODO: make sure that it is safe to assume the file we create will be UTF-8
 
             for (const auto& attribute : attributes){
                 SGF << attribute.first << "[" << attribute.second << "]\n";
@@ -221,6 +221,54 @@ namespace sente {
             }
 
             return SGF.str();
+        }
+
+        /**
+         *
+         * extracts metadata from a SGF file
+         *
+         * @param SGFText
+         * @return
+         */
+        std::unordered_map<std::string, std::string> getMetadata(const std::string& SGFText){
+
+            // create the regular expression for the metadata
+            std::regex metadataRegex("[A-Z]{2}\\[[^\\]]*\\]");
+
+            // create the return object
+            std::unordered_map<std::string, std::string> metadata;
+
+            // go through all of the matches
+            for (auto regexIter = std::sregex_iterator(SGFText.begin(), SGFText.end(), metadataRegex);
+                 regexIter != std::sregex_iterator(); regexIter++){
+                // extract the match string
+                std::string match = regexIter->str();
+
+                // slice the components apart
+                std::string key = std::string(match.begin(), match.begin() + 2);
+                std::string value = std::string(match.begin() + 3, match.end() - 1);
+
+                // return the metadata
+                metadata[key] = value;
+
+            }
+
+            // add some default values
+            if (metadata.find("RU") == metadata.end()){
+                metadata["RU"] = "Chinese";
+            }
+            if (metadata.find("SZ") == metadata.end()){
+                metadata["SZ"] = "19";
+            }
+
+            // remove non metadata labels
+            metadata.erase("SQ"); // square
+            metadata.erase("TR"); // triangle
+            metadata.erase("CR"); // circle
+            metadata.erase("LB"); // label
+
+            return metadata;
+
         }
 
     }

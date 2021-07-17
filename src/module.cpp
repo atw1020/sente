@@ -312,7 +312,6 @@ PYBIND11_MODULE(sente, module){
                                            std::istreambuf_iterator<char>());
                 }
                 catch (const std::domain_error& E){
-                    py::print("hit exception", E.what());
                     py::eval("raise FileNotFoundError(" + fileName + ")");
                 }
                 return sente::GoGame(SGFText);
@@ -325,7 +324,7 @@ PYBIND11_MODULE(sente, module){
             },
              py::arg("game"),
              py::arg("file_name"),
-             py::arg("params") = py::dict(),
+             py::arg("metadata") = py::dict(),
              "saves a game as an SGF")
         .def("loads", [](const std::string& SGFText){
                 return sente::GoGame(SGFText);
@@ -334,8 +333,27 @@ PYBIND11_MODULE(sente, module){
                 return game.toSGF(params);
             },
             py::arg("game"),
-            py::arg("params") = py::dict(),
-            "Serialize a string as an SGF");
+            py::arg("metadata") = py::dict(),
+            "Serialize a string as an SGF")
+        .def("load_metadata", [](const std::string& fileName){
+
+                 std::string SGFText;
+
+                 try {
+                     // load the text from the file
+                     std::ifstream filePointer(fileName);
+                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
+                                           std::istreambuf_iterator<char>());
+                 }
+                 catch (const std::domain_error& E){
+                     py::eval("raise FileNotFoundError(" + fileName + ")");
+                 }
+
+                 return sente::utils::getMetadata(SGFText);
+
+            },
+            py::arg("filename"),
+            "extracts metadata from a SGF file and puts it into a python dictionary");
 
     auto exceptions = module.def_submodule("exceptions", "various utilities used by sente");
 

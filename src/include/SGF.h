@@ -28,6 +28,8 @@ namespace sente {
 
         std::string toSGF(Tree <Move> moves, std::unordered_map<std::string, std::string> &attributes);
 
+        std::unordered_map<std::string, std::string> getMetadata(const std::string& SGFText);
+
     }
 }
 
