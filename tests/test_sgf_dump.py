@@ -143,8 +143,6 @@ class TestBasics(TestCase):
 
         serialized = sgf.dumps(game, params)
 
-        print(serialized)
-
         self.assertEqual("(;FF[4]", serialized[:7])
         self.assertIn("SZ[19]", serialized)
         self.assertIn("RU[Chinese]", serialized)
@@ -163,6 +161,41 @@ class TestBasics(TestCase):
 
         params = {
             "this is invalid": "video killed the radio star"
+        }
+
+        with self.assertRaises(ValueError):
+            sgf.dumps(game, params)
+
+    def test_override_params(self):
+        """
+
+        tests to see if Rules can be overridden
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        params = {
+            "RU": "Japanese"
+        }
+
+        serialized = sgf.dumps(game, params)
+
+        self.assertIn("RU[Japanese]", serialized)
+
+    def test_override_board_size(self):
+        """
+
+        tests ensures that we can't just override the board size
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        params = {
+            "SZ": "19"
         }
 
         with self.assertRaises(ValueError):

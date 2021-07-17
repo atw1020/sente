@@ -120,4 +120,10 @@ Once a game has been played out, the ``sgf.dump()`` function can be used to save
     >>> game.play_sequence(long_sequence)
     >>> sgf.dump(game, "my game.sgf")
 
-the ``sgf.dump()`` method also accepts an optional
+
+Loading Metadata
+-------------------------
+
+In addition to including game data, SGF files also may optionally contain metadata about the game such as the ratings of the players, the location that the game was played and may other parameters.
+When using the ``sgf.load`` method, much of this metadata is ignored as the ``sente.Game`` object does not contain such information.
+However, metadata

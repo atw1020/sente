@@ -312,8 +312,6 @@ namespace sente {
      */
     Results GoGame::score() const {
 
-        py::print("entering score()");
-
         if (passCount < 2){
             throw std::domain_error("game did not end from passing; could not score");
         }
@@ -441,14 +439,21 @@ namespace sente {
     std::string GoGame::toSGF(std::unordered_map<std::string, std::string> attributes) const {
 
         // add some other parameters
-        switch (rules){
-            case JAPANESE:
-                attributes["RU"] = "Japanese";
-                break;
-            case CHINESE:
-                attributes["RU"] = "Chinese";
+        if (attributes.find("RU") == attributes.end()){
+            switch (rules){
+                case JAPANESE:
+                    attributes["RU"] = "Japanese";
+                    break;
+                case CHINESE:
+                    attributes["RU"] = "Chinese";
+            }
         }
-        attributes["SZ"] = std::to_string(board->getSide());
+        if (attributes.find("SZ") == attributes.end()){
+            attributes["SZ"] = std::to_string(board->getSide());
+        }
+        else {
+            throw std::domain_error("\"SZ\": board size cannot be changed.");
+        }
 
         if (isOver()){
             // if the game is over, add the result to the rules
