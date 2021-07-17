@@ -445,6 +445,11 @@ namespace sente {
         }
         attributes["SZ"] = std::to_string(board->getSide());
 
+        if (isOver()){
+            // if the game is over, add the result to the rules
+            attributes["RE"] = std::string(getResults());
+        }
+
         return utils::toSGF(moveTree, attributes);
 
     }

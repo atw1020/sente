@@ -174,7 +174,7 @@ namespace sente {
                     // step to the child
                     moves.stepTo(child);
                     if (not moves.isAtLeaf()){
-                        SGF << "(";
+                        SGF << "\n(";
                         insertIntoSGF(moves, SGF);
                         SGF << ")";
                     }

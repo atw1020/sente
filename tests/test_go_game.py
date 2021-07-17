@@ -329,7 +329,7 @@ class TestTreeNavigation(TestCase):
 
         game.step_up()
 
-        default_branch = game.get_default_branch()
+        default_branch = game.get_default_sequence()
 
         self.assertEqual(game.get_point(4, 16), sente.stone.EMPTY)
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)

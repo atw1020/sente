@@ -34,7 +34,7 @@ By default, sente creates a 19x19 game with Chinese Rules.
     >>> game = sente.Game(13)
     >>> game = sente.Game(19, sente.rules.JAPANESE)
 
-.. note:: Japanese rules may not be advisable because sente has no means of automatic dead stone detection (at present)
+.. warning:: Japanese rules may not be advisable because sente has no means of automatic dead stone detection (at present)
 
 Moves can be played on the game using the ``play()`` method, and the board can be printed using the python ``print()`` function.
 

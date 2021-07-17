@@ -30,7 +30,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         for file in files:
             with self.assertDoesNotRaise(Exception):
                 game = sgf.load(str(Path("sgf")/file))
-                game.play_default_branch()
+                game.play_default_sequence()
 
     def test_simple_single_branch_file(self):
         """
@@ -45,7 +45,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         _ = EMPTY
 
         game = sgf.load("sgf/simple_sequence.sgf")
-        game.play_default_branch()
+        game.play_default_sequence()
 
         expected_game = Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -82,7 +82,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         _ = EMPTY
 
         game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
-        game.play_default_branch()
+        game.play_default_sequence()
 
         expected_game = Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
                                  [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
@@ -131,7 +131,7 @@ class StringLoad(DoesNotRaiseTestCase):
             with self.assertDoesNotRaise(Exception):
                 with open(Path("sgf")/file) as sgf_file:
                     game = sgf.loads(sgf_file.read())
-                    game.play_default_branch()
+                    game.play_default_sequence()
 
     def test_simple_single_branch_file(self):
         """
@@ -147,7 +147,7 @@ class StringLoad(DoesNotRaiseTestCase):
 
         with open("sgf/simple_sequence.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
-        game.play_default_branch()
+        game.play_default_sequence()
 
         expected_game = Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -185,7 +185,7 @@ class StringLoad(DoesNotRaiseTestCase):
 
         with open("sgf/34839594-255-IDW64-noob_bot_3.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
-        game.play_default_branch()
+        game.play_default_sequence()
 
         expected_game = Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
                                  [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
@@ -236,7 +236,7 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("sgf/3-4.sgf")  # a 3-4 joseki refrence with lots of branches
 
-        game.play_default_branch()
+        game.play_default_sequence()
 
         game.advance_to_root()
 

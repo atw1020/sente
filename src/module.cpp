@@ -278,9 +278,9 @@ PYBIND11_MODULE(sente, module){
                 "step up the tree the specified number of steps")
             .def("get_branches", &sente::GoGame::getBranches,
                  "generates a list of the branches at the curren node of the game tree")
-            .def("get_default_branch", &sente::GoGame::getDefaultBranch,
+            .def("get_default_sequence", &sente::GoGame::getDefaultBranch,
                  "generates a list of the moves in the default branch")
-            .def("play_default_branch", &sente::GoGame::playDefaultBranch,
+            .def("play_default_sequence", &sente::GoGame::playDefaultBranch,
                  "plays out the moves in the default (first) branch of the tree")
             .def("play_sequence", &sente::GoGame::playMoveSequence,
                  py::arg("moves"),
@@ -328,11 +328,14 @@ PYBIND11_MODULE(sente, module){
              py::arg("params") = py::dict(),
              "saves a game as an SGF")
         .def("loads", [](const std::string& SGFText){
-            return sente::GoGame(SGFText);
-        })
+                return sente::GoGame(SGFText);
+            })
         .def("dumps", [](const sente::GoGame& game, std::unordered_map<std::string, std::string> params){
-            return game.toSGF(params);
-        });
+                return game.toSGF(params);
+            },
+            py::arg("game"),
+            py::arg("params") = py::dict(),
+            "Serialize a string as an SGF");
 
     auto exceptions = module.def_submodule("exceptions", "various utilities used by sente");
 
