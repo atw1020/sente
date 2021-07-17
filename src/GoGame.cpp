@@ -312,6 +312,8 @@ namespace sente {
      */
     Results GoGame::score() const {
 
+        py::print("entering score()");
+
         if (passCount < 2){
             throw std::domain_error("game did not end from passing; could not score");
         }
@@ -333,23 +335,26 @@ namespace sente {
             auto adjacentGroups = utils::getAdjacentGroups(region, *board, groups);
 
             auto iter = adjacentGroups.begin();
-            Stone firstColor = (*iter)->getColor();
 
-            bool isTerritory = true;
+            if (iter != adjacentGroups.end()){
+                Stone firstColor = (*iter)->getColor();
 
-            for (iter++; iter != adjacentGroups.end(); iter++){
-                if ((*iter)->getColor() != firstColor){
-                    isTerritory = false;
-                    break;
+                bool isTerritory = true;
+
+                for (iter++; iter != adjacentGroups.end(); iter++){
+                    if ((*iter)->getColor() != firstColor){
+                        isTerritory = false;
+                        break;
+                    }
                 }
-            }
 
-            if (isTerritory){
-                if (firstColor == BLACK){
-                    blackTerritory += region.size();
-                }
-                if (firstColor == WHITE){
-                    whiteTerritory += region.size();
+                if (isTerritory){
+                    if (firstColor == BLACK){
+                        blackTerritory += region.size();
+                    }
+                    if (firstColor == WHITE){
+                        whiteTerritory += region.size();
+                    }
                 }
             }
 

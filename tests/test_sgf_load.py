@@ -210,10 +210,20 @@ class StringLoad(DoesNotRaiseTestCase):
         self.assertEqual(str(expected_game), str(game))
         self.assertEqual(expected_game, game.get_board())
 
+    def test_non_standard_komi(self):
+        """
 
-class Serialization(TestCase):
+        tests to see if we can extract the komi from a game
 
-    pass
+        :return:
+        """
+
+        game = sgf.load("sgf/0.5 Komi.sgf")
+
+        game.pss()
+        game.pss()
+
+        self.assertEqual(game.score().get_white_points(), 0.5)
 
 
 class BranchedSGF(TestCase):

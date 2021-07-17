@@ -118,4 +118,6 @@ Once a game has been played out, the ``sgf.dump()`` function can be used to save
 .. code-block:: python
 
     >>> game.play_sequence(long_sequence)
-    >>> sgf.dump()
+    >>> sgf.dump(game, "my game.sgf")
+
+the ``sgf.dump()`` method also accepts an optional

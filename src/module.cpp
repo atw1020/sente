@@ -124,10 +124,10 @@ PYBIND11_MODULE(sente, module){
     py::class_<sente::Results>(module, "result")
             .def("get_winner", &sente::Results::winner,
                  "gets the winner of the game")
-            .def("get_black_score", [](const sente::Results& results){
+            .def("get_black_points", [](const sente::Results& results){
                 return results.blackScore;
             })
-            .def("get_white_score", [](const sente::Results& results){
+            .def("get_white_points", [](const sente::Results& results){
                 return results.whiteScore + results.komi;
             })
             .def("__repr__", [](const sente::Results& results){

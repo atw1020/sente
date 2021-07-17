@@ -81,8 +81,8 @@ class TestNoDeadStones(TestCase):
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
-        self.assertEqual(10, result.get_black_score())
-        self.assertEqual(17.5, result.get_white_score())
+        self.assertEqual(10, result.get_black_points())
+        self.assertEqual(17.5, result.get_white_points())
 
     def test_simple_japanese(self):
         """
@@ -99,8 +99,8 @@ class TestNoDeadStones(TestCase):
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
-        self.assertEqual(4, result.get_black_score())
-        self.assertEqual(10.5, result.get_white_score())
+        self.assertEqual(4, result.get_black_points())
+        self.assertEqual(10.5, result.get_white_points())
 
     def test_count_captured_stones_chinese(self):
         """
@@ -117,8 +117,8 @@ class TestNoDeadStones(TestCase):
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
-        self.assertEqual(3, result.get_black_score())
-        self.assertEqual(10.5, result.get_white_score())
+        self.assertEqual(3, result.get_black_points())
+        self.assertEqual(10.5, result.get_white_points())
 
     def test_count_captured_stones_japanese(self):
         """
@@ -135,5 +135,5 @@ class TestNoDeadStones(TestCase):
         result = game.score()
 
         self.assertEqual(sente.stone.WHITE, game.get_winner())
-        self.assertEqual(0, result.get_black_score())
-        self.assertEqual(6.5, result.get_white_score())
+        self.assertEqual(0, result.get_black_points())
+        self.assertEqual(6.5, result.get_white_points())

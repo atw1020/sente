@@ -24,7 +24,13 @@ class TestBasics(TestCase):
 
         game.play(4, 4)
 
-        self.assertEqual("(;FF[4]\nSZ[19]\nRU[Chinese]\n;B[dd])", sgf.dumps(game))
+        serialized = sgf.dumps(game)
+
+        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("SZ[19]", serialized)
+        self.assertIn("RU[Chinese]", serialized)
+
+        self.assertEqual(";B[dd])", serialized[-7:])
 
     def test_multiple_moves(self):
         """
@@ -42,7 +48,13 @@ class TestBasics(TestCase):
         game.play(4, 16)
         game.play(16, 16)
 
-        self.assertEqual("(;FF[4]\nSZ[19]\nRU[Chinese]\n;B[dd]\n(;W[dp]\n(;B[pd]\n(;W[pp]))))", sgf.dumps(game))
+        serialized = sgf.dumps(game)
+
+        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("SZ[19]", serialized)
+        self.assertIn("RU[Chinese]", serialized)
+
+        self.assertEqual(";B[dd]\n(;W[dp]\n(;B[pd]\n(;W[pp]))))", serialized[-34:])
 
     def test_multiple_branches(self):
         """
@@ -61,7 +73,13 @@ class TestBasics(TestCase):
 
         game.play(4, 16)
 
-        self.assertEqual("(;FF[4]\nSZ[19]\nRU[Chinese]\n;B[dd]\n(;W[dp];W[pd]))", sgf.dumps(game))
+        serialized = sgf.dumps(game)
+
+        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("SZ[19]", serialized)
+        self.assertIn("RU[Chinese]", serialized)
+
+        self.assertEqual(";B[dd]\n(;W[dp];W[pd]))", serialized[-22:])
 
     def test_resigned_game(self):
         """
@@ -75,7 +93,12 @@ class TestBasics(TestCase):
 
         game.resign()
 
-        self.assertEqual("(;FF[4]\nRE[W+R]\nSZ[19]\nRU[Chinese]\n)", sgf.dumps(game))
+        serialized = sgf.dumps(game)
+
+        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("RE[W+R]", serialized)
+        self.assertIn("SZ[19]", serialized)
+        self.assertIn("RU[Chinese]", serialized)
 
     def test_dumps_loads(self):
         """
@@ -102,4 +125,46 @@ class TestBasics(TestCase):
         self.assertEqual(sente.WHITE, new_game.get_point(16, 4))
         self.assertEqual(sente.BLACK, new_game.get_point(4, 16))
         self.assertEqual(sente.WHITE, new_game.get_point(16, 16))
+
+    def test_attribute(self):
+        """
+
+        tests to see if attributes can be successfully added to the SGF
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        params = {
+            "BR": "8k",
+            "WR": "7k"
+        }
+
+        serialized = sgf.dumps(game, params)
+
+        print(serialized)
+
+        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("SZ[19]", serialized)
+        self.assertIn("RU[Chinese]", serialized)
+        self.assertIn("BR[8k]", serialized)
+        self.assertIn("WR[7k]", serialized)
+
+    def test_invalid_attribute(self):
+        """
+
+        tests to see if passing an invalid attribute results in an exception
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        params = {
+            "this is invalid": "video killed the radio star"
+        }
+
+        with self.assertRaises(ValueError):
+            sgf.dumps(game, params)
 

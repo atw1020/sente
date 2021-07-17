@@ -109,6 +109,22 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
         self.assertEqual(83, len(game.get_legal_moves()))
 
+    def test_score_empty_game(self):
+        """
+
+        tests to see if we can score an empty game
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.pss()
+        game.pss()
+
+        with self.assertDoesNotRaise(Exception):
+            game.score()
+
 
 class TestTreeNavigation(TestCase):
 

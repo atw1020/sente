@@ -190,7 +190,12 @@ namespace sente {
             std::stringstream SGF;
 
             // make sure that all of the attributes are legal
-
+            for (const auto& attribute : attributes){
+                if (attribute.first.size() != 2 or not std::all_of(attribute.first.begin(), attribute.first.end(),
+                                                                   [](const char c){ return std::isupper(c);})){
+                    throw std::domain_error("Invalid Attribute \"" + attribute.first + "\"");
+                }
+            }
 
             // backup the current position of the board and advance to the root node
             auto moveSequence = moves.getSequence();
