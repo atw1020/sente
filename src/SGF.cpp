@@ -101,22 +101,43 @@ namespace sente {
 
         void insertIntoSGF(Tree<Move>& moves, std::stringstream& SGF){
             // for each child
-            for (auto& child : moves.getChildren()){
-                if (not child.isResign()){
 
-                    // serialize the move
-                    SGF << ";" << std::string(child);
-                    // step to the child
-                    moves.stepTo(child);
-                    if (not moves.isAtLeaf()){
-                        SGF << "\n(";
-                        insertIntoSGF(moves, SGF);
-                        SGF << ")";
+            if (moves.getChildren().size() == 1){
+
+                // if there is exactly one child, we don't need to add parentheses
+                auto child = *moves.getChildren().begin();
+
+                // serialize the move
+                SGF << ";" << std::string(child);
+
+                // step to the child
+                moves.stepTo(child);
+
+                // recurse
+                insertIntoSGF(moves, SGF);
+
+                moves.stepUp();
+
+            }
+            else {
+                for (auto& child : moves.getChildren()){
+                    SGF << "\n(";
+                    if (not child.isResign()){
+
+                        // serialize the move
+                        SGF << ";" << std::string(child);
+                        // step to the child
+                        moves.stepTo(child);
+                        if (not moves.isAtLeaf()){
+                            insertIntoSGF(moves, SGF);
+                        }
+                        // step up
+                        moves.stepUp();
                     }
-                    // step up
-                    moves.stepUp();
+                    SGF << ")";
                 }
             }
+
         }
 
         std::string toSGF(Tree<Move> moves, std::unordered_map<std::string, std::string>& attributes){

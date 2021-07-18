@@ -68,6 +68,37 @@ class LoadMetadata(TestCase):
 
         self .assertEqual(correct, metadata)
 
+    def test_wrong_file_format(self):
+        """
+
+
+
+        :return:
+        """
+
+        metadata = sgf.get_metadata("invalid sgf/wrong game specification.sgf")
+
+        correct = {
+            "FF": "4",
+            "CA": "UTF-8",
+            "GM": "3",
+            "DT": "2021-06-27",
+            "PC": "OGS: https://online-go.com/game/34839594",
+            "GN": "Friendly Match",
+            "PB": "noob_bot_3",
+            "PW": "IDW64",
+            "BR": "32k",
+            "WR": "6k",
+            "TM": "259200",
+            "OT": "86400 fischer",
+            "RE": "W+368.5",
+            "SZ": "19",
+            "KM": "0.5",
+            "RU": "Chinese"
+        }
+
+        self.assertEqual(correct, metadata)
+
 
 class StoreMetadata(TestCase):
 

@@ -37,21 +37,34 @@ A full list of metadata parameters can be found on the `sgf specifications page 
 
 .. list-table:: Metadata Parameters
     :widths: 10 90
+    :header-rows: 1
 
-    * - Code
-      - Meaning
+    * - **Code**
+      - **Meaning**
     * - FF
       - SGF format standard (usually SGF 4)
     * - CA
       - File encoding (usually UTF-8)
     * - GM
-      - The game specification (SGF is used for
-    * - FF
-      - SGF format standard (usually SGF 4)
-    * - FF
-      - SGF format standard (usually SGF 4)
-
-
+      - The kind of game (Go = 1, Backgammon = 6, etc.)
+    * - GN
+      - The name of the game ("ie. Lee Sedol ladder game")
+    * - KM
+      - The Komi of the game
+    * - PB
+      - Player Black (the name of the black player ie. "Honinbo Shusaku"
+    * - BR
+      - The black player's rank (ie. 7k)
+    * - PW
+      - Player White (the name of the white player ie. "Gennan Inseki")
+    * - WR
+      - The white player's rank (ie. 9p)
+    * - RU
+      - The ruleset to use (ie. "Chinese")
+    * - SZ
+      - The size of the board the game was played on (ie. 19)
+    * - RE
+      - The result of the match (ie. "B+3.5")
 
 Loading Games
 -------------
@@ -95,7 +108,7 @@ However, if the ``get_children`` method is called we can see that the opening mo
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
-    >>> game.get_branches()
+    >>> game.get_branches() # if we use get_branches() we can see that a branch has been initiated
     [<sente.Move B[dp]>]
 
 It can be quite tedious to play through every move by calling ``get_branches()`` and selecting the first branch every time, so sente procides the ``get_default_sequence()`` and ``play_default_sequence()`` methods to make it easier to play through games.

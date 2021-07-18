@@ -4,13 +4,12 @@ Author: Arthur Wesley
 
 """
 
-from unittest import TestCase
-
 import sente
 from sente import sgf
+from assert_does_not_raise import DoesNotRaiseTestCase
 
 
-class TestBasics(TestCase):
+class TestBasics(DoesNotRaiseTestCase):
 
     def test_single_move(self):
         """
@@ -54,7 +53,7 @@ class TestBasics(TestCase):
         self.assertIn("SZ[19]", serialized)
         self.assertIn("RU[Chinese]", serialized)
 
-        self.assertEqual(";B[dd]\n(;W[dp]\n(;B[pd]\n(;W[pp]))))", serialized[-34:])
+        self.assertEqual(";B[dd];W[dp];B[pd];W[pp])", serialized[-25:])
 
     def test_multiple_branches(self):
         """
@@ -79,7 +78,7 @@ class TestBasics(TestCase):
         self.assertIn("SZ[19]", serialized)
         self.assertIn("RU[Chinese]", serialized)
 
-        self.assertEqual(";B[dd]\n(;W[dp];W[pd]))", serialized[-22:])
+        self.assertEqual(";B[dd]\n(;W[dp])\n(;W[pd]))", serialized[-25:])
 
     def test_resigned_game(self):
         """
@@ -125,3 +124,15 @@ class TestBasics(TestCase):
         self.assertEqual(sente.WHITE, new_game.get_point(16, 4))
         self.assertEqual(sente.BLACK, new_game.get_point(4, 16))
         self.assertEqual(sente.WHITE, new_game.get_point(16, 16))
+
+    def test_dump_complex_game(self):
+        """
+
+        tests to see if we can dump a game with lots and lots of variations
+
+        :return:
+        """
+
+        with self.assertDoesNotRaise(ValueError):
+            game = sgf.load("sgf/3-4.sgf")
+
