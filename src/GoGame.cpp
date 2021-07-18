@@ -65,6 +65,10 @@ namespace sente {
 
         auto metadata = utils::getMetadata(SGFText);
 
+        if (metadata["GM"] != "1"){
+            throw utils::InvalidSGFException("The desired SGF file is not a Go file.");
+        }
+
         makeBoard(std::stoi(metadata["SZ"]));
         std::string ruleString = metadata["RU"];
 

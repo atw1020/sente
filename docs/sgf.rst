@@ -7,6 +7,52 @@ The ``sente.sgf`` module contains functions for parsing SGF (Smart Game Format) 
 SGF is a standard encoding for go games that is capable of encoding "forked" go games in addition to a raw sequence of moves.
 SGF files can be viewed in programs like `CGoban <https://www.gokgs.com/download.jsp>`_ or `Sabaki <https://sabaki.yichuanshen.de>`_.
 
+Loading Metadata
+-------------------------
+
+Typically SGF files begin with a section of metadata that contains information not directly relevant to the file itself.
+This metadata includes information such as the names of the players, the date that the game was played and the file encoding.
+Most of this information is not needed to load a game into sente, but may be of interest to someone using sente.
+Sente provides the ``sgf.get_metadata`` function to extract this data from a file.
+
+.. code-block:: python
+
+    >>> from sente import sgf
+    >>> metadata = sgf.get_metadata("3-4.sgf") # a simple 3-4 joseki
+    >>> print(metadata) # note: the following output was produced using the python pretty-print library
+    {   'AP': 'CGoban:3',
+        'CA': 'UTF-8',
+        'FF': '4',
+        'GM': '1',
+        'KM': '0.00',
+        'PB': 'Black',
+        'PW': 'White',
+        'RU': 'Japanese',
+        'ST': '2',
+        'SZ': '19'}
+
+We can see that each field in the metadata is represented by a two-capitol letter code such as ``FF`` or ``KM``.
+The table gives a summary of some of the more common metadata parameters.
+A full list of metadata parameters can be found on the `sgf specifications page <https://www.red-bean.com/sgf/>`_.
+
+.. list-table:: Metadata Parameters
+    :widths: 10 90
+
+    * - Code
+      - Meaning
+    * - FF
+      - SGF format standard (usually SGF 4)
+    * - CA
+      - File encoding (usually UTF-8)
+    * - GM
+      - The game specification (SGF is used for
+    * - FF
+      - SGF format standard (usually SGF 4)
+    * - FF
+      - SGF format standard (usually SGF 4)
+
+
+
 Loading Games
 -------------
 
@@ -119,11 +165,3 @@ Once a game has been played out, the ``sgf.dump()`` function can be used to save
 
     >>> game.play_sequence(long_sequence)
     >>> sgf.dump(game, "my game.sgf")
-
-
-Loading Metadata
--------------------------
-
-In addition to including game data, SGF files also may optionally contain metadata about the game such as the ratings of the players, the location that the game was played and may other parameters.
-When using the ``sgf.load`` method, much of this metadata is ignored as the ``sente.Game`` object does not contain such information.
-However, metadata

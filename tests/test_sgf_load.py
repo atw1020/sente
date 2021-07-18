@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 from unittest import TestCase
 
+import sente.exceptions
 from sente import *
 
 from assert_does_not_raise import DoesNotRaiseTestCase
@@ -286,7 +287,7 @@ class InvalidSGF(TestCase):
             sgf.load("invalid sgf/extra square bracket.sgf")
         with self.assertRaises(exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing letter in move.sgf")
-        with self.assertRaises(utils.InvalidSGFException):
+        with self.assertRaises(exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing square bracket.sgf")
 
     def test_incorrect_parentheses(self):
@@ -308,5 +309,17 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        self.assertRaises(sgf.load("invalid sgf/potato.sgf"), FileNotFoundError)
+        with self.assertRaises(FileNotFoundError):
+            sgf.load("invalid sgf/potato.sgf")
+
+    def test_non_go_file(self):
+        """
+
+        tests to see if a non go file raises an exception
+
+        :return:
+        """
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/wrong game specification.sgf")
 

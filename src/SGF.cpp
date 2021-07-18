@@ -195,6 +195,9 @@ namespace sente {
             if (metadata.find("SZ") == metadata.end()){
                 metadata["SZ"] = "19";
             }
+            if (metadata.find("GM") == metadata.end()){
+                metadata["GM"] = "1";
+            }
 
             // remove non metadata labels
             metadata.erase("SQ"); // square

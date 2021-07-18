@@ -335,7 +335,7 @@ PYBIND11_MODULE(sente, module){
             py::arg("game"),
             py::arg("metadata") = py::dict(),
             "Serialize a string as an SGF")
-        .def("load_metadata", [](const std::string& fileName){
+        .def("get_metadata", [](const std::string& fileName){
 
                  std::string SGFText;
 

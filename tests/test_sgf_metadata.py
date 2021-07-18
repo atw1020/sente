@@ -20,7 +20,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.load_metadata("sgf/0.5 Komi.sgf")
+        metadata = sgf.get_metadata("sgf/0.5 Komi.sgf")
 
         correct = {
             "FF": "4",
@@ -51,7 +51,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.load_metadata("sgf/3-4.sgf")
+        metadata = sgf.get_metadata("sgf/3-4.sgf")
 
         correct = {
             "FF": "4",
