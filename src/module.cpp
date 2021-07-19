@@ -38,18 +38,15 @@ PYBIND11_MODULE(sente, module){
 
         Documentation for the Contents of the ``sente`` library
 
-        .. autosummary::
-           :toctree: _generate
+        .. toctree::
+            :maxdepth: 2
+            :caption: Basic Components
 
-            stone
-            Move
-            Board9
-            Board13
-            Board19
-            rules
-            Game
-            sgf
-
+            objects/stone
+            objects/rules
+            objects/Move
+            objects/Boards
+            objects/Game
 
     )pbdoc";
 
@@ -97,24 +94,26 @@ PYBIND11_MODULE(sente, module){
 
     py::class_<sente::Move>(module, "Move", R"pbdoc(
                 A class that represents a move that can be played on a go board, consisting of a position and a stone.
+
+                :members:
             )pbdoc")
             .def(py::init<unsigned, unsigned, sente::Stone>(),
                     py::arg("x"),
                     py::arg("y"),
-                    py::arg("stone"),
-                    R"pbdoc(
-                    .. Note:
+                    py::arg("stone"))
+            .def("get_x", &sente::Move::getX, R"pbdoc(
+                get the x-coordinate of the move (internal indices)
 
-                        Instantiating the ``sente.Move`` Object is not recommended because it uses :ref:`internal co-ordinates <Gotchas>`_
+                :return: x-coordinate of the move
+            )pbdoc")
+            .def("get_y", &sente::Move::getY, R"pbdoc(
+                get the y-coordinate of the move (internal indices) AFWEIJOIEJFUIF
 
+                :return: y-coordinate of the move
             )pbdoc")
-            .def("get_x", &sente::Move::getX,
-                 R"pbdoc(
-                    get the x-coordinate of the move (internal indices)
+            .def("get_stone", &sente::Move::getStone, R"pbdoc(
+                get the stone that the player will place on the board
             )pbdoc")
-            .def("get_y", &sente::Move::getY,
-                 "get the y-coordinate of the move (internal indices)")
-            .def("get_stone", &sente::Move::getStone, "get the stone that the player will place on the board")
             .def("__eq__", &sente::Move::operator==)
             .def("__ne__", &sente::Move::operator!=)
             .def("__repr__", [](const sente::Move& move){
@@ -291,8 +290,6 @@ PYBIND11_MODULE(sente, module){
                  "determine if the game is over yet")
             .def("get_sequence", &sente::GoGame::getMoveSequence,
                  "get a list containing all of the moves on the current branch of the tree")
-            .def("get_branches", &sente::GoGame::getBranches,
-                 "get a list of the next moves that are currently in the move tree")
             .def("get_board", &sente::GoGame::getBoard,
                  py::return_value_policy::reference,
                  "Get the board that the game is being played on")
@@ -355,7 +352,7 @@ PYBIND11_MODULE(sente, module){
             py::arg("filename"),
             "extracts metadata from a SGF file and puts it into a python dictionary");
 
-    auto exceptions = module.def_submodule("exceptions", "various utilities used by sente");
+    auto exceptions = module.def_submodule("exceptions", "various exceptions used by sente");
 
     py::register_exception<sente::utils::InvalidSGFException>(exceptions, "InvalidSGFException");
     py::register_exception<sente::utils::IllegalMoveException>(exceptions, "IllegalMoveException");

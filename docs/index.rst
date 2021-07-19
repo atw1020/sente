@@ -3,17 +3,28 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+Here is my introduction!
+
 .. toctree::
    :maxdepth: 2
    :caption: Tutorial
 
-   basics
-   game tree navigation
-   sgf
-   gotchas
+   tutorial/basics
+   tutorial/game tree navigation
+   tutorial/sgf
+   tutorial/gotchas
 
 .. toctree::
    :maxdepth: 2
    :caption: Reference
 
-   sente
+   basic components
+   modules/sgf
+   modules/exceptions
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
