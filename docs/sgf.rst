@@ -178,3 +178,18 @@ Once a game has been played out, the ``sgf.dump()`` function can be used to save
 
     >>> game.play_sequence(long_sequence)
     >>> sgf.dump(game, "my game.sgf")
+
+As mentioned earlier, SGF files may contain metadata about the game such as Player names and the date that the match was played on.
+Sente will automatically add some parameters such as the File encoding, Game result and game type.
+Other metadata can be added using the ``metadata`` keyword argument which accepts a python dictionary that maps from Metadata codes described above to their values.
+
+.. code-block:: python
+
+    >>> game.play_sequence(long_sequence)
+    >>> metadata = {
+    ...     "PB": "AlphaGo"
+    ...     "PW": "Ke Jie"
+    ...     "DT": "2017-05-23"
+    ... }
+    >>> sgf.dump(game, "my game.sgf", metadata=)
+

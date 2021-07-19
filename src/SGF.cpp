@@ -145,10 +145,14 @@ namespace sente {
             // create the string stream to use
             std::stringstream SGF;
 
+            attributes.erase("FF");
+            attributes.erase("GM");
+            attributes.erase("CA");
+
             // make sure that all of the attributes are legal
             for (const auto& attribute : attributes){
                 if (attribute.first.size() != 2 or not std::all_of(attribute.first.begin(), attribute.first.end(),
-                                                                   [](const char c){ return std::isupper(c);})){
+                                                                   [](const char c){ return std::isupper(c);})) {
                     throw std::domain_error("Invalid Attribute \"" + attribute.first + "\"");
                 }
             }
@@ -157,10 +161,8 @@ namespace sente {
             auto moveSequence = moves.getSequence();
             moves.advanceToRoot();
 
-            SGF << "(";
-
             // add the file format as the first parameter
-            SGF << ";FF[4]GM[1]CA[UTF-8]\n"; // TODO: make sure that it is safe to assume the file we create will be UTF-8
+            SGF << "(;FF[4]GM[1]CA[UTF-8]\n"; // TODO: make sure that it is safe to assume the file we create will be UTF-8
 
             for (const auto& attribute : attributes){
                 SGF << attribute.first << "[" << attribute.second << "]\n";

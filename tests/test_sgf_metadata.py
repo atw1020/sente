@@ -177,3 +177,27 @@ class StoreMetadata(TestCase):
         with self.assertRaises(ValueError):
             sgf.dumps(game, params)
 
+    def test_default_params_ignored(self):
+        """
+
+        tests to see if the sgf.dump ignores default parameters
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        params = {
+            "FF": "3",
+            "GM": "2",
+            "CA": "UTF-16"
+        }
+
+        serialized = sgf.dumps(game, params)[22:]
+
+        self.assertNotIn("FF[3]", serialized)
+        self.assertNotIn("GM[2]", serialized)
+        self.assertNotIn("CA[UTF-8]", serialized)
+
+
+
