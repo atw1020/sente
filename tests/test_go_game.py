@@ -125,6 +125,26 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         with self.assertDoesNotRaise(Exception):
             game.score()
 
+    def test_get_point(self):
+        """
+
+        tests to see if the get point() method works
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 5)
+
+        self.assertEqual(game.get_point(4, 5), sente.stone.BLACK)
+
+        with self.assertRaises(IndexError):
+            game.get_point(20, 20)
+
+        with self.assertRaises(IndexError):
+            game.get_point(30, 30)
+
 
 class TestTreeNavigation(TestCase):
 

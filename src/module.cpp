@@ -47,6 +47,7 @@ PYBIND11_MODULE(sente, module){
             objects/Move
             objects/Boards
             objects/Game
+            objects/Results
 
     )pbdoc";
 
@@ -122,7 +123,7 @@ PYBIND11_MODULE(sente, module){
             return "<sente.Move " + std::string(move) + ">";
         });
 
-    py::class_<sente::Results>(module, "result")
+    py::class_<sente::Results>(module, "results")
         .def("get_winner", &sente::Results::winner,
              "gets the winner of the game")
         .def("get_black_points", [](const sente::Results& results){
@@ -197,7 +198,10 @@ PYBIND11_MODULE(sente, module){
 
     py::class_<sente::GoGame>(module, "Game", R"pbdoc(
 
-            The Sente Game object
+            The Sente Game object.
+
+            The ``sente.Game`` Object differs from the ``sente.Board`` object in that it accounts for the rules of Go and is capable of capturing stones and deeming ko moves invalid.
+            For more on the difference between ``sente.Game`` and ``sente.Board`` see :ref:`Boards vs Games`
 
         )pbdoc")
         .def(py::init<unsigned, sente::Rules, double>(),
@@ -275,34 +279,72 @@ PYBIND11_MODULE(sente, module){
             },
             py::arg("x"),
             py::arg("y"),
-            "get move played at the specified position")
+             R"pbdoc(
+                get move played at the specified position.
+
+                :param x: x co-ordinate of the point to locate.
+                :param y: y co-ordinate of the point to locate.
+                :return: a :ref:`sente.stone <stone>` object representing the specified point
+            )pbdoc")
         .def("play", [](sente::GoGame& game, unsigned x, unsigned y){
                 game.playStone(x - 1, y - 1);
             },
             py::arg("x"),
             py::arg("y"),
-            "plays a stone in the game and updates the board to remove any captured stones")
+            R"pbdoc(
+
+                Plays a stone on the board at the specified location and Captures and stones
+
+                :param x: The x co-ordinate of the move to play.
+                :param y: The y co-ordinate of the move to play:
+                :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
+            )pbdoc")
         .def("play", [](sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
                 return game.playStone(x - 1, y - 1, stone);
             },
             py::arg("x"),
             py::arg("y"),
             py::arg("stone"),
-            "plays a stone in the game and updates the board to remove any captured stones")
+            R"pbdoc(
+
+                Plays a stone on the board at the specified location and Captures and stones
+
+                :param x: The x co-ordinate of the move to play.
+                :param y: The y co-ordinate of the move to play:
+                :param stones: The color of the stone to play.
+                :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
+
+            )pbdoc")
         .def("play", [](sente::GoGame& game, const sente::Move& move){
                 game.playStone(move);
             },
             py::arg("move"),
-            "plays a stone in the game and updates the board to remove any captured stones")
+            R"pbdoc(
+
+                Plays a stone on the board at the specified location and Captures and stones
+
+                :param move: The Move object to play
+                :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
+
+            )pbdoc")
         .def("play", [](sente::GoGame& game, const py::object& obj){
-            if (obj.is_none()){
-                // pass if the object is none
-                game.playStone(sente::Move::pass(game.getActivePlayer()));
-            }
-            else {
-                throw std::domain_error("cannot play " + std::string(py::str(obj)));
-            }
-        })
+                if (obj.is_none()){
+                    // pass if the object is none
+                    game.playStone(sente::Move::pass(game.getActivePlayer()));
+                }
+                else {
+                    throw std::domain_error("cannot play " + std::string(py::str(obj)));
+                }
+            },
+            R"pbdoc(
+
+                Plays a stone on the board at the specified location and Captures and stones
+
+                :param move: The Move object to play
+                :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
+                :raises ValueError: If a valid Move object is not passed
+
+            )pbdoc")
         .def("pss", [](sente::GoGame& game){
             game.playStone(sente::Move::pass(game.getActivePlayer()));
         },
@@ -312,7 +354,7 @@ PYBIND11_MODULE(sente, module){
         .def("resign", [](sente::GoGame& game){
             game.playStone(sente::Move::resign(game.getActivePlayer()));
         },
-            R"pbdoc(
+        R"pbdoc(
             causes the current active player to pass.
         )pbdoc")
         .def("get_results", &sente::GoGame::getResults,

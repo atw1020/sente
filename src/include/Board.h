@@ -77,6 +77,9 @@ namespace sente {
         }
 
         Move getSpace(unsigned int x, unsigned int y) const override {
+            if (not isOnBoard(Move(x, y, BLACK))){
+                throw std::out_of_range("Move not on board");
+            }
             return Move(x, y, board[x][y]);
         }
         Move getSpace(Point point) const override {
