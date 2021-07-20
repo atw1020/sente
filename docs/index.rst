@@ -3,7 +3,29 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Here is my introduction!
+Sente
+=====
+
+Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient asian board game Go/Badok/Weiqi.
+Sente is designed to be a Python 3 replacement for the `gomill <https://github.com/mattheww/gomill>`_ library.
+
+Installation
+============
+
+Sente runs on any operating system with python 3.x and can be installed via pip.
+
+.. code-block:: zsh
+
+    $ pip install sente
+
+-- or --
+
+.. code-block:: zsh
+
+    $ python3 -m install sente
+
+Docs
+====
 
 .. toctree::
    :maxdepth: 2
@@ -16,7 +38,7 @@ Here is my introduction!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Reference
+   :caption: Library Reference
 
    basic components
    modules/sgf

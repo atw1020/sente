@@ -1,7 +1,7 @@
 .. currentmodule:: sente
 
-sgf
-===
+The ``sgf`` Module
+==================
 
 .. automodule:: sente.sgf
     :members:
