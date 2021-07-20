@@ -44,10 +44,10 @@ PYBIND11_MODULE(sente, module){
 
             objects/stone
             objects/rules
+            objects/results
             objects/Move
             objects/Boards
             objects/Game
-            objects/Results
 
     )pbdoc";
 
@@ -201,7 +201,7 @@ PYBIND11_MODULE(sente, module){
             The Sente Game object.
 
             The ``sente.Game`` Object differs from the ``sente.Board`` object in that it accounts for the rules of Go and is capable of capturing stones and deeming ko moves invalid.
-            For more on the difference between ``sente.Game`` and ``sente.Board`` see :ref:`Boards vs Games`
+            For more on the difference between ``sente.Game`` and ``sente.Board`` see :ref:`Boards vs Games`.
 
         )pbdoc")
         .def(py::init<unsigned, sente::Rules, double>(),
@@ -358,22 +358,60 @@ PYBIND11_MODULE(sente, module){
             causes the current active player to pass.
         )pbdoc")
         .def("get_results", &sente::GoGame::getResults,
-             "returns a results object for a game WITHOUT removing dead stones")
+            R"pbdoc(
+                returns a results object for a game.
+
+                .. Warning:: This method does not remove dead stones
+
+                :return: :ref:`sente.results <results>` object.
+
+            )pbdoc")
         .def("score", &sente::GoGame::score,
-             "scores the game WITHOUT removing dead stones")
+            R"pbdoc(
+                scores a game and returns the results.
+
+                .. Warning:: This method does not remove dead stones
+
+                :return: :ref:`sente.results <results>` object.
+
+            )pbdoc")
         .def("get_winner", [](const sente::GoGame& game){
                 return game.getResults().winner();
             },
-            "determines the winner of the game")
+            R"pbdoc(
+                determines the winner of the game.
+
+                .. Warning:: This method does not remove dead stones.
+
+                :return: :ref:`sente.stone <stone>` of the winner of the game.
+
+            )pbdoc")
         .def("is_at_root", &sente::GoGame::isAtRoot,
-             "determine if the board is currently in the root state")
+            R"pbdoc(
+                Determine if the board is currently at the root of the tree.
+
+                :return: whether or not the board is at the root of the tree.
+            )pbdoc")
         .def("advance_to_root", &sente::GoGame::advanceToRoot,
-             "advance to the root node")
+            R"pbdoc(
+                Advance the board tree position to the root of the tree (ie. an empty board).
+            )pbdoc")
         .def("step_up", &sente::GoGame::stepUp,
             py::arg("steps") = 1,
-            "step up the tree the specified number of steps")
+            R"pbdoc(
+
+                step up the tree the specified number of steps.
+                ie. undo the specified number of moves
+
+                :param steps: the number to steps to step up
+            )pbdoc")
         .def("get_branches", &sente::GoGame::getBranches,
-             "generates a list of the branches at the curren node of the game tree")
+            R"pbdoc(
+
+                generates a list of the branches at the current node of the game tree.
+
+                :return: list of branches at the current node of the tree
+            )pbdoc")
         .def("get_default_sequence", &sente::GoGame::getDefaultBranch,
              "generates a list of the moves in the default branch")
         .def("play_default_sequence", &sente::GoGame::playDefaultBranch,

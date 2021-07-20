@@ -1,6 +1,6 @@
 .. currentmodule:: sente
 
-Results
+results
 =======
 
 .. autoclass:: results
