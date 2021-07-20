@@ -13,10 +13,6 @@
 #include "include/GoGame.h"
 #include "include/SenteExceptions.h"
 
-int add(int x, int y){
-    return x + y;
-}
-
 namespace py = pybind11;
 
 PYBIND11_MAKE_OPAQUE(sente::Stone)
@@ -25,10 +21,6 @@ PYBIND11_MAKE_OPAQUE(sente::Move)
 PYBIND11_MAKE_OPAQUE(sente::GoGame)
 
 PYBIND11_MODULE(sente, module){
-
-    // m.doc() = ""; // todo: add a better description
-
-    module.def("add", &add, py::arg("x"), py::arg("y"));
 
     module.doc() = R"pbdoc(
         Sente library
@@ -125,28 +117,58 @@ PYBIND11_MODULE(sente, module){
 
     py::class_<sente::Results>(module, "results")
         .def("get_winner", &sente::Results::winner,
-             "gets the winner of the game")
+            R"pbdoc(
+                gets the winner of the game
+
+                :return: :ref:`sente.stone <stone>` of the winner of the game
+            )pbdoc")
         .def("get_black_points", [](const sente::Results& results){
-            return results.blackScore;
-        })
+                return results.blackScore;
+            },
+            R"pbdoc(
+
+                gets the number of points that black scored
+
+                :return: the number of points that black scored
+            )pbdoc")
         .def("get_white_points", [](const sente::Results& results){
-            return results.whiteScore + results.komi;
-        })
+                return results.whiteScore + results.komi;
+            },
+            R"pbdoc(
+
+              gets the number of points that white scored
+
+              :return: the number of points that black scored
+            )pbdoc")
         .def("__repr__", [](const sente::Results& results){
-            return "<sente.result \"" + std::string(results) + "\">";
-        });
+                return "<sente.result \"" + std::string(results) + "\">";
+            });
 
     py::class_<sente::Board<19>>(module, "Board19")
         .def(py::init<>())
         .def(py::init<std::array<std::array<sente::Stone, 19>, 19>>())
         .def("get_side", &sente::Board<19>::getSide,
-             "get the length of the side of the board")
+            R"pbdoc(
+                get the length of the side of the board
+
+                :return: the length of the side of the board (19)
+            )pbdoc")
         .def("play", &sente::Board<19>::playStone,
-             py::arg("move"),
-             "play a stone on the board")
+            py::arg("move"),
+            R"pbdoc(
+                play a stone on the board
+
+                :param move: the move object to play
+            )pbdoc")
         .def("get_stone", [](const sente::Board<19>& board, unsigned x, unsigned y){
-            return board.getSpace(x - 1, y - 1).getStone();
-        }, "get the stone ")
+                return board.getSpace(x - 1, y - 1).getStone();
+            }, R"pbdoc(
+                get the stone located on the specified point.
+
+                :param x: The x co-ordinate to get the stone for.
+                :param y: The y co-ordinate to get the stone for.
+                :return: the stone located at specified point
+            )pbdoc")
         .def("__str__", [](const sente::Board<19>& board){
             return std::string(board);
         })
@@ -160,13 +182,28 @@ PYBIND11_MODULE(sente, module){
         .def(py::init<>())
         .def(py::init<std::array<std::array<sente::Stone, 13>, 13>>())
         .def("get_side", &sente::Board<13>::getSide,
-             "get the length of the side of the board")
+            R"pbdoc(
+                get the length of the side of the board
+
+                :return: the length of the side of the board (13)
+            )pbdoc")
         .def("play", &sente::Board<13>::playStone,
-             py::arg("move"),
-             "play a stone on the board")
+            py::arg("move"),
+            R"pbdoc(
+                play a stone on the board
+
+                :param move: the move object to play
+            )pbdoc")
         .def("get_stone", [](const sente::Board<13>& board, unsigned x, unsigned y){
-            return board.getSpace(x - 1, y - 1).getStone();
-        }, "get the stone ")
+                return board.getSpace(x - 1, y - 1).getStone();
+            },
+            R"pbdoc(
+                get the stone located on the specified point.
+
+                :param x: The x co-ordinate to get the stone for.
+                :param y: The y co-ordinate to get the stone for.
+                :return: the stone located at specified point
+            )pbdoc")
         .def("__str__", [](const sente::Board<13>& board){
             return std::string(board);
         })
@@ -177,22 +214,37 @@ PYBIND11_MODULE(sente, module){
         });
 
     py::class_<sente::Board<9>>(module, "Board9")
-            .def(py::init<>())
-            .def(py::init<std::array<std::array<sente::Stone, 9>, 9>>())
-            .def("get_side", &sente::Board<9>::getSide,
-                 "get the length of the side of the board")
-            .def("play", &sente::Board<9>::playStone,
-                 py::arg("move"),
-                 "play a stone on the board")
-            .def("get_stone", [](const sente::Board<9>& board, unsigned x, unsigned y){
+        .def(py::init<>())
+        .def(py::init<std::array<std::array<sente::Stone, 9>, 9>>())
+        .def("get_side", &sente::Board<9>::getSide,
+            R"pbdoc(
+                get the length of the side of the board
+
+                :return: the length of the side of the board (9)
+            )pbdoc")
+        .def("play", &sente::Board<9>::playStone,
+            py::arg("move"),
+            R"pbdoc(
+                play a stone on the board
+
+                :param move: the move object to play
+            )pbdoc")
+        .def("get_stone", [](const sente::Board<9>& board, unsigned x, unsigned y){
                 return board.getSpace(x - 1, y - 1).getStone();
-            }, "get the stone ")
-            .def("__str__", [](const sente::Board<9>& board){
+            },
+            R"pbdoc(
+                get the stone located on the specified point.
+
+                :param x: The x co-ordinate to get the stone for.
+                :param y: The y co-ordinate to get the stone for.
+                :return: the stone located at specified point
+            )pbdoc")
+        .def("__str__", [](const sente::Board<9>& board){
                 return std::string(board);
             })
-            .def("__eq__", &sente::Board<9>::operator==,
-                 "equality operator")
-            .def("__ne__", [](const sente::Board<9>& us, const sente::Board<9>& other){
+        .def("__eq__", &sente::Board<9>::operator==,
+             "equality operator")
+        .def("__ne__", [](const sente::Board<9>& us, const sente::Board<9>& other){
                 return not (us == other);
             });
 
@@ -215,7 +267,12 @@ PYBIND11_MODULE(sente, module){
                 :param: rules to play the game by
                 :param: komi of the game
             )pbdoc")
-        .def("get_active_player", &sente::GoGame::getActivePlayer)
+        .def("get_active_player", &sente::GoGame::getActivePlayer,
+            R"pbdoc(
+                get the stone color of the active player (the player whose turn it is right now).
+
+                :return: the stone color of the active player.
+            )pbdoc")
         .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
                 return game.isLegal(x - 1, y - 1);
             },
@@ -355,7 +412,7 @@ PYBIND11_MODULE(sente, module){
             game.playStone(sente::Move::resign(game.getActivePlayer()));
         },
         R"pbdoc(
-            causes the current active player to pass.
+            causes the current active player to resign.
         )pbdoc")
         .def("get_results", &sente::GoGame::getResults,
             R"pbdoc(
@@ -413,21 +470,48 @@ PYBIND11_MODULE(sente, module){
                 :return: list of branches at the current node of the tree
             )pbdoc")
         .def("get_default_sequence", &sente::GoGame::getDefaultBranch,
-             "generates a list of the moves in the default branch")
+            R"pbdoc(
+                generates a list of the moves in the default branch.
+
+                :return: the sequence of moves that leads to the current board position.
+            )pbdoc")
         .def("play_default_sequence", &sente::GoGame::playDefaultBranch,
-             "plays out the moves in the default (first) branch of the tree")
+            R"pbdoc(
+                plays out the moves in the default (first) branch of the tree
+            )pbdoc")
         .def("play_sequence", &sente::GoGame::playMoveSequence,
-             py::arg("moves"),
-             "plays all of the moves in a given list of moves")
+            py::arg("moves"),
+            R"pbdoc(
+                plays all of the moves in a given list of moves
+
+                :param moves: a list of move objects to play
+                :raises IllegalMoveException: If any move in the sequence is illegal
+            )pbdoc")
         .def("get_legal_moves", &sente::GoGame::getLegalMovesPy,
-             "generates a list of all legal moves")
+            R"pbdoc(
+                generates a list of all legal moves
+
+                :return: list of legal moves on the current board
+            )pbdoc")
         .def("is_over", &sente::GoGame::isOver,
-             "determine if the game is over yet")
+             R"pbdoc(
+                determine if the game is over yet
+
+                :return: whether or not the game has ended
+            )pbdoc")
         .def("get_sequence", &sente::GoGame::getMoveSequence,
-             "get a list containing all of the moves on the current branch of the tree")
+            R"pbdoc(
+                generate the sequence of moves that leads to the current board position
+
+                :return: a python list containing the moves that lead to this position.
+            )pbdoc")
         .def("get_board", &sente::GoGame::getBoard,
              py::return_value_policy::reference,
-             "Get the board that the game is being played on")
+             R"pbdoc(
+                Get the board object that the game is updating internally.
+
+                :return: a ``sente.Board`` object that represents the board to be played.
+            )pbdoc")
         .def("__str__", [](const sente::GoGame& game){
             return std::string(game);
         });

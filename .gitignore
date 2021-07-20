@@ -5,15 +5,16 @@
 /cmake-build-debug/
 
 # python enviroment
-/venv/
+venv/
 
 # various build files
 *.so
-/dist/
-/sente.egg-info/
-/build/
+dist/
+sente.egg-info/
+build/
 
 # documentation
-/docs/_build/
-/docs/_generate/
-/docs/sente.egg-info
+docs/_build/
+docs/_generate/
+docs/sente.egg-info
+docs/locale/

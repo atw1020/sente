@@ -1,7 +1,7 @@
 The ``sgf`` (Smart Game Format) Module
 ======================================
 
-.. warning:: the Sente SGF parser is currently highly specialized **only stone placement data** and ignores lots of data included in SGF files including messages and metadata.
+.. warning:: the Sente SGF parser is currently highly specialized **only stone placement data** and ignores lots of data included in SGF files including game messages, triangle, circle and other markers.
 
 The ``sente.sgf`` module contains functions for parsing SGF (Smart Game Format) Files.
 SGF is a standard encoding for go games that is capable of encoding "forked" go games in addition to a raw sequence of moves.
@@ -191,5 +191,13 @@ Other metadata can be added using the ``metadata`` keyword argument which accept
     ...     "PW": "Ke Jie"
     ...     "DT": "2017-05-23"
     ... }
-    >>> sgf.dump(game, "my game.sgf", metadata=)
+    >>> sgf.dump(game, "my game.sgf", metadata=metadata)
+
+
+``loads`` and ``dumps``
+-----------------------
+
+SGF files are a kind of `raw text file <https://en.wikipedia.org/wiki/Plain_text>`_ similarly to ``.py``, ``.csv`` and ``.json`` files.
+Because of this, Sente's internal file reader is capable of decoding plain text and the sgf module provides this utility in the from of the ``sgf.loads`` and ``sgf.dumps`` functions.
+This is similar to how python's built-in `json library <https://docs.python.org/3/library/json.html>`_ works.
 
