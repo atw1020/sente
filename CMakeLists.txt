@@ -7,6 +7,8 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+set(CMAKE_MAKE_PROGRAM "make")
+
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
 set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
