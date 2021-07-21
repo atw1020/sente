@@ -120,12 +120,6 @@ setup(
     name="sente",
     version="0.1.1",
     author="Arthur Wesley",
-    requires=[
-        "setuptools>=42",
-        "wheel",
-        "ninja; sys_platform != 'win32' and platform_machine != 'arm64'",
-        "cmake>=3.12",
-    ],
     author_email="arthur@electricfish.com",
     description="a c++ optimized library for go games",
     ext_modules=[CMakeExtension("sente")],
