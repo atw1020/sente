@@ -6,7 +6,7 @@ Author: Arthur Wesley
 
 import sente
 from sente import sgf
-from assert_does_not_raise import DoesNotRaiseTestCase
+from .assert_does_not_raise import DoesNotRaiseTestCase
 
 
 class TestBasics(DoesNotRaiseTestCase):
