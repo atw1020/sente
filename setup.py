@@ -5,11 +5,20 @@ Author: Arthur Wesley
 """
 
 import os
+import re
 import sys
 import subprocess
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+
+# Convert distutils Windows platform specifiers to CMake -A arguments
+PLAT_TO_CMAKE = {
+    "win32": "Win32",
+    "win-amd64": "x64",
+    "win-arm32": "ARM",
+    "win-arm64": "ARM64",
+}
 
 
 # A CMakeExtension needs a sourcedir instead of a file list.
@@ -53,7 +62,12 @@ class CMakeBuild(build_ext):
             # Users can override the generator with CMAKE_GENERATOR in CMake
             # 3.15+.
             if not cmake_generator:
-                cmake_args += ["-GNinja"]
+                try:
+                    import ninja  # noqa: F401
+
+                    cmake_args += ["-GNinja"]
+                except ImportError:
+                    pass
 
         else:
 
@@ -63,12 +77,24 @@ class CMakeBuild(build_ext):
             # CMake allows an arch-in-generator style for backward compatibility
             contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
 
+            # Specify the arch if using MSVC generator, but only if it doesn't
+            # contain a backward-compatibility arch spec already in the
+            # generator name.
+            if not single_config and not contains_arch:
+                cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+
             # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
                     "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
                 ]
                 build_args += ["--config", cfg]
+
+        if sys.platform.startswith("darwin"):
+            # Cross-compile support for macOS - respect ARCHFLAGS if set
+            archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
+            if archs:
+                cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
 
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
         # across all generators.
@@ -94,6 +120,12 @@ setup(
     name="sente",
     version="0.1.1",
     author="Arthur Wesley",
+    requires=[
+        "setuptools>=42",
+        "wheel",
+        "ninja; sys_platform != 'win32' and platform_machine != 'arm64'",
+        "cmake>=3.12",
+    ],
     author_email="arthur@electricfish.com",
     description="a c++ optimized library for go games",
     ext_modules=[CMakeExtension("sente")],
