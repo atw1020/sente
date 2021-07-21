@@ -45,7 +45,7 @@ jobs:
           echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
           echo "MSSdk=1" >> $GITHUB_ENV
       - name: Build and install
-        run: pip install --verbose .[test]
+        run: pip install --verbose .[test] --use-feature=in-tree-build
 
       - name: Test
         run: python -m pytest
