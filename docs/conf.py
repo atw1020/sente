@@ -39,6 +39,7 @@ extensions = [
 ]
 
 autosummary_generate = True
+github_url = "https://github.com/atw1020/sente"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
