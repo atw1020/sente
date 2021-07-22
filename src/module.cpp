@@ -521,16 +521,17 @@ PYBIND11_MODULE(sente, module){
 
                 std::string SGFText;
 
-                try {
-                    // load the text from the file
-                    std::ifstream filePointer(fileName);
+                // load the text from the file
+                std::ifstream filePointer(fileName);
+
+                if (not filePointer.good()){
+                    throw sente::utils::FileNotFoundException(fileName);
+                }
+                else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
-                                           std::istreambuf_iterator<char>());
+                                          std::istreambuf_iterator<char>());
+                    return sente::GoGame(SGFText);
                 }
-                catch (const std::domain_error& E){
-                    py::eval("raise FileNotFoundError(" + fileName + ")");
-                }
-                return sente::GoGame(SGFText);
             },
             py::arg("filename"),
             "Loads a go game from an SGF file")
@@ -555,17 +556,18 @@ PYBIND11_MODULE(sente, module){
 
                  std::string SGFText;
 
-                 try {
-                     // load the text from the file
-                     std::ifstream filePointer(fileName);
+                 // load the text from the file
+                 std::ifstream filePointer(fileName);
+
+                 if (not filePointer.good()){
+                     throw sente::utils::FileNotFoundException(fileName);
+                 }
+                 else {
                      SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                            std::istreambuf_iterator<char>());
-                 }
-                 catch (const std::domain_error& E){
-                     py::eval("raise FileNotFoundError(" + fileName + ")");
-                 }
 
-                 return sente::utils::getMetadata(SGFText);
+                     return sente::utils::getMetadata(SGFText);
+                 }
 
             },
             py::arg("filename"),
@@ -575,5 +577,6 @@ PYBIND11_MODULE(sente, module){
 
     py::register_exception<sente::utils::InvalidSGFException>(exceptions, "InvalidSGFException");
     py::register_exception<sente::utils::IllegalMoveException>(exceptions, "IllegalMoveException");
+    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "SGFNotFound", PyExc_FileNotFoundError);
 
 }

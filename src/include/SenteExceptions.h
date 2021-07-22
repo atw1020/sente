@@ -20,6 +20,11 @@ namespace sente{
             KO_POINT
         };
 
+        class FileNotFoundException : public std::domain_error{
+        public:
+            explicit FileNotFoundException(const std::string &message) : std::domain_error(message){}
+        };
+
         class InvalidSGFException : public std::domain_error{
         public:
             explicit InvalidSGFException(const std::string &message);
