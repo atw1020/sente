@@ -227,6 +227,8 @@ namespace sente {
             metadata.erase("TR"); // triangle
             metadata.erase("CR"); // circle
             metadata.erase("LB"); // label
+            metadata.erase("AB"); // add black stone
+            metadata.erase("AW"); // add white stone
 
             return metadata;
 

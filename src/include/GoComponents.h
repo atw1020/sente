@@ -50,7 +50,7 @@ namespace sente {
         }
 
         double margin() const {
-            fabs(blackScore - whiteScore - komi);
+            return fabs(blackScore - whiteScore - komi);
         }
 
         Rules rules;

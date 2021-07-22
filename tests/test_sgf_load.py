@@ -312,6 +312,23 @@ class InvalidSGF(TestCase):
         with self.assertRaises(FileNotFoundError):
             sgf.load("invalid sgf/potato.sgf")
 
+    def test_non_sgf_file(self):
+        """
+
+        tests to see if an exception is thrown with a non SGF file
+
+        :return:
+        """
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/module.cpp")
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/test_board.cpp")
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/octopus.jpeg")
+
     def test_non_go_file(self):
         """
 
@@ -321,5 +338,5 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/wrong game specification.sgf")
+            sgf.load("invalid sgf/backgammon.sgf")
 

@@ -76,7 +76,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.get_metadata("invalid sgf/wrong game specification.sgf")
+        metadata = sgf.get_metadata("invalid sgf/backgammon.sgf")
 
         correct = {
             "FF": "4",
@@ -98,6 +98,19 @@ class LoadMetadata(TestCase):
         }
 
         self.assertEqual(correct, metadata)
+
+    def test_added_stones_are_not_metadata(self):
+        """
+
+        tests to see if the get_metadata() function ignores "AW" and "AB" parameters
+
+        :return:
+        """
+
+        metadata = sgf.get_metadata("sgf/multiple stones at once.sgf")
+
+        self.assertNotIn("AB", metadata)
+        self.assertNotIn("AW", metadata)
 
 
 class StoreMetadata(TestCase):

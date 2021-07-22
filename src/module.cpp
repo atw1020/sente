@@ -577,6 +577,6 @@ PYBIND11_MODULE(sente, module){
 
     py::register_exception<sente::utils::InvalidSGFException>(exceptions, "InvalidSGFException");
     py::register_exception<sente::utils::IllegalMoveException>(exceptions, "IllegalMoveException");
-    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "SGFNotFound", PyExc_FileNotFoundError);
+    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "FileNotFoundError", PyExc_FileNotFoundError);
 
 }
