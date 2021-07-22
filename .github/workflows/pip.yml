@@ -48,4 +48,4 @@ jobs:
         run: pip install --verbose .[test]
 
       - name: Test
-        run: python -m unittest tests
+        run: cd tests; python -m unittest tests; cd ..
