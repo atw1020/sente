@@ -430,6 +430,36 @@ class TestTreeNavigation(TestCase):
 
         self.assertEqual(game.get_branches(), [sente.Move(2, 2, sente.stone.BLACK), sente.Move(1, 2, sente.stone.BLACK)])
 
+    def test_step_up_0_steps(self):
+        """
+
+        check to see if we can step up once
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(3, 3)
+        game.step_up(0)
+
+        self.assertEqual(sente.stone.BLACK, game.get_point(3, 3))
+
+    def test_illegal_step_up(self):
+        """
+
+        tests to see if we get a value error when we try to step up past the root node
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(3, 3)
+
+        with self.assertRaises(ValueError):
+            game.step_up(2)
+
     def test_undo_resign(self):
         """
 

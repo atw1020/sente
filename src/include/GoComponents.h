@@ -17,41 +17,17 @@ namespace sente {
         JAPANESE
     };
 
+    double getKomi(Rules ruleset);
+
     struct Results{
 
-        explicit Results(Stone resigningPlayer){
-            resignedPlayer = resigningPlayer;
-        }
+        explicit Results(Stone resigningPlayer);
 
         Results(Rules rules, double komi, unsigned blackTerritory, unsigned whiteTerritory,
-                   unsigned blackStones, unsigned whiteStones){
-            this->rules = rules;
-            this->komi = komi;
+                       unsigned blackStones, unsigned whiteStones);
 
-            if (rules == CHINESE){
-                this->blackScore = blackTerritory + blackStones;
-                this->whiteScore = whiteTerritory+ whiteStones;
-            }
-            if (rules == JAPANESE){
-                this->blackScore = blackTerritory;
-                this->whiteScore = whiteTerritory;
-            }
-
-            resignedPlayer = EMPTY;
-        }
-
-        Stone winner() const{
-            if (resignedPlayer != EMPTY){
-                return getOpponent(resignedPlayer);
-            }
-            else {
-                return (blackScore > whiteScore + komi) ? BLACK : WHITE;
-            }
-        }
-
-        double margin() const {
-            return fabs(blackScore - whiteScore - komi);
-        }
+        Stone winner() const;
+        double margin() const;
 
         Rules rules;
         double komi;
@@ -61,21 +37,7 @@ namespace sente {
 
         Stone resignedPlayer;
 
-        explicit operator std::string() const{
-
-            std::stringstream rep;
-            rep << (winner() == BLACK ? "B+" : "W+");
-
-            if (resignedPlayer == EMPTY){
-                rep << margin();
-            }
-            else {
-                rep << "R";
-            }
-
-            return rep.str();
-
-        }
+        operator std::string() const;
 
     };
 

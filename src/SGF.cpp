@@ -16,9 +16,42 @@ namespace py = pybind11;
 namespace sente {
     namespace utils {
 
-        Tree<Move> getSGFMoves(const std::string& SGFText){
+        GoGame loadSGF(const std::string& SGFText){
 
-            auto moves = Tree<Move>();
+            auto metadata = getMetadata(SGFText);
+
+            if (metadata["GM"] != "1"){
+              throw utils::InvalidSGFException("The desired SGF file is not a Go file.");
+            }
+
+            unsigned side = std::stoi(metadata["SZ"]);
+            Rules rules;
+            double komi;
+
+            std::string ruleString = metadata["RU"];
+
+            // convert the rules to lowercase
+            std::transform(ruleString.begin(), ruleString.end(), ruleString.begin(), ::tolower);
+
+            if (ruleString == "chinese"){
+                rules = CHINESE;
+            }
+            else if (ruleString == "japanese"){
+                rules = JAPANESE;
+            }
+            else {
+                throw utils::InvalidSGFException("ruleset not recognized \"" + ruleString + "\" (sente only supports japanese and chinese rules at present)");
+            }
+
+            if (metadata.find("KM") != metadata.end()){
+                komi = std::stod(metadata["KM"]);
+            }
+            else {
+                komi = getKomi(rules);
+            }
+
+            GoGame game(side, rules, komi);
+
             std::string currentSegment;
             auto previousIndex = SGFText.begin();
             std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
@@ -39,14 +72,14 @@ namespace sente {
                         Move temp = Move::fromSGF((regexIter++)->str());
 
                         // insert the move into the tree and record the step we take
-                        branchDepths.push(moves.getDepth());
-                        moves.insert(temp);
+                        branchDepths.push(game.getMoveNumber());
+                        game.playStone(temp);
 
                         // go through all the matches
                         for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
                             // insert the move but don't advance to the new node
                             temp = Move::fromSGF(iter->str());
-                            moves.insert(temp);
+                            game.playStone(temp);
                         }
                     }
 
@@ -64,23 +97,29 @@ namespace sente {
                         // if there are any moves, insert them
                         Move temp = Move::fromSGF((regexIter++)->str());
 
-                        branchDepths.push(moves.getDepth());
-                        moves.insert(temp);
+                        branchDepths.push(game.getMoveNumber());
+                        game.playStone(temp);
 
                         // go through all the matches
                         for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
                             // insert the move but don't advance to the new node
                             temp = Move::fromSGF(iter->str());
-                            moves.insert(temp);
+                            game.playStone(temp);
                         }
                     }
 
                     // unless the branch depths are empty
                     if (not branchDepths.empty()){
-                        while (moves.getDepth() != branchDepths.top()){
-                            // step up until we reach the depth of the last branch
-                            moves.stepUp();
-                        }
+
+                        // get the sequence of moves
+                        auto sequence = game.getMoveSequence();
+                        // slice the sequence of moves at the specified point
+                        sequence = std::vector<Move>(sequence.begin(), sequence.begin() + branchDepths.top());
+
+                        // advance to the root and play the sequence
+                        game.advanceToRoot();
+                        game.playMoveSequence(sequence);
+
                         // pop the depth off of the stack once we get it
                         branchDepths.pop();
                     }
@@ -95,7 +134,7 @@ namespace sente {
                 throw InvalidSGFException("Number of opening parentheses did not match number of closing parentheses");
             }
 
-            return moves;
+            return game;
 
         }
 
@@ -140,7 +179,7 @@ namespace sente {
 
         }
 
-        std::string toSGF(Tree<Move> moves, std::unordered_map<std::string, std::string>& attributes){
+        std::string dumpSGF(const GoGame& game, std::unordered_map<std::string, std::string> &attributes){
 
             // create the string stream to use
             std::stringstream SGF;
@@ -148,6 +187,21 @@ namespace sente {
             attributes.erase("FF");
             attributes.erase("GM");
             attributes.erase("CA");
+
+            auto gameAttributes = game.getAttributes();
+
+            if (attributes.find("RU") == attributes.end()){
+                attributes["RU"] = gameAttributes["RU"];
+            }
+
+            if (attributes.find("SZ") != attributes.end()){
+                throw std::domain_error("\"SZ\": board size cannot be changed.");
+            }
+            else {
+                attributes["SZ"] = gameAttributes["SZ"];
+            }
+
+            auto moves = game.getMoveTree();
 
             // make sure that all of the attributes are legal
             for (const auto& attribute : attributes){

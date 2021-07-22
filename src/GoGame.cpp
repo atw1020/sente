@@ -6,7 +6,6 @@
 
 #include "pybind11/pybind11.h"
 
-#include "include/SGF.h"
 #include "include/GoGame.h"
 #include "include/LifeAndDeath.h"
 #include "include/SenteExceptions.h"
@@ -26,15 +25,6 @@ namespace std {
 
 namespace sente {
 
-    double getKomi(Rules ruleset) {
-        switch (ruleset){
-            case CHINESE:
-                return 7.5;
-            case JAPANESE:
-                return 6.5;
-        }
-    }
-
     GoGame::GoGame(unsigned side, Rules rules, double komi) {
 
         // default Komi values
@@ -53,54 +43,6 @@ namespace sente {
         // some book-keeping
 
         resignedPlayer = EMPTY;
-    }
-
-    /**
-     *
-     * text from the SGF
-     *
-     * @param SGFText
-     */
-    GoGame::GoGame(const std::string& SGFText) {
-
-        auto metadata = utils::getMetadata(SGFText);
-
-        if (metadata["GM"] != "1"){
-            throw utils::InvalidSGFException("The desired SGF file is not a Go file.");
-        }
-
-        makeBoard(std::stoi(metadata["SZ"]));
-        std::string ruleString = metadata["RU"];
-
-        // convert the rules to lowercase
-        std::transform(ruleString.begin(), ruleString.end(), ruleString.begin(), ::tolower);
-
-        if (ruleString == "chinese"){
-            rules = CHINESE;
-        }
-        else if (ruleString == "japanese"){
-            rules = JAPANESE;
-        }
-        else {
-            throw utils::InvalidSGFException("ruleset not recognized \"" + ruleString + "\" (sente only supports japanese and chinese rules at present)");
-        }
-
-        if (metadata.find("KM") != metadata.end()){
-            komi = std::stod(metadata["KM"]);
-        }
-        else {
-            komi = getKomi(rules);
-        }
-
-
-        // extract the move tree
-        moveTree = utils::getSGFMoves(SGFText);
-
-        // some book-keeping
-
-        resetKoPoint();
-        resignedPlayer = EMPTY;
-
     }
 
     /**
@@ -224,6 +166,11 @@ namespace sente {
 
     void GoGame::stepUp(unsigned steps) {
 
+        if (steps == 0){
+            // do nothing
+            return;
+        }
+
         if (moveTree.getDepth() < steps){
             throw std::domain_error("Cannot step up past root");
         }
@@ -303,6 +250,14 @@ namespace sente {
 
     std::vector<Move> GoGame::getMoveSequence() {
         return moveTree.getSequence();
+    }
+
+    unsigned GoGame::getMoveNumber() const {
+        return moveTree.getDepth();
+    }
+
+    utils::Tree<Move> GoGame::getMoveTree() const {
+        return moveTree;
     }
 
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
@@ -465,31 +420,25 @@ namespace sente {
         return std::string(*board);
     }
 
-    std::string GoGame::toSGF(std::unordered_map<std::string, std::string> attributes) const {
+    std::unordered_map<std::string, std::string> GoGame::getAttributes() const {
 
-        // add some other parameters
-        if (attributes.find("RU") == attributes.end()){
-            switch (rules){
-                case JAPANESE:
-                    attributes["RU"] = "Japanese";
-                    break;
-                case CHINESE:
-                    attributes["RU"] = "Chinese";
-            }
+        std::unordered_map<std::string, std::string> attributes;
+
+        switch (rules){
+        case JAPANESE:
+            attributes["RU"] = "Japanese";
+            break;
+        case CHINESE:
+            attributes["RU"] = "Chinese";
         }
-        if (attributes.find("SZ") == attributes.end()){
-            attributes["SZ"] = std::to_string(board->getSide());
-        }
-        else {
-            throw std::domain_error("\"SZ\": board size cannot be changed.");
-        }
+
+        attributes["SZ"] = std::to_string(board->getSide());
 
         if (isOver()){
-            // if the game is over, add the result to the rules
             attributes["RE"] = std::string(getResults());
         }
 
-        return utils::toSGF(moveTree, attributes);
+        return attributes;
 
     }
 

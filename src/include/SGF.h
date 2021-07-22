@@ -8,6 +8,7 @@
 #include <string>
 
 #include "Tree.h"
+#include "GoGame.h"
 #include "GoComponents.h"
 
 /**
@@ -20,9 +21,9 @@
 namespace sente {
     namespace utils {
 
-        Tree <Move> getSGFMoves(const std::string &SGFText);
+        GoGame loadSGF(const std::string &SGFText);
 
-        std::string toSGF(Tree <Move> moves, std::unordered_map<std::string, std::string> &attributes);
+        std::string dumpSGF(const GoGame& game, std::unordered_map<std::string, std::string> &attributes);
 
         std::unordered_map<std::string, std::string> getMetadata(const std::string& SGFText);
 

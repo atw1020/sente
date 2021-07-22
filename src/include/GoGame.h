@@ -35,7 +35,6 @@ namespace sente {
     public:
 
         GoGame(unsigned side, Rules rules, double komi);
-        explicit GoGame(const std::string& SGFText);
         void resetBoard();
 
         ///
@@ -58,11 +57,15 @@ namespace sente {
         bool isAtRoot() const;
         void advanceToRoot();
         void stepUp(unsigned steps);
+
         void playDefaultBranch();
         std::vector<Move> getDefaultBranch();
         void playMoveSequence(const std::vector<Move>& moves);
         std::vector<Move> getMoveSequence();
         std::vector<Move> getBranches();
+
+        unsigned getMoveNumber() const;
+        utils::Tree<Move> getMoveTree() const;
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
@@ -76,7 +79,7 @@ namespace sente {
 
         explicit operator std::string() const;
 
-        std::string toSGF(std::unordered_map<std::string, std::string> attributes) const;
+        std::unordered_map<std::string, std::string> getAttributes() const;
 
     private:
 

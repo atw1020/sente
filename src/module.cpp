@@ -530,24 +530,24 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    return sente::GoGame(SGFText);
+                    return sente::utils::loadSGF(SGFText);
                 }
             },
             py::arg("filename"),
             "Loads a go game from an SGF file")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName, std::unordered_map<std::string, std::string> params){
                 std::ofstream output(fileName);
-                output << game.toSGF(params);
+                output << sente::utils::dumpSGF(game, params);
             },
              py::arg("game"),
              py::arg("file_name"),
              py::arg("metadata") = py::dict(),
              "saves a game as an SGF")
         .def("loads", [](const std::string& SGFText){
-                return sente::GoGame(SGFText);
+                return sente::utils::loadSGF(SGFText);
             })
         .def("dumps", [](const sente::GoGame& game, std::unordered_map<std::string, std::string> params){
-                return game.toSGF(params);
+                return sente::utils::dumpSGF(game, params);
             },
             py::arg("game"),
             py::arg("metadata") = py::dict(),
