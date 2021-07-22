@@ -50,4 +50,4 @@ jobs:
         run: pip install --verbose .[test]
 
       - name: Test
-        run: python -m unittest discover tests
+        run: cd tests; python -m unittest discover; cd ..
