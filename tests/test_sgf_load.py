@@ -324,9 +324,6 @@ class InvalidSGF(TestCase):
             sgf.load("invalid sgf/module.cpp")
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/test_board.cpp")
-
-        with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/octopus.jpeg")
 
     def test_non_go_file(self):
