@@ -21,7 +21,7 @@ namespace sente {
             auto metadata = getMetadata(SGFText);
 
             if (metadata["GM"] != "1"){
-              throw utils::InvalidSGFException("The desired SGF file is not a Go file.");
+                throw utils::InvalidSGFException("The desired SGF file is not a Go file.");
             }
 
             unsigned side = std::stoi(metadata["SZ"]);
@@ -57,77 +57,91 @@ namespace sente {
             std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
             std::stack<unsigned> branchDepths{};
 
-            // for each letter in the SGF
-            for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
+            unsigned bracketDepth = 0;
 
-                if (*cursor == '('){
+            try {
+                // for each letter in the SGF
+                for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
 
-                    // find the moves in the current segment
-                    currentSegment = std::string(previousIndex, cursor);
-                    auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                    if (*cursor == '['){
+                        bracketDepth++;
+                    }
+                    else if (*cursor == ']'){
+                        bracketDepth--;
+                    }
+                    else if (*cursor == '(' and bracketDepth == 0){
 
-                    // only insert moves if we find one
-                    if (regexIter != std::sregex_iterator()){
+                        // find the moves in the current segment
+                        currentSegment = std::string(previousIndex, cursor);
+                        auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
 
-                        Move temp = Move::fromSGF((regexIter++)->str());
+                        // only insert moves if we find one
+                        if (regexIter != std::sregex_iterator()){
 
-                        // insert the move into the tree and record the step we take
-                        branchDepths.push(game.getMoveNumber());
-                        game.playStone(temp);
+                            Move temp = Move::fromSGF((regexIter++)->str());
 
-                        // go through all the matches
-                        for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
-                            // insert the move but don't advance to the new node
-                            temp = Move::fromSGF(iter->str());
+                            // insert the move into the tree and record the step we take
+                            branchDepths.push(game.getMoveNumber());
                             game.playStone(temp);
+
+                            // go through all the matches
+                            for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
+                                // insert the move but don't advance to the new node
+                                temp = Move::fromSGF(iter->str());
+                                game.playStone(temp);
+                            }
                         }
+
+                      // update the previous index
+                      previousIndex = cursor;
                     }
+                    else if (*cursor == ')' and bracketDepth == 0){
 
-                    // update the previous index
-                    previousIndex = cursor;
-                }
-                else if (*cursor == ')'){
+                        // find the moves in the current segment
+                        currentSegment = std::string(previousIndex, cursor);
+                        auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
 
-                    // find the moves in the current segment
-                    currentSegment = std::string(previousIndex, cursor);
-                    auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                        if (regexIter != std::sregex_iterator()){
 
-                    if (regexIter != std::sregex_iterator()){
+                            // if there are any moves, insert them
+                            Move temp = Move::fromSGF((regexIter++)->str());
 
-                        // if there are any moves, insert them
-                        Move temp = Move::fromSGF((regexIter++)->str());
-
-                        branchDepths.push(game.getMoveNumber());
-                        game.playStone(temp);
-
-                        // go through all the matches
-                        for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
-                            // insert the move but don't advance to the new node
-                            temp = Move::fromSGF(iter->str());
+                            branchDepths.push(game.getMoveNumber());
                             game.playStone(temp);
+
+                            // go through all the matches
+                            for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
+                                // insert the move but don't advance to the new node
+                                temp = Move::fromSGF(iter->str());
+                                game.playStone(temp);
+                            }
                         }
+
+                        // unless the branch depths are empty
+                        if (not branchDepths.empty()){
+
+                            // get the sequence of moves
+                            auto sequence = game.getMoveSequence();
+                            // slice the sequence of moves at the specified point
+                            sequence = std::vector<Move>(sequence.begin(), sequence.begin() + branchDepths.top());
+
+                            // advance to the root and play the sequence
+                            game.advanceToRoot();
+                            game.playMoveSequence(sequence);
+
+                            // pop the depth off of the stack once we get it
+                            branchDepths.pop();
+                        }
+
+                        // update the previous index
+                        previousIndex = cursor;
                     }
 
-                    // unless the branch depths are empty
-                    if (not branchDepths.empty()){
-
-                        // get the sequence of moves
-                        auto sequence = game.getMoveSequence();
-                        // slice the sequence of moves at the specified point
-                        sequence = std::vector<Move>(sequence.begin(), sequence.begin() + branchDepths.top());
-
-                        // advance to the root and play the sequence
-                        game.advanceToRoot();
-                        game.playMoveSequence(sequence);
-
-                        // pop the depth off of the stack once we get it
-                        branchDepths.pop();
-                    }
-
-                    // update the previous index
-                    previousIndex = cursor;
                 }
-
+            }
+            catch (const utils::IllegalMoveException& Exc){
+                // rephrase the exception
+                throw utils::InvalidSGFException("the SGF contained an illegal move at move " + std::to_string(game.getMoveNumber()) + std::string(Exc.what()));
             }
 
             if (not branchDepths.empty()){
@@ -199,6 +213,12 @@ namespace sente {
             }
             else {
                 attributes["SZ"] = gameAttributes["SZ"];
+            }
+
+            if (attributes.find("RE") == attributes.end()){
+                if (game.isOver()){
+                    attributes["RE"] = game.getResults();
+                }
             }
 
             auto moves = game.getMoveTree();

@@ -465,7 +465,28 @@ class TestTreeNavigation(TestCase):
 
         tests to see if resignation can be undone
 
-        TODO: implement
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.resign()
+        game.step_up()
+
+        self.assertTrue(game.is_legal(3, 3))
+
+    def test_undo_double_pass(self):
+        """
+
+        tests to see if resignation can be undone
 
         :return:
         """
+
+        game = sente.Game()
+
+        game.pss()
+        game.pss()
+
+        game.advance_to_root()
+        self.assertTrue(game.is_legal(3, 3))

@@ -64,6 +64,7 @@ namespace sente {
         // reset the ko point
         resetKoPoint();
         resignedPlayer = EMPTY;
+        passCount = 0;
 
     }
 
@@ -110,6 +111,7 @@ namespace sente {
     void GoGame::playStone(const Move &move) {
 
         if (isOver()){
+            py::print(move);
             throw std::domain_error("game is finished, cannot play another move");
         }
 
@@ -125,6 +127,7 @@ namespace sente {
 
         if (move.isResign()){
             resignedPlayer = move.getStone();
+            moveTree.insert(move);
             return;
         }
 

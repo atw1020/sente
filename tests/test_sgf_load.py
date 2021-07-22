@@ -340,3 +340,14 @@ class InvalidSGF(TestCase):
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/backgammon.sgf")
 
+    def test_illegal_move(self):
+        """
+
+        tests to see if we throw an exception when we encounter an illegal move
+
+        :return:
+        """
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/illegal move.sgf")
+
