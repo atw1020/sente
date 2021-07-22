@@ -5,7 +5,7 @@ Author: Arthur Wesley
 """
 from unittest import TestCase
 
-from .assert_does_not_raise import DoesNotRaiseTestCase
+from assert_does_not_raise import DoesNotRaiseTestCase
 import sente
 
 

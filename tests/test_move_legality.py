@@ -6,7 +6,7 @@ Author: Arthur Wesley
 from unittest import TestCase
 
 import sente
-from .assert_does_not_raise import DoesNotRaiseTestCase
+from assert_does_not_raise import DoesNotRaiseTestCase
 
 
 class TestMove(DoesNotRaiseTestCase):

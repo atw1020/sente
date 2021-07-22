@@ -11,7 +11,7 @@ from unittest import TestCase
 import sente.exceptions
 from sente import *
 
-from .assert_does_not_raise import DoesNotRaiseTestCase
+from assert_does_not_raise import DoesNotRaiseTestCase
 
 
 class BasicSGF(DoesNotRaiseTestCase):
