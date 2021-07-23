@@ -9,7 +9,7 @@ endif()
 
 if(MSVC)
     # MSVC doesn't support the -Wextra option so we don't include it
-    set(CMAKE_CXX_FLAGS "-Wall")
+    set(CMAKE_CXX_FLAGS "-Wall -Za")
 else()
     set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 endif()
