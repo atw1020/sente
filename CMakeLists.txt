@@ -7,7 +7,7 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if(NOT MSVC)
+if(MSVC)
     # MSVC doesn't support the -Wextra option so we don't include it
     set(CMAKE_CXX_FLAGS "-Wall")
 else()
