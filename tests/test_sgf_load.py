@@ -130,7 +130,7 @@ class StringLoad(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
-                with open(Path("sgf")/file) as sgf_file:
+                with open(str(Path("sgf")/file)) as sgf_file:
                     game = sgf.loads(sgf_file.read())
                     game.play_default_sequence()
 

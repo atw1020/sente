@@ -36,13 +36,6 @@ namespace sente {
         stone = EMPTY;
     }
 
-    Move::Move(const Move& other){
-        // py::print("copying a move WE SHOULD NEVER DO THIS");
-        x = other.x;
-        y = other.y;
-        stone = other.stone;
-    }
-
     const Move Move::passBlack = Move(-1, 19, BLACK);
     const Move Move::passWhite = Move(-1, 19, WHITE);
 

@@ -28,7 +28,7 @@ namespace sente {
     GoGame::GoGame(unsigned side, Rules rules, double komi) {
 
         // default Komi values
-        if (std::isinf(komi)){
+        if (komi == INFINITY){
             this->komi = getKomi(rules);
         }
         else {

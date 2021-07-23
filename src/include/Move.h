@@ -30,7 +30,6 @@ namespace sente {
 
         Move();
         // Move(const Move& move) = delete;
-        Move(const Move& other);
         Move(unsigned x, unsigned y, Stone stone);
 
         const static Move passBlack;
