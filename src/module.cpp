@@ -581,7 +581,7 @@ PYBIND11_MODULE(sente, module){
 #if PY_MAJOR_VERSION == 3
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "FileNotFoundError", PyExc_FileNotFoundError);
 #else
-    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_FileNotFoundError);
+    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
 
 }
