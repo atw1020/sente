@@ -347,4 +347,3 @@ class InvalidSGF(TestCase):
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/illegal move.sgf")
-

@@ -116,12 +116,37 @@ class CMakeBuild(build_ext):
         )
 
 
+def read_file(filename):
+    """
+
+    read the text of a file
+
+    :param filename: name of the file to read
+    :return: text of the file
+    """
+
+    with open(filename) as file:
+        return file.read()
+
+
 setup(
-    name="sente",
+    name="Sente",
     version="0.1.1",
     author="Arthur Wesley",
+    license="MIT",
+    description="Sente: a python 3 native library for the game of Go.",
+    long_description=read_file("readme.md"),
+    long_description_content_type="text/markdown",
+    classifiers=["Programming Language :: Python",
+                 "Programming Language :: Python :: 2.7",
+                 "Programming Language :: Python :: 3",
+                 "Programming Language :: Python :: 3.5",
+                 "Programming Language :: Python :: 3.8",
+                 "Programming Language :: Python :: 3.9",
+                 "Operating System :: MacOS :: MacOS X",
+                 "Operating System :: POISX :: Linux",
+                 "Operating System :: Microsoft :: Windows :: Windows 10"],
     author_email="arthur@electricfish.com",
-    description="a c++ optimized library for go games",
     ext_modules=[CMakeExtension("sente")],
     test_suite="tests",
     cmdclass={"build_ext": CMakeBuild},

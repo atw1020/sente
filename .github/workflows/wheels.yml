@@ -41,7 +41,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest] # [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -66,8 +67,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*.whl
-
-
+"""
   # Windows 2.7 (requires workaround for MSVC 2008 replacement)
   build_win27_wheels:
     name: Py 2.7 wheels on Windows
@@ -104,12 +104,12 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          path: wheelhouse/*.whl
+          path: wheelhouse/*.whl"""
 
 
   upload_all:
     name: Upload if release
-    needs: [build_wheels, build_win27_wheels, build_sdist]
+    needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
 
