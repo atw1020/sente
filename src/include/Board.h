@@ -116,11 +116,11 @@ namespace sente {
                     accumulator << " ";
                 }
 
-                accumulator << i + 1;
+                accumulator << i + 1 << " ";
 
                 for (unsigned j = 0; j < side; j++){
 
-                    accumulator << "  ";
+                    accumulator << " ";
 
                     switch(board[i][j]){
                         case BLACK:
@@ -132,13 +132,14 @@ namespace sente {
                         case EMPTY:
                             // check if we are on a star point
                             if (isStar(i, j)){
-                                accumulator << "*";
+                                accumulator << "* ";
                             }
                             else {
-                                accumulator << ".";
+                                accumulator << ". ";
                             }
                     }
                 }
+
                 accumulator << " " << std::endl;
             }
 
