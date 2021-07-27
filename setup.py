@@ -130,11 +130,11 @@ def read_file(filename):
 
 
 setup(
-    name="Sente",
-    version="0.1.1",
+    name="sente",
+    version="0.1.2",
     author="Arthur Wesley",
     license="MIT",
-    description="Sente: a python 3 native library for the game of Go.",
+    description="Sente: a Python 3 native library for the game of Go.",
     long_description=read_file("readme.md"),
     long_description_content_type="text/markdown",
     classifiers=["Programming Language :: Python",
@@ -144,7 +144,7 @@ setup(
                  "Programming Language :: Python :: 3.8",
                  "Programming Language :: Python :: 3.9",
                  "Operating System :: MacOS :: MacOS X",
-                 "Operating System :: POISX :: Linux",
+                 "Operating System :: POSIX :: Linux",
                  "Operating System :: Microsoft :: Windows :: Windows 10"],
     author_email="arthur@electricfish.com",
     ext_modules=[CMakeExtension("sente")],

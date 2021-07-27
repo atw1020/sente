@@ -124,10 +124,10 @@ namespace sente {
 
                     switch(board[i][j]){
                         case BLACK:
-                            accumulator << "#";
+                            accumulator << "⚫";
                             break;
                         case WHITE:
-                            accumulator << "O";
+                            accumulator << "⚪";
                             break;
                         case EMPTY:
                             // check if we are on a star point
@@ -139,7 +139,7 @@ namespace sente {
                             }
                     }
                 }
-                accumulator << std::endl;
+                accumulator << " " << std::endl;
             }
 
             accumulator << "  ";
