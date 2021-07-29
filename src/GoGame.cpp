@@ -5,7 +5,7 @@
 #include <regex>
 #include <iostream>
 
-#include "pybind11/pybind11.h"
+// #include <pybind11/pybind11.h>
 
 #include "include/GoGame.h"
 #include "include/LifeAndDeath.h"
@@ -84,19 +84,13 @@ namespace sente {
         if (isOver()){
             return false;
         }
-        std::cout << "got past isOver" << std::endl;
         if (not board->isOnBoard(move)){
             return false;
         }
-        std::cout << "got past isOnBoard" << std::endl;
         bool isEmpty = board->isEmpty(move);
-        std::cout << "got past isEmpty" << std::endl;
         bool notSelfCapture = isNotSelfCapture(move);
-        std::cout << "got past isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
-        std::cout << "got past isNotKoPoint" << std::endl;
         bool correctColor = isCorrectColor(move);
-        std::cout << "got past isCorrectColor" << std::endl;
 
         std::cout << "leaving isLegal" << std::endl;
 
@@ -604,6 +598,28 @@ namespace sente {
     }
 
     bool GoGame::isOver() const {
+        std::cout << "entering isOver" << std::endl;
+        std::cout << "pass count is " << passCount << std::endl;
+        std::string resignedName;
+
+        switch (resignedPlayer){
+            case BLACK:
+                resignedName = "Black";
+                break;
+            case WHITE:
+                resignedName = "White";
+                break;
+            case EMPTY:
+                resignedName = "Empty";
+                break;
+        }
+
+        std::cout << "resigned player is " << resignedName << std::endl;
+
+        std::cout << "pass count condition: " << (passCount >= 2) << std::endl;
+        std::cout << "resigned condition: " << (resignedPlayer != EMPTY) << std::endl;
+        std::cout << "together" << (passCount >= 2 or resignedPlayer != EMPTY) << std::endl;
+
         return passCount >= 2 or resignedPlayer != EMPTY;
     }
 
