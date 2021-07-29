@@ -75,7 +75,7 @@ class BoardTest19(TestCase):
         board.play(Move(0, 18, stone.BLACK))
         board.play(Move(15, 3, stone.WHITE))
 
-        self.assertEqual(" 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚫ \n"
+        self.assertEqual(" 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚫ \n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          " 3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          " 4  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  . \n"
@@ -90,7 +90,7 @@ class BoardTest19(TestCase):
                          "13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          "14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          "15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
-                         "16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  . \n"
+                         "16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  . \n"
                          "17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
@@ -164,7 +164,7 @@ class BoardTest13(TestCase):
         board.play(Move(0, 0, stone.BLACK))
         board.play(Move(8, 3, stone.WHITE))
 
-        self.assertEqual(" 1  ⚫ .  .  .  .  .  .  .  .  .  .  .  . \n"
+        self.assertEqual(" 1  ⚫ .  .  .  .  .  .  .  .  .  .  .  . \n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          " 3  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          " 4  .  .  .  *  .  .  .  .  .  *  .  .  . \n"
@@ -172,7 +172,7 @@ class BoardTest13(TestCase):
                          " 6  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          " 7  .  .  .  .  .  .  *  .  .  .  .  .  . \n"
                          " 8  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
-                         " 9  .  .  .  ⚪ .  .  .  .  .  .  .  .  . \n"
+                         " 9  .  .  .  ⚪ .  .  .  .  .  .  .  .  . \n"
                          "10  .  .  .  *  .  .  .  .  .  *  .  .  . \n"
                          "11  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
                          "12  .  .  .  .  .  .  .  .  .  .  .  .  . \n"
@@ -248,7 +248,7 @@ class BoardTest9(TestCase):
         board.play(Move(8, 3, stone.WHITE))
 
         self.assertEqual(
-                         " 1  ⚫ .  .  .  .  .  .  .  . \n"
+                         " 1  ⚫ .  .  .  .  .  .  .  . \n"
                          " 2  .  .  .  .  .  .  .  .  . \n"
                          " 3  .  .  *  .  .  .  *  .  . \n"
                          " 4  .  .  .  .  .  .  .  .  . \n"
@@ -256,7 +256,7 @@ class BoardTest9(TestCase):
                          " 6  .  .  .  .  .  .  .  .  . \n"
                          " 7  .  .  *  .  .  .  *  .  . \n"
                          " 8  .  .  .  .  .  .  .  .  . \n"
-                         " 9  .  .  .  ⚪ .  .  .  .  . \n"
+                         " 9  .  .  .  ⚪ .  .  .  .  . \n"
                          "    A  B  C  D  E  F  G  H  J\n",
                          str(board))
 
