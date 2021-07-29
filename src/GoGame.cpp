@@ -79,20 +79,26 @@ namespace sente {
 
     bool GoGame::isLegal(const Move& move) const {
 
-        std::cout << "entering isLegal" << std::endl;
+        // std::cout << "entering isLegal" << std::endl;
 
         if (isOver()){
             return false;
         }
+        // std::cout << "passed isOver" << std::endl;
         if (not board->isOnBoard(move)){
             return false;
         }
+        // std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->isEmpty(move);
+        // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = isNotSelfCapture(move);
+        // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
+        // std::cout << "passed isNotKoPoint" << std::endl;
         bool correctColor = isCorrectColor(move);
+        // std::cout << "passed isCorrectColor" << std::endl;
 
-        std::cout << "leaving isLegal" << std::endl;
+        // std::cout << "leaving isLegal" << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
@@ -377,15 +383,17 @@ namespace sente {
     }
 
     std::vector<Move> GoGame::getLegalMoves() const {
+        py::gil_scoped_release release;
 
         // go through the entire board
         Stone player = getActivePlayer();
         std::vector<Move> moves;
 
-        std::cout << "entering getLegalMoves" << std::endl;
+        // std::cout << "entering getLegalMoves" << std::endl;
 
         for (unsigned i = 0; i < board->getSide(); i++){
             for (unsigned j = 0; j < board->getSide(); j++){
+                // std::cout << std::string(Move(i, j, player)) << std::endl;
                 if (isLegal(i, j)){
                     moves.emplace_back(i, j, player);
                 }
@@ -396,7 +404,7 @@ namespace sente {
         moves.emplace_back(Move::pass(getActivePlayer()));
         moves.emplace_back(Move::resign(getActivePlayer()));
 
-        std::cout << "leaving getLegalMoves" << std::endl;
+        // std::cout << "leaving getLegalMoves" << std::endl;
 
         return moves;
 
@@ -545,6 +553,8 @@ namespace sente {
 
     bool GoGame::isNotSelfCapture(const Move &move) const{
 
+        // std::cout << "entering isNotSelfCapture" << std::endl;
+
         std::unordered_set<std::shared_ptr<Group>> ourAffectedGroups{};
         std::unordered_set<std::shared_ptr<Group>> theirAffectedGroups{};
 
@@ -590,6 +600,8 @@ namespace sente {
             filledLastLiberty = liberty.getX() == move.getX() and liberty.getY() == move.getY();
         }
 
+        // std::cout << "leaving isNotSelfCapture" << std::endl;
+
         return not liberties.empty() and not filledLastLiberty;
     }
 
@@ -598,8 +610,7 @@ namespace sente {
     }
 
     bool GoGame::isOver() const {
-        std::cout << "entering isOver" << std::endl;
-        std::cout << "pass count is " << passCount << std::endl;
+
         std::string resignedName;
 
         switch (resignedPlayer){
@@ -613,12 +624,6 @@ namespace sente {
                 resignedName = "Empty";
                 break;
         }
-
-        std::cout << "resigned player is " << resignedName << std::endl;
-
-        std::cout << "pass count condition: " << (passCount >= 2) << std::endl;
-        std::cout << "resigned condition: " << (resignedPlayer != EMPTY) << std::endl;
-        std::cout << "together" << (passCount >= 2 or resignedPlayer != EMPTY) << std::endl;
 
         return passCount >= 2 or resignedPlayer != EMPTY;
     }
