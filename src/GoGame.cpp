@@ -79,18 +79,26 @@ namespace sente {
 
     bool GoGame::isLegal(const Move& move) const {
 
+        std::cout << "entering isLegal" << std::endl;
+
         if (isOver()){
             return false;
         }
-
-        bool onBoard = board->isOnBoard(move);
-        if (not onBoard){
+        std::cout << "got past isOver" << std::endl;
+        if (not board->isOnBoard(move)){
             return false;
         }
+        std::cout << "got past isOnBoard" << std::endl;
         bool isEmpty = board->isEmpty(move);
+        std::cout << "got past isEmpty" << std::endl;
         bool notSelfCapture = isNotSelfCapture(move);
+        std::cout << "got past isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
+        std::cout << "got past isNotKoPoint" << std::endl;
         bool correctColor = isCorrectColor(move);
+        std::cout << "got past isCorrectColor" << std::endl;
+
+        std::cout << "leaving isLegal" << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
@@ -384,7 +392,6 @@ namespace sente {
 
         for (unsigned i = 0; i < board->getSide(); i++){
             for (unsigned j = 0; j < board->getSide(); j++){
-                std::cout << "checking move at" << i << ", " << j << std::endl;
                 if (isLegal(i, j)){
                     moves.emplace_back(i, j, player);
                 }
