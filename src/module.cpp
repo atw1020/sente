@@ -6,7 +6,6 @@
 #include <fstream>
 
 #include <pybind11/stl.h>
-#include <pybind11/eval.h>
 #include <pybind11/pybind11.h>
 
 #include "include/SGF.h"
@@ -14,11 +13,6 @@
 #include "include/SenteExceptions.h"
 
 namespace py = pybind11;
-
-PYBIND11_MAKE_OPAQUE(sente::Stone)
-PYBIND11_MAKE_OPAQUE(sente::Move)
-
-PYBIND11_MAKE_OPAQUE(sente::GoGame)
 
 PYBIND11_MODULE(sente, module){
 
@@ -487,7 +481,10 @@ PYBIND11_MODULE(sente, module){
                 :param moves: a list of move objects to play
                 :raises IllegalMoveException: If any move in the sequence is illegal
             )pbdoc")
-        .def("get_legal_moves", &sente::GoGame::getLegalMovesPy,
+        .def("get_legal_moves", [](const sente::GoGame& game){
+                py::gil_scoped_release release;
+                return game.getLegalMoves();
+            },
             R"pbdoc(
                 generates a list of all legal moves
 

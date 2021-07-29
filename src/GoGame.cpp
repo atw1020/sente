@@ -3,6 +3,7 @@
 //
 
 #include <regex>
+#include <iostream>
 
 #include "pybind11/pybind11.h"
 
@@ -379,8 +380,11 @@ namespace sente {
         Stone player = getActivePlayer();
         std::vector<Move> moves;
 
+        std::cout << "entering getLegalMoves" << std::endl;
+
         for (unsigned i = 0; i < board->getSide(); i++){
             for (unsigned j = 0; j < board->getSide(); j++){
+                std::cout << "checking move at" << i << ", " << j << std::endl;
                 if (isLegal(i, j)){
                     moves.emplace_back(i, j, player);
                 }
@@ -391,31 +395,9 @@ namespace sente {
         moves.emplace_back(Move::pass(getActivePlayer()));
         moves.emplace_back(Move::resign(getActivePlayer()));
 
+        std::cout << "leaving getLegalMoves" << std::endl;
+
         return moves;
-
-    }
-
-    py::list GoGame::getLegalMovesPy() const {
-
-      // py::print("entering getLegalMovesPy");
-
-      // go through the entire board
-      Stone player = getActivePlayer();
-      py::list moves;
-
-      for (unsigned i = 0; i < board->getSide(); i++){
-        for (unsigned j = 0; j < board->getSide(); j++){
-          if (isLegal(i, j)){
-            moves.append(Move(i, j, player));
-          }
-        }
-      }
-
-      // add resignation and passing
-      moves.append(Move::pass(getActivePlayer()));
-      moves.append(Move::resign(getActivePlayer()));
-
-      return moves;
 
     }
 

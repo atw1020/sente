@@ -75,7 +75,6 @@ namespace sente {
         Results getResults() const;
         Results score() const;
         std::vector<Move> getLegalMoves() const;
-        py::list getLegalMovesPy() const;
 
         explicit operator std::string() const;
 
