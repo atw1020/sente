@@ -1,7 +1,4 @@
-Sente <img src="docs/two stones.png" style="width:200px;" alt="two go stones"/>
-=====
-
-![](docs/sente.png)
+![](docs/sente%20logo.png)
 
 ![workflow](https://github.com/atw1020/sente/actions/workflows/pip/badge.svg)
 ![docs](https://readthedocs.org/projects/sente/badge/?version=latest)
