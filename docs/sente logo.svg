@@ -14,7 +14,10 @@
    version="1.1"
    id="svg8"
    sodipodi:docname="sente logo.svg"
-   inkscape:version="1.0.2 (e86c8708, 2021-01-15)">
+   inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
+   inkscape:export-filename="/Users/arthur/sente logo.png"
+   inkscape:export-xdpi="217.91"
+   inkscape:export-ydpi="217.91">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -290,14 +293,16 @@ bWFnZVJlYWR5ccllPAAAAABJRU5ErkJggg==
        inkscape:export-filename="/Users/arthur/CLionProjects/sente/docs/two stones.png" />
     <text
        xml:space="preserve"
-       style="font-size:53.0914px;line-height:1.25;font-family:sans-serif;stroke-width:0.265456"
+       style="font-size:53.09140000000000015px;line-height:1.25;font-family:sans-serif;stroke-width:0.265456;fill:#0000ff;"
        x="90.026245"
        y="80.41552"
-       id="text952"><tspan
+       id="text952"
+       inkscape:export-xdpi="217.91"
+       inkscape:export-ydpi="217.91"><tspan
          sodipodi:role="line"
          id="tspan950"
          x="90.026245"
          y="80.41552"
-         style="font-size:53.0914px;stroke-width:0.265456">Sente</tspan></text>
+         style="font-size:53.09140000000000015px;stroke-width:0.265456;fill:#0000ff;">Sente</tspan></text>
   </g>
 </svg>
