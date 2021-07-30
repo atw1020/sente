@@ -2,6 +2,7 @@ Sente
 ---
 
 ![workflow](https://github.com/atw1020/sente/actions/workflows/pip/badge.svg)
+![docs](https://readthedocs.org/projects/sente/badge/?version=latest)
 
 ![](docs/sente.png)
 
@@ -14,7 +15,7 @@ In addition to supporting Python 3, Sente is written in C++ which allows AIs tha
 Installation & Requirements
 ---
 
-Sente runs on any operating system with python 3.x and can be installed via pip.
+Sente runs on any operating system with python 3.5, 3.8 and 3.9 and can be installed via pip.
 
 ```zsh
 $ pip install sente
@@ -92,12 +93,6 @@ False
 * [NumPy conversion]() (Coming Soon!)
 * [GTP (Go Text Protocol)]() (Coming Soon!)
 * [Automatic Dead Stone removal]() (Coming Soon!)
-
-Documentation
----
-
-[WIP will have documentation using sphinx and 
-readthedocs.io]
 
 Building & Contributing
 ---
