@@ -89,8 +89,8 @@ False
 
 ### Further Reading
 
-* [Game Trees]()
-* [SFG file reader]()
+* [Game Trees](https://sente.readthedocs.io/en/latest/tutorial/game%20tree%20navigation.html)
+* [SFG file reader](https://sente.readthedocs.io/en/latest/tutorial/sgf.html)
 * [NumPy conversion]() (Coming Soon!)
 * [GTP (Go Text Protocol)]() (Coming Soon!)
 * [Automatic Dead Stone removal]() (Coming Soon!)
