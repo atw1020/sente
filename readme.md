@@ -1,4 +1,4 @@
-Sente 
+Sente <img src="docs/two stones.png" style="width:200px;" alt="two go stones"/>
 =====
 
 ![](docs/sente.png)
