@@ -31,23 +31,24 @@ jobs:
       - name: Add requirements
         run: python -m pip install --upgrade wheel setuptools
 
-      # Eventually Microsoft might have an action for setting up
-      # MSVC, but for now, this action works:
-      - name: Prepare compiler environment for Windows 🐍 2.7
-        if: matrix.python-version == 2.7 && runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-
-      # This makes two environment variables available in the following step(s)
-      - name: Set Windows 🐍 2.7 environment variables
-        if: matrix.python-version == 2.7 && runner.os == 'Windows'
-        shell: bash
-        run: |
-          echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
-          echo "MSSdk=1" >> $GITHUB_ENV
-      - name: Build and install
-        run: pip install --verbose .[test]
-
       - name: Test
         run: cd tests; python -m unittest discover; cd ..
+
+      upload_all:
+        name: Upload if release
+        needs: [ build_wheels, build_sdist ]
+        runs-on: ubuntu-latest
+        if: github.event_name == 'release' && github.event.action == 'published'
+
+        steps:
+          - uses: actions/setup-python@v2
+
+          - uses: actions/download-artifact@v2
+            with:
+              name: artifact
+              path: dist
+
+          - uses: pypa/gh-action-pypi-publish@v1.4.2
+            with:
+              user: __token__
+              password: ${{ secrets.pypi_password }}
