@@ -1,7 +1,11 @@
 Sente 
----
+=====
+
+![](docs/sente.png)
 
 ![workflow](https://github.com/atw1020/sente/actions/workflows/pip/badge.svg)
+![docs](https://readthedocs.org/projects/sente/badge/?version=latest)
+
 
 Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient asian board game Go/Badok/Weiqi. 
 Sente is designed to be a Python 3 replacement for the [gomill](https://github.com/mattheww/gomill) library. 
@@ -12,7 +16,7 @@ In addition to supporting Python 3, Sente is written in C++ which allows AIs tha
 Installation & Requirements
 ---
 
-Sente runs on any operating system with python 3.x and can be installed via pip.
+Sente runs on any operating system with python 3.5, 3.8 and 3.9 and can be installed via pip.
 
 ```zsh
 $ pip install sente
@@ -50,7 +54,7 @@ moves can be played on the game using the `play()` method, and the board can be 
  1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
  2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
  3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
- 4  .  .  .  #  .  .  .  .  .  *  .  .  .  .  .  *  #  .  .
+ 4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
  5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
  6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
  7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -62,7 +66,7 @@ moves can be played on the game using the `play()` method, and the board can be 
 13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
 14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
 15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-16  .  .  .  O  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
 17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
 18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
 19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -85,17 +89,11 @@ False
 
 ### Further Reading
 
-* [Game Trees]()
-* [SFG file reader]()
+* [Game Trees](https://sente.readthedocs.io/en/latest/tutorial/game%20tree%20navigation.html)
+* [SFG file reader](https://sente.readthedocs.io/en/latest/tutorial/sgf.html)
 * [NumPy conversion]() (Coming Soon!)
 * [GTP (Go Text Protocol)]() (Coming Soon!)
 * [Automatic Dead Stone removal]() (Coming Soon!)
-
-Documentation
----
-
-[WIP will have documentation using sphinx and 
-readthedocs.io]
 
 Building & Contributing
 ---

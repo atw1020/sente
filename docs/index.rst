@@ -6,6 +6,9 @@
 Sente
 =====
 
+.. image:: sente.png
+   :width: 600
+
 Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient asian board game Go/Badok/Weiqi.
 Sente is designed to be a Python 3 replacement for the `gomill <https://github.com/mattheww/gomill>`_ library.
 

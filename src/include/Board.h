@@ -116,30 +116,35 @@ namespace sente {
                     accumulator << " ";
                 }
 
-                accumulator << i + 1;
+                accumulator << i + 1 << " ";
 
                 for (unsigned j = 0; j < side; j++){
 
-                    accumulator << "  ";
-
                     switch(board[i][j]){
                         case BLACK:
-                            accumulator << "#";
+                            accumulator << " ⚫";
                             break;
                         case WHITE:
-                            accumulator << "O";
+                            accumulator << " ⚪";
                             break;
                         case EMPTY:
                             // check if we are on a star point
                             if (isStar(i, j)){
-                                accumulator << "*";
+                                accumulator << " * ";
                             }
                             else {
-                                accumulator << ".";
+                                accumulator << " . ";
                             }
                     }
                 }
-                accumulator << std::endl;
+
+                if (board[i][side - 1] == EMPTY){
+                    accumulator << std::endl;
+                }
+                else {
+                    accumulator << " " << std::endl;
+                }
+
             }
 
             accumulator << "  ";

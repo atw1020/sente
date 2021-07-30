@@ -47,7 +47,7 @@ Moves can be played on the game using the ``play()`` method, and the board can b
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  #  .  .  .  .  .  *  .  .  .  .  .  *  #  .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
      5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -59,11 +59,12 @@ Moves can be played on the game using the ``play()`` method, and the board can b
     13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    16  .  .  .  O  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
     17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+
 
 The Sente board display is designed to be similar to the `gomill ascii boards output <https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html>`_.
 A hash (``#``) denotes a Black stone and an "O" (``O``) denotes a white stone.
