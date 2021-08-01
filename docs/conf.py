@@ -35,11 +35,13 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
-    "sphinx.ext.autosectionlabel"
+    "sphinx.ext.autosectionlabel",
+    "m2r2"
 ]
 
 autosummary_generate = True
 github_url = "https://github.com/atw1020/sente"
+# autodoc_mock_imports = ["sente"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

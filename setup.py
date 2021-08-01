@@ -134,6 +134,7 @@ setup(
     version="0.1.2",
     author="Arthur Wesley",
     license="MIT",
+    url="https://github.com/atw1020/sente",
     description="Sente: a Python 3 native library for the game of Go.",
     long_description=read_file("readme.md"),
     long_description_content_type="text/markdown",

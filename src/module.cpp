@@ -18,7 +18,7 @@ PYBIND11_MODULE(sente, module){
 
     module.doc() = R"pbdoc(
         Sente library
-        -------------
+        =============
 
         .. currentmodule:: sente
 
