@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 #include "Move.h"
 #include "Group.h"
@@ -105,6 +106,37 @@ namespace sente {
             return true;
         }
 
+
+        py::array_t<int8_t> numpy(){
+
+            // allocate the buffer and object
+            auto result = py::array_t<int8_t>(side * side);
+            auto buffer = result.request(true);
+
+            auto* ptr = (int8_t*) buffer.ptr;
+
+            for (unsigned i = 0; i < side; i++){
+                for (unsigned j = 0; j < side; j++){
+                    unsigned offset = j * side + i;
+                    switch (board[i][j]){
+                        case BLACK:
+                            ptr[offset] = 1;
+                            break;
+                        case WHITE:
+                            ptr[offset] = -1;
+                            break;
+                        case EMPTY:
+                            ptr[offset] = 0;
+                            break;
+                    }
+                }
+            }
+
+            return result;
+
+        }
+
+
         explicit operator std::string() const override{
 
             std::stringstream accumulator;
@@ -122,10 +154,10 @@ namespace sente {
 
                     switch(board[i][j]){
                         case BLACK:
-                            accumulator << u" ⚫";
+                            accumulator << " ⚫";
                             break;
                         case WHITE:
-                            accumulator << u" ⚪";
+                            accumulator << " ⚪";
                             break;
                         case EMPTY:
                             // check if we are on a star point

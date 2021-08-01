@@ -481,7 +481,7 @@ PYBIND11_MODULE(sente, module){
                 :param moves: a list of move objects to play
                 :raises IllegalMoveException: If any move in the sequence is illegal
             )pbdoc")
-        .def("get_legal_moves", &sente::GoGame::getLegalMoves,
+        .def("get_legal_moves", &sente::GoGame::getLegalMoves, py::return_value_policy::reference_internal,
             R"pbdoc(
                 generates a list of all legal moves
 

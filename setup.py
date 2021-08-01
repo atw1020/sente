@@ -138,6 +138,7 @@ setup(
     description="Sente: a Python 3 native library for the game of Go.",
     long_description=read_file("readme.md"),
     long_description_content_type="text/markdown",
+    install_requires=["numpy>=1.7.0"],
     classifiers=["Programming Language :: Python",
                  "Programming Language :: Python :: 2.7",
                  "Programming Language :: Python :: 3",
