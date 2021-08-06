@@ -41,15 +41,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
 
-      - uses: pypa/cibuildwheel@v2.0.1
+      - uses: pypa/cibuildwheel@v1.12.0
         env:
           # Python 2.7 on Windows requires a workaround for C++11 support,
           # built separately below
@@ -57,7 +56,7 @@ jobs:
           CIBW_ARCHS_MACOS: auto universal2
           CIBW_TEST_SKIP: "*universal2:arm64"
           CIBW_TEST_EXTRAS: test
-          CIBW_TEST_COMMAND: cd tests; python -m unittest discover; cd ..
+          CIBW_TEST_COMMAND: pytest {project}/tests
 
       - name: Verify clean directory
         run: git diff --exit-code
@@ -67,7 +66,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*.whl
-"""
+
+
   # Windows 2.7 (requires workaround for MSVC 2008 replacement)
   build_win27_wheels:
     name: Py 2.7 wheels on Windows
@@ -81,7 +81,7 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Build 64-bit wheel
-        uses: pypa/cibuildwheel@v2.0.1
+        uses: pypa/cibuildwheel@v1.12.0
         env:
           CIBW_BUILD: cp27-win_amd64
           DISTUTILS_USE_SDK: 1
@@ -92,7 +92,7 @@ jobs:
           arch: x86
 
       - name: Build 32-bit wheel
-        uses: pypa/cibuildwheel@v2.0.1
+        uses: pypa/cibuildwheel@v1.12.0
         env:
           CIBW_BUILD: cp27-win32
           DISTUTILS_USE_SDK: 1
@@ -104,12 +104,12 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          path: wheelhouse/*.whl"""
+          path: wheelhouse/*.whl
 
 
   upload_all:
     name: Upload if release
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_win27_wheels, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
 
@@ -123,5 +123,5 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
-          user: __token__
+          user: "__token__"
           password: ${{ secrets.pypi_password }}
