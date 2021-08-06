@@ -12,7 +12,7 @@
 
 #include "Move.h"
 #include "Group.h"
-/*
+
 #ifdef __MINGW32__
 #define WHITE_STONE " O "
 #define BLACK_STONE " # "
@@ -20,7 +20,6 @@
 #define WHITE_STONE " ⚪"
 #define BLACK_STONE " ⚫"
 #endif
- */
 
 namespace py = pybind11;
 
@@ -131,10 +130,10 @@ namespace sente {
 
                     switch(board[i][j]){
                         case BLACK:
-                            accumulator << " ⚪";
+                            accumulator << " ⚫";
                             break;
                         case WHITE:
-                            accumulator << " ⚫";
+                            accumulator << " ⚪";
                             break;
                         case EMPTY:
                             // check if we are on a star point
