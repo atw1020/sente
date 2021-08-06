@@ -125,7 +125,7 @@ def read_file(filename):
     :return: text of the file
     """
 
-    with open(filename) as file:
+    with open(filename, encoding="utf-8") as file:
         return file.read()
 
 
