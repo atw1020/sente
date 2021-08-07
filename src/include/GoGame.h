@@ -9,12 +9,9 @@
 #include <vector>
 #include <memory>
 #include <fstream>
+#include <ciso646>
 #include <unordered_map>
 #include <unordered_set>
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
 
 #include <pybind11/pybind11.h>
 

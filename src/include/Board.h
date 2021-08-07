@@ -7,15 +7,12 @@
 
 #include <array>
 #include <sstream>
+#include <ciso646>
 
 #include <pybind11/pybind11.h>
 
 #include "Move.h"
 #include "Group.h"
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
 
 #ifdef __MINGW32__
 #define WHITE_STONE " O "

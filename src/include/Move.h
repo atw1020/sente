@@ -8,12 +8,9 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <ciso646>
 #include <functional>
 #include <pybind11/pytypes.h>
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
 
 namespace py = pybind11;
 

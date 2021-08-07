@@ -5,13 +5,10 @@
 #ifndef SENTE_SENTEEXCEPTIONS_H
 #define SENTE_SENTEEXCEPTIONS_H
 
+#include <ciso646>
 #include <exception>
 
 #include "Move.h"
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
 
 namespace sente{
     namespace utils{

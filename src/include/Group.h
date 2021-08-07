@@ -6,12 +6,9 @@
 #define SENTE_GROUP_H
 
 #include <vector>
+#include <ciso646>
 #include <functional>
 #include <unordered_set>
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
 
 #include "Move.h"
 

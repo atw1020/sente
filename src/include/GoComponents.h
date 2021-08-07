@@ -6,13 +6,10 @@
 #define SENTE_COMPONENTS_H
 
 #include <sstream>
+#include <ciso646>
 
 #include "Board.h"
 #include "Move.h"
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
 
 namespace sente {
 

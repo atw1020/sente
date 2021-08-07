@@ -6,6 +6,7 @@
 #define SENTE_SGF_H
 
 #include <string>
+#include <ciso646>
 
 #include "Tree.h"
 #include "GoGame.h"
