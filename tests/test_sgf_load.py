@@ -30,6 +30,7 @@ class BasicSGF(DoesNotRaiseTestCase):
 
         for file in files:
             with self.assertDoesNotRaise(Exception):
+                print(Path("sgf")/file)
                 game = sgf.load(str(Path("sgf")/file))
                 game.play_default_sequence()
 
