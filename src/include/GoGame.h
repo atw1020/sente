@@ -12,6 +12,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#ifdef __MINGW32__
+#include <ciso646>
+#endif
+
 #include <pybind11/pybind11.h>
 
 #include "Tree.h"

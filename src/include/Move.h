@@ -11,6 +11,10 @@
 #include <functional>
 #include <pybind11/pytypes.h>
 
+#ifdef __MINGW32__
+#include <ciso646>
+#endif
+
 namespace py = pybind11;
 
 namespace sente {

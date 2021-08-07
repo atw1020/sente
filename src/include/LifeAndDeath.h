@@ -10,6 +10,10 @@
 #include "Move.h"
 #include "Board.h"
 
+#ifdef __MINGW32__
+#include <ciso646>
+#endif
+
 namespace sente {
     namespace utils {
 

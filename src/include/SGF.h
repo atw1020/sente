@@ -11,6 +11,10 @@
 #include "GoGame.h"
 #include "GoComponents.h"
 
+#ifdef __MINGW32__
+#include <ciso646>
+#endif
+
 /**
  *
  * SGF file format specifications

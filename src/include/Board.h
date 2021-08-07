@@ -14,6 +14,10 @@
 #include "Group.h"
 
 #ifdef __MINGW32__
+#include <ciso646>
+#endif
+
+#ifdef __MINGW32__
 #define WHITE_STONE " O "
 #define BLACK_STONE " # "
 #else

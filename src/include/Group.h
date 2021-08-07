@@ -9,6 +9,10 @@
 #include <functional>
 #include <unordered_set>
 
+#ifdef __MINGW32__
+#include <ciso646>
+#endif
+
 #include "Move.h"
 
 namespace sente {
