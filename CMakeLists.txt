@@ -8,8 +8,8 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(MSVC)
-    # MSVC calles "-Wextra" -Za
-    set(CMAKE_CXX_FLAGS "-Wall -Za")
+    # MSVC's equivalent of -Wextra is buggy
+    set(CMAKE_CXX_FLAGS "-Wall")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 else()
     set(CMAKE_CXX_FLAGS "-Wall -Wextra")
