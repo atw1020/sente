@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import subprocess
+import struct
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
@@ -125,13 +126,13 @@ def read_file(filename):
     :return: text of the file
     """
 
-    with open(filename) as file:
+    with open(filename, encoding="utf-8") as file:
         return file.read()
 
 
 setup(
     name="sente",
-    version="0.1.2",
+    version="0.1.4",
     author="Arthur Wesley",
     license="MIT",
     url="https://github.com/atw1020/sente",

@@ -6,9 +6,11 @@
 #define SENTE_LIFEANDDEATH_H
 
 #include <unordered_set>
+#include <ciso646>
 
 #include "Move.h"
 #include "Board.h"
+
 
 namespace sente {
     namespace utils {

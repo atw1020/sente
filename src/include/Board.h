@@ -7,12 +7,21 @@
 
 #include <array>
 #include <sstream>
+#include <ciso646>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
 #include "Move.h"
 #include "Group.h"
+
+#ifdef __CYGWIN__
+#define WHITE_STONE " O "
+#define BLACK_STONE " # "
+#else
+#define WHITE_STONE " ⚪"
+#define BLACK_STONE " ⚫"
+#endif
 
 namespace py = pybind11;
 
@@ -203,7 +212,5 @@ namespace sente {
     };
 
 }
-
-
 
 #endif //SENTE_BOARD_H

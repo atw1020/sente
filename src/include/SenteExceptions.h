@@ -5,6 +5,7 @@
 #ifndef SENTE_SENTEEXCEPTIONS_H
 #define SENTE_SENTEEXCEPTIONS_H
 
+#include <ciso646>
 #include <exception>
 
 #include "Move.h"

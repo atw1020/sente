@@ -8,14 +8,15 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(MSVC)
-    # MSVC doesn't support the -Wextra option so we don't include it
-    set(CMAKE_CXX_FLAGS "-Wall -Za")
+    # MSVC's equivalent of -Wextra is buggy
+    set(CMAKE_CXX_FLAGS "-Wall")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 else()
     set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
-set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 
 add_subdirectory(pybind11)
 # pybind11_add_module(sente src/module.cpp src/include/Move.h src/Move.cpp)

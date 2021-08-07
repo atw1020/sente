@@ -6,6 +6,7 @@
 #define SENTE_COMPONENTS_H
 
 #include <sstream>
+#include <ciso646>
 
 #include "Board.h"
 #include "Move.h"

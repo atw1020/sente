@@ -7,8 +7,13 @@
 
 #include <vector>
 #include <memory>
+#include <ciso646>
 
 #include <pybind11/pybind11.h>
+
+#ifdef __CYGWIN__
+#include <ciso646>
+#endif
 
 namespace py = pybind11;
 

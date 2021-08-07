@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <fstream>
+#include <ciso646>
 #include <unordered_map>
 #include <unordered_set>
 

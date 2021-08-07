@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <ciso646>
 #include <functional>
 #include <pybind11/pytypes.h>
 

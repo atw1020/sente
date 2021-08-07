@@ -6,10 +6,15 @@
 #define SENTE_SGF_H
 
 #include <string>
+#include <ciso646>
 
 #include "Tree.h"
 #include "GoGame.h"
 #include "GoComponents.h"
+
+#ifdef __CYGWIN__
+#include <ciso646>
+#endif
 
 /**
  *
