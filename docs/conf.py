@@ -22,7 +22,7 @@ copyright = '2021, Arthur Wesley'
 author = 'Arthur Wesley'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = '0.1.4'
 
 
 # -- General configuration ---------------------------------------------------

@@ -132,7 +132,7 @@ def read_file(filename):
 
 setup(
     name="sente",
-    version="0.1.2",
+    version="0.1.4",
     author="Arthur Wesley",
     license="MIT",
     url="https://github.com/atw1020/sente",

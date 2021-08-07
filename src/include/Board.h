@@ -181,6 +181,4 @@ namespace sente {
 
 }
 
-
-
 #endif //SENTE_BOARD_H
