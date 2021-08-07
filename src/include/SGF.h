@@ -11,7 +11,7 @@
 #include "GoGame.h"
 #include "GoComponents.h"
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #include <ciso646>
 #endif
 

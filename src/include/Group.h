@@ -9,7 +9,7 @@
 #include <functional>
 #include <unordered_set>
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #include <ciso646>
 #endif
 

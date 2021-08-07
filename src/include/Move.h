@@ -11,7 +11,7 @@
 #include <functional>
 #include <pybind11/pytypes.h>
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #include <ciso646>
 #endif
 

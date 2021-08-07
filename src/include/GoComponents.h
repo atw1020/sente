@@ -10,7 +10,7 @@
 #include "Board.h"
 #include "Move.h"
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #include <ciso646>
 #endif
 

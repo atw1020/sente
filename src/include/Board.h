@@ -13,7 +13,7 @@
 #include "Move.h"
 #include "Group.h"
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #include <ciso646>
 #endif
 

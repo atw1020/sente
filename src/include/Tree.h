@@ -10,7 +10,7 @@
 
 #include <pybind11/pybind11.h>
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #include <ciso646>
 #endif
 
