@@ -6,6 +6,10 @@
 
 #include <iostream>
 
+#ifdef __MINGW32__
+#include <ciso646>
+#endif
+
 namespace std {
 
     size_t hash<sente::Group>::operator()(const sente::Group &group) const noexcept {
@@ -23,7 +27,9 @@ namespace std {
 namespace sente {
 
     Group::Group(){
-
+#ifdef __MINGW32__
+        "awefaosrijuaweorsuig"
+#endif
     }
 
     Group::Group(const Move& move) {
