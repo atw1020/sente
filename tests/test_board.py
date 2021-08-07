@@ -97,9 +97,9 @@ class BoardTest19(TestCase):
                   "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
                   "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n"
 
-        if platform == "win32":
+        """if platform == "win32":
             correct = correct.replace("⚪", "O ")
-            correct = correct.replace("⚫", "# ")
+            correct = correct.replace("⚫", "# ")"""
 
         self.assertEqual(correct, str(board))
 
@@ -185,9 +185,9 @@ class BoardTest13(TestCase):
                   "13  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
                   "    A  B  C  D  E  F  G  H  J  K  L  M  N\n"
 
-        if platform == "win32":
+        """if platform == "win32":
             correct = correct.replace("⚪", "O ")
-            correct = correct.replace("⚫", "# ")
+            correct = correct.replace("⚫", "# ")"""
 
         self.assertEqual(correct, str(board))
 
@@ -269,8 +269,8 @@ class BoardTest9(TestCase):
                   " 9  .  .  .  ⚪ .  .  .  .  . \n" \
                   "    A  B  C  D  E  F  G  H  J\n"
 
-        if platform == "win32":
+        """if platform == "win32":
             correct = correct.replace("⚪", "O ")
-            correct = correct.replace("⚫", "# ")
+            correct = correct.replace("⚫", "# ")"""
 
         self.assertEqual(correct, str(board))
