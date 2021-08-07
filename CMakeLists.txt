@@ -7,14 +7,13 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if(MSVC)
-    # MSVC doesn't support the -Wextra option so we don't include it
-    set(CMAKE_CXX_FLAGS "") # -Za")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-else()
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
+# set compiler to be g++ on windows
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(CMAKE_CXX_COMPILER "g++")
 endif()
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
 
