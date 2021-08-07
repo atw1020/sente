@@ -29,12 +29,12 @@ class BasicSGF(DoesNotRaiseTestCase):
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
-            if file == "3-4.sgf":
-                continue
-            with self.assertDoesNotRaise(Exception):
-                print(Path("sgf")/file)
+            # with self.assertDoesNotRaise(Exception):
+            try:
                 game = sgf.load(str(Path("sgf")/file))
                 game.play_default_sequence()
+            except Exception:
+                print("failure in", Path("sgf")/file)
 
     def test_simple_single_branch_file(self):
         """
