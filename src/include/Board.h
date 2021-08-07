@@ -14,7 +14,7 @@
 #include "Move.h"
 #include "Group.h"
 
-#ifdef __MINGW32__
+#ifdef __CYGWIN__
 #define WHITE_STONE " O "
 #define BLACK_STONE " # "
 #else
