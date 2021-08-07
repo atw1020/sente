@@ -29,6 +29,8 @@ class BasicSGF(DoesNotRaiseTestCase):
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
+            if file == "3-4.sgf":
+                continue
             with self.assertDoesNotRaise(Exception):
                 print(Path("sgf")/file)
                 game = sgf.load(str(Path("sgf")/file))
