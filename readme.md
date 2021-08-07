@@ -1,4 +1,4 @@
-![](sente_logo.png)
+![](sente_logo.svg)
 
 [![PyPI version](https://badge.fury.io/py/sente.svg)](https://badge.fury.io/py/sente)
 [![docs](https://readthedocs.org/projects/sente/badge/?version=latest)](https://sente.readthedocs.io/en/latest/)
