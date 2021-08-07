@@ -1,4 +1,4 @@
-![](docs/sente%20logo.png)
+![](sente_logo.png)
 
 ![docs](https://readthedocs.org/projects/sente/badge/?version=latest)
 ![workflow](https://github.com/atw1020/sente/actions/workflows/pip/badge.svg)

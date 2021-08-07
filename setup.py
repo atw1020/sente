@@ -21,8 +21,6 @@ PLAT_TO_CMAKE = {
     "win-arm64": "ARM64",
 }
 
-print("we didn't start the fire!", struct.calcsize("P") * 8)
-
 
 # A CMakeExtension needs a sourcedir instead of a file list.
 # The name must be the _single_ output extension from the CMake build.
