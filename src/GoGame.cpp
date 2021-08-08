@@ -410,6 +410,10 @@ namespace sente {
 
     }
 
+    Point GoGame::getKoPoint() const {
+        return {koPoint.getX(), koPoint.getY()};
+    }
+
     GoGame::operator std::string() const {
         return std::string(*board);
     }
@@ -455,7 +459,7 @@ namespace sente {
     }
 
     void GoGame::resetKoPoint(){
-        koPoint = Move(board->getSide() + 1, board->getSide() + 1, EMPTY);
+        koPoint = Move::pass(getActivePlayer());
     }
 
     /**

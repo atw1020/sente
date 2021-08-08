@@ -141,6 +141,8 @@ namespace sente {
                 }
             }
 
+            result.resize({side, side});
+
             return result;
 
         }

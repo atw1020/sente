@@ -77,6 +77,8 @@ namespace sente {
         Results score() const;
         std::vector<Move> getLegalMoves() const;
 
+        Point getKoPoint() const;
+
         explicit operator std::string() const;
 
         std::unordered_map<std::string, std::string> getAttributes() const;

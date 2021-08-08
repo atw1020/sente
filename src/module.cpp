@@ -10,6 +10,7 @@
 
 #include "include/SGF.h"
 #include "include/GoGame.h"
+#include "include/Numpy.h"
 #include "include/SenteExceptions.h"
 
 namespace py = pybind11;
@@ -506,6 +507,10 @@ PYBIND11_MODULE(sente, module){
 
                 :return: a ``sente.Board`` object that represents the board to be played.
             )pbdoc")
+        .def("numpy", &sente::utils::getFeatures)
+        .def("numpy", [](const sente::GoGame& game){
+            return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
+        })
         .def("__str__", [](const sente::GoGame& game){
             return std::string(game);
         });
