@@ -6,9 +6,9 @@ on:
   push:
     branches:
       - master
-  release:
-    types:
-      - published
+#  release:
+#    types:
+#      - published
 
 env:
   CIBW_TEST_COMMAND: pytest {project}/tests
