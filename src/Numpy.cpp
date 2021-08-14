@@ -21,7 +21,11 @@ namespace sente {
             {"Black Stones", BLACK_STONES},
             {"White Stones", WHITE_STONES},
             {"Empty Points", EMPTY_POINTS},
-            {"Ko Points", KO_POINTS}
+            {"Ko Points", KO_POINTS},
+            {"black_stones", BLACK_STONES},
+            {"white_stones", WHITE_STONES},
+            {"empty_points", EMPTY_POINTS},
+            {"ko_points", KO_POINTS}
         };
 
         void getBlackStones(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex);
