@@ -11,7 +11,7 @@ on:
       - published
 
 env:
-  CIBW_TEST_COMMAND: cd tests; python -m unittest discover; cd ..
+  CIBW_TEST_COMMAND: pytest {project}/tests
   CIBW_TEST_EXTRAS: test
 
 
@@ -48,6 +48,16 @@ jobs:
         with:
           submodules: true
 
+      - uses: pypa/cibuildwheel@v1.12.0
+        env:
+          # Python 2.7 on Windows requires a workaround for C++11 support,
+          # built separately below
+          CIBW_SKIP: cp27-win*
+          CIBW_ARCHS_MACOS: auto universal2
+          CIBW_TEST_SKIP: "*universal2:arm64"
+          CIBW_TEST_EXTRAS: test
+          CIBW_TEST_COMMAND: pytest {project}/tests
+
       - name: Verify clean directory
         run: git diff --exit-code
         shell: bash
@@ -60,7 +70,7 @@ jobs:
 
   upload_all:
     name: Upload if release
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_win27_wheels, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
 
@@ -74,5 +84,5 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
-          user: "__token__"
+          user: __token__
           password: ${{ secrets.pypi_password }}
