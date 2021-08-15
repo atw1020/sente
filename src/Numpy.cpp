@@ -28,10 +28,10 @@ namespace sente {
             {"ko_points", KO_POINTS}
         };
 
-        void getBlackStones(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex);
-        void getWhiteStones(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex);
-        void getEmptySpaces(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex);
-        void getKoPoints(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex);
+        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
+        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
+        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
+        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
 
         /**
          *
@@ -50,22 +50,30 @@ namespace sente {
 
             auto* buffer_ptr = (int8_t*) buffer.ptr;
 
-            unsigned index = 0;
+            for (unsigned i = 0; i < side; i++){
+                for (unsigned j = 0; j < side; j++){
 
-            for (const auto& item : features){
-                switch (item){
-                    case BLACK_STONES:
-                        getBlackStones(game, buffer_ptr, index);
-                        break;
-                    case WHITE_STONES:
-                        getWhiteStones(game, buffer_ptr, index);
-                        break;
-                    case EMPTY_POINTS:
-                        getEmptySpaces(game, buffer_ptr, index);
-                        break;
-                    case KO_POINTS:
-                        getKoPoints(game, buffer_ptr, index);
-                        break;
+                    unsigned featureOffset = 0;
+                    unsigned boardOffset = side * i + j;
+
+                    for (const auto& item : features){
+                        switch (item){
+                            case BLACK_STONES:
+                                getNextBlackStone(game, buffer_ptr, boardOffset + featureOffset, {i, j});
+                                break;
+                            case WHITE_STONES:
+                                getNextWhiteStone(game, buffer_ptr, boardOffset + featureOffset, {i, j});
+                                break;
+                            case EMPTY_POINTS:
+                                getNextEmptySpace(game, buffer_ptr, boardOffset + featureOffset, {i, j});
+                                break;
+                            case KO_POINTS:
+                                getNextKoPoint(game, buffer_ptr, boardOffset + featureOffset, {i, j});
+                                break;
+                        }
+                        featureOffset++;
+                    }
+
                 }
             }
 
@@ -81,27 +89,21 @@ namespace sente {
          *
          * @param game game to get the stones from
          * @param buffer_ptr the pointer to the insertion buffer
-         * @param currentIndex current index in the insertion buffer
+         * @param bufferIndex the index to insert the next point at
+         * @param toCheck the point to check
          */
-        void getBlackStones(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex){
+        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
-            unsigned side = game.getBoard().getSide();
+            // get the stone from the board
+            auto stone = game.getBoard().getStone(toCheck);
 
-            for (unsigned i = 0; i < side; i++){
-                for (unsigned j = 0; j < side; j++){
-
-                    // get the stone from the board
-                    auto stone = game.getBoard().getStone({i, j});
-
-                    if (stone == BLACK){
-                        buffer_ptr[currentIndex++] = 1;
-                    }
-                    else {
-                        buffer_ptr[currentIndex++] = 0;
-                    }
-
-                }
+            if (stone == BLACK){
+                buffer_ptr[bufferIndex] = 1;
             }
+            else {
+                buffer_ptr[bufferIndex] = 0;
+            }
+
         }
 
         /**
@@ -110,26 +112,19 @@ namespace sente {
          *
          * @param game game to get the stones from
          * @param buffer_ptr the pointer to the insertion buffer
-         * @param currentIndex current index in the insertion buffer
+         * @param bufferIndex the index to insert the next point at
+         * @param toCheck the point to check
          */
-        void getWhiteStones(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex){
+        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
-            unsigned side = game.getBoard().getSide();
+            // get the stone from the board
+            auto stone = game.getBoard().getStone(toCheck);
 
-            for (unsigned i = 0; i < side; i++){
-                for (unsigned j = 0; j < side; j++){
-
-                    // get the stone from the board
-                    auto stone = game.getBoard().getStone({i, j});
-
-                    if (stone == WHITE){
-                        buffer_ptr[currentIndex++] = 1;
-                    }
-                    else {
-                        buffer_ptr[currentIndex++] = 0;
-                    }
-
-                }
+            if (stone == WHITE){
+                buffer_ptr[bufferIndex] = 1;
+            }
+            else {
+                buffer_ptr[bufferIndex] = 0;
             }
         }
 
@@ -139,27 +134,21 @@ namespace sente {
         *
         * @param game game to get the stones from
         * @param buffer_ptr the pointer to the insertion buffer
-        * @param currentIndex current index in the insertion buffer
+        * @param bufferIndex the index to insert the next point at
+        * @param toCheck the point to check
         */
-        void getEmptySpaces(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex){
+        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
-            unsigned side = game.getBoard().getSide();
+            // get the stone from the board
+            auto stone = game.getBoard().getStone(toCheck);
 
-            for (unsigned i = 0; i < side; i++){
-                for (unsigned j = 0; j < side; j++){
-
-                    // get the stone from the board
-                    auto stone = game.getBoard().getStone({i, j});
-
-                    if (stone == EMPTY){
-                        buffer_ptr[currentIndex++] = 1;
-                    }
-                    else {
-                        buffer_ptr[currentIndex++] = 0;
-                    }
-
-                }
+            if (stone == EMPTY){
+                buffer_ptr[bufferIndex] = 1;
             }
+            else {
+                buffer_ptr[bufferIndex] = 0;
+            }
+
         }
 
 
@@ -169,22 +158,18 @@ namespace sente {
          *
          * @param game game to get the stones from
          * @param buffer_ptr the pointer to the insertion buffer
-         * @param currentIndex current index in the insertion buffer
+         * @param bufferIndex the index to insert the next point at
+         * @param toCheck the point to check
          */
-        void getKoPoints(const GoGame& game, int8_t* buffer_ptr, unsigned& currentIndex){
+        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
             Point ko = game.getKoPoint();
-            unsigned side = game.getBoard().getSide();
 
-            for (unsigned i = 0; i < side; i++){
-                for (unsigned j = 0; j < side; j++){
-                    if (ko.first == i and ko.second == j){
-                        buffer_ptr[currentIndex++] = 1;
-                    }
-                    else {
-                        buffer_ptr[currentIndex++] = 0;
-                    }
-                }
+            if (ko.first == toCheck.first and ko.second == toCheck.second){
+                buffer_ptr[bufferIndex] = 1;
+            }
+            else {
+                buffer_ptr[bufferIndex] = 0;
             }
 
         }
