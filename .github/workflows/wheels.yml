@@ -10,10 +10,6 @@ on:
     types:
       - published
 
-env:
-  CIBW_TEST_COMMAND: cd tests; python -m unittest discover; cd ..
-  CIBW_TEST_EXTRAS: test
-
 
 jobs:
   build_sdist:
@@ -48,6 +44,11 @@ jobs:
         with:
           submodules: true
 
+      - uses: pypa/cibuildwheel@v2.1.1
+        env:
+          CIBW_ARCHS_MACOS: auto universal2
+          CIBW_TEST_SKIP: "*universal2:arm64"
+
       - name: Verify clean directory
         run: git diff --exit-code
         shell: bash
@@ -74,5 +75,5 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
-          user: "__token__"
+          user: __token__
           password: ${{ secrets.pypi_password }}
