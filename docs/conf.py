@@ -22,7 +22,7 @@ copyright = '2021, Arthur Wesley'
 author = 'Arthur Wesley'
 
 # The full version, including alpha/beta/rc tags
-with open("version.txt") as file:
+with open("../version.txt") as file:
     release = file.read().strip()
 
 
