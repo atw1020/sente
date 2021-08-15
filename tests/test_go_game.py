@@ -494,7 +494,74 @@ class TestTreeNavigation(TestCase):
         self.assertTrue(game.is_legal(3, 3))
 
 
-class TestNumpy(TestCase):
+class TestNumpy(DoesNotRaiseTestCase):
+
+    def test_9x9_numpy(self):
+
+        game = sente.Game(9)
+
+        game.play(4, 4)
+        game.play(9, 4)
+
+        game.play(4, 9)
+        game.play(9, 9)
+
+        correct_board = np.zeros((9, 9, 4), dtype=np.uint8)
+
+        for i in range(9):
+            for j in range(9):
+                if game.get_point(i + 1, j + 1) == sente.stone.BLACK:
+                    correct_board[i][j][0] = 1
+                elif game.get_point(i + 1, j + 1) == sente.stone.WHITE:
+                    correct_board[i][j][1] = 1
+                elif game.get_point(i + 1, j + 1) == sente.stone.EMPTY:
+                    correct_board[i][j][2] = 1
+
+    def test_13x13_numpy(self):
+
+        game = sente.Game(13)
+
+        game.play(4, 4)
+        game.play(9, 4)
+
+        game.play(4, 9)
+        game.play(9, 9)
+
+        correct_board = np.zeros((13, 13, 4), dtype=np.uint8)
+
+        for i in range(13):
+            for j in range(13):
+                if game.get_point(i + 1, j + 1) == sente.stone.BLACK:
+                    correct_board[i][j][0] = 1
+                elif game.get_point(i + 1, j + 1) == sente.stone.WHITE:
+                    correct_board[i][j][1] = 1
+                elif game.get_point(i + 1, j + 1) == sente.stone.EMPTY:
+                    correct_board[i][j][2] = 1
+
+    def test_ko(self):
+        """
+
+        tests to see if ko points are accurately recorded
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(2, 2)
+        game.play(2, 1)
+
+        game.play(3, 1)
+        game.play(1, 2)
+
+        game.play(1, 1)
+
+        ko_numpy = game.numpy(["ko_points"])
+
+        correct = np.zeros((19, 19, 1), dtype=np.uint8)
+        correct[1, 0, 0] = 1
+
+        self.assertTrue(np.array_equal(correct, ko_numpy))
 
     def test_full_game(self):
         """
