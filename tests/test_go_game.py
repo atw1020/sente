@@ -5,8 +5,10 @@ Author: Arthur Wesley
 """
 from unittest import TestCase
 
-from assert_does_not_raise import DoesNotRaiseTestCase
 import sente
+import numpy as np
+
+from assert_does_not_raise import DoesNotRaiseTestCase
 
 
 class TestBasicMethods(DoesNotRaiseTestCase):
@@ -490,3 +492,33 @@ class TestTreeNavigation(TestCase):
 
         game.advance_to_root()
         self.assertTrue(game.is_legal(3, 3))
+
+
+class TestNumpy(TestCase):
+
+    def test_full_game(self):
+        """
+
+        tests to see if a fully completed game matches the expected numpy array
+
+        :return:
+        """
+
+        game = sente.sgf.load("sgf/Lee Sedol ladder game.sgf")
+        game.play_default_sequence()
+
+        numpy = game.numpy()
+
+        correct_board = np.zeros((19, 19, 4), dtype=np.uint8)
+
+        for i in range(19):
+            for j in range(19):
+                if game.get_point(i + 1, j + 1) == sente.stone.BLACK:
+                    correct_board[i][j][0] = 1
+                elif game.get_point(i + 1, j + 1) == sente.stone.WHITE:
+                    correct_board[i][j][1] = 1
+                elif game.get_point(i + 1, j + 1) == sente.stone.EMPTY:
+                    correct_board[i][j][2] = 1
+
+        self.assertTrue(np.array_equal(correct_board, numpy))
+

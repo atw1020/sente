@@ -54,7 +54,7 @@ namespace sente {
                 for (unsigned j = 0; j < side; j++){
 
                     unsigned featureOffset = 0;
-                    unsigned boardOffset = side * i + j;
+                    unsigned boardOffset = (side * i + j) * features.size();
 
                     for (const auto& item : features){
                         switch (item){
@@ -77,7 +77,7 @@ namespace sente {
                 }
             }
 
-            result.resize({unsigned(features.size()), side, side});
+            result.resize({side, side, unsigned(features.size())});
 
             return result;
 
