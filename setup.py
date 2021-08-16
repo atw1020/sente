@@ -132,7 +132,7 @@ def read_file(filename):
 
 setup(
     name="sente",
-    python_requires="==3.5.*, ==3.8.*, ==3.9.*",
+    python_requires="==3.5, ==3.8, ==3.9",
     version=read_file("version.txt"),
     author="Arthur Wesley",
     license="MIT",
