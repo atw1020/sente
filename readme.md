@@ -90,7 +90,7 @@ False
 
 * [Game Trees](https://sente.readthedocs.io/en/latest/tutorial/game%20tree%20navigation.html)
 * [SFG file reader](https://sente.readthedocs.io/en/latest/tutorial/sgf.html)
-* [NumPy conversion]() (Coming Soon!)
+* [NumPy conversion](https://sente.readthedocs.io/en/latest/tutorial/numpy.html)
 * [GTP (Go Text Protocol)]() (Coming Soon!)
 * [Automatic Dead Stone removal]() (Coming Soon!)
 

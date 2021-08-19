@@ -15,6 +15,7 @@ Docs
    tutorial/basics
    tutorial/game tree navigation
    tutorial/sgf
+   tutorial/numpy
    tutorial/gotchas
 
 .. toctree::
