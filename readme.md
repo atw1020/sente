@@ -2,8 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/sente.svg)](https://badge.fury.io/py/sente)
 [![docs](https://readthedocs.org/projects/sente/badge/?version=latest)](https://sente.readthedocs.io/en/latest/)
-[![pip](https://github.com/atw1020/sente/actions/workflows/pip.yml/badge.svg)](https://pypi.org/project/sente/)
-![wheels](https://github.com/atw1020/sente/actions/workflows/wheels.yml/badge.svg)
+![tests](https://github.com/atw1020/sente/actions/workflows/pip.yml/badge.svg)
+[![pip](https://github.com/atw1020/sente/actions/workflows/wheels.yml/badge.svg)](https://pypi.org/project/sente/)
 
 
 Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient chinese board game Go/Badok/Weiqi. 
