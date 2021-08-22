@@ -7,6 +7,9 @@
 
 
 class Controller {
+public:
+
+private:
 
 };
 

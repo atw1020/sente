@@ -7,6 +7,9 @@
 
 
 class Connector {
+public:
+
+private:
 
 };
 

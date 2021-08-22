@@ -25,4 +25,5 @@ pybind11_add_module(sente src/module.cpp src/Group.cpp src/include/Group.h src/i
                           src/SGF.cpp src/include/SGF.h src/include/GoComponents.h src/GoComponents.cpp
                           src/SenteExceptions.cpp src/include/SenteExceptions.h src/include/LifeAndDeath.h
                           src/LifeAndDeath.cpp src/include/Numpy.h src/Numpy.cpp src/include/GTP/Controller.h
-                          src/GTP/Controller.cpp src/include/GTP/Connector.h src/GTP/Connector.cpp)
+                          src/GTP/Controller.cpp src/include/GTP/Connector.h src/GTP/Connector.cpp
+                          src/include/GTP/GTP.h src/GTP/GTP.cpp src/GTP/Commands/Command.h src/GTP/Commands/Response.h)
