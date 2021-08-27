@@ -16,8 +16,6 @@
 #include <ciso646>
 #endif
 
-#define stringify(x) "#x"
-
 /**
  *
  * SGF file format specifications
@@ -28,7 +26,7 @@
 namespace sente {
     namespace utils {
 
-        enum SGFCommands {
+        enum SGFCommand {
             /// data taken from https://www.red-bean.com/sgf/properties.html
             /// Move properties
             B,  // black move
@@ -89,16 +87,48 @@ namespace sente {
             RO, // round number & type todo: support
             RU, // ruleset
             SO, // source todo: support
-            /// timing properties
             TM, // time info todo: support
             US, // creator of the game todo: support
             WR, // white rank
             WT, // white team todo: support
+            /// timing properties
+            BL, // black time left todo: support
+            OB, // number of byo-yomi periods left black todo: support
+            OW, // number of byo-yomi periods left white todo: support
+            WL, // white time left todo: support
             /// misc
             FG, // figure todo: support
             PM, // print move count todo: support
-            VW  // only view part of the board
+            VW, // only view part of the board
+            /// Go-specific properties
+            HA, // handicap
+            KM, // komi
+            TB, // territory black
+            TW, // territory white
+            /// SGF-3 specific properties
+            ID, // unique ID of the game todo: support
+            LT, // enforce losing on time todo: support
+            OM, // number of moves for each overtime todo: support
+            OP, // length of each overtime period todo: support
+            OV, // operator overhead for each move todo: support
+            SE, // moves tried so far todo: support
+            SI, // position marked with sigma todo: support
+            TC, // territory count todo: support
+            /// SGF-1 specific properties
+            EL, // human evaluation of a computer's move todo: support
+            EX, // expected next move todo: support
+            L,  // letters on points todo: support
+            M,  // marked points todo: support
+            BS, // black species todo: support
+            CH, // check mark todo: support
+            RG, // region of the board todo: support
+            SC, // secure stones todo: support
+            WS, // white species todo: support
         };
+
+        SGFCommand fromStr(const std::string& sgfCommand);
+
+        bool isSGFLegal(SGFCommand command, unsigned version);
 
         GoGame loadSGF(const std::string &SGFText);
 
@@ -107,6 +137,14 @@ namespace sente {
         std::unordered_map<std::string, std::string> getMetadata(const std::string& SGFText);
 
     }
+}
+
+namespace std {
+
+    template<>
+    struct hash<sente::utils::SGFCommand> {
+        size_t operator()(const sente::utils::SGFCommand& sgfCommand) const noexcept;
+    };
 }
 
 
