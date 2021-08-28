@@ -65,15 +65,21 @@ namespace sente {
         public:
 
             Tree(){
+
+                depth = 0;
+                size = 0;
+
                 root = std::make_shared<TreeNode<Type>>(); // create the root
                 cursor = root;
-                depth = 0;
             }
 
             explicit Tree(const Type& payload){
+
+                depth = 1;
+                size = 1;
+
                 root = std::make_shared<TreeNode<Type>>(); // create the root
                 root->children.push_back(std::make_shared<TreeNode<Type>>(payload, root));
-                depth = 1;
             }
 
             void insert(const Type& payload){
@@ -191,10 +197,11 @@ namespace sente {
 
         private:
 
-            std::shared_ptr<TreeNode<Type>> cursor;
-            std::shared_ptr<TreeNode<Type>> root;
             unsigned depth;
             unsigned size;
+
+            std::shared_ptr<TreeNode<Type>> cursor;
+            std::shared_ptr<TreeNode<Type>> root;
 
         };
 

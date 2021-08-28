@@ -127,6 +127,7 @@ namespace sente {
         };
 
         SGFCommand fromStr(const std::string& sgfCommand);
+        std::string toStr(SGFCommand command);
 
         bool isSGFLegal(SGFCommand command, unsigned version);
 

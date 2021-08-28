@@ -304,6 +304,10 @@ namespace sente {
             }
         }
 
+        std::string toStr(SGFCommand command){
+            return commandToStr[command];
+        }
+
         std::string fromStr(SGFCommand command){
             return commandToStr[command];
         }
