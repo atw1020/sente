@@ -48,6 +48,46 @@ namespace sente {
 
     GoGame::GoGame(utils::Tree<utils::SGFNode> &SGFTree) {
         gameTree = SGFTree;
+
+        auto rootNode = gameTree.getRoot();
+
+        if (rootNode.hasCommand(utils::SZ)){
+            // parse if available
+            makeBoard(std::stoi(rootNode.getCommand(utils::SZ)[0]));
+        }
+        else {
+            // default board size
+            makeBoard(19);
+        }
+
+        if (rootNode.hasCommand(utils::RU)){
+
+            std::string ruleString = rootNode.getCommand(utils::RU)[0];
+            std::transform(ruleString.begin(), ruleString.end(), ruleString.begin(), ::tolower);
+
+            if (ruleString == "japanese"){
+                rules = JAPANESE;
+            }
+            else if (ruleString == "chinese"){
+                rules = CHINESE;
+            }
+            else {
+                throw utils::InvalidSGFException("ruleset not recognized \"" + ruleString +
+                        "\" (sente only supports japanese and chinese rules at present)");
+            }
+        }
+        else {
+            rules = CHINESE; // default
+        }
+
+        if (rootNode.hasCommand(utils::KM)){
+            komi = std::stod(rootNode.getCommand(utils::KM)[0]);
+        }
+        else {
+            komi = getKomi(rules);
+        }
+
+        resignedPlayer = EMPTY;
     }
 
     /**

@@ -3,6 +3,7 @@
 //
 
 #include <sstream>
+#include <pybind11/pybind11.h>
 
 #include "../Include/Utils/SGFNode.h"
 
@@ -19,8 +20,13 @@ namespace sente {
 
         void SGFNode::addCommand(SGFCommand command, const std::string &value) {
             if (command == B or command == W){
-                // get the co-ordinates from the move
-                move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'b'), command == B ? BLACK : WHITE};
+                if (value.empty()){
+                    move = Move::pass(command == B ? BLACK : WHITE);
+                }
+                else {
+                    // get the co-ordinates from the move
+                    move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), command == B ? BLACK : WHITE};
+                }
             }
             else {
                 payload[command].push_back(value);

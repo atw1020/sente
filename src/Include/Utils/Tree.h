@@ -138,12 +138,11 @@ namespace sente {
             }
 
             Type get() const{
-                if (not cursor->isRoot()){
-                    return cursor->payload;
-                }
-                else {
-                    throw std::domain_error("at root of tree, no move available");
-                }
+                return cursor->payload;
+            }
+
+            Type getRoot() const {
+                return root->payload;
             }
 
             unsigned getDepth() const{
