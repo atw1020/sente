@@ -18,6 +18,7 @@
 #include "../Utils/Tree.h"
 #include "Group.h"
 #include "GoComponents.h"
+#include "../Utils/SGFNode.h"
 
 namespace py = pybind11;
 
@@ -95,7 +96,7 @@ namespace sente {
         // todo: look into moving the board onto the stack
         std::unique_ptr<_board> board;
 
-        utils::Tree<Move> moveTree;
+        utils::Tree<utils::SGFNode> moveTree;
 
         std::unordered_map<Move, std::shared_ptr<Group>> groups;
         std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;

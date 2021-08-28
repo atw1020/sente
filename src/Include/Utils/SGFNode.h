@@ -5,7 +5,8 @@
 #ifndef SENTE_SGFNODE_H
 #define SENTE_SGFNODE_H
 
-#include "SGF.h"
+#include "SGFCommands.h"
+#include "../Game/Move.h"
 
 namespace sente {
     namespace utils {

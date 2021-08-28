@@ -7,9 +7,9 @@
 
 // #Include <pybind11/pybind11.h>
 
-#include "../include/Game/GoGame.h"
-#include "../include/Game/LifeAndDeath.h"
-#include "../include/Utils/SenteExceptions.h"
+#include "../Include/Game/GoGame.h"
+#include "../Include/Game/LifeAndDeath.h"
+#include "../Include/Utils/SenteExceptions.h"
 
 namespace std {
 
@@ -127,7 +127,7 @@ namespace sente {
         // check for pass/resign
         if (move.isPass()){
             passCount++;
-            moveTree.insert(move);
+            moveTree.insert(utils::SGFNode(move));
             return;
         }
         else {

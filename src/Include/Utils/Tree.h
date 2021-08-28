@@ -32,7 +32,7 @@ namespace sente {
                 parent = nullptr;
             }
 
-            TreeNode(const Type payload, const std::shared_ptr<TreeNode>& parent){
+            TreeNode(Type payload, const std::shared_ptr<TreeNode>& parent){
                 this->payload = payload;
                 this->parent = parent;
             }
@@ -44,13 +44,13 @@ namespace sente {
                 return children.empty();
             }
 
-            typename std::vector<std::shared_ptr<TreeNode>>::iterator findChild(const Type& toFind){
-                return std::find_if(children.begin(), children.end(), [toFind](const std::shared_ptr<TreeNode>& child){
+            typename std::vector<std::shared_ptr<TreeNode>>::iterator findChild(Type& toFind){
+                return std::find_if(children.begin(), children.end(), [toFind](std::shared_ptr<TreeNode>& child){
                     return child->payload == toFind;
                 });
             }
 
-            bool hasChild(const Type& toFind){
+            bool hasChild(Type& toFind){
                 return findChild(toFind) != children.end();
             }
 
@@ -73,7 +73,7 @@ namespace sente {
                 cursor = root;
             }
 
-            explicit Tree(const Type& payload){
+            explicit Tree(Type& payload){
 
                 depth = 1;
                 size = 1;
@@ -82,7 +82,7 @@ namespace sente {
                 root->children.push_back(std::make_shared<TreeNode<Type>>(payload, root));
             }
 
-            void insert(const Type& payload){
+            void insert(Type& payload){
                 if (not cursor->hasChild(payload)){
                     // if the move isn't already a child node, insert it
                     cursor->children.push_back(std::make_shared<TreeNode<Type>>(payload, cursor));
@@ -95,7 +95,7 @@ namespace sente {
                     stepTo(payload);
                 }
             }
-            void insertNoStep(const Type& payload){
+            void insertNoStep(Type& payload){
                 // only insert if the payload doesn't already exist
                 if (not cursor->hasChild(payload)) {
                     cursor->children.push_back(std::make_shared<TreeNode<Type>>(payload, cursor));
@@ -121,7 +121,7 @@ namespace sente {
                     throw std::domain_error("cannot infer child to step to (no children to step to)");
                 }
             }
-            void stepTo(const Type& value){
+            void stepTo(Type& value){
                 if (cursor->hasChild(value)){
                     cursor = *cursor->findChild(value);
                     depth++;
