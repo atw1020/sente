@@ -21,6 +21,12 @@ namespace sente {
             payload[command] = value;
         }
 
+        void SGFNode::addCommands(const std::unordered_map<SGFCommand, std::string> &commands) {
+            for (const auto& command : commands){
+                payload[command.first] = command.second;
+            }
+        }
+
         std::string SGFNode::removeCommand(SGFCommand command) {
             std::string result = payload[command];
             payload.erase(command);

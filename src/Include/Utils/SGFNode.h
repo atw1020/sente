@@ -20,6 +20,7 @@ namespace sente {
             Move getMove() const;
 
             void addCommand(SGFCommand command, const std::string& value);
+            void addCommands(const std::unordered_map<SGFCommand, std::string>& commands);
             std::string removeCommand(SGFCommand command);
 
             bool hasCommand(SGFCommand command) const;

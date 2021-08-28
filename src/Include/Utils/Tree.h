@@ -74,13 +74,13 @@ namespace sente {
                 cursor = root;
             }
 
+
             explicit Tree(Type& payload){
+                depth = 0;
+                size = 0;
 
-                depth = 1;
-                size = 1;
-
-                root = std::make_shared<TreeNode<Type>>(); // create the root
-                root->children.push_back(std::make_shared<TreeNode<Type>>(payload, root));
+                root = std::make_shared<TreeNode<Type>>(payload); // create the root
+                cursor = root;
             }
 
             void insert(Type& payload){

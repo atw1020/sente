@@ -9,7 +9,6 @@
 #include <vector>
 #include <memory>
 #include <fstream>
-#include <ciso646>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -19,6 +18,10 @@
 #include "Group.h"
 #include "GoComponents.h"
 #include "../Utils/SGFNode.h"
+
+#ifdef __CYGWIN__
+#include <ciso646>
+#endif
 
 namespace py = pybind11;
 
@@ -37,6 +40,8 @@ namespace sente {
     public:
 
         GoGame(unsigned side, Rules rules, double komi);
+        explicit GoGame(utils::Tree<utils::SGFNode>& SGFTree);
+
         void resetBoard();
 
         ///
