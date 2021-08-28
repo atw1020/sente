@@ -5,7 +5,7 @@
 #include <map>
 #include <ciso646>
 
-#include "include/Numpy.h"
+#include "../include/Utils/Numpy.h"
 
 namespace sente {
     namespace utils {

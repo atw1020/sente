@@ -2,7 +2,7 @@
 // Created by arthur wesley on 7/5/21.
 //
 
-#include "include/LifeAndDeath.h"
+#include "../include/Game/LifeAndDeath.h"
 
 namespace sente {
 

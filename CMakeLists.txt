@@ -20,8 +20,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
 
 add_subdirectory(pybind11)
 # pybind11_add_module(sente src/module.cpp src/include/Move.h src/Move.cpp)
-pybind11_add_module(sente src/module.cpp src/Group.cpp src/include/Group.h src/include/GoGame.h src/GoGame.cpp
-                          src/Move.cpp src/include/Move.h src/include/Board.h src/Board.cpp src/include/Tree.h
-                          src/SGF.cpp src/include/SGF.h src/include/GoComponents.h src/GoComponents.cpp
-                          src/SenteExceptions.cpp src/include/SenteExceptions.h src/include/LifeAndDeath.h
-                          src/LifeAndDeath.cpp src/include/Numpy.h src/Numpy.cpp)
+pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/include/Game/Group.h src/include/Game/GoGame.h src/Game/GoGame.cpp
+                    src/Game/Move.cpp src/include/Game/Move.h src/include/Game/Board.h src/Game/Board.cpp src/include/Utils/Tree.h
+                    src/Utils/SGF.cpp src/include/Utils/SGF.h src/include/Game/GoComponents.h src/Game/GoComponents.cpp
+                    src/Utils/SenteExceptions.cpp src/include/Utils/SenteExceptions.h src/include/Game/LifeAndDeath.h
+                    src/Game/LifeAndDeath.cpp src/include/Utils/Numpy.h src/Utils/Numpy.cpp)

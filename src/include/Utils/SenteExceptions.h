@@ -8,7 +8,7 @@
 #include <ciso646>
 #include <exception>
 
-#include "Move.h"
+#include "../Game/Move.h"
 
 namespace sente{
     namespace utils{

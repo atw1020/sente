@@ -9,8 +9,8 @@
 #include <ciso646>
 
 #include "Tree.h"
-#include "GoGame.h"
-#include "GoComponents.h"
+#include "../Game/GoGame.h"
+#include "../Game/GoComponents.h"
 
 #ifdef __CYGWIN__
 #include <ciso646>

@@ -15,7 +15,7 @@
 
 #include <pybind11/pybind11.h>
 
-#include "Tree.h"
+#include "../Utils/Tree.h"
 #include "Group.h"
 #include "GoComponents.h"
 

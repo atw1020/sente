@@ -8,8 +8,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "include/SGF.h"
-#include "include/SenteExceptions.h"
+#include "../include/Utils/SGF.h"
+#include "../include/Utils/SenteExceptions.h"
 
 #define stringify(x) #x
 

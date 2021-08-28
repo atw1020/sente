@@ -9,7 +9,7 @@
 
 #include <pybind11/numpy.h>
 
-#include "GoGame.h"
+#include "../Game/GoGame.h"
 
 namespace sente {
     namespace utils {
