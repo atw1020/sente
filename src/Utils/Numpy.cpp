@@ -38,7 +38,7 @@ namespace sente {
          * Generate a features matrix for a given go game
          *
          * @param game the game to generate the features vector for
-         * @param features list of features to include in the game
+         * @param features list of features to Include in the game
          * @return a numpy array containing desired features
          */
         py::array_t<uint8_t> getFeatures(const GoGame& game, const std::vector<feature>& features){
