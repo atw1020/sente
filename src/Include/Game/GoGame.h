@@ -101,7 +101,7 @@ namespace sente {
         // todo: look into moving the board onto the stack
         std::unique_ptr<_board> board;
 
-        utils::Tree<utils::SGFNode> moveTree;
+        utils::Tree<utils::SGFNode> gameTree;
 
         std::unordered_map<Move, std::shared_ptr<Group>> groups;
         std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;

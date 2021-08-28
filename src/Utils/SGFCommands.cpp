@@ -115,6 +115,7 @@ namespace sente {
         }
 
         std::unordered_map<std::string, SGFCommand> strToCommand {
+                {""     , NONE},
                 {stringify(B),   B},
                 {stringify(KO), KO},
                 {stringify(MN), MN},

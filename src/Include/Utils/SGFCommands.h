@@ -10,6 +10,7 @@
 namespace sente {
     namespace utils {
         enum SGFCommand {
+            NONE,
             /// data taken from https://www.red-bean.com/sgf/properties.html
             /// Move properties
             B,  // black move

@@ -18,17 +18,21 @@ namespace sente {
         }
 
         void SGFNode::addCommand(SGFCommand command, const std::string &value) {
-            payload[command] = value;
-        }
-
-        void SGFNode::addCommands(const std::unordered_map<SGFCommand, std::string> &commands) {
-            for (const auto& command : commands){
-                payload[command.first] = command.second;
+            if (command == B or command == W){
+                // get the co-ordinates from the move
+                move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'b'), command == B ? BLACK : WHITE};
+            }
+            else {
+                payload[command].push_back(value);
             }
         }
 
-        std::string SGFNode::removeCommand(SGFCommand command) {
-            std::string result = payload[command];
+        void SGFNode::replaceCommand(SGFCommand command, const std::vector<std::string> &replacement) {
+            payload[command] = replacement;
+        }
+
+        std::vector<std::string> SGFNode::removeCommand(SGFCommand command) {
+            auto result = payload[command];
             payload.erase(command);
             return result;
         }
@@ -37,7 +41,7 @@ namespace sente {
             return payload.find(command) != payload.end();
         }
 
-        std::string SGFNode::getCommand(SGFCommand command) const {
+        std::vector<std::string> SGFNode::getCommand(SGFCommand command) const {
             return payload.at(command);
         }
 
@@ -50,7 +54,11 @@ namespace sente {
             }
 
             for (const auto& command : payload){
-                acc << toStr(command.first) << "[" << command.second << "]" << std::endl;
+                acc << toStr(command.first);
+                for (const auto& entry : command.second){
+                    acc << "[" << entry << "]";
+                }
+                acc << std::endl;
             }
 
             return acc.str();

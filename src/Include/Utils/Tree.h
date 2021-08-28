@@ -79,7 +79,7 @@ namespace sente {
                 depth = 0;
                 size = 0;
 
-                root = std::make_shared<TreeNode<Type>>(payload); // create the root
+                root = std::make_shared<TreeNode<Type>>(payload, nullptr); // create the root
                 cursor = root;
             }
 

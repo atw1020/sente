@@ -46,6 +46,10 @@ namespace sente {
         resignedPlayer = EMPTY;
     }
 
+    GoGame::GoGame(utils::Tree<utils::SGFNode> &SGFTree) {
+        gameTree = SGFTree;
+    }
+
     /**
      *
      * resets the board to be empty
@@ -56,7 +60,7 @@ namespace sente {
         // create a new board
         makeBoard(board->getSide());
         // reset the tree to the root
-        moveTree.advanceToRoot();
+        gameTree.advanceToRoot();
 
         // set the groups and captures to be empty
         groups = std::unordered_map<Move, std::shared_ptr<Group>>();
@@ -70,7 +74,7 @@ namespace sente {
     }
 
     bool GoGame::isLegal(unsigned x, unsigned y) const{
-        return isLegal(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        return isLegal(Move(x, y, gameTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
     bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) const {
@@ -104,7 +108,7 @@ namespace sente {
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
-        playStone(Move(x, y, moveTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        playStone(Move(x, y, gameTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
     void GoGame::playStone(unsigned int x, unsigned int y, Stone stone) {
@@ -130,7 +134,7 @@ namespace sente {
         // check for pass/resign
         if (move.isPass()){
             passCount++;
-            moveTree.insert(node);
+            gameTree.insert(node);
             return;
         }
         else {
@@ -139,7 +143,7 @@ namespace sente {
 
         if (move.isResign()){
             resignedPlayer = move.getStone();
-            moveTree.insert(node);
+            gameTree.insert(node);
             return;
         }
 
@@ -164,7 +168,7 @@ namespace sente {
 
         // place the stone on the board and record the move
         board->playStone(move);
-        moveTree.insert(node);
+        gameTree.insert(node);
 
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
@@ -172,7 +176,7 @@ namespace sente {
     }
 
     bool GoGame::isAtRoot() const{
-        return moveTree.isAtRoot();
+        return gameTree.isAtRoot();
     }
 
     void GoGame::advanceToRoot() {
@@ -186,7 +190,7 @@ namespace sente {
             return;
         }
 
-        if (moveTree.getDepth() < steps){
+        if (gameTree.getDepth() < steps){
             throw std::domain_error("Cannot step up past root");
         }
 
@@ -203,23 +207,23 @@ namespace sente {
 
     std::vector<Move> GoGame::getDefaultBranch() {
 
-        auto bookmark = moveTree.getSequence();
+        auto bookmark = gameTree.getSequence();
         std::vector<Move> defaultBranch;
 
         // advance the moveTree to the root
-        moveTree.advanceToRoot();
+        gameTree.advanceToRoot();
 
-        while (not moveTree.isAtLeaf()){
-            auto child = moveTree.getChildren()[0];
+        while (not gameTree.isAtLeaf()){
+            auto child = gameTree.getChildren()[0];
             defaultBranch.push_back(child.getMove());
-            moveTree.stepDown();
+            gameTree.stepDown();
         }
 
         // now that we have found the sequence, return to our original position
-        moveTree.advanceToRoot();
+        gameTree.advanceToRoot();
         for (const auto& move : bookmark){
             utils::SGFNode node(move);
-            moveTree.stepTo(node);
+            gameTree.stepTo(node);
         }
 
         return defaultBranch;
@@ -230,10 +234,10 @@ namespace sente {
 
         resetBoard();
 
-        while(not moveTree.isAtLeaf()){
-            moveTree.stepDown(); // step into the next move
-            auto move = moveTree.get().getMove(); // get the move at this index
-            moveTree.stepUp(); // step up to the previous node and play the move from that node
+        while(not gameTree.isAtLeaf()){
+            gameTree.stepDown(); // step into the next move
+            auto move = gameTree.get().getMove(); // get the move at this index
+            gameTree.stepUp(); // step up to the previous node and play the move from that node
             playStone(move);
         }
     }
@@ -262,7 +266,7 @@ namespace sente {
 
     std::vector<Move> GoGame::getBranches() {
 
-        auto children = moveTree.getChildren();
+        auto children = gameTree.getChildren();
         std::vector<Move> branches(children.size());
 
         for (unsigned i = 0; i < children.size(); i++){
@@ -274,7 +278,7 @@ namespace sente {
 
     std::vector<Move> GoGame::getMoveSequence() {
 
-        auto sequence = moveTree.getSequence();
+        auto sequence = gameTree.getSequence();
         std::vector<Move> moveSequence(sequence.size());
 
         for (unsigned i = 0; i < sequence.size(); i++){
@@ -285,18 +289,18 @@ namespace sente {
     }
 
     unsigned GoGame::getMoveNumber() const {
-        return moveTree.getDepth();
+        return gameTree.getDepth();
     }
 
     utils::Tree<utils::SGFNode> GoGame::getMoveTree() const {
-        return moveTree;
+        return gameTree;
     }
 
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
         return board->getSpace(x, y).getStone();
     }
     Stone GoGame::getActivePlayer() const {
-        return moveTree.getDepth() % 2 == 0 ? BLACK : WHITE;
+        return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
     const _board& GoGame::getBoard() const {
@@ -564,7 +568,7 @@ namespace sente {
                     // erase the item
                     groups.erase(stone);
                     board->captureStone(stone);
-                    capturedStones[moveTree.getDepth()].insert(stone);
+                    capturedStones[gameTree.getDepth()].insert(stone);
                 }
             }
         }
@@ -572,7 +576,7 @@ namespace sente {
     }
 
     bool GoGame::isCorrectColor(const Move &move) const {
-        return move.getStone() == ((moveTree.getDepth() % 2 == 0) ? BLACK : WHITE);
+        return move.getStone() == ((gameTree.getDepth() % 2 == 0) ? BLACK : WHITE);
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{

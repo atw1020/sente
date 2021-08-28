@@ -516,7 +516,7 @@ PYBIND11_MODULE(sente, module){
         });
 
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
-        .def("load", [](const std::string& fileName){
+        .def("load", [](const std::string& fileName) -> sente::GoGame {
 
                 std::string SGFText;
 
@@ -529,7 +529,8 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    return sente::utils::loadSGF(SGFText);
+                    auto tree = sente::utils::loadSGF(SGFText);
+                    return sente::GoGame(tree);
                 }
             },
             py::arg("filename"),
@@ -542,35 +543,16 @@ PYBIND11_MODULE(sente, module){
              py::arg("file_name"),
              py::arg("metadata") = py::dict(),
              "saves a game as an SGF")
-        .def("loads", [](const std::string& SGFText){
-                return sente::utils::loadSGF(SGFText);
+        .def("loads", [](const std::string& SGFText) -> sente::GoGame {
+                auto tree = sente::utils::loadSGF(SGFText);
+                return sente::GoGame(tree);
             })
         .def("dumps", [](const sente::GoGame& game, std::unordered_map<std::string, std::string> params){
                 return sente::utils::dumpSGF(game, params);
             },
             py::arg("game"),
             py::arg("metadata") = py::dict(),
-            "Serialize a string as an SGF")
-        .def("get_metadata", [](const std::string& fileName){
-
-                 std::string SGFText;
-
-                 // load the text from the file
-                 std::ifstream filePointer(fileName);
-
-                 if (not filePointer.good()){
-                     throw sente::utils::FileNotFoundException(fileName);
-                 }
-                 else {
-                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
-                                           std::istreambuf_iterator<char>());
-
-                     return sente::utils::getMetadata(SGFText);
-                 }
-
-            },
-            py::arg("filename"),
-            "extracts metadata from a SGF file and puts it into a python dictionary");
+            "Serialize a string as an SGF");
 
     auto exceptions = module.def_submodule("exceptions", "various exceptions used by sente");
 

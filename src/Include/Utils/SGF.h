@@ -28,11 +28,11 @@ namespace sente {
 
         bool isSGFLegal(SGFCommand command, unsigned version);
 
-        GoGame loadSGF(const std::string &SGFText);
+        // GoGame loadSGF(const std::string &SGFText);
+        Tree<SGFNode> loadSGF(const std::string& SGFText);
 
         std::string dumpSGF(const GoGame& game, std::unordered_map<std::string, std::string> &attributes);
-
-        std::unordered_map<std::string, std::string> getMetadata(const std::string& SGFText);
+        // std::string dumpSGF(const Tree<SGFNode>& game);
 
     }
 }

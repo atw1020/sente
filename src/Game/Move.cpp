@@ -57,7 +57,7 @@ namespace sente {
         }
         else {
             // reverse the order of the co-ordinates
-            return Move(unsigned(sgf[4] - 'a'), unsigned(sgf[3] - 'a'), stone);
+            return {unsigned(sgf[4] - 'a'), unsigned(sgf[3] - 'a'), stone};
         }
 
     }

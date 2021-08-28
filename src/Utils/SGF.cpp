@@ -125,141 +125,109 @@ namespace sente {
 
         }
 
-        GoGame loadSGF(const std::string& SGFText){
+        SGFNode nodeFromText(const std::string& SGFText){
 
-            checkSGFValidity(SGFText);
+            SGFNode node;
+            std::string temp;
 
-            auto metadata = getMetadata(SGFText);
+            SGFCommand lastCommand;
 
-            if (metadata["GM"] != "1"){
-                throw utils::InvalidSGFException("The desired SGF file is not a Go file.");
-            }
+            auto previousSlice = SGFText.begin();
 
-            unsigned side = std::stoi(metadata["SZ"]);
-            Rules rules;
-            double komi;
+            // initialize the tree from the first item
+            for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++) {
+                switch (*cursor){
+                    case '[':
 
-            std::string ruleString = metadata["RU"];
+                        // slice out the command
+                        temp = std::string(previousSlice, cursor);
 
-            // convert the rules to lowercase
-            std::transform(ruleString.begin(), ruleString.end(), ruleString.begin(), ::tolower);
-
-            if (ruleString == "chinese"){
-                rules = CHINESE;
-            }
-            else if (ruleString == "japanese"){
-                rules = JAPANESE;
-            }
-            else {
-                throw utils::InvalidSGFException("ruleset not recognized \"" + ruleString + "\" (sente only supports japanese and chinese rules at present)");
-            }
-
-            if (metadata.find("KM") != metadata.end()){
-                komi = std::stod(metadata["KM"]);
-            }
-            else {
-                komi = getKomi(rules);
-            }
-
-            GoGame game(side, rules, komi);
-
-            std::string currentSegment;
-            auto previousIndex = SGFText.begin();
-            std::regex moveRegex(";\\s*[WB]\\[[a-t]*\\]");
-            std::stack<unsigned> branchDepths{};
-
-            unsigned bracketDepth = 0;
-
-            try {
-                // for each letter in the SGF
-                for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++){
-
-                    if (*cursor == '['){
-                        bracketDepth++;
-                    }
-                    else if (*cursor == ']'){
-                        bracketDepth--;
-                    }
-                    else if (*cursor == '(' and bracketDepth == 0){
-
-                        // find the moves in the current segment
-                        currentSegment = std::string(previousIndex, cursor);
-                        auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
-
-                        // only insert moves if we find one
-                        if (regexIter != std::sregex_iterator()){
-
-                            Move temp = Move::fromSGF((regexIter++)->str());
-
-                            // insert the move into the tree and record the step we take
-                            branchDepths.push(game.getMoveNumber());
-                            game.playStone(temp);
-
-                            // go through all the matches
-                            for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
-                                // insert the move but don't advance to the new node
-                                temp = Move::fromSGF(iter->str());
-                                game.playStone(temp);
-                            }
+                        // only make a new command if a new command exists
+                        if (not temp.empty()){
+                            lastCommand = fromStr(temp);
+                            node.addCommand(lastCommand, "");
                         }
 
-                      // update the previous index
-                      previousIndex = cursor;
-                    }
-                    else if (*cursor == ')' and bracketDepth == 0){
+                        // update the index of the previous slice
+                        previousSlice = cursor + 1;
 
-                        // find the moves in the current segment
-                        currentSegment = std::string(previousIndex, cursor);
-                        auto regexIter = std::sregex_iterator(currentSegment.begin(), currentSegment.end(), moveRegex);
+                        break;
+                    case ']':
 
-                        if (regexIter != std::sregex_iterator()){
+                        // slice out the argument of the command
+                        temp = std::string(previousSlice, cursor);
 
-                            // if there are any moves, insert them
-                            Move temp = Move::fromSGF((regexIter++)->str());
+                        // add the command
+                        node.addCommand(lastCommand, temp);
 
-                            branchDepths.push(game.getMoveNumber());
-                            game.playStone(temp);
+                        // update the index of the previous slice
+                        previousSlice = cursor + 1;
 
-                            // go through all the matches
-                            for (auto iter = regexIter; iter != std::sregex_iterator(); iter++){
-                                // insert the move but don't advance to the new node
-                                temp = Move::fromSGF(iter->str());
-                                game.playStone(temp);
-                            }
-                        }
-
-                        // unless the branch depths are empty
-                        if (not branchDepths.empty()){
-
-                            // get the sequence of moves
-                            auto sequence = game.getMoveSequence();
-                            // slice the sequence of moves at the specified point
-                            sequence = std::vector<Move>(sequence.begin(), sequence.begin() + branchDepths.top());
-
-                            // advance to the root and play the sequence
-                            game.advanceToRoot();
-                            game.playMoveSequence(sequence);
-
-                            // pop the depth off of the stack once we get it
-                            branchDepths.pop();
-                        }
-
-                        // update the previous index
-                        previousIndex = cursor;
-                    }
-
+                    case '\\':
+                        // skip the next character
+                        cursor++;
+                        break;
+                    default:
+                        break;
                 }
             }
-            catch (const utils::IllegalMoveException& Exc){
-                // rephrase the exception
-                throw utils::InvalidSGFException("the SGF contained an illegal move at move " + std::to_string(game.getMoveNumber()) + std::string(Exc.what()));
+
+            return node;
+
+        }
+
+        Tree<SGFNode> loadSGF(const std::string& SGFText){
+
+            auto cursor = SGFText.begin();
+
+            // go through the root of the SGF file (aka, until we hit the first semicolon)
+            while (*cursor != ';'){
+                if (*cursor == '\\'){
+                    cursor += 2;
+                }
+                else {
+                    cursor += 1;
+                }
             }
 
-            if (not branchDepths.empty()){
-                throw InvalidSGFException("Number of opening parentheses did not match number of closing parentheses");
+            SGFNode tempNode = nodeFromText(std::string(SGFText.begin(), cursor));
+
+            Tree<SGFNode> SGFTree(tempNode);
+
+            // go through the rest of the tree
+
+            auto previousSlice = cursor;
+            bool inBrackets = false;
+            unsigned depth = 1;
+            std::stack<unsigned> branchDepths{};
+
+            for (; cursor < SGFText.end(); cursor++){
+                switch (*cursor){
+                    case '[':
+                        inBrackets = true;
+                        break;
+                    case ']':
+                        inBrackets = false;
+                    case '\\':
+                        cursor++;
+                        break;
+                    case '(':
+                        if (not inBrackets){
+                            branchDepths.push(depth);
+                        }
+                    case ')':
+                        depth = branchDepths.top();
+                        branchDepths.pop();
+                    case ';':
+                        // end of command
+                        depth++;
+                        tempNode = nodeFromText(std::string(previousSlice, cursor));
+                        SGFTree.insert(tempNode);
+                        break;
+                }
             }
 
-            return game;
+            return SGFTree;
 
         }
 
