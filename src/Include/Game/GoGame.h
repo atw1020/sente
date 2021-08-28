@@ -67,7 +67,7 @@ namespace sente {
         std::vector<Move> getBranches();
 
         unsigned getMoveNumber() const;
-        utils::Tree<Move> getMoveTree() const;
+        utils::Tree<utils::SGFNode> getMoveTree() const;
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;

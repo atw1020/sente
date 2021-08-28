@@ -6,7 +6,7 @@
 
 #include "pybind11/pybind11.h"
 
-#include "../include/Game/Move.h"
+#include "../Include/Game/Move.h"
 
 namespace py = pybind11;
 

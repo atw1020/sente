@@ -119,6 +119,9 @@ namespace sente {
      */
     void GoGame::playStone(const Move &move) {
 
+        // create a new SGF node
+        utils::SGFNode node(move);
+
         if (isOver()){
             py::print(move);
             throw std::domain_error("game is finished, cannot play another move");
@@ -127,7 +130,7 @@ namespace sente {
         // check for pass/resign
         if (move.isPass()){
             passCount++;
-            moveTree.insert(utils::SGFNode(move));
+            moveTree.insert(node);
             return;
         }
         else {
@@ -136,7 +139,7 @@ namespace sente {
 
         if (move.isResign()){
             resignedPlayer = move.getStone();
-            moveTree.insert(move);
+            moveTree.insert(node);
             return;
         }
 
@@ -161,7 +164,7 @@ namespace sente {
 
         // place the stone on the board and record the move
         board->playStone(move);
-        moveTree.insert(move);
+        moveTree.insert(node);
 
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
@@ -208,14 +211,15 @@ namespace sente {
 
         while (not moveTree.isAtLeaf()){
             auto child = moveTree.getChildren()[0];
-            defaultBranch.push_back(child);
+            defaultBranch.push_back(child.getMove());
             moveTree.stepDown();
         }
 
         // now that we have found the sequence, return to our original position
         moveTree.advanceToRoot();
         for (const auto& move : bookmark){
-            moveTree.stepTo(move);
+            utils::SGFNode node(move);
+            moveTree.stepTo(node);
         }
 
         return defaultBranch;
@@ -228,7 +232,7 @@ namespace sente {
 
         while(not moveTree.isAtLeaf()){
             moveTree.stepDown(); // step into the next move
-            auto move = moveTree.get(); // get the move at this index
+            auto move = moveTree.get().getMove(); // get the move at this index
             moveTree.stepUp(); // step up to the previous node and play the move from that node
             playStone(move);
         }
@@ -257,18 +261,34 @@ namespace sente {
     }
 
     std::vector<Move> GoGame::getBranches() {
-        return moveTree.getChildren();
+
+        auto children = moveTree.getChildren();
+        std::vector<Move> branches(children.size());
+
+        for (unsigned i = 0; i < children.size(); i++){
+            branches[i] = children[i].getMove();
+        }
+
+        return branches;
     }
 
     std::vector<Move> GoGame::getMoveSequence() {
-        return moveTree.getSequence();
+
+        auto sequence = moveTree.getSequence();
+        std::vector<Move> moveSequence(sequence.size());
+
+        for (unsigned i = 0; i < sequence.size(); i++){
+            moveSequence[i] = sequence[i].getMove();
+        }
+
+        return moveSequence;
     }
 
     unsigned GoGame::getMoveNumber() const {
         return moveTree.getDepth();
     }
 
-    utils::Tree<Move> GoGame::getMoveTree() const {
+    utils::Tree<utils::SGFNode> GoGame::getMoveTree() const {
         return moveTree;
     }
 

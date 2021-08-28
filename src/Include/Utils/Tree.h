@@ -10,6 +10,7 @@
 #include <ciso646>
 
 #include <pybind11/pybind11.h>
+#include "SGFNode.h"
 
 #ifdef __CYGWIN__
 #include <ciso646>
@@ -45,7 +46,7 @@ namespace sente {
             }
 
             typename std::vector<std::shared_ptr<TreeNode>>::iterator findChild(Type& toFind){
-                return std::find_if(children.begin(), children.end(), [toFind](std::shared_ptr<TreeNode>& child){
+                return std::find_if(children.begin(), children.end(), [=](std::shared_ptr<TreeNode>& child) mutable {
                     return child->payload == toFind;
                 });
             }

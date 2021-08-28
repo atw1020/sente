@@ -2,7 +2,7 @@
 // Created by arthur wesley on 7/22/21.
 //
 
-#include "../include/Game/GoComponents.h"
+#include "../Include/Game/GoComponents.h"
 
 namespace sente {
 

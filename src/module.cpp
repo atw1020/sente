@@ -8,10 +8,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
 
-#include "include/Utils/SGF.h"
-#include "include/Game/GoGame.h"
-#include "include/Utils/Numpy.h"
-#include "include/Utils/SenteExceptions.h"
+#include "Include/Utils/SGF.h"
+#include "Include/Game/GoGame.h"
+#include "Include/Utils/Numpy.h"
+#include "Include/Utils/SenteExceptions.h"
 
 namespace py = pybind11;
 

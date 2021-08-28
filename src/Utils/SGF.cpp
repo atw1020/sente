@@ -8,8 +8,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "../include/Utils/SGF.h"
-#include "../include/Utils/SenteExceptions.h"
+#include "../Include/Utils/SGF.h"
+#include "../Include/Utils/SenteExceptions.h"
 
 namespace py = pybind11;
 
@@ -263,7 +263,7 @@ namespace sente {
 
         }
 
-        void insertIntoSGF(Tree<Move>& moves, std::stringstream& SGF){
+        void insertIntoSGF(Tree<SGFNode>& moves, std::stringstream& SGF){
             // for each child
 
             if (moves.getChildren().size() == 1){
@@ -286,7 +286,7 @@ namespace sente {
             else {
                 for (auto& child : moves.getChildren()){
                     SGF << "\n(";
-                    if (not child.isResign()){
+                    if (not child.getMove().isResign()){
 
                         // serialize the move
                         SGF << ";" << std::string(child);
@@ -360,7 +360,8 @@ namespace sente {
             // return the board to it's original state
             moves.advanceToRoot();
             for (const auto& move : moveSequence){
-                moves.stepTo(move);
+                SGFNode node(move);
+                moves.stepTo(node);
             }
 
             return SGF.str();

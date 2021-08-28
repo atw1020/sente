@@ -47,6 +47,11 @@ namespace sente {
                 acc << toStr(command.first) << "[" << command.second << "]" << std::endl;
             }
 
+            return acc.str();
+        }
+
+        bool SGFNode::operator==(const SGFNode &other) const {
+            return move == other.move;
         }
     }
 }

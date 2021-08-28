@@ -26,6 +26,7 @@ namespace sente {
             std::string getCommand(SGFCommand command) const;
 
             explicit operator std::string() const;
+            bool operator==(const SGFNode& other) const;
 
         private:
 
