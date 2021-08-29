@@ -239,8 +239,6 @@ namespace sente {
 
             // go through the rest of the tree
 
-            unsigned depth = 0;
-
             for (; cursor < SGFText.end(); cursor++){
                 switch (*cursor){
                     case '[':
@@ -259,10 +257,27 @@ namespace sente {
                         // record the current depth
                         if (not inBrackets){
 
+                            branchDepths.push(SGFTree.getDepth());
+
                             if (previousSlice + 1 < cursor) {
 
                                 // update the depth
-                                depth++;
+
+                                // add the command prior to this one
+                                tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
+                                SGFTree.insert(tempNode);
+
+                                // update the previousSlice
+                                previousSlice = cursor + 1;
+                            }
+                        }
+                        break;
+                    case ')':
+                        if (not inBrackets){
+
+                            if (previousSlice + 1 < cursor) {
+
+                                // py::print(strip(std::string(previousSlice, cursor)));
 
                                 // add the command prior to this one
                                 tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
@@ -272,14 +287,14 @@ namespace sente {
                                 previousSlice = cursor + 1;
                             }
 
+                            // step up until we reach the previous branch depth
+                            while (SGFTree.getDepth() > branchDepths.top()){
+                                SGFTree.stepUp();
+                            }
 
-                            branchDepths.push(depth);
-                        }
-                        break;
-                    case ')':
-                        if (not inBrackets){
-                            depth = branchDepths.top();
+                            // update the depth
                             branchDepths.pop();
+
                         }
                         break;
                     case ';':
@@ -287,7 +302,6 @@ namespace sente {
                         if (previousSlice + 1 < cursor){
 
                             // start of command, update the depth
-                            depth++;
 
                             // get the node from the text
                             tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
