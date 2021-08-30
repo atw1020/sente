@@ -13,15 +13,27 @@
 
 namespace py = pybind11;
 
-std::string strip(const std::string &inpt)
+std::string strip(const std::string &input)
 {
-    auto start_it = inpt.begin();
-    auto end_it = inpt.rbegin();
-    while (std::isspace(*start_it))
-        ++start_it;
-    while (std::isspace(*end_it))
-        ++end_it;
-    return {start_it, end_it.base()};
+
+    // py::print("entering strip with \"" + input + "\"");
+    // py::print("size: ", input.size());
+
+    auto start_it = input.begin();
+    auto end_it = input.end();
+    while (std::isspace(*start_it) and start_it != end_it)
+        start_it++;
+    while (std::isspace(*end_it) and start_it != end_it){
+        end_it--;
+    }
+
+    /*
+    py::print("\"", *start_it, *end_it, "\"");
+    py::print("\"" + std::string(start_it, end_it) + "\"");
+    py::print("leaving strip");
+     */
+
+    return {start_it, end_it};
 }
 
 namespace sente {
@@ -200,46 +212,24 @@ namespace sente {
 
         Tree<SGFNode> loadSGF(const std::string& SGFText){
 
-            auto cursor = SGFText.begin();
-            auto previousSlice = cursor;
-            std::stack<unsigned> branchDepths{};
-            branchDepths.push(0);
-
-            unsigned semicolonCount = 0;
             bool inBrackets = false;
-            // go through the root of the SGF file (aka, until we hit the second semicolon)
-            while (semicolonCount < 2){
-                switch (*cursor){
-                    case '[':
-                        inBrackets = true;
-                        break;
-                    case ']':
-                        inBrackets = false;
-                        break;
-                    case '\\':
-                        cursor++;
-                        break;
-                    case ';':
-                        semicolonCount++;
-                        if (semicolonCount < 2){
-                            previousSlice = ++cursor;
-                        }
-                        break;
-                }
-                cursor++;
-            }
-
-            SGFNode tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
-            previousSlice = cursor;
+            bool firstNode = true;
 
             // temporary string variable
             std::string temp;
 
-            Tree<SGFNode> SGFTree(tempNode);
+            auto cursor = SGFText.begin();
+            auto previousSlice = cursor;
+
+            std::stack<unsigned> branchDepths{};
+
+            Tree<SGFNode> SGFTree;
+            SGFNode tempNode;
 
             // go through the rest of the tree
 
             for (; cursor < SGFText.end(); cursor++){
+                // py::print(SGFTree.getDepth());
                 switch (*cursor){
                     case '[':
                         // enter brackets
@@ -253,39 +243,47 @@ namespace sente {
                         cursor++;
                         break;
                     case '(':
-
-                        // record the current depth
                         if (not inBrackets){
-
+                            // record the current depth
                             branchDepths.push(SGFTree.getDepth());
+                            temp = strip(std::string(previousSlice, cursor));
 
-                            if (previousSlice + 1 < cursor) {
-
-                                // update the depth
-
+                            if (not temp.empty()) {
                                 // add the command prior to this one
-                                tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
-                                SGFTree.insert(tempNode);
+                                tempNode = nodeFromText(temp);
 
-                                // update the previousSlice
-                                previousSlice = cursor + 1;
+                                if (firstNode){
+                                    SGFTree = Tree<SGFNode>(tempNode);
+                                    firstNode = false;
+                                }
+                                else {
+                                    SGFTree.insert(tempNode);
+                                }
                             }
+
+                            // update the previousSlice
+                            previousSlice = cursor + 1;
                         }
                         break;
                     case ')':
                         if (not inBrackets){
 
-                            if (previousSlice + 1 < cursor) {
+                            temp = strip(std::string(previousSlice, cursor));
 
-                                // py::print(strip(std::string(previousSlice, cursor)));
-
+                            if (not temp.empty()) {
                                 // add the command prior to this one
-                                tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
-                                SGFTree.insert(tempNode);
-
-                                // update the previousSlice
-                                previousSlice = cursor + 1;
+                                tempNode = nodeFromText(temp);
+                                if (firstNode){
+                                    SGFTree = Tree<SGFNode>(tempNode);
+                                    firstNode = false;
+                                }
+                                else {
+                                    SGFTree.insert(tempNode);
+                                }
                             }
+
+                            // update the previousSlice
+                            previousSlice = cursor + 1;
 
                             // step up until we reach the previous branch depth
                             while (SGFTree.getDepth() > branchDepths.top()){
@@ -300,16 +298,19 @@ namespace sente {
                     case ';':
 
                         if (previousSlice + 1 < cursor){
-
-                            // start of command, update the depth
-
                             // get the node from the text
                             tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
-                            SGFTree.insert(tempNode);
+                            if (firstNode){
+                                SGFTree = Tree<SGFNode>(tempNode);
+                                firstNode = false;
+                            }
+                            else {
+                                SGFTree.insert(tempNode);
+                            }
                         }
 
                         // update the previousSlice
-                        previousSlice = ++cursor;
+                        previousSlice = cursor + 1;
                         break;
                 }
             }

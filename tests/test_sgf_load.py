@@ -29,6 +29,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
+            print(file)
             with self.assertDoesNotRaise(Exception):
                 game = sgf.load(str(Path("sgf")/file))
                 game.play_default_sequence()
@@ -236,6 +237,8 @@ class BranchedSGF(TestCase):
 
         :return:
         """
+
+        game = sgf.load("sgf/simple fork.sgf")
 
     def test_complex_branched_sgf(self):
         """

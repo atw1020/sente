@@ -49,6 +49,8 @@ namespace sente {
     GoGame::GoGame(utils::Tree<utils::SGFNode> &SGFTree) {
         gameTree = SGFTree;
 
+        //py::print("entering SGFTree constructor");
+
         auto rootNode = gameTree.getRoot();
 
         if (rootNode.hasCommand(utils::SZ)){
@@ -247,8 +249,9 @@ namespace sente {
 
     std::vector<Move> GoGame::getDefaultBranch() {
 
-        auto bookmark = gameTree.getSequence();
         std::vector<Move> defaultBranch;
+
+        auto bookmark = gameTree.getSequence();
 
         // advance the moveTree to the root
         gameTree.advanceToRoot();
