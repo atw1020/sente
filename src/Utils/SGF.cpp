@@ -165,7 +165,7 @@ namespace sente {
                     case '[':
 
                         // slice out the command
-                        temp = std::string(previousSlice, cursor);
+                        temp = strip(std::string(previousSlice, cursor));
 
                         // only make a new command if a new command exists
                         if (not temp.empty()){
@@ -188,7 +188,7 @@ namespace sente {
                     case ']':
 
                         // slice out the argument of the command
-                        temp = std::string(previousSlice, cursor);
+                        temp = strip(std::string(previousSlice, cursor));
 
                         // add the command
                         if (lastCommand == NONE){
@@ -234,7 +234,7 @@ namespace sente {
             // go through the rest of the tree
 
             for (; cursor < SGFText.end(); cursor++){
-                py::print(std::string(previousSlice, cursor));
+                // py::print(std::string(previousSlice, cursor));
                 // py::print(SGFTree.getDepth());
                 switch (*cursor){
                     case '[':
