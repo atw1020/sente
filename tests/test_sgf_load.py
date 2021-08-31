@@ -42,14 +42,14 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        B = BLACK
-        W = WHITE
-        _ = EMPTY
+        B = sente.stone.BLACK
+        W = sente.stone.WHITE
+        _ = sente.stone.EMPTY
 
         game = sgf.load("sgf/simple sequence.sgf")
         game.play_default_sequence()
 
-        expected_game = Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+        expected_game = sente.Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -79,14 +79,14 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        B = BLACK
-        W = WHITE
-        _ = EMPTY
+        B = sente.stone.BLACK
+        W = sente.stone.WHITE
+        _ = sente.stone.EMPTY
 
         game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
         game.play_default_sequence()
 
-        expected_game = Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
+        expected_game = sente.Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
                                  [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
                                  [_, _, W, _, W, W, B, B, B, _, B, B, W, B, B, _, W, _, _],
                                  [_, _, _, W, _, _, W, B, B, _, B, W, W, W, B, B, W, _, _],
@@ -143,15 +143,15 @@ class StringLoad(DoesNotRaiseTestCase):
         :return:
         """
 
-        B = BLACK
-        W = WHITE
-        _ = EMPTY
+        B = sente.stone.BLACK
+        W = sente.stone.WHITE
+        _ = sente.stone.EMPTY
 
         with open("sgf/simple sequence.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
         game.play_default_sequence()
 
-        expected_game = Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+        expected_game = sente.Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -181,15 +181,15 @@ class StringLoad(DoesNotRaiseTestCase):
         :return:
         """
 
-        B = BLACK
-        W = WHITE
-        _ = EMPTY
+        B = sente.stone.BLACK
+        W = sente.stone.WHITE
+        _ = sente.stone.EMPTY
 
         with open("sgf/34839594-255-IDW64-noob_bot_3.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
         game.play_default_sequence()
 
-        expected_game = Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
+        expected_game = sente.Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
                                  [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
                                  [_, _, W, _, W, W, B, B, B, _, B, B, W, B, B, _, W, _, _],
                                  [_, _, _, W, _, _, W, B, B, _, B, W, W, W, B, B, W, _, _],
@@ -289,7 +289,7 @@ class InvalidSGF(TestCase):
         files = os.listdir("invalid sgf")
 
         for file in files:
-            with self.assertRaises(exceptions.InvalidSGFException):
+            with self.assertRaises(sente.exceptions.InvalidSGFException):
                 game = sgf.load(str(Path("invalid sgf")/file))
 
     def test_invalid_moves(self):
@@ -300,13 +300,13 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        with self.assertRaises(exceptions.InvalidSGFException):
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/extra letter in move.sgf")
-        with self.assertRaises(exceptions.InvalidSGFException):
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/extra square bracket.sgf")
-        with self.assertRaises(exceptions.InvalidSGFException):
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing letter in move.sgf")
-        with self.assertRaises(exceptions.InvalidSGFException):
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing square bracket.sgf")
 
     def test_incorrect_parentheses(self):
@@ -317,7 +317,7 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        with self.assertRaises(exceptions.InvalidSGFException):
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/branched missing 2 parens.sgf")
 
     def test_nonexistent_file(self):
