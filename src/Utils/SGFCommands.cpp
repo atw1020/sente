@@ -307,6 +307,10 @@ namespace sente {
             return commandToStr[command];
         }
 
+        bool isCommand(std::string command){
+            return strToCommand.find(command) != strToCommand.end();
+        }
+
     }
 }
 

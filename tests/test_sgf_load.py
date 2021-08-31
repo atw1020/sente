@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest import TestCase
 
 import sente.exceptions
-from sente import *
+from sente import sgf
 
 from assert_does_not_raise import DoesNotRaiseTestCase
 
@@ -46,7 +46,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         W = WHITE
         _ = EMPTY
 
-        game = sgf.load("sgf/simple_sequence.sgf")
+        game = sgf.load("sgf/simple sequence.sgf")
         game.play_default_sequence()
 
         expected_game = Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -147,7 +147,7 @@ class StringLoad(DoesNotRaiseTestCase):
         W = WHITE
         _ = EMPTY
 
-        with open("sgf/simple_sequence.sgf") as sgf_file:
+        with open("sgf/simple sequence.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
         game.play_default_sequence()
 
@@ -227,6 +227,19 @@ class StringLoad(DoesNotRaiseTestCase):
 
         self.assertEqual(game.score().get_white_points(), 0.5)
 
+    def test_semicolon_inside_brackets(self):
+        """
+
+        tests to see if semicolons inside a SGF's text field are ignored
+
+        :return:
+        """
+
+        game = sgf.load("sgf/commented semicolon.sgf")
+
+        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
+            game.play_default_sequence()
+
 
 class BranchedSGF(TestCase):
 
@@ -240,6 +253,9 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("sgf/simple fork.sgf")
 
+        self.assertIn(sente.Move(3, 15, sente.stone.BLACK), game.get_branches())
+        self.assertIn(sente.Move(3, 16, sente.stone.BLACK), game.get_branches())
+
     def test_complex_branched_sgf(self):
         """
 
@@ -250,14 +266,14 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("sgf/3-4.sgf")  # a 3-4 joseki refrence with lots of branches
 
+        # play all of the sequences
         game.play_default_sequence()
-
         game.advance_to_root()
 
-        self.assertEqual([Move(3, 16, stone.BLACK)], game.get_branches())
+        self.assertEqual([sente.Move(3, 16, sente.stone.BLACK)], game.get_branches())
         game.play(4, 17)
 
-        self.assertEqual([Move(3, 14, stone.WHITE), Move(2, 14, stone.WHITE)], game.get_branches())
+        self.assertEqual([sente.Move(3, 14, sente.stone.WHITE), sente.Move(2, 14, sente.stone.WHITE)], game.get_branches())
 
 
 class InvalidSGF(TestCase):

@@ -169,7 +169,12 @@ namespace sente {
 
                         // only make a new command if a new command exists
                         if (not temp.empty()){
-                            lastCommand = fromStr(strip(temp));
+                            if (isCommand(temp)){
+                                lastCommand = fromStr(strip(temp));
+                            }
+                            else {
+                                throw InvalidSGFException("Unknown SGF Directive: \"" + temp + "\"");
+                            }
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
@@ -229,6 +234,7 @@ namespace sente {
             // go through the rest of the tree
 
             for (; cursor < SGFText.end(); cursor++){
+                py::print(std::string(previousSlice, cursor));
                 // py::print(SGFTree.getDepth());
                 switch (*cursor){
                     case '[':
@@ -291,28 +297,38 @@ namespace sente {
                             }
 
                             // update the depth
-                            branchDepths.pop();
+                            if (not branchDepths.empty()){
+                                branchDepths.pop();
+                            }
+                            else {
+                                throw InvalidSGFException("extra closing parentheses");
+                            }
 
                         }
                         break;
                     case ';':
+                        if (not inBrackets){
+                            if (previousSlice + 1 < cursor){
+                                // get the node from the text
+                                tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
+                                if (firstNode){
+                                    SGFTree = Tree<SGFNode>(tempNode);
+                                    firstNode = false;
+                                }
+                                else {
+                                    SGFTree.insert(tempNode);
+                                }
+                            }
 
-                        if (previousSlice + 1 < cursor){
-                            // get the node from the text
-                            tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
-                            if (firstNode){
-                                SGFTree = Tree<SGFNode>(tempNode);
-                                firstNode = false;
-                            }
-                            else {
-                                SGFTree.insert(tempNode);
-                            }
+                            // update the previousSlice
+                            previousSlice = cursor + 1;
+                            break;
                         }
-
-                        // update the previousSlice
-                        previousSlice = cursor + 1;
-                        break;
                 }
+            }
+
+            if (SGFTree.getDepth() != 0){
+                throw InvalidSGFException("Missing Closing parentheses");
             }
 
             return SGFTree;

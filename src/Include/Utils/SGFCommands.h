@@ -112,6 +112,8 @@ namespace sente {
 
         SGFCommand fromStr(const std::string& sgfCommand);
         std::string toStr(SGFCommand command);
+
+        bool isCommand(std::string command);
     }
 }
 
