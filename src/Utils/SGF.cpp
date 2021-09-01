@@ -39,115 +39,6 @@ std::string strip(const std::string &input)
 namespace sente {
     namespace utils {
 
-        bool isSGFParam(const std::string& toCheck){
-
-            // go through the leading characters
-            auto iter = toCheck.begin();
-
-            while (*(iter++) != '['){
-                if (not isupper(*iter)){
-                    return false;
-                }
-            }
-
-            // go through the bracket characters
-            while (*(iter++) != ']'){
-                if (*iter == '\\' and *(iter + 1) == ']'){
-                    // skip over the character if we get \]
-                    iter += 2;
-                }
-            }
-
-            return iter + 1 == toCheck.end();
-
-        }
-
-        void checkSGFValidity(const std::string& SGFText){
-
-            int parenDepth = 0;
-            int bracketDepth = 0;
-
-            unsigned valid_chars = 0;
-
-            bool oneMatch = false;
-
-            auto lastBreak = SGFText.begin();
-
-            for (auto iter = SGFText.begin(); iter != SGFText.end(); iter++){
-
-                // py::print(std::string(lastBreak + 1, iter + 1));
-                // py::print("bracket depth was", bracketDepth);
-
-                if (isspace(*iter) and bracketDepth == 0){
-                    lastBreak = iter;
-                    valid_chars++;
-                    continue;
-                }
-                switch (*iter){
-                    case '\\':
-                        iter++;
-                        continue;
-                    case ';':
-                        if (bracketDepth == 0){
-                            lastBreak = iter;
-                            valid_chars++;
-                        }
-                        break;
-                    case '(':
-                        if (bracketDepth == 0){
-                            parenDepth++;
-                            valid_chars++;
-                        }
-                        break;
-                    case ')':
-                        if (bracketDepth == 0){
-                            parenDepth--;
-                            valid_chars++;
-                        }
-                        break;
-                    case '[':
-                        bracketDepth++;
-                        break;
-                    case ']':
-                        bracketDepth--;
-
-                        // slice out the last segment
-                        std::string temp(lastBreak + 1, iter + 1);
-
-                        if (isSGFParam(temp)){
-                            throw InvalidSGFException("Invalid SGF field: " + temp);
-                        }
-
-                        oneMatch = true;
-
-                        valid_chars += temp.size();
-
-                        // update the lest segment
-                        lastBreak = iter;
-                        break;
-                }
-
-                // TODO: add highlighting of the syntax errors
-
-                if (not (bracketDepth == 0 or bracketDepth == 1)){
-                    throw InvalidSGFException("invalid brackets");
-                }
-                if (parenDepth < 0){
-                    throw InvalidSGFException("invalid parentheses");
-                }
-
-            }
-
-            if (not oneMatch){
-                throw InvalidSGFException("File was not an SGF file");
-            }
-
-            if (valid_chars != SGFText.size()){
-                throw InvalidSGFException("File did not perfectly match SGF format");
-            }
-
-        }
-
         SGFNode nodeFromText(const std::string& SGFText){
 
             // py::print("entering nodeFromText with \"" + SGFText + "\"");
@@ -221,6 +112,14 @@ namespace sente {
         }
 
         Tree<SGFNode> loadSGF(const std::string& SGFText){
+
+            // py::print("entering SGFText");
+            // py::print(SGFText.size());
+            // py::print("the first character is", *SGFText.begin());
+
+            if (SGFText.empty()){
+                throw InvalidSGFException("Cannot Read Binary File");
+            }
 
             bool inBrackets = false;
             bool firstNode = true;
@@ -302,13 +201,12 @@ namespace sente {
                             // update the previousSlice
                             previousSlice = cursor + 1;
 
-                            // step up until we reach the previous branch depth
-                            while (SGFTree.getDepth() > branchDepths.top()){
-                                SGFTree.stepUp();
-                            }
-
                             // update the depth
                             if (not branchDepths.empty()){
+                                // step up until we reach the previous branch depth
+                                while (SGFTree.getDepth() > branchDepths.top()){
+                                    SGFTree.stepUp();
+                                }
                                 branchDepths.pop();
                             }
                             else {
