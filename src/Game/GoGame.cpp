@@ -41,9 +41,6 @@ namespace sente {
         makeBoard(side);
         resetKoPoint();
 
-        // reset the resigned player
-        resignedPlayer = EMPTY;
-
         // create the rootnode
         utils::SGFNode rootNode;
 
@@ -104,8 +101,6 @@ namespace sente {
         else {
             komi = getKomi(rules);
         }
-
-        resignedPlayer = EMPTY;
     }
 
     /**
@@ -126,7 +121,6 @@ namespace sente {
 
         // reset the ko point
         resetKoPoint();
-        resignedPlayer = EMPTY;
         passCount = 0;
 
     }
@@ -140,12 +134,6 @@ namespace sente {
     }
 
     bool GoGame::isLegal(const Move& move) const {
-
-        // std::cout << "entering isLegal" << std::endl;
-
-        if (isOver()){
-            return false;
-        }
         // std::cout << "passed isOver" << std::endl;
         if (not board->isOnBoard(move)){
             return false;
@@ -184,15 +172,14 @@ namespace sente {
         // create a new SGF node
         utils::SGFNode node(move);
 
-        if (isOver()){
-            py::print(move);
-            throw std::domain_error("game is finished, cannot play another move");
-        }
-
         // check for pass/resign
         if (move.isPass()){
-            passCount++;
             gameTree.insert(node);
+            py::print("pass count is currently", passCount++);
+            if (passCount >= 2){
+                py::print("game passed out");
+                gameTree.getRoot().addCommand(utils::RE, {});
+            }
             return;
         }
         else {
@@ -200,8 +187,14 @@ namespace sente {
         }
 
         if (move.isResign()){
-            resignedPlayer = move.getStone();
-            gameTree.insert(node);
+            // get the root node
+            if (gameTree.getRoot().hasCommand(utils::RE)){
+                // if the game has been resigned raise an exception
+                throw std::domain_error("Game cannot be forfeited; the game is already over");
+            }
+            else {
+                gameTree.getRoot().addCommand(utils::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
+            }
             return;
         }
 
@@ -390,7 +383,13 @@ namespace sente {
             return score();
         }
         else {
-            return Results(resignedPlayer);
+            std::string results = gameTree.getRoot().getCommand(utils::RE)[0];
+            switch (results[0]){
+                case 'W':
+                    return Results(BLACK);
+                case 'B':
+                    return Results(WHITE);
+            }
         }
 
     }
@@ -689,22 +688,7 @@ namespace sente {
     }
 
     bool GoGame::isOver() const {
-
-        std::string resignedName;
-
-        switch (resignedPlayer){
-            case BLACK:
-                resignedName = "Black";
-                break;
-            case WHITE:
-                resignedName = "White";
-                break;
-            case EMPTY:
-                resignedName = "Empty";
-                break;
-        }
-
-        return passCount >= 2 or resignedPlayer != EMPTY;
+        return gameTree.getRoot().hasCommand(utils::RE);
     }
 
     /**

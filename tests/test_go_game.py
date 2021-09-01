@@ -473,7 +473,6 @@ class TestTreeNavigation(TestCase):
         game = sente.Game()
 
         game.resign()
-        game.step_up()
 
         self.assertTrue(game.is_legal(3, 3))
 

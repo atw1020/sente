@@ -137,11 +137,11 @@ namespace sente {
                 depth = 0;
             }
 
-            Type get() const{
+            Type& get() const{
                 return cursor->payload;
             }
 
-            Type getRoot() const {
+            Type& getRoot() const {
                 return root->payload;
             }
 

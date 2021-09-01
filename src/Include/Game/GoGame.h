@@ -92,7 +92,6 @@ namespace sente {
     private:
 
         Rules rules;
-        Stone resignedPlayer;
 
         double komi;
 
