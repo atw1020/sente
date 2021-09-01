@@ -537,7 +537,7 @@ PYBIND11_MODULE(sente, module){
             "Loads a go game from an SGF file")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
-                output << sente::utils::dumpSGF(game.getMoveTree());
+                output << sente::utils::dumpSGF(game);
             },
              py::arg("game"),
              py::arg("file_name"),
@@ -547,7 +547,7 @@ PYBIND11_MODULE(sente, module){
                 return sente::GoGame(tree);
             })
         .def("dumps", [](const sente::GoGame& game){
-                return sente::utils::dumpSGF(game.getMoveTree());
+                return sente::utils::dumpSGF(game);
             },
             py::arg("game"),
             "Serialize a string as an SGF");

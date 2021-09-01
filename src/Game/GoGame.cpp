@@ -41,15 +41,31 @@ namespace sente {
         makeBoard(side);
         resetKoPoint();
 
-        // some book-keeping
-
+        // reset the resigned player
         resignedPlayer = EMPTY;
+
+        // create the rootnode
+        utils::SGFNode rootNode;
+
+        // add the defualt metadata
+        rootNode.addCommand(utils::FF, "4");
+        rootNode.addCommand(utils::SZ, std::to_string(side));
+
+        switch (rules){
+            case CHINESE:
+                rootNode.addCommand(utils::RU, "Chinese");
+                break;
+            case JAPANESE:
+                rootNode.addCommand(utils::RU, "Japanese");
+                break;
+        }
+
+        gameTree = utils::Tree<utils::SGFNode>(rootNode);
+
     }
 
     GoGame::GoGame(utils::Tree<utils::SGFNode> &SGFTree) {
         gameTree = SGFTree;
-
-        //py::print("entering SGFTree constructor");
 
         auto rootNode = gameTree.getRoot();
 

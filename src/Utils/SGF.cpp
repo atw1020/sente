@@ -252,48 +252,49 @@ namespace sente {
         }
 
         void insertIntoSGF(Tree<SGFNode>& moves, std::stringstream& SGF){
-            // for each child
 
-            if (moves.getChildren().size() == 1){
+            // insert the current node
+            SGF << ";" << std::string(moves.get());
 
-                // if there is exactly one child, we don't need to add parentheses
-                auto child = *moves.getChildren().begin();
-
-                // serialize the move
-                SGF << ";" << std::string(child);
-
-                // step to the child
-                moves.stepTo(child);
-
-                // recurse
-                insertIntoSGF(moves, SGF);
-
-                moves.stepUp();
-
+            if (moves.getDepth() == 0){
+                SGF << std::endl;
             }
-            else {
-                for (auto& child : moves.getChildren()){
-                    SGF << "\n(";
-                    if (not child.getMove().isResign()){
 
-                        // serialize the move
-                        SGF << ";" << std::string(child);
-                        // step to the child
-                        moves.stepTo(child);
-                        if (not moves.isAtLeaf()){
-                            insertIntoSGF(moves, SGF);
-                        }
-                        // step up
-                        moves.stepUp();
-                    }
+            for (auto& child : moves.getChildren()){
+                if (moves.getChildren().size() != 1){
+                    SGF << "\n(";
+                }
+                if (not child.getMove().isResign()){
+
+                    // step to the child
+                    moves.stepTo(child);
+                    // insert the child into the SGF
+                    insertIntoSGF(moves, SGF);
+                    // step up
+                    moves.stepUp();
+                }
+                if (moves.getChildren().size() != 1){
                     SGF << ")";
                 }
             }
 
         }
 
-        std::string dumpSGF(const Tree<SGFNode>& SGFText){
+        std::string dumpSGF(const GoGame& game){
 
+            std::stringstream ss;
+
+            // get the tree and advance to the root
+            auto tree = game.getMoveTree();
+            tree.advanceToRoot();
+
+            ss << "(";
+
+            insertIntoSGF(tree, ss);
+
+            ss << ")";
+
+            return ss.str();
         }
     }
 }

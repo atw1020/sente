@@ -31,7 +31,7 @@ namespace sente {
         // GoGame loadSGF(const std::string &SGFText);
         Tree<SGFNode> loadSGF(const std::string& SGFText);
 
-        std::string dumpSGF(const Tree<SGFNode>& SGFText);
+        std::string dumpSGF(const GoGame& game);
         // std::string dumpSGF(const Tree<SGFNode>& game);
 
     }

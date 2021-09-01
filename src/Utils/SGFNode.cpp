@@ -70,7 +70,7 @@ namespace sente {
             std::stringstream acc;
 
             if (move != Move()){
-                acc << std::string(move) << std::endl;
+                acc << std::string(move);
             }
 
             for (const auto& command : attributes){
@@ -78,7 +78,6 @@ namespace sente {
                 for (const auto& entry : command.second){
                     acc << "[" << entry << "]";
                 }
-                acc << std::endl;
             }
 
             return acc.str();

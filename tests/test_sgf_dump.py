@@ -24,12 +24,27 @@ class TestBasics(DoesNotRaiseTestCase):
         game.play(4, 4)
 
         serialized = sgf.dumps(game)
+        print(serialized)
 
-        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("B[dd]", serialized)
+
+    def test_default_parameters(self):
+        """
+
+        tests to see if the game adds the default parameters
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+
+        serialized = sgf.dumps(game)
+
+        self.assertIn("FF[4]", serialized)
         self.assertIn("SZ[19]", serialized)
         self.assertIn("RU[Chinese]", serialized)
-
-        self.assertEqual(";B[dd])", serialized[-7:])
 
     def test_multiple_moves(self):
         """
@@ -74,11 +89,7 @@ class TestBasics(DoesNotRaiseTestCase):
 
         serialized = sgf.dumps(game)
 
-        self.assertEqual("(;FF[4]", serialized[:7])
-        self.assertIn("SZ[19]", serialized)
-        self.assertIn("RU[Chinese]", serialized)
-
-        self.assertEqual(";B[dd]\n(;W[dp])\n(;W[pd]))", serialized[-25:])
+        self.assertEqual("(;FF[4]SZ[19]RU[Chinese]\n;B[dd]\n(;W[dp])\n(;W[pd]))", serialized)
 
     def test_resigned_game(self):
         """

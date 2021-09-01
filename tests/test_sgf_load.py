@@ -36,6 +36,18 @@ class BasicSGF(DoesNotRaiseTestCase):
                 game = sgf.load(str(Path("sgf")/file))
                 game.play_default_sequence()
 
+    def test_punctuation_ignored_inside_parens(self):
+        """
+
+        makes sure that punctuation is ignored inside parens
+
+        """
+
+        game = sgf.load("sgf/punctuation ignored inside parentheses.sgf")
+        game.play_default_sequence()
+
+        print(game)
+
     def test_simple_single_branch_file(self):
         """
 
