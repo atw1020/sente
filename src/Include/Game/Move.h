@@ -39,6 +39,8 @@ namespace sente {
         const static Move passWhite;
         const static Move resignWhite;
 
+        const static Move nullMove;
+
         static Move fromSGF(std::string sgf);
         static Move pass(Stone player);
         static Move resign(Stone player);

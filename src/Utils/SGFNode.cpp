@@ -47,6 +47,10 @@ namespace sente {
             return payload.find(command) != payload.end();
         }
 
+        bool SGFNode::isEmpty() const {
+            return payload.empty() and move == Move::nullMove;
+        }
+
         std::vector<std::string> SGFNode::getCommand(SGFCommand command) const {
             return payload.at(command);
         }

@@ -42,6 +42,8 @@ namespace sente {
     const Move Move::resignBlack = Move(19, -1, BLACK);
     const Move Move::resignWhite = Move(19, -1, WHITE);
 
+    const Move Move::nullMove = Move();
+
     Move Move::fromSGF(std::string sgf){
 
         Stone stone = sgf[1] == 'B' ? BLACK : WHITE;

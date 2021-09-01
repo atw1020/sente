@@ -157,10 +157,11 @@ namespace sente {
 
             SGFCommand lastCommand;
 
-            auto previousSlice = SGFText.begin();
+            auto cursor = SGFText.begin();
+            auto previousSlice = cursor;
 
             // initialize the tree from the first item
-            for (auto cursor = SGFText.begin(); cursor < SGFText.end(); cursor++) {
+            for (; cursor < SGFText.end(); cursor++) {
                 switch (*cursor){
                     case '[':
 
@@ -211,6 +212,10 @@ namespace sente {
                 }
             }
 
+            if (*cursor != ']'){
+                // TODO: throw an exception if the last item in the sequence is not a closing bracket
+            }
+
             return node;
 
         }
@@ -250,8 +255,6 @@ namespace sente {
                         break;
                     case '(':
                         if (not inBrackets){
-                            // record the current depth
-                            branchDepths.push(SGFTree.getDepth());
                             temp = strip(std::string(previousSlice, cursor));
 
                             if (not temp.empty()) {
@@ -266,6 +269,9 @@ namespace sente {
                                     SGFTree.insert(tempNode);
                                 }
                             }
+
+                            // with the command added to the tree, the push the depth of the current node onto the stack
+                            branchDepths.push(SGFTree.getDepth());
 
                             // update the previousSlice
                             previousSlice = cursor + 1;

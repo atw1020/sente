@@ -24,6 +24,8 @@ namespace sente {
             std::vector<std::string> removeCommand(SGFCommand command);
 
             bool hasCommand(SGFCommand command) const;
+            bool isEmpty() const;
+
             std::vector<std::string> getCommand(SGFCommand command) const;
 
             explicit operator std::string() const;

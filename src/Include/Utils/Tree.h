@@ -184,6 +184,16 @@ namespace sente {
                 return children;
             }
 
+            std::vector<Type> getRootChildren() const {
+                std::vector<Type> children;
+
+                for (const auto& child : root->children){
+                    children.push_back(child->payload);
+                }
+
+                return children;
+            }
+
             bool isAtRoot() const {
                 return cursor->isRoot();
             }

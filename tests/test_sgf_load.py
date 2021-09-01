@@ -256,6 +256,21 @@ class BranchedSGF(TestCase):
         self.assertIn(sente.Move(3, 15, sente.stone.BLACK), game.get_branches())
         self.assertIn(sente.Move(3, 16, sente.stone.BLACK), game.get_branches())
 
+    def test_long_branched_sgf(self):
+        """
+
+        tests to see if the SGF reader works for longer SGF files
+
+        :return:
+        """
+
+        game = sgf.load("sgf/two josekis.sgf")
+
+        self.assertEqual([sente.Move(3, 16, sente.stone.BLACK)], game.get_branches())
+        game.play(4, 17)
+
+        self.assertEqual([sente.Move(3, 14, sente.stone.WHITE), sente.Move(2, 14, sente.stone.WHITE)], game.get_branches())
+
     def test_complex_branched_sgf(self):
         """
 
@@ -341,6 +356,14 @@ class InvalidSGF(TestCase):
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/module.cpp")
+
+    def test_binary_file(self):
+        """
+
+        tests to see if an exception is thrown with a binary file
+
+        :return:
+        """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/octopus.jpeg")
