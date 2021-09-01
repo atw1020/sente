@@ -4,6 +4,8 @@
 
 #include <unordered_map>
 
+#include <pybind11/pybind11.h>
+
 #include "../Include/Utils/SGFCommands.h"
 #include "../Include/Utils/SenteExceptions.h"
 
@@ -110,6 +112,8 @@ namespace sente {
                 case SI:
                 case TC:
                     return version == 3;
+                default:
+                    return false;
             }
 
         }
@@ -290,7 +294,6 @@ namespace sente {
         };
 
         SGFCommand fromStr(const std::string& sgfCommand){
-
             if (strToCommand.find(sgfCommand) != strToCommand.end()){
                 return strToCommand[sgfCommand];
             }
@@ -300,10 +303,6 @@ namespace sente {
         }
 
         std::string toStr(SGFCommand command){
-            return commandToStr[command];
-        }
-
-        std::string fromStr(SGFCommand command){
             return commandToStr[command];
         }
 

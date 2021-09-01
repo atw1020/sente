@@ -239,7 +239,7 @@ namespace sente {
             // go through the rest of the tree
 
             for (; cursor < SGFText.end(); cursor++){
-                // py::print(std::string(previousSlice, cursor));
+                // py::print("slice is currently \"" + std::string(previousSlice, cursor) + "\"");
                 // py::print(SGFTree.getDepth());
                 switch (*cursor){
                     case '[':
@@ -248,7 +248,12 @@ namespace sente {
                         break;
                     case ']':
                         // leave brackets
-                        inBrackets = false;
+                        if (inBrackets){
+                            inBrackets = false;
+                        }
+                        else {
+                            throw InvalidSGFException("Extra Closing Bracket");
+                        }
                         break;
                     case '\\':
                         cursor++;
@@ -335,6 +340,13 @@ namespace sente {
 
             if (SGFTree.getDepth() != 0){
                 throw InvalidSGFException("Missing Closing parentheses");
+            }
+
+            // make sure that the game we loaded is a go game
+            if (SGFTree.get().hasCommand(GM)){
+                if (SGFTree.get().getCommand(GM)[0] != "1"){
+                    throw InvalidSGFException("Game is not a Go Game (Sente only parses Go Games)");
+                }
             }
 
             return SGFTree;

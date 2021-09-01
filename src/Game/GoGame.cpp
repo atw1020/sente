@@ -309,13 +309,8 @@ namespace sente {
 
     std::vector<Move> GoGame::getBranches() {
 
-        py::print("entering getBranches");
-
         auto children = gameTree.getChildren();
         std::vector<Move> branches(children.size());
-
-        py::print("game tree has", children.size(), "branches");
-        py::print("at depth", gameTree.getDepth());
 
         for (unsigned i = 0; i < children.size(); i++){
             branches[i] = children[i].getMove();

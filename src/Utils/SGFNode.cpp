@@ -6,6 +6,7 @@
 #include <pybind11/pybind11.h>
 
 #include "../Include/Utils/SGFNode.h"
+#include "../Include/Utils/SenteExceptions.h"
 
 namespace sente {
     namespace utils {
@@ -20,10 +21,15 @@ namespace sente {
 
         void SGFNode::addCommand(SGFCommand command, const std::string &value) {
             if (command == B or command == W){
+                // the move must contain either
                 if (value.empty()){
                     move = Move::pass(command == B ? BLACK : WHITE);
                 }
                 else {
+                    // make sure the value is valid
+                    if (value.size() != 2){
+                        throw InvalidSGFException(std::string("invalid move \"") + (command == B ? "B" : "W") + "[" + value + "]");
+                    }
                     // get the co-ordinates from the move
                     move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), command == B ? BLACK : WHITE};
                 }

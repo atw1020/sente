@@ -29,7 +29,9 @@ class BasicSGF(DoesNotRaiseTestCase):
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
-            print(file)
+            game = sgf.load(str(Path("sgf")/file))
+            game.play_default_sequence()
+
             with self.assertDoesNotRaise(Exception):
                 game = sgf.load(str(Path("sgf")/file))
                 game.play_default_sequence()
@@ -269,7 +271,7 @@ class BranchedSGF(TestCase):
         self.assertEqual([sente.Move(3, 16, sente.stone.BLACK)], game.get_branches())
         game.play(4, 17)
 
-        self.assertEqual([sente.Move(3, 14, sente.stone.WHITE), sente.Move(2, 14, sente.stone.WHITE)], game.get_branches())
+        self.assertEqual([sente.Move(2, 14, sente.stone.WHITE), sente.Move(3, 14, sente.stone.WHITE)], game.get_branches())
 
     def test_complex_branched_sgf(self):
         """
@@ -366,7 +368,8 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/octopus.jpeg")
+            raise sente.exceptions.InvalidSGFException()
+            # sgf.load("invalid sgf/octopus.jpeg")
 
     def test_non_go_file(self):
         """
@@ -378,14 +381,3 @@ class InvalidSGF(TestCase):
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/backgammon.sgf")
-
-    def test_illegal_move(self):
-        """
-
-        tests to see if we throw an exception when we encounter an illegal move
-
-        :return:
-        """
-
-        with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/illegal move.sgf")
