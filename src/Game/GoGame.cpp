@@ -339,6 +339,20 @@ namespace sente {
         return gameTree;
     }
 
+    std::unordered_map<std::string, std::vector<std::string>> GoGame::getAttributes() const {
+        // get the attributes from the root node
+        auto root = gameTree.getRoot();
+
+        std::unordered_map<std::string, std::vector<std::string>> attributes;
+
+        for (const auto& attribute : root.getAttributes()){
+            attributes[utils::toStr(attribute.first)] = attribute.second;
+        }
+
+        return attributes;
+
+    }
+
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
         return board->getSpace(x, y).getStone();
     }
@@ -483,28 +497,6 @@ namespace sente {
 
     GoGame::operator std::string() const {
         return std::string(*board);
-    }
-
-    std::unordered_map<std::string, std::string> GoGame::getAttributes() const {
-
-        std::unordered_map<std::string, std::string> attributes;
-
-        switch (rules){
-        case JAPANESE:
-            attributes["RU"] = "Japanese";
-            break;
-        case CHINESE:
-            attributes["RU"] = "Chinese";
-        }
-
-        attributes["SZ"] = std::to_string(board->getSide());
-
-        if (isOver()){
-            attributes["RE"] = std::string(getResults());
-        }
-
-        return attributes;
-
     }
 
     void GoGame::makeBoard(unsigned int side) {

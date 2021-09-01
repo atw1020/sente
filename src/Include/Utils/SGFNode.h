@@ -21,10 +21,13 @@ namespace sente {
 
             void addCommand(SGFCommand command, const std::string& value);
             void replaceCommand(SGFCommand command, const std::vector<std::string>& replacement);
+
             std::vector<std::string> removeCommand(SGFCommand command);
 
             bool hasCommand(SGFCommand command) const;
             bool isEmpty() const;
+
+            std::unordered_map<SGFCommand, std::vector<std::string>> getAttributes() const;
 
             std::vector<std::string> getCommand(SGFCommand command) const;
 
@@ -34,7 +37,7 @@ namespace sente {
         private:
 
             Move move;
-            std::unordered_map<SGFCommand, std::vector<std::string>> payload;
+            std::unordered_map<SGFCommand, std::vector<std::string>> attributes;
 
         };
     }

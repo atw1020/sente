@@ -535,23 +535,21 @@ PYBIND11_MODULE(sente, module){
             },
             py::arg("filename"),
             "Loads a go game from an SGF file")
-        .def("dump", [](const sente::GoGame& game, const std::string& fileName, std::unordered_map<std::string, std::string> params){
+        .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
-                output << sente::utils::dumpSGF(game, params);
+                output << sente::utils::dumpSGF(game.getMoveTree());
             },
              py::arg("game"),
              py::arg("file_name"),
-             py::arg("metadata") = py::dict(),
              "saves a game as an SGF")
         .def("loads", [](const std::string& SGFText) -> sente::GoGame {
                 auto tree = sente::utils::loadSGF(SGFText);
                 return sente::GoGame(tree);
             })
-        .def("dumps", [](const sente::GoGame& game, std::unordered_map<std::string, std::string> params){
-                return sente::utils::dumpSGF(game, params);
+        .def("dumps", [](const sente::GoGame& game){
+                return sente::utils::dumpSGF(game.getMoveTree());
             },
             py::arg("game"),
-            py::arg("metadata") = py::dict(),
             "Serialize a string as an SGF");
 
     auto exceptions = module.def_submodule("exceptions", "various exceptions used by sente");

@@ -74,6 +74,8 @@ namespace sente {
         unsigned getMoveNumber() const;
         utils::Tree<utils::SGFNode> getMoveTree() const;
 
+        std::unordered_map<std::string, std::vector<std::string>> getAttributes() const;
+
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
@@ -86,8 +88,6 @@ namespace sente {
         Point getKoPoint() const;
 
         explicit operator std::string() const;
-
-        std::unordered_map<std::string, std::string> getAttributes() const;
 
     private:
 

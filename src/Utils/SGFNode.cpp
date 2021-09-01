@@ -35,30 +35,34 @@ namespace sente {
                 }
             }
             else {
-                payload[command].push_back(value);
+                attributes[command].push_back(value);
             }
         }
 
         void SGFNode::replaceCommand(SGFCommand command, const std::vector<std::string> &replacement) {
-            payload[command] = replacement;
+            attributes[command] = replacement;
         }
 
         std::vector<std::string> SGFNode::removeCommand(SGFCommand command) {
-            auto result = payload[command];
-            payload.erase(command);
+            auto result = attributes[command];
+            attributes.erase(command);
             return result;
         }
 
         bool SGFNode::hasCommand(SGFCommand command) const {
-            return payload.find(command) != payload.end();
+            return attributes.find(command) != attributes.end();
         }
 
         bool SGFNode::isEmpty() const {
-            return payload.empty() and move == Move::nullMove;
+            return attributes.empty() and move == Move::nullMove;
         }
 
         std::vector<std::string> SGFNode::getCommand(SGFCommand command) const {
-            return payload.at(command);
+            return attributes.at(command);
+        }
+
+        std::unordered_map<SGFCommand, std::vector<std::string>> SGFNode::getAttributes() const {
+            return attributes;
         }
 
         SGFNode::operator std::string() const {
@@ -69,7 +73,7 @@ namespace sente {
                 acc << std::string(move) << std::endl;
             }
 
-            for (const auto& command : payload){
+            for (const auto& command : attributes){
                 acc << toStr(command.first);
                 for (const auto& entry : command.second){
                     acc << "[" << entry << "]";
