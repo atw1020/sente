@@ -70,7 +70,7 @@ namespace sente {
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
-                            node.addCommand(lastCommand, temp);
+                            node.setCommand(lastCommand, temp);
                         }
 
                         // update the index of the previous slice
@@ -88,7 +88,7 @@ namespace sente {
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
-                            node.addCommand(lastCommand, temp);
+                            node.setCommand(lastCommand, temp);
                         }
 
                         // update the index of the previous slice

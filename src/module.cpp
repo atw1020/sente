@@ -511,6 +511,17 @@ PYBIND11_MODULE(sente, module){
         .def("numpy", [](const sente::GoGame& game){
             return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
         })
+        .def("get_metadata", &sente::GoGame::getMetadata,
+            R"pbdoc(
+                Get the metadata from the SGF file.
+
+                :return: a python dictionary that maps from metadata parameters (ie. SZ[], FF[]) to their values
+            )pbdoc")
+        // .def("add_metadata")
+        .def_property("comment", &sente::GoGame::getComment, &sente::GoGame::setComment,
+            R"pbdoc(
+                The comment associated with the given node
+            )pbdoc")
         .def("__str__", [](const sente::GoGame& game){
             return std::string(game);
         });

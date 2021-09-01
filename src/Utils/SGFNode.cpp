@@ -120,7 +120,7 @@ namespace sente {
             return move;
         }
 
-        void SGFNode::addCommand(SGFCommand command, const std::string &value) {
+        void SGFNode::setCommand(SGFCommand command, const std::string &value) {
             if (command == B or command == W){
                 // the move must contain either
                 if (value.empty()){
@@ -138,10 +138,6 @@ namespace sente {
             else {
                 attributes[command].push_back(value);
             }
-        }
-
-        void SGFNode::replaceCommand(SGFCommand command, const std::vector<std::string> &replacement) {
-            attributes[command] = replacement;
         }
 
         std::vector<std::string> SGFNode::removeCommand(SGFCommand command) {

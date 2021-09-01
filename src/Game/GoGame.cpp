@@ -45,15 +45,15 @@ namespace sente {
         utils::SGFNode rootNode;
 
         // add the defualt metadata
-        rootNode.addCommand(utils::FF, "4");
-        rootNode.addCommand(utils::SZ, std::to_string(side));
+        rootNode.setCommand(utils::FF, "4");
+        rootNode.setCommand(utils::SZ, std::to_string(side));
 
         switch (rules){
             case CHINESE:
-                rootNode.addCommand(utils::RU, "Chinese");
+                rootNode.setCommand(utils::RU, "Chinese");
                 break;
             case JAPANESE:
-                rootNode.addCommand(utils::RU, "Japanese");
+                rootNode.setCommand(utils::RU, "Japanese");
                 break;
         }
 
@@ -175,10 +175,8 @@ namespace sente {
         // check for pass/resign
         if (move.isPass()){
             gameTree.insert(node);
-            py::print("pass count is currently", passCount++);
-            if (passCount >= 2){
-                py::print("game passed out");
-                gameTree.getRoot().addCommand(utils::RE, {});
+            if (++passCount >= 2){
+                gameTree.getRoot().setCommand(utils::RE, {});
             }
             return;
         }
@@ -193,7 +191,7 @@ namespace sente {
                 throw std::domain_error("Game cannot be forfeited; the game is already over");
             }
             else {
-                gameTree.getRoot().addCommand(utils::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
+                gameTree.getRoot().setCommand(utils::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
             }
             return;
         }
@@ -348,7 +346,7 @@ namespace sente {
         return gameTree;
     }
 
-    std::unordered_map<std::string, std::vector<std::string>> GoGame::getAttributes() const {
+    std::unordered_map<std::string, std::vector<std::string>> GoGame::getMetadata() const {
         // get the attributes from the root node
         auto root = gameTree.getRoot();
 
@@ -509,6 +507,13 @@ namespace sente {
     Point GoGame::getKoPoint() const {
         return {koPoint.getX(), koPoint.getY()};
     }
+
+    std::string GoGame::getComment() const {
+        return gameTree.get().getCommand(utils::C)[0];
+    };
+    void GoGame::setComment(std::string comment) const {
+        gameTree.get().setCommand(utils::C, {comment});
+    };
 
     GoGame::operator std::string() const {
         return std::string(*board);

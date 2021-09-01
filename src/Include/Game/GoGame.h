@@ -74,7 +74,7 @@ namespace sente {
         unsigned getMoveNumber() const;
         utils::Tree<utils::SGFNode> getMoveTree() const;
 
-        std::unordered_map<std::string, std::vector<std::string>> getAttributes() const;
+        std::unordered_map<std::string, std::vector<std::string>> getMetadata() const;
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
@@ -86,6 +86,9 @@ namespace sente {
         std::vector<Move> getLegalMoves() const;
 
         Point getKoPoint() const;
+
+        std::string getComment() const;
+        void setComment(std::string comment) const;
 
         explicit operator std::string() const;
 

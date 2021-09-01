@@ -492,6 +492,48 @@ class TestTreeNavigation(TestCase):
         game.advance_to_root()
         self.assertTrue(game.is_legal(3, 3))
 
+    def test_comment_write(self):
+        """
+
+        tests to see if comments can be added and stored
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "This is the Root"
+
+        self.assertEqual(game.comment, "This is the Root")
+
+    def test_comment_long_term(self):
+        """
+
+        tests to see if comments persist after moves are undone and other comments are set
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "This is the Root"
+
+        game.play(4, 4)
+        game.comment = "this is the first branch"
+        game.step_up()
+        game.play(16, 4)
+        game.comment = "this is the second branch"
+
+        game.advance_to_root()
+        self.assertEqual(game.comment, "This is the Root")
+
+        game.play(4, 4)
+        self.assertEqual(game.comment, "this is the first branch")
+        game.step_up()
+
+        game.play(16, 4)
+        self.assertEqual(game.comment, "this is the second branch")
+
 
 class TestNumpy(DoesNotRaiseTestCase):
 

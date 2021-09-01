@@ -19,8 +19,7 @@ namespace sente {
 
             Move getMove() const;
 
-            void addCommand(SGFCommand command, const std::string& value);
-            void replaceCommand(SGFCommand command, const std::vector<std::string>& replacement);
+            void setCommand(SGFCommand command, const std::string& value);
 
             std::vector<std::string> removeCommand(SGFCommand command);
 
