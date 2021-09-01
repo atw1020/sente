@@ -11,6 +11,107 @@
 namespace sente {
     namespace utils {
 
+        std::vector<SGFCommand> precedenceOrder {
+                NONE,
+                /// Root Properties
+                AP, // application used to create the file 
+                CA, // charset 
+                FF, // file format
+                GM, // Game mode
+                ST, // how many variations should be shown 
+                SZ, // size of the board
+                /// Game info Properties
+                AN, // name of annotator 
+                BR, // black rank
+                BT, // black's team 
+                CP, // copyright info 
+                DT, // date the game was played 
+                EV, // event 
+                GN, // game name
+                GC, // extra game info 
+                ON, // opening name 
+                OT, // overtime 
+                PB, // black name
+                PC, // place 
+                PW, // white player's name
+                RE, // result of the game
+                RO, // round number & type 
+                RU, // ruleset
+                SO, // source 
+                TM, // time info 
+                US, // creator of the game 
+                WR, // white rank
+                WT, // white team 
+                /// Go-specific properties
+                HA, // handicap
+                KM, // komi
+                TB, // territory black
+                TW, // territory white
+                /// data taken from https://www.red-bean.com/sgf/properties.html
+                /// Move properties
+                B,  // black move
+                W,  // white move
+                MN, // Move number 
+                KO, // ko point 
+                /// Setup Properties
+                AB, // add black stone 
+                AE, // add empty space 
+                AW, // add white stone 
+                PL, // get player name 
+                /// Node Annotations
+                C,  // comment 
+                DM, // position is even for both players 
+                GB, // good for black to play 
+                GW, // good for white to play 
+                HO, // hot spot 
+                N,  // name of the node 
+                UC, // position is unclear 
+                V,  // value 
+                /// Move Annotation
+                BM, // bad move 
+                DO, // doubtful move 
+                IT, // interesting move 
+                TE, // tesuji 
+                /// Markup properties
+                AR, // arrow 
+                CR, // circle 
+                DD, // dim out 
+                LB, // label 
+                LN, // line 
+                MA, // mark with an x 
+                SL, // selected points 
+                SQ, // mark with a square 
+                TR, // mark with a triangle 
+                /// timing properties
+                BL, // black time left 
+                OB, // number of byo-yomi periods left black 
+                OW, // number of byo-yomi periods left white 
+                WL, // white time left 
+                /// misc
+                FG, // figure 
+                PM, // print move count 
+                VW, // only view part of the board
+                /// SGF-3 specific properties
+                ID, // unique ID of the game 
+                LT, // enforce losing on time 
+                OM, // number of moves for each overtime 
+                OP, // length of each overtime period 
+                OV, // operator overhead for each move 
+                SE, // moves tried so far 
+                SI, // position marked with sigma 
+                TC, // territory count 
+                /// SGF-1 specific properties
+                EL, // human evaluation of a computer's move 
+                EX, // expected next move 
+                L,  // letters on points 
+                M,  // marked points 
+                BS, // black species 
+                CH, // check mark 
+                RG, // region of the board 
+                SC, // secure stones 
+                WS, // white species 
+        };
+
         SGFNode::SGFNode(const Move &move) {
             this->move = move;
         }
@@ -73,10 +174,12 @@ namespace sente {
                 acc << std::string(move);
             }
 
-            for (const auto& command : attributes){
-                acc << toStr(command.first);
-                for (const auto& entry : command.second){
-                    acc << "[" << entry << "]";
+            for (const auto& command : precedenceOrder){
+                if (attributes.find(command) != attributes.end()){
+                    acc << toStr(command);
+                    for (const auto& entry : attributes.at(command)){
+                        acc << "[" << entry << "]";
+                    }
                 }
             }
 
