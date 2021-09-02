@@ -45,15 +45,15 @@ namespace sente {
         utils::SGFNode rootNode;
 
         // add the defualt metadata
-        rootNode.setCommand(utils::FF, "4");
-        rootNode.setCommand(utils::SZ, std::to_string(side));
+        rootNode.setCommand(utils::FF, {"4"});
+        rootNode.setCommand(utils::SZ, {std::to_string(side)});
 
         switch (rules){
             case CHINESE:
-                rootNode.setCommand(utils::RU, "Chinese");
+                rootNode.setCommand(utils::RU, {"Chinese"});
                 break;
             case JAPANESE:
-                rootNode.setCommand(utils::RU, "Japanese");
+                rootNode.setCommand(utils::RU, {"Japanese"});
                 break;
         }
 

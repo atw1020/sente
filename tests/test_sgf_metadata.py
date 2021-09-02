@@ -20,28 +20,30 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.get_metadata("sgf/0.5 Komi.sgf")
+        game = sgf.load("sgf/0.5 Komi.sgf")
 
         correct = {
-            "FF": "4",
-            "CA": "UTF-8",
-            "GM": "1",
-            "DT": "2021-06-27",
-            "PC": "OGS: https://online-go.com/game/34839594",
-            "GN": "Friendly Match",
-            "PB": "noob_bot_3",
-            "PW": "IDW64",
-            "BR": "32k",
-            "WR": "6k",
-            "TM": "259200",
-            "OT": "86400 fischer",
-            "RE": "W+368.5",
-            "SZ": "19",
-            "KM": "0.5",
-            "RU": "Chinese"
+            "FF": ["4"],
+            "CA": ["UTF-8"],
+            "GM": ["1"],
+            "DT": ["2021-06-27"],
+            "PC": ["OGS: https://online-go.com/game/34839594"],
+            "GN": ["Friendly Match"],
+            "PB": ["noob_bot_3"],
+            "PW": ["IDW64"],
+            "BR": ["32k"],
+            "WR": ["6k"],
+            "TM": ["259200"],
+            'C': ["noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo "
+                  "will be accepted. You can send undo message if you need.\n"],
+            "OT": ["86400 fischer"],
+            "RE": ["W+368.5"],
+            "SZ": ["19"],
+            "KM": ["0.5"],
+            "RU": ["Chinese"]
         }
 
-        self.assertEqual(correct, metadata)
+        self.assertEqual(correct, game.get_metadata())
 
     def test_remove_labels(self):
         """
@@ -51,53 +53,22 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.get_metadata("sgf/3-4.sgf")
+        game = sgf.load("sgf/3-4.sgf")
 
         correct = {
-            "FF": "4",
-            "GM": "1",
-            "CA": "UTF-8",
-            "AP": "CGoban:3",
-            "ST": "2",
-            "RU": "Japanese",
-            "SZ": "19",
-            "KM": "0.00",
-            "PW": "White",
-            "PB": "Black",
+            "FF": ["4"],
+            "GM": ["1"],
+            "CA": ["UTF-8"],
+            "AP": ["CGoban:3"],
+            "ST": ["2"],
+            "RU": ["Japanese"],
+            "SZ": ["19"],
+            "KM": ["0.00"],
+            "PW": ["White"],
+            "PB": ["Black"],
         }
 
-        self .assertEqual(correct, metadata)
-
-    def test_wrong_file_format(self):
-        """
-
-
-
-        :return:
-        """
-
-        metadata = sgf.get_metadata("invalid sgf/backgammon.sgf")
-
-        correct = {
-            "FF": "4",
-            "CA": "UTF-8",
-            "GM": "3",
-            "DT": "2021-06-27",
-            "PC": "OGS: https://online-go.com/game/34839594",
-            "GN": "Friendly Match",
-            "PB": "noob_bot_3",
-            "PW": "IDW64",
-            "BR": "32k",
-            "WR": "6k",
-            "TM": "259200",
-            "OT": "86400 fischer",
-            "RE": "W+368.5",
-            "SZ": "19",
-            "KM": "0.5",
-            "RU": "Chinese"
-        }
-
-        self.assertEqual(correct, metadata)
+        self .assertEqual(correct, game.get_metadata())
 
     def test_added_stones_are_not_metadata(self):
         """
@@ -107,10 +78,10 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.get_metadata("sgf/multiple stones at once.sgf")
+        game = sgf.load("sgf/multiple stones at once.sgf")
 
-        self.assertNotIn("AB", metadata)
-        self.assertNotIn("AW", metadata)
+        self.assertNotIn("AB", game.get_metadata())
+        self.assertNotIn("AW", game.get_metadata())
 
 
 class StoreMetadata(TestCase):
@@ -205,8 +176,9 @@ class StoreMetadata(TestCase):
             "GM": "2",
             "CA": "UTF-16"
         }
+        game.add_metadata("FF", 3)
 
-        serialized = sgf.dumps(game, params)[22:]
+        serialized = sgf.dumps(game)[22:]
 
         self.assertNotIn("FF[3]", serialized)
         self.assertNotIn("GM[2]", serialized)

@@ -120,7 +120,7 @@ namespace sente {
             return move;
         }
 
-        void SGFNode::setCommand(SGFCommand command, const std::string &value) {
+        void SGFNode::addCommand(SGFCommand command, const std::string &value) {
             if (command == B or command == W){
                 // the move must contain either
                 if (value.empty()){
@@ -137,6 +137,26 @@ namespace sente {
             }
             else {
                 attributes[command].push_back(value);
+            }
+        }
+
+        void SGFNode::setCommand(SGFCommand command, const std::vector<std::string> &value) {
+            if (command == B or command == W){
+                // the move must contain either
+                if (value.empty()){
+                    move = Move::pass(command == B ? BLACK : WHITE);
+                }
+                else {
+                    // make sure the value is valid
+                    if (value.size() != 2){
+                        throw InvalidSGFException(std::string("invalid move \"") + (command == B ? "B" : "W") + "[" + value[0] + "]");
+                    }
+                    // get the co-ordinates from the move
+                    move = {unsigned(value[0][1] - 'a'), unsigned(value[0][0] - 'a'), command == B ? BLACK : WHITE};
+                }
+            }
+            else {
+                attributes[command] = value;
             }
         }
 

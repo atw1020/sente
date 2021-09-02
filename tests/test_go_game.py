@@ -534,6 +534,21 @@ class TestTreeNavigation(TestCase):
         game.play(16, 4)
         self.assertEqual(game.comment, "this is the second branch")
 
+    def test_comment_override(self):
+        """
+
+        tests to see if comments can be overridden
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "this is the original string"
+        game.comment = "this is the new string"
+
+        self.assertEqual(game.comment, "this is the new string")
+
 
 class TestNumpy(DoesNotRaiseTestCase):
 
