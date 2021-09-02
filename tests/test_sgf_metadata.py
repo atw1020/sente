@@ -23,27 +23,27 @@ class LoadMetadata(TestCase):
         game = sgf.load("sgf/0.5 Komi.sgf")
 
         correct = {
-            "FF": ["4"],
-            "CA": ["UTF-8"],
-            "GM": ["1"],
-            "DT": ["2021-06-27"],
-            "PC": ["OGS: https://online-go.com/game/34839594"],
-            "GN": ["Friendly Match"],
-            "PB": ["noob_bot_3"],
-            "PW": ["IDW64"],
-            "BR": ["32k"],
-            "WR": ["6k"],
-            "TM": ["259200"],
-            'C': ["noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo "
-                  "will be accepted. You can send undo message if you need.\n"],
-            "OT": ["86400 fischer"],
-            "RE": ["W+368.5"],
-            "SZ": ["19"],
-            "KM": ["0.5"],
-            "RU": ["Chinese"]
+            "FF": "4",
+            "CA": "UTF-8",
+            "GM": "1",
+            "DT": "2021-06-27",
+            "PC": "OGS: https://online-go.com/game/34839594",
+            "GN": "Friendly Match",
+            "PB": "noob_bot_3",
+            "PW": "IDW64",
+            "BR": "32k",
+            "WR": "6k",
+            "TM": "259200",
+            'C':  "noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo "
+                  "will be accepted. You can send undo message if you need.\n",
+            "OT": "86400 fischer",
+            "RE": "W+368.5",
+            "SZ": "19",
+            "KM": "0.5",
+            "RU": "Chinese"
         }
 
-        self.assertEqual(correct, game.get_metadata())
+        self.assertEqual(correct, game.metadata)
 
     def test_remove_labels(self):
         """
@@ -56,19 +56,19 @@ class LoadMetadata(TestCase):
         game = sgf.load("sgf/3-4.sgf")
 
         correct = {
-            "FF": ["4"],
-            "GM": ["1"],
-            "CA": ["UTF-8"],
-            "AP": ["CGoban:3"],
-            "ST": ["2"],
-            "RU": ["Japanese"],
-            "SZ": ["19"],
-            "KM": ["0.00"],
-            "PW": ["White"],
-            "PB": ["Black"],
+            "FF": "4",
+            "GM": "1",
+            "CA": "UTF-8",
+            "AP": "CGoban:3",
+            "ST": "2",
+            "RU": "Japanese",
+            "SZ": "19",
+            "KM": "0.00",
+            "PW": "White",
+            "PB": "Black",
         }
 
-        self .assertEqual(correct, game.get_metadata())
+        self .assertEqual(correct, game.metadata)
 
     def test_added_stones_are_not_metadata(self):
         """
@@ -80,8 +80,8 @@ class LoadMetadata(TestCase):
 
         game = sgf.load("sgf/multiple stones at once.sgf")
 
-        self.assertNotIn("AB", game.get_metadata())
-        self.assertNotIn("AW", game.get_metadata())
+        self.assertNotIn("AB", game.metadata)
+        self.assertNotIn("AW", game.metadata)
 
 
 class StoreMetadata(TestCase):
