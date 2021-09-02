@@ -511,7 +511,22 @@ PYBIND11_MODULE(sente, module){
         .def("numpy", [](const sente::GoGame& game){
             return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
         })
-        .def("get_metadata", &sente::GoGame::getMetadata,
+        .def("get_metadata", [](const sente::GoGame& game) -> py::dict{
+                py::dict response;
+                std::unordered_map<std::string, std::vector<std::string>> metadata = game.getMetadata();
+
+                for (const auto& item : metadata){
+                    if (item.second.size() == 1){
+                        response[py::str(item.first)] = item.second[0];
+                    }
+                    else {
+                        response[py::str(item.first)] = item.second;
+                    }
+                }
+
+                return response;
+
+            },
             R"pbdoc(
                 Get the metadata from the SGF file.
 

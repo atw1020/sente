@@ -68,10 +68,6 @@ namespace sente {
                                 throw InvalidSGFException("Unknown SGF Directive: \"" + temp + "\"");
                             }
                         }
-                        else {
-                            // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
-                            node.addCommand(lastCommand, temp);
-                        }
 
                         // update the index of the previous slice
                         previousSlice = cursor + 1;
@@ -93,7 +89,7 @@ namespace sente {
 
                         // update the index of the previous slice
                         previousSlice = cursor + 1;
-
+                        break;
                     case '\\':
                         // skip the next character
                         cursor++;

@@ -43,7 +43,7 @@ class LoadMetadata(TestCase):
             "RU": "Chinese"
         }
 
-        self.assertEqual(correct, game.metadata)
+        self.assertEqual(correct, game.get_metadata())
 
     def test_remove_labels(self):
         """
@@ -68,7 +68,20 @@ class LoadMetadata(TestCase):
             "PB": "Black",
         }
 
-        self .assertEqual(correct, game.metadata)
+        self .assertEqual(correct, game.get_metadata())
+
+    def test_metadata_list(self):
+        """
+
+        tests to make sure that metadata may be in list format
+
+        :return:
+        """
+
+        game = sgf.load("sgf/metadata list.sgf")
+        metadata = game.get_metadata()
+
+        self.assertEqual(metadata["TR"], ["dd", "qd", "dq", "pp"])
 
     def test_added_stones_are_not_metadata(self):
         """
@@ -80,13 +93,13 @@ class LoadMetadata(TestCase):
 
         game = sgf.load("sgf/multiple stones at once.sgf")
 
-        self.assertNotIn("AB", game.metadata)
-        self.assertNotIn("AW", game.metadata)
+        self.assertNotIn("AB", game.get_metadata())
+        self.assertNotIn("AW", game.get_metadata())
 
 
 class StoreMetadata(TestCase):
 
-    def test_attribute(self):
+    def test_add_metadata_dict(self):
         """
 
         tests to see if attributes can be successfully added to the SGF
@@ -101,7 +114,35 @@ class StoreMetadata(TestCase):
             "WR": "7k"
         }
 
-        serialized = sgf.dumps(game, params)
+        game.add_metadata(params)
+
+        serialized = sgf.dumps(game)
+
+        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("SZ[19]", serialized)
+        self.assertIn("RU[Chinese]", serialized)
+        self.assertIn("BR[8k]", serialized)
+        self.assertIn("WR[7k]", serialized)
+
+    def test_add_metadata_inline(self):
+        """
+
+        tests to see if attributes can be successfully added to the SGF
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        params = {
+            "BR": "8k",
+            "WR": "7k"
+        }
+
+        game.add_metadata("BR", "8k")
+        game.add_metadata("WR", "7k")
+
+        serialized = sgf.dumps(game)
 
         self.assertEqual("(;FF[4]", serialized[:7])
         self.assertIn("SZ[19]", serialized)
