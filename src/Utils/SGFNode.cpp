@@ -174,6 +174,19 @@ namespace sente {
             return attributes.empty() and move == Move::nullMove;
         }
 
+        std::vector<SGFCommand> SGFNode::getInvalidCommands(unsigned version) const{
+
+            std::vector<SGFCommand> illegalCommands;
+
+            for (const auto& attribute : attributes){
+                if (not isSGFLegal(attribute.first, version)){
+                    illegalCommands.push_back(attribute.first);
+                }
+            }
+
+            return illegalCommands;
+        }
+
         std::vector<std::string> SGFNode::getCommand(SGFCommand command) const {
             return attributes.at(command);
         }

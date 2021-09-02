@@ -516,7 +516,7 @@ namespace sente {
     };
 
     GoGame::operator std::string() const {
-        return std::string(*board);
+        return std::string(*board) + gameTree.get().getCommand(utils::C)[0];
     }
 
     void GoGame::makeBoard(unsigned int side) {

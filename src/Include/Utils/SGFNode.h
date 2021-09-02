@@ -14,8 +14,8 @@ namespace sente {
         class SGFNode {
         public:
 
-            SGFNode() = default; // root node constructor
-            explicit SGFNode(const Move& move); // create from a move
+            explicit SGFNode() = default;
+            explicit SGFNode(const Move& move);
 
             Move getMove() const;
 
@@ -26,6 +26,7 @@ namespace sente {
 
             bool hasCommand(SGFCommand command) const;
             bool isEmpty() const;
+            std::vector<SGFCommand> getInvalidCommands(unsigned version) const;
 
             std::unordered_map<SGFCommand, std::vector<std::string>> getAttributes() const;
 

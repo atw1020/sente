@@ -118,7 +118,7 @@ namespace sente {
             // py::print("the first character is", *SGFText.begin());
 
             if (SGFText.empty()){
-                throw InvalidSGFException("Cannot Read Binary File");
+                throw InvalidSGFException("File is Empty or unreadable");
             }
 
             bool inBrackets = false;
@@ -129,6 +129,8 @@ namespace sente {
 
             auto cursor = SGFText.begin();
             auto previousSlice = cursor;
+
+            unsigned FFVersion;
 
             std::stack<unsigned> branchDepths{};
 
@@ -168,9 +170,22 @@ namespace sente {
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
+                                    if (SGFTree.get().hasCommand(FF)){
+                                        FFVersion = std::stoi(SGFTree.get().getCommand(FF)[0]);
+                                    }
+                                    else {
+                                        // the file format must be FF[1] because it's not specified
+                                        FFVersion = 1;
+                                    }
                                 }
                                 else {
                                     SGFTree.insert(tempNode);
+                                }
+                                // validate the result with the file format version
+                                if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
+                                    throw InvalidSGFException("The Command \"" +
+                                          toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
+                                          "\" is not supported on this version of SGF (FF[" + std::to_string(FFVersion) + "])");
                                 }
                             }
 
@@ -192,9 +207,22 @@ namespace sente {
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
+                                    if (SGFTree.get().hasCommand(FF)){
+                                        FFVersion = std::stoi(SGFTree.get().getCommand(FF)[0]);
+                                    }
+                                    else {
+                                        // the file format must be FF[1] because it's not specified
+                                        FFVersion = 1;
+                                    }
                                 }
                                 else {
                                     SGFTree.insert(tempNode);
+                                }
+                                // validate the result with the file format version
+                                if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
+                                    throw InvalidSGFException("The Command \"" +
+                                          toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
+                                          "\" is not supported on this version of SGF (FF[" + std::to_string(FFVersion) + "])");
                                 }
                             }
 
@@ -223,9 +251,22 @@ namespace sente {
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
+                                    if (SGFTree.get().hasCommand(FF)){
+                                        FFVersion = std::stoi(SGFTree.get().getCommand(FF)[0]);
+                                    }
+                                    else {
+                                        // the file format must be FF[1] because it's not specified
+                                        FFVersion = 1;
+                                    }
                                 }
                                 else {
                                     SGFTree.insert(tempNode);
+                                }
+                                // validate the result with the file format version
+                                if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
+                                    throw InvalidSGFException("The Command \"" +
+                                          toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
+                                          "\" is not supported on this version of SGF (FF[" + std::to_string(FFVersion) + "])");
                                 }
                             }
 

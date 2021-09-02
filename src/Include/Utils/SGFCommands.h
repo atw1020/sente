@@ -114,6 +114,8 @@ namespace sente {
         std::string toStr(SGFCommand command);
 
         bool isCommand(std::string command);
+        bool isSGFLegal(SGFCommand command, unsigned version);
+
     }
 }
 

@@ -26,8 +26,6 @@
 namespace sente {
     namespace utils {
 
-        bool isSGFLegal(SGFCommand command, unsigned version);
-
         // GoGame loadSGF(const std::string &SGFText);
         Tree<SGFNode> loadSGF(const std::string& SGFText);
 

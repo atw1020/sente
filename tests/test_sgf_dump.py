@@ -24,7 +24,6 @@ class TestBasics(DoesNotRaiseTestCase):
         game.play(4, 4)
 
         serialized = sgf.dumps(game)
-        print(serialized)
 
         self.assertIn("B[dd]", serialized)
 

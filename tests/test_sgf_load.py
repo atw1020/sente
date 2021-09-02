@@ -46,8 +46,6 @@ class BasicSGF(DoesNotRaiseTestCase):
         game = sgf.load("sgf/punctuation ignored inside parentheses.sgf")
         game.play_default_sequence()
 
-        print(game)
-
     def test_simple_single_branch_file(self):
         """
 
@@ -120,7 +118,7 @@ class BasicSGF(DoesNotRaiseTestCase):
                                  [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
                                  [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
 
-        self.assertEqual(str(expected_game), str(game))
+        self.assertEqual(str(expected_game), str(game.get_board()))
         self.assertEqual(expected_game, game.get_board())
 
 
@@ -223,7 +221,7 @@ class StringLoad(DoesNotRaiseTestCase):
                                  [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
                                  [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
 
-        self.assertEqual(str(expected_game), str(game))
+        self.assertEqual(str(expected_game) + "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\nnoob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n", str(game))
         self.assertEqual(expected_game, game.get_board())
 
     def test_non_standard_komi(self):
@@ -304,6 +302,23 @@ class BranchedSGF(TestCase):
 
         self.assertEqual([sente.Move(3, 14, sente.stone.WHITE), sente.Move(2, 14, sente.stone.WHITE)], game.get_branches())
 
+    def test_load_comments(self):
+        """
+
+        tests to see if the code loads the comments for the file
+
+        :return:
+        """
+
+        game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
+
+        self.assertEqual(game.comment, "noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo will be accepted. You can send undo message if you need.\n")
+        self.assertIn("noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo will be accepted. You can send undo message if you need.", str(game))
+
+        game.play_default_sequence()
+
+        self.assertEqual(game.comment, "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\nnoob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n")
+
 
 class InvalidSGF(TestCase):
 
@@ -337,6 +352,20 @@ class InvalidSGF(TestCase):
             sgf.load("invalid sgf/missing letter in move.sgf")
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing square bracket.sgf")
+
+    def test_unsupported_file_formats(self):
+        """
+
+        tests to see if the program correclty identifies that an incorrect file format has been used
+
+        :return:
+        """
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/FF[1] with FF.sgf")
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("invalid sgf/FF[2] with RU.sgf")
+
 
     def test_incorrect_parentheses(self):
         """
