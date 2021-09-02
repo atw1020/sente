@@ -3,15 +3,34 @@
 //
 
 #include "../Include/Game/GoComponents.h"
+#include "../Include/Utils/SenteExceptions.h"
 
 namespace sente {
 
     double getKomi(Rules ruleset) {
         switch (ruleset){
         case CHINESE:
+        case OTHER:
             return 7.5;
         case JAPANESE:
+        case KOREAN:
             return 6.5;
+        }
+    }
+
+    Rules rulesFromStr(std::string ruleString){
+        std::transform(ruleString.begin(), ruleString.end(), ruleString.begin(), ::tolower);
+        if (ruleString == "japanese"){
+            return JAPANESE;
+        }
+        else if (ruleString == "chinese"){
+            return CHINESE;
+        }
+        else if (ruleString == "korean" or ruleString == "korea"){
+            return KOREAN;
+        }
+        else {
+            return OTHER;
         }
     }
 

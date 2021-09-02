@@ -15,10 +15,14 @@ namespace sente {
 
     enum Rules {
         CHINESE,
-        JAPANESE
+        JAPANESE,
+        KOREAN,
+        OTHER
     };
 
     double getKomi(Rules ruleset);
+
+    Rules rulesFromStr(std::string ruleString);
 
     struct Results{
 
