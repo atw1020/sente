@@ -310,6 +310,45 @@ namespace sente {
             return strToCommand.find(command) != strToCommand.end();
         }
 
+        bool isFileWide(SGFCommand command){
+            switch (command){
+                case AP:
+                case CA:
+                case FF:
+                case GM:
+                case ST:
+                case SZ:
+                case AN:
+                case BR:
+                case BT:
+                case CP:
+                case DT:
+                case EV:
+                case GN:
+                case GC:
+                case ON:
+                case OT:
+                case PB:
+                case PC:
+                case PW:
+                case RE:
+                case RO:
+                case RU:
+                case SO:
+                case TM:
+                case US:
+                case WR:
+                case WT:
+                case HA:
+                case KM:
+                case TB:
+                case TW:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
     }
 }
 

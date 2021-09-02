@@ -76,6 +76,9 @@ namespace sente {
 
         std::unordered_map<std::string, std::vector<std::string>> getMetadata() const;
 
+        void setMetadata(const std::string& command, const std::string& value);
+        void setMetadata(const std::string& command, const std::vector<std::string>& values);
+
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
@@ -88,7 +91,7 @@ namespace sente {
         Point getKoPoint() const;
 
         std::string getComment() const;
-        void setComment(std::string comment) const;
+        void setComment(const std::string& comment) const;
 
         explicit operator std::string() const;
 

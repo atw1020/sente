@@ -99,7 +99,7 @@ class LoadMetadata(TestCase):
 
 class StoreMetadata(TestCase):
 
-    def test_add_metadata_dict(self):
+    def test_set_metadata_inline(self):
         """
 
         tests to see if attributes can be successfully added to the SGF
@@ -109,38 +109,8 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "BR": "8k",
-            "WR": "7k"
-        }
-
-        game.add_metadata(params)
-
-        serialized = sgf.dumps(game)
-
-        self.assertEqual("(;FF[4]", serialized[:7])
-        self.assertIn("SZ[19]", serialized)
-        self.assertIn("RU[Chinese]", serialized)
-        self.assertIn("BR[8k]", serialized)
-        self.assertIn("WR[7k]", serialized)
-
-    def test_add_metadata_inline(self):
-        """
-
-        tests to see if attributes can be successfully added to the SGF
-
-        :return:
-        """
-
-        game = sente.Game()
-
-        params = {
-            "BR": "8k",
-            "WR": "7k"
-        }
-
-        game.add_metadata("BR", "8k")
-        game.add_metadata("WR", "7k")
+        game.set_metadata("BR", "8k")
+        game.set_metadata("WR", "7k")
 
         serialized = sgf.dumps(game)
 
@@ -160,12 +130,8 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "this is invalid": "video killed the radio star"
-        }
-
-        with self.assertRaises(ValueError):
-            sgf.dumps(game, params)
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            game.set_metadata("this is invalid", "video killed the radio star")
 
     def test_override_params(self):
         """
@@ -176,12 +142,9 @@ class StoreMetadata(TestCase):
         """
 
         game = sente.Game()
+        game.set_metadata("RU", "Japanese")
 
-        params = {
-            "RU": "Japanese"
-        }
-
-        serialized = sgf.dumps(game, params)
+        serialized = sgf.dumps(game)
 
         self.assertIn("RU[Japanese]", serialized)
 
@@ -195,12 +158,8 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "SZ": "19"
-        }
-
         with self.assertRaises(ValueError):
-            sgf.dumps(game, params)
+            game.set_metadata("SZ", "13")
 
     def test_default_params_ignored(self):
         """
@@ -212,18 +171,26 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "FF": "3",
-            "GM": "2",
-            "CA": "UTF-16"
-        }
-        game.add_metadata("FF", 3)
+        game.set_metadata("FF", 3)
 
         serialized = sgf.dumps(game)[22:]
 
         self.assertNotIn("FF[3]", serialized)
         self.assertNotIn("GM[2]", serialized)
         self.assertNotIn("CA[UTF-8]", serialized)
+
+    def test_adding_unsupported_FF(self):
+        """
+
+        tests to see if adding an unsupported command for a particular version
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            game.set_metadata("EX", "bb")
 
 
 

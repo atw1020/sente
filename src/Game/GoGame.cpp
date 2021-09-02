@@ -360,6 +360,58 @@ namespace sente {
 
     }
 
+    void GoGame::setMetadata(const std::string& command, const std::string& value) {
+        if (utils::isCommand(command)){
+            // get the command
+            utils::SGFCommand sgfCommand = utils::fromStr(command);
+
+            // check to see if the command is legal for this version of SGF
+            if (not utils::isSGFLegal(sgfCommand, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
+                throw utils::InvalidSGFException("SGF Command \"" + command + "\" is not supported for SGF FF[" + gameTree.getRoot().getCommand(utils::FF)[0] + "]");
+            }
+
+            // we can't edit the size of the board
+            if (sgfCommand == utils::SZ){
+                throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
+            }
+            if (utils::isFileWide(sgfCommand)){
+                gameTree.getRoot().setCommand(sgfCommand, {value});
+            }
+            else {
+                gameTree.get().setCommand(sgfCommand, {value});
+            }
+        }
+        else {
+            throw utils::InvalidSGFException("unknown SGF command \"" + command + "\"");
+        }
+    }
+
+    void GoGame::setMetadata(const std::string& command, const std::vector<std::string>& values) {
+        if (utils::isCommand(command)){
+
+            utils::SGFCommand sgfCommand = utils::fromStr(command);
+
+            // check to see if the command is legal for this version of SGF
+            if (not utils::isSGFLegal(sgfCommand, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
+                throw utils::InvalidSGFException("SGF Command \"" + command + "\" is not supported for SGF FF[" + gameTree.getRoot().getCommand(utils::FF)[0] + "]");
+            }
+
+            if (sgfCommand == utils::SZ){
+                throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
+            }
+
+            if (utils::isFileWide(sgfCommand)){
+                gameTree.getRoot().setCommand(sgfCommand, values);
+            }
+            else {
+                gameTree.get().setCommand(sgfCommand, values);
+            }
+        }
+        else {
+            throw utils::InvalidSGFException("unknown SGF command \"" + command + "\"");
+        }
+    }
+
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
         return board->getSpace(x, y).getStone();
     }
@@ -511,7 +563,7 @@ namespace sente {
     std::string GoGame::getComment() const {
         return gameTree.get().getCommand(utils::C)[0];
     };
-    void GoGame::setComment(std::string comment) const {
+    void GoGame::setComment(const std::string& comment) const {
         gameTree.get().setCommand(utils::C, {comment});
     };
 

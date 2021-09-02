@@ -532,7 +532,33 @@ PYBIND11_MODULE(sente, module){
 
                 :return: a python dictionary that maps from metadata parameters (ie. SZ[], FF[]) to their values
             )pbdoc")
-        // .def("add_metadata")
+        .def("set_metadata", [](sente::GoGame& game, const std::string& command, double value){
+                game.setMetadata(command, std::to_string(value));
+            }, R"pbdoc(
+                Adds the specified metadata to the game
+
+                :param command: SGF command to set the value of
+                :param value: value to set the metadata to
+                :return: None
+            )pbdoc")
+        .def("set_metadata", [](sente::GoGame& game, const std::string& command, const std::string& value){
+                game.setMetadata(command, value);
+            }, R"pbdoc(
+                Adds the specified metadata to the game
+
+                :param command: SGF command to set the value of
+                :param value: value to set the metadata to
+                :return: None
+            )pbdoc")
+        .def("set_metadata", [](sente::GoGame& game, const std::string& command, const std::vector<std::string>& values){
+                game.setMetadata(command, values);
+            }, R"pbdoc(
+                Adds the specified metadata to the game
+
+                :param command: SGF command to set the value of
+                :param value: value to set the metadata to
+                :return: None
+            )pbdoc")
         .def_property("comment", &sente::GoGame::getComment, &sente::GoGame::setComment,
             R"pbdoc(
                 The comment associated with the given node

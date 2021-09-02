@@ -142,7 +142,19 @@ class TestBasics(DoesNotRaiseTestCase):
 
         :return:
         """
+        game = sgf.load("sgf/3-4.sgf")
 
         with self.assertDoesNotRaise(ValueError):
-            game = sgf.load("sgf/3-4.sgf")
+            sgf.dumps(game)
 
+    def test_FF1_not_produced(self):
+        """
+
+        tests to see if a game in File format 1 does not add the parameter "FF[1]"
+
+        :return:
+        """
+
+        game = sgf.load("sgf/Lee Sedol ladder game.sgf")
+
+        self.assertNotIn("FF", sgf.dumps(game))
