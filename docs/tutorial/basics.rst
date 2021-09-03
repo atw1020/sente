@@ -105,9 +105,6 @@ Moves can be played on the game using the ``play()`` method, and the board can b
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-    >>> print(" ⚪\n ⚫")
-     ⚪
-     ⚫
 
 The Sente board display is designed to be similar to the `gomill ascii boards output <https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html>`_, only unicode characters are used for the respective black and white stones.
 One difference between sente and gomill is that in sente, the star points are denoted using an asterisk (``*``)
@@ -120,5 +117,12 @@ Finally, Sente also provides the ability to check if a move is legal using the `
     >>> game = sente.Game()
     >>> game.play(4, 4)
     >>> game.is_legal(4, 4)
+    False
+
+.. doctest::
+
+    >>> game = sente.Game()
+    >>> game.play(4, 4)
+    >>> print(game.is_legal(4, 4))
     False
 
