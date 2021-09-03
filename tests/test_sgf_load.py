@@ -29,8 +29,8 @@ class BasicSGF(DoesNotRaiseTestCase):
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
-            game = sgf.load(str(Path("sgf")/file))
-            game.play_default_sequence()
+
+            print(file)
 
             with self.assertDoesNotRaise(Exception):
                 game = sgf.load(str(Path("sgf")/file))
@@ -120,6 +120,70 @@ class BasicSGF(DoesNotRaiseTestCase):
 
         self.assertEqual(str(expected_game), str(game.get_board()))
         self.assertEqual(expected_game, game.get_board())
+
+    def test_non_standard_komi(self):
+        """
+
+        tests to see if we can extract the komi from a game
+
+        :return:
+        """
+
+        game = sgf.load("sgf/0.5 Komi.sgf")
+
+        game.pss()
+        game.pss()
+
+        self.assertEqual(game.score().get_white_points(), 0.5)
+
+    def test_semicolon_inside_brackets(self):
+        """
+
+        tests to see if semicolons inside a SGF's text field are ignored
+
+        :return:
+        """
+
+        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
+            game = sgf.load("sgf/commented semicolon.sgf")
+            game.play_default_sequence()
+
+    def test_nested_brackets(self):
+        """
+
+        tests to see if a file can be loaded with nested brackets
+
+        :return:
+        """
+
+        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
+            game = sgf.load("sgf/nested brackets.sgf")
+
+    def test_backslash_close_brackets(self):
+        """
+
+        tests to see if a backslash followed by closing brackets is loaded correctly
+
+        :return:
+        """
+
+        game = sgf.load("sgf/nested brackets.sgf")
+        print("got the game")
+        sequence = game.get_default_sequence()[:2]
+
+        game.play_sequence(sequence)
+        print(game.comment)
+
+    def test_official_ff4_test_file(self):
+        """
+
+        tests to see if the official ff4 test file can be run
+
+        :return:
+        """
+
+        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
+            game = sgf.load("sgf/ff4_ex.sgf")
 
 
 class StringLoad(DoesNotRaiseTestCase):
@@ -223,34 +287,6 @@ class StringLoad(DoesNotRaiseTestCase):
 
         self.assertEqual(str(expected_game) + "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\nnoob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n", str(game))
         self.assertEqual(expected_game, game.get_board())
-
-    def test_non_standard_komi(self):
-        """
-
-        tests to see if we can extract the komi from a game
-
-        :return:
-        """
-
-        game = sgf.load("sgf/0.5 Komi.sgf")
-
-        game.pss()
-        game.pss()
-
-        self.assertEqual(game.score().get_white_points(), 0.5)
-
-    def test_semicolon_inside_brackets(self):
-        """
-
-        tests to see if semicolons inside a SGF's text field are ignored
-
-        :return:
-        """
-
-        game = sgf.load("sgf/commented semicolon.sgf")
-
-        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
-            game.play_default_sequence()
 
 
 class BranchedSGF(TestCase):

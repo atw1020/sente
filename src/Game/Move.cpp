@@ -36,8 +36,8 @@ namespace sente {
         stone = EMPTY;
     }
 
-    const Move Move::passBlack = Move(-1, 19, BLACK);
-    const Move Move::passWhite = Move(-1, 19, WHITE);
+    const Move Move::passBlack = Move(19, 19, BLACK);
+    const Move Move::passWhite = Move(19, 19, WHITE);
 
     const Move Move::resignBlack = Move(19, -1, BLACK);
     const Move Move::resignWhite = Move(19, -1, WHITE);

@@ -51,26 +51,32 @@ namespace sente {
             auto cursor = SGFText.begin();
             auto previousSlice = cursor;
 
+            bool inBrackets = false;
+
             // initialize the tree from the first item
             for (; cursor < SGFText.end(); cursor++) {
                 switch (*cursor){
                     case '[':
 
-                        // slice out the command
-                        temp = strip(std::string(previousSlice, cursor));
+                        if (not inBrackets){
+                            // slice out the command
+                            temp = strip(std::string(previousSlice, cursor));
 
-                        // only make a new command if a new command exists
-                        if (not temp.empty()){
-                            if (isCommand(temp)){
-                                lastCommand = fromStr(strip(temp));
+                            // only make a new command if a new command exists
+                            if (not temp.empty()){
+                                if (isCommand(temp)){
+                                    lastCommand = fromStr(strip(temp));
+                                }
+                                else {
+                                    throw InvalidSGFException("Unknown SGF Directive: \"" + temp + "\"");
+                                }
                             }
-                            else {
-                                throw InvalidSGFException("Unknown SGF Directive: \"" + temp + "\"");
-                            }
+
+                            // update the index of the previous slice
+                            previousSlice = cursor + 1;
                         }
 
-                        // update the index of the previous slice
-                        previousSlice = cursor + 1;
+                        inBrackets = true;
 
                         break;
                     case ']':
@@ -86,6 +92,8 @@ namespace sente {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
                             node.addCommand(lastCommand, temp);
                         }
+
+                        inBrackets = false;
 
                         // update the index of the previous slice
                         previousSlice = cursor + 1;
