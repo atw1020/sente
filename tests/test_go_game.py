@@ -148,6 +148,70 @@ class TestBasicMethods(DoesNotRaiseTestCase):
             game.get_point(30, 30)
 
 
+class TestMetadata(TestCase):
+
+    def test_add_metadata(self):
+        """
+
+        tests to see if metadata can be added to a game
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.set_metadata("C", "This is a comment")
+
+        self.assertEqual(game.comment, "This is a comment")
+
+    def test_non_root_metadata(self):
+        """
+
+        tests to see if non root metadata is only available at the node it is put at
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "TILL THEN I WALK ALONG"
+
+        game.play(4, 4)
+        self.assertEqual(game.comment, "")
+        game.step_up()
+        self.assertEqual(game.comment, "TILL THEN I WALK ALONG")
+
+    def test_add_not_at_root(self):
+        """
+
+        tests to see if root attributes can be added at places other than the root
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.set_metadata("AP", "Sente")
+
+        self.assertEqual(game.get_metadata()["AP"], "Sente")
+        game.step_up()
+        self.assertEqual(game.get_metadata()["AP"], "Sente")
+
+    def test_closing_bracket_backslash_invisible(self):
+        """
+
+        makes sure that if SGF puts a backslash into a SGF field
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_metadata("C", "[]")
+
+        self.assertEqual(game.comment, "[]")
+
+
 class TestTreeNavigation(TestCase):
 
     def test_advance_to_root(self):

@@ -168,11 +168,10 @@ class BasicSGF(DoesNotRaiseTestCase):
         """
 
         game = sgf.load("sgf/nested brackets.sgf")
-        print("got the game")
         sequence = game.get_default_sequence()[:2]
 
         game.play_sequence(sequence)
-        print(game.comment)
+        self.assertEqual(game.comment, "here are some nested brackets! []")
 
     def test_official_ff4_test_file(self):
         """

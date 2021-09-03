@@ -158,3 +158,29 @@ class TestBasics(DoesNotRaiseTestCase):
         game = sgf.load("sgf/Lee Sedol ladder game.sgf")
 
         self.assertNotIn("FF", sgf.dumps(game))
+
+    def test_backslashes_in_comments(self):
+        """
+
+        tests to see if backslashes automatically added to comments with brackets in them
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.comment = "brackets! []"
+
+        self.assertIn("C[brackets! [\\]]", sgf.dumps(game))
+
+    def test_set_metadata_brackets(self):
+        """
+
+        tests to make sure that close
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_metadata("C", "brackets! []")
+
+        self.assertIn("C[brackets! [\\]", sgf.dumps(game))

@@ -341,12 +341,20 @@ namespace sente {
     }
 
     std::unordered_map<std::string, std::vector<std::string>> GoGame::getMetadata() const {
+
         // get the attributes from the root node
-        auto root = gameTree.getRoot();
+        auto node = gameTree.getRoot();
 
         std::unordered_map<std::string, std::vector<std::string>> attributes;
 
-        for (const auto& attribute : root.getAttributes()){
+        for (const auto& attribute : node.getAttributes()){
+            attributes[utils::toStr(attribute.first)] = attribute.second;
+        }
+
+        // add the attributes from this node
+        node = gameTree.get();
+
+        for (const auto& attribute : node.getAttributes()){
             attributes[utils::toStr(attribute.first)] = attribute.second;
         }
 
@@ -555,7 +563,12 @@ namespace sente {
     }
 
     std::string GoGame::getComment() const {
-        return gameTree.get().getCommand(utils::C)[0];
+        if (gameTree.get().hasCommand(utils::C)){
+            return gameTree.get().getCommand(utils::C)[0];
+        }
+        else {
+            return "";
+        }
     };
     void GoGame::setComment(const std::string& comment) const {
         gameTree.get().setCommand(utils::C, {comment});
