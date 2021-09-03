@@ -60,7 +60,7 @@ Moves can be played on the game using the ``play()`` method, and the board can b
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
      5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -72,7 +72,7 @@ Moves can be played on the game using the ``play()`` method, and the board can b
     13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
     17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -80,6 +80,7 @@ Moves can be played on the game using the ``play()`` method, and the board can b
 
 .. doctest::
 
+    >>> game = sente.Game()
     >>> game.play(4, 4)
     >>> game.play(16, 4)
     >>> game.play(4, 17)
@@ -87,7 +88,7 @@ Moves can be played on the game using the ``play()`` method, and the board can b
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
      5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -99,16 +100,16 @@ Moves can be played on the game using the ``play()`` method, and the board can b
     13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
     17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-    >>> print("just nod if you can hear me")
-    just nod if you can hear me
+    >>> print(" ⚪\n ⚫")
+     ⚪
+     ⚫
 
-The Sente board display is designed to be similar to the `gomill ascii boards output <https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html>`_.
-A hash (``#``) denotes a Black stone and an "O" (``O``) denotes a white stone.
+The Sente board display is designed to be similar to the `gomill ascii boards output <https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html>`_, only unicode characters are used for the respective black and white stones.
 One difference between sente and gomill is that in sente, the star points are denoted using an asterisk (``*``)
 
 Finally, Sente also provides the ability to check if a move is legal using the `is_legal()` method.

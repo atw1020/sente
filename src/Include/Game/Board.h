@@ -173,21 +173,17 @@ namespace sente {
                         case EMPTY:
                             // check if we are on a star point
                             if (isStar(i, j)){
-                                accumulator << " * ";
+                                accumulator << " *";
                             }
                             else {
-                                accumulator << " . ";
+                                accumulator << " .";
+                            }
+                            if (j != side - 1){
+                                accumulator << " ";
                             }
                     }
                 }
-
-                if (board[i][side - 1] == EMPTY){
-                    accumulator << std::endl;
-                }
-                else {
-                    accumulator << " " << std::endl;
-                }
-
+                accumulator << std::endl;
             }
 
             accumulator << "  ";
