@@ -147,6 +147,18 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         with self.assertRaises(IndexError):
             game.get_point(30, 30)
 
+    def test__str__(self):
+        """
+
+        tests to see if __str__ can be called on the object
+
+        :return: None
+        """
+
+        game = sente.Game()
+
+        self.assertEqual(str(game.get_board()), str(game))
+
 
 class TestMetadata(TestCase):
 

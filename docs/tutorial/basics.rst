@@ -19,11 +19,19 @@ Sente runs on any operating system with python 3.x and can be installed via pip.
 Getting Started
 ---------------
 
+.. testsetup::
+
+    import sente
+
 The Basic element in Sente is the ``sente.Game`` object which represents a Simple Game.
 
 .. code-block:: python
 
     >>> import sente
+    >>> game = sente.Game()
+
+.. doctest::
+
     >>> game = sente.Game()
 
 By default, sente creates a 19x19 game with Chinese Rules.
@@ -34,11 +42,43 @@ By default, sente creates a 19x19 game with Chinese Rules.
     >>> game = sente.Game(13)
     >>> game = sente.Game(19, sente.rules.JAPANESE)
 
+.. doctest::
+
+    >>> game = sente.Game(13)
+    >>> game = sente.Game(19, sente.rules.JAPANESE)
+
 .. warning:: Japanese rules may not be advisable because sente has no means of automatic dead stone detection (at present)
 
 Moves can be played on the game using the ``play()`` method, and the board can be printed using the python ``print()`` function.
 
 .. code-block:: python
+
+    >>> game.play(4, 4)
+    >>> game.play(16, 4)
+    >>> game.play(4, 17)
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
+     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+
+.. doctest::
 
     >>> game.play(4, 4)
     >>> game.play(16, 4)

@@ -33,11 +33,12 @@ with open("../version.txt") as file:
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    "sphinx.ext.doctest",
+    'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
     'sphinx.ext.autosummary',
-    'sphinx.ext.napoleon',
     "sphinx.ext.autosectionlabel",
-    "m2r2"
+    "m2r2",
 ]
 
 autosummary_generate = True
