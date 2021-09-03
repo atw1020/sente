@@ -95,7 +95,7 @@ class BoardTest19(TestCase):
                   "17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
                   "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
                   "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
-                  "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n"
+                  "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T"
 
         """if platform == "win32":
             correct = correct.replace("⚪", "O ")
@@ -183,7 +183,7 @@ class BoardTest13(TestCase):
                   "11  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
                   "12  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
                   "13  .  .  .  .  .  .  .  .  .  .  .  .  . \n" \
-                  "    A  B  C  D  E  F  G  H  J  K  L  M  N\n"
+                  "    A  B  C  D  E  F  G  H  J  K  L  M  N"
 
         """if platform == "win32":
             correct = correct.replace("⚪", "O ")
@@ -267,7 +267,7 @@ class BoardTest9(TestCase):
                   " 7  .  .  *  .  .  .  *  .  . \n" \
                   " 8  .  .  .  .  .  .  .  .  . \n" \
                   " 9  .  .  .  ⚪ .  .  .  .  . \n" \
-                  "    A  B  C  D  E  F  G  H  J\n"
+                  "    A  B  C  D  E  F  G  H  J"
 
         """if platform == "win32":
             correct = correct.replace("⚪", "O ")

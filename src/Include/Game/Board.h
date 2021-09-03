@@ -201,8 +201,6 @@ namespace sente {
                 }
             }
 
-            accumulator << std::endl;
-
             return accumulator.str();
 
         }

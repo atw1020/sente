@@ -282,7 +282,10 @@ class StringLoad(DoesNotRaiseTestCase):
                                  [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
                                  [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
 
-        self.assertEqual(str(expected_game) + "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\nnoob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n", str(game))
+        self.assertEqual(str(expected_game) + "\nnoob_bot_3: Thanks for playing. If you want a weaker/stronger bot "
+                                              "match with you, recommend try to play with 'ELOtest'. It can calculate "
+                                              "& match your rank after few games.\nnoob_bot_3: Final score: W+368.5 "
+                                              "(upper bound: 368.5, lower: 368.5)\n", str(game))
         self.assertEqual(expected_game, game.get_board())
 
 
