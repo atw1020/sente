@@ -86,7 +86,8 @@ namespace sente {
 
                         // add the command
                         if (lastCommand == NONE){
-                            throw InvalidSGFException("No Command listed: " + std::string(SGFText.begin(), cursor));
+                            throw InvalidSGFException("No Command listed: " +
+                            std::string(SGFText.begin(), cursor));
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
@@ -189,7 +190,8 @@ namespace sente {
                                 if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
                                     throw InvalidSGFException("The Command \"" +
                                           toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
-                                          "\" is not supported on this version of SGF (FF[" + std::to_string(FFVersion) + "])");
+                                          "\" is not supported on this version of SGF (FF[" +
+                                          std::to_string(FFVersion) + "])");
                                 }
                             }
 
@@ -226,7 +228,8 @@ namespace sente {
                                 if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
                                     throw InvalidSGFException("The Command \"" +
                                           toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
-                                          "\" is not supported on this version of SGF (FF[" + std::to_string(FFVersion) + "])");
+                                          "\" is not supported on this version of SGF (FF[" +
+                                          std::to_string(FFVersion) + "])");
                                 }
                             }
 
@@ -270,7 +273,8 @@ namespace sente {
                                 if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
                                     throw InvalidSGFException("The Command \"" +
                                           toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
-                                          "\" is not supported on this version of SGF (FF[" + std::to_string(FFVersion) + "])");
+                                          "\" is not supported on this version of SGF (FF[" +
+                                          std::to_string(FFVersion) + "])");
                                 }
                             }
 
@@ -279,6 +283,10 @@ namespace sente {
                             break;
                         }
                 }
+            }
+
+            if (firstNode){
+                throw InvalidSGFException("Unable to find any SGF nodes in file");
             }
 
             if (SGFTree.getDepth() != 0){

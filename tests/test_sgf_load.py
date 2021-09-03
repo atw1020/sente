@@ -29,9 +29,6 @@ class BasicSGF(DoesNotRaiseTestCase):
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
-
-            print(file)
-
             with self.assertDoesNotRaise(Exception):
                 game = sgf.load(str(Path("sgf")/file))
                 game.play_default_sequence()
@@ -43,8 +40,9 @@ class BasicSGF(DoesNotRaiseTestCase):
 
         """
 
-        game = sgf.load("sgf/punctuation ignored inside parentheses.sgf")
-        game.play_default_sequence()
+        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
+            game = sgf.load("sgf/punctuation ignored inside parentheses.sgf")
+            game.play_default_sequence()
 
     def test_simple_single_branch_file(self):
         """
