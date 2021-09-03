@@ -184,3 +184,18 @@ class TestBasics(DoesNotRaiseTestCase):
         game.set_metadata("C", "brackets! []")
 
         self.assertIn("C[brackets! [\\]", sgf.dumps(game))
+
+    def test_access_bracket_backslash_non_destructive(self):
+        """
+
+        makes sure that if SGF puts a backslash into a SGF field
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_metadata("C", "[]")
+
+        self.assertEqual(game.comment, "[]")
+
+        self.assertIn("[\\]", sgf.dumps(game))

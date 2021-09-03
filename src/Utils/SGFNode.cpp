@@ -11,6 +11,21 @@
 namespace sente {
     namespace utils {
 
+        void replace(std::string& base, const std::string& from, const std::string& to){
+
+            size_t start = 0;
+            // if we are replacing empty strings,
+            if (from.empty()){
+                return;
+            }
+
+            while ((start = base.find(from, start)) != std::string::npos){
+                base.replace(start, from.size(), to);
+                start += to.size();
+            }
+
+        }
+
         std::vector<SGFCommand> precedenceOrder {
                 NONE,
                 /// Root Properties
@@ -136,6 +151,9 @@ namespace sente {
                 }
             }
             else {
+                // replace all the closing brackets "]" with backslash closing bracket "\]"
+                std::string copy = value;
+                replace(copy, "]", "\\]");
                 attributes[command].push_back(value);
             }
         }
@@ -156,7 +174,11 @@ namespace sente {
                 }
             }
             else {
-                attributes[command] = value;
+                std::vector<std::string> copy = value;
+                for (auto & item : copy){
+                    replace(item, "]", "\\]");
+                }
+                attributes[command] = copy;
             }
         }
 
@@ -188,7 +210,14 @@ namespace sente {
         }
 
         std::vector<std::string> SGFNode::getCommand(SGFCommand command) const {
-            return attributes.at(command);
+
+            std::vector<std::string> values = attributes.at(command);
+
+            for (auto& item : values){
+                replace(item, "\\]", "]");
+            }
+
+            return values;
         }
 
         std::unordered_map<SGFCommand, std::vector<std::string>> SGFNode::getAttributes() const {
