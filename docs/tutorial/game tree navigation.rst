@@ -1,11 +1,15 @@
 Game Tree Navigation
 ====================
 
+The ``sente.game`` object records all of the moves played in a tree structure.
+Sente provides utilities for navigating around this tree with the ``game.play()``, ``game.step_up()`` and ``game.get_branches()`` methods.
+
 Playing Stones
 --------------
 
-The ``sente.game`` object records all of the moves played in a tree structure.
-Sente provides utilities for navigating around this tree with the ``game.play()``, ``game.step_up()`` and ``game.get_branches()`` methods.
+.. testsetup::
+
+    import sente
 
 The ``game.play()`` method plays at a given point on the board.
 
@@ -26,7 +30,7 @@ The ``game.play()`` method plays at a given point on the board.
      9  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J
 
-.. doctest:: python
+.. doctest::
 
     >>> import sente
     >>> game = sente.Game(9) # creates a 9x9 board
@@ -67,7 +71,7 @@ The ``game.step_up()`` method on the other hand, undoes the previous move played
      9  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J
 
-.. doctest:: python
+.. doctest::
 
     >>> import sente
     >>> game = sente.Game(9)
@@ -107,7 +111,7 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
      9  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J
 
-.. doctest:: python
+.. doctest::
 
     >>> import sente
     >>> game = sente.Game(9)
@@ -149,7 +153,7 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
      9  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J
 
-.. doctest:: python
+.. doctest::
 
     >>> import sente
     >>> game = sente.Game(9)
@@ -181,7 +185,7 @@ Once moves have been undone, the move(s) played at a given node of the tree can 
     >>> print(game.get_branches())
     [<sente.Move W[gg]>]
 
-.. doctest:: python
+.. doctest::
 
     >>> import sente
     >>> game = sente.Game(9)
@@ -215,7 +219,7 @@ The ``get_branches()`` method returns a python list containing all of the moves 
      9  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J
 
-.. doctest:: python
+.. doctest::
 
     >>> import sente
     >>> game = sente.Game(9)
@@ -237,6 +241,45 @@ The ``get_branches()`` method returns a python list containing all of the moves 
         A  B  C  D  E  F  G  H  J
 
 If multiple branches exist from the current node, then ``get_branches()`` will return a list containing all of them.
+
+Move Comments
+-------------
+
+Each node of the Game tree is allowed to have a "comment" associated with it.
+These comments typically include commentary on the game and can also include messages sent by the players during the game.
+The comment associated with the current node can be accessed through the ``comment`` attribute.
+
+.. code-block:: python
+
+    >>> game = sente.Game()
+    >>> game.comment = "the start of the game"
+    >>> print(game.comment)
+    the start of the game
+    >>> game.play(4, 4)
+    >>> print(game.comment) # the comment from the start of the game is still stored,
+
+    >>> game.comment = "the first move of the game"
+    >>> print(game.comment)
+    the first move of the game
+    >>> game.step_up()
+    >>> print(game.comment)
+    the start of the game
+
+.. doctest::
+
+    >>> game = sente.Game()
+    >>> game.comment = "the start of the game"
+    >>> print(game.comment)
+    the start of the game
+    >>> game.play(4, 4)
+    >>> print(game.comment) # the comment from the start of the game is still stored,
+
+    >>> game.comment = "the first move of the game"
+    >>> print(game.comment)
+    the first move of the game
+    >>> game.step_up()
+    >>> print(game.comment)
+    the start of the game
 
 Move Sequences
 --------------

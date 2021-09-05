@@ -6,40 +6,7 @@ The ``sente.sgf`` module contains functions for parsing SGF (Smart Game Format) 
 SGF is a standard encoding for go games that is capable of encoding "forked" go games in addition to a raw sequence of moves.
 SGF files can be viewed in programs like `CGoban <https://www.gokgs.com/download.jsp>`_ or `Sabaki <https://sabaki.yichuanshen.de>`_.
 
-We can see that each field in the metadata is represented by a two-capitol letter code such as ``FF`` or ``KM``.
-The table gives a summary of some of the more common metadata parameters.
-A full list of metadata parameters can be found on the `sgf specifications page <https://www.red-bean.com/sgf/>`_.
-
-.. list-table:: Metadata Parameters
-    :widths: 10 90
-    :header-rows: 1
-
-    * - **Code**
-      - **Meaning**
-    * - FF
-      - SGF format standard (usually SGF 4)
-    * - CA
-      - File encoding (usually UTF-8)
-    * - GM
-      - The kind of game (Go = 1, Backgammon = 6, etc.)
-    * - GN
-      - The name of the game ("ie. Lee Sedol ladder game")
-    * - KM
-      - The Komi of the game
-    * - PB
-      - Player Black (the name of the black player ie. "Honinbo Shusaku"
-    * - BR
-      - The black player's rank (ie. 7k)
-    * - PW
-      - Player White (the name of the white player ie. "Gennan Inseki")
-    * - WR
-      - The white player's rank (ie. 9p)
-    * - RU
-      - The ruleset to use (ie. "Chinese")
-    * - SZ
-      - The size of the board the game was played on (ie. 19)
-    * - RE
-      - The result of the match (ie. "B+3.5")
+.. note:: Relative to other SGF parsing tools, sente is a relatively strict enforcer of the SGF format and may reject SGF files that can be opened using other tools.
 
 Loading Games
 -------------
@@ -235,6 +202,11 @@ Once a game has been played out, the ``sgf.dump()`` function can be used to save
 
     >>> game.play_sequence(long_sequence)
     >>> sgf.dump(game, "my game.sgf")
+
+Metadata
+--------
+
+In addition to containing a record of the sequence of moves in a game,
 
 ``loads`` and ``dumps``
 -----------------------
