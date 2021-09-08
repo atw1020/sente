@@ -8,6 +8,8 @@ SGF files can be viewed in programs like `CGoban <https://www.gokgs.com/download
 
 .. note:: Relative to other SGF parsing tools, sente is a relatively strict enforcer of the SGF format and may reject SGF files that can be opened using other tools.
 
+.. note:: sente is a library for Go and cannot be used for other games.
+
 Loading Games
 -------------
 
@@ -25,7 +27,7 @@ SGF files can be loaded into sente using the ``sgf.load`` function.
     >>> from sente import sgf
     >>> game = sgf.load("../tests/sgf/Lee Sedol ladder game.sgf")
 
-.. Note:: The ``SGF.load()`` function takes in a string path.
+.. Note:: The ``SGF.load()`` (and ``SGF.dump()``) functions can accept python path objects from the built in ``os`` and ``pathlib`` modules.
 
 When sente loads an SGF file, it does not play out the sequence of moves in the game.
 It populates It's internal game tree with the moves played but it does not actually play them on the board.
@@ -210,7 +212,66 @@ Once a game has been played out, the ``sgf.dump()`` function can be used to save
 Metadata
 --------
 
-In addition to containing a record of the sequence of moves in a game,
+In addition to containing a record of the sequence of moves in a game, SGF files contain metadata associated with the games.
+This metadata might include things like the name of the black player, the Komi the match was played with or a point on the board marked with a circle.
+Each such piece of metadata is called a "property" in the SGF file format.
+Each property has a two-capitol-letter code associated with it that uniquely identifies that property.
+For example, the "KM" property
+
+A full list of all legal metadata parameters and descriptions of them may be found at `this red-bean archive <https://www.red-bean.com/sgf/properties.html>`_.
+A partial list of metadata is given below.
+
+.. list-table:: SGF Properties
+    :widths: 10 20 70
+    :header-rows: 1
+
+    * - **Code**
+      - **Root or Node**
+      - **Meaning**
+    * - FF
+      - Root
+      - SGF format standard (usually SGF 4)
+    * - KM
+      - Root
+      - The Komi of the game
+    * - PB
+      - Root
+      - Player Black (the name of the black player ie. "Honinbo Shusaku"
+    * - PW
+      - Root
+      - Player White (the name of the white player ie. "Gennan Inseki")
+    * - RU
+      - Root
+      - The ruleset to use (ie. "Chinese")
+    * - SZ
+      - Root
+      - The size of the board the game was played on (ie. 19)
+    * - C
+      - Node
+      - The comment associated with the current SGF node.
+    * - CR
+      - Node
+      - Mark a point with a Circle
+    * - TR
+      - Node
+      - mark a point with a Triangle
+    * - AB
+      - Node
+      - Add a Black stone at the specified point.
+    * - AW
+      - Node
+      - Add a White stone at the specified point.
+
+Sente divides metadata into two categories:
+
+- **Root Metadata:** metadata associated with the game as a whole.
+    - KM (the amount of Komi associated with the game)
+    - PB (the name of the person playing with the black stones)
+    - RU (the ruleset of the game)
+- **Node Metadata:** metadata associated with the current node of the game tree.
+    - C (puts a comment on the node)
+    - CR (marks a point on the board with a circle)
+    - AB (adds a white stone to the board, regardless of whose turn it currently is)
 
 ``loads`` and ``dumps``
 -----------------------

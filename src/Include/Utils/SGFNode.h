@@ -5,7 +5,7 @@
 #ifndef SENTE_SGFNODE_H
 #define SENTE_SGFNODE_H
 
-#include "SGFCommands.h"
+#include "SGFProperty.h"
 #include "../Game/Move.h"
 
 namespace sente {
@@ -19,18 +19,18 @@ namespace sente {
 
             Move getMove() const;
 
-            void addCommand(SGFCommand command, const std::string& value);
-            void setCommand(SGFCommand command, const std::vector<std::string>& value);
+            void addCommand(SGFProperty command, const std::string& value);
+            void setCommand(SGFProperty command, const std::vector<std::string>& value);
 
-            std::vector<std::string> removeCommand(SGFCommand command);
+            std::vector<std::string> removeCommand(SGFProperty command);
 
-            bool hasCommand(SGFCommand command) const;
+            bool hasCommand(SGFProperty command) const;
             bool isEmpty() const;
-            std::vector<SGFCommand> getInvalidCommands(unsigned version) const;
+            std::vector<SGFProperty> getInvalidCommands(unsigned version) const;
 
-            std::unordered_map<SGFCommand, std::vector<std::string>> getAttributes() const;
+            std::unordered_map<SGFProperty, std::vector<std::string>> getAttributes() const;
 
-            std::vector<std::string> getCommand(SGFCommand command) const;
+            std::vector<std::string> getCommand(SGFProperty command) const;
 
             explicit operator std::string() const;
             bool operator==(const SGFNode& other) const;
@@ -38,7 +38,7 @@ namespace sente {
         private:
 
             Move move;
-            std::unordered_map<SGFCommand, std::vector<std::string>> attributes;
+            std::unordered_map<SGFProperty, std::vector<std::string>> attributes;
 
         };
     }

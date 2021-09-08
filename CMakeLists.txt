@@ -25,4 +25,4 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Gro
                     src/Utils/SGF.cpp src/Include/Utils/SGF.h src/Include/Game/GoComponents.h src/Game/GoComponents.cpp
                     src/Utils/SenteExceptions.cpp src/Include/Utils/SenteExceptions.h src/Include/Game/LifeAndDeath.h
                     src/Game/LifeAndDeath.cpp src/Include/Utils/Numpy.h src/Utils/Numpy.cpp src/Include/Utils/SGFNode.h
-                    src/Utils/SGFNode.cpp src/Include/Utils/SGFCommands.h src/Utils/SGFCommands.cpp)
+                    src/Utils/SGFNode.cpp src/Include/Utils/SGFProperty.h src/Utils/SGFProperty.cpp)

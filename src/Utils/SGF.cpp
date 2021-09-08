@@ -46,7 +46,7 @@ namespace sente {
             SGFNode node;
             std::string temp;
 
-            SGFCommand lastCommand;
+            SGFProperty lastCommand;
 
             auto cursor = SGFText.begin();
             auto previousSlice = cursor;

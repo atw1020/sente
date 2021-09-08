@@ -365,22 +365,22 @@ namespace sente {
     void GoGame::setMetadata(const std::string& command, const std::string& value) {
         if (utils::isCommand(command)){
             // get the command
-            utils::SGFCommand sgfCommand = utils::fromStr(command);
+            utils::SGFProperty SGFProperty = utils::fromStr(command);
 
             // check to see if the command is legal for this version of SGF
-            if (not utils::isSGFLegal(sgfCommand, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
+            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
                 throw utils::InvalidSGFException("SGF Command \"" + command + "\" is not supported for SGF FF[" + gameTree.getRoot().getCommand(utils::FF)[0] + "]");
             }
 
             // we can't edit the size of the board
-            if (sgfCommand == utils::SZ){
+            if (SGFProperty == utils::SZ){
                 throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
             }
-            if (utils::isFileWide(sgfCommand)){
-                gameTree.getRoot().setCommand(sgfCommand, {value});
+            if (utils::isFileWide(SGFProperty)){
+                gameTree.getRoot().setCommand(SGFProperty, {value});
             }
             else {
-                gameTree.get().setCommand(sgfCommand, {value});
+                gameTree.get().setCommand(SGFProperty, {value});
             }
         }
         else {
@@ -391,22 +391,22 @@ namespace sente {
     void GoGame::setMetadata(const std::string& command, const std::vector<std::string>& values) {
         if (utils::isCommand(command)){
 
-            utils::SGFCommand sgfCommand = utils::fromStr(command);
+            utils::SGFProperty SGFProperty = utils::fromStr(command);
 
             // check to see if the command is legal for this version of SGF
-            if (not utils::isSGFLegal(sgfCommand, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
+            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
                 throw utils::InvalidSGFException("SGF Command \"" + command + "\" is not supported for SGF FF[" + gameTree.getRoot().getCommand(utils::FF)[0] + "]");
             }
 
-            if (sgfCommand == utils::SZ){
+            if (SGFProperty == utils::SZ){
                 throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
             }
 
-            if (utils::isFileWide(sgfCommand)){
-                gameTree.getRoot().setCommand(sgfCommand, values);
+            if (utils::isFileWide(SGFProperty)){
+                gameTree.getRoot().setCommand(SGFProperty, values);
             }
             else {
-                gameTree.get().setCommand(sgfCommand, values);
+                gameTree.get().setCommand(SGFProperty, values);
             }
         }
         else {

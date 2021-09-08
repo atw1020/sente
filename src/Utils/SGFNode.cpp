@@ -26,7 +26,7 @@ namespace sente {
 
         }
 
-        std::vector<SGFCommand> precedenceOrder {
+        std::vector<SGFProperty> precedenceOrder {
                 NONE,
                 /// Root Properties
                 AP, // application used to create the file 
@@ -135,7 +135,7 @@ namespace sente {
             return move;
         }
 
-        void SGFNode::addCommand(SGFCommand command, const std::string &value) {
+        void SGFNode::addCommand(SGFProperty command, const std::string &value) {
             if (command == B or command == W){
                 // the move must contain either
                 if (value.empty()){
@@ -158,7 +158,7 @@ namespace sente {
             }
         }
 
-        void SGFNode::setCommand(SGFCommand command, const std::vector<std::string> &value) {
+        void SGFNode::setCommand(SGFProperty command, const std::vector<std::string> &value) {
             if (command == B or command == W){
                 // the move must contain either
                 if (value.empty()){
@@ -182,13 +182,13 @@ namespace sente {
             }
         }
 
-        std::vector<std::string> SGFNode::removeCommand(SGFCommand command) {
+        std::vector<std::string> SGFNode::removeCommand(SGFProperty command) {
             auto result = attributes[command];
             attributes.erase(command);
             return result;
         }
 
-        bool SGFNode::hasCommand(SGFCommand command) const {
+        bool SGFNode::hasCommand(SGFProperty command) const {
             return attributes.find(command) != attributes.end();
         }
 
@@ -196,9 +196,9 @@ namespace sente {
             return attributes.empty() and move == Move::nullMove;
         }
 
-        std::vector<SGFCommand> SGFNode::getInvalidCommands(unsigned version) const{
+        std::vector<SGFProperty> SGFNode::getInvalidCommands(unsigned version) const{
 
-            std::vector<SGFCommand> illegalCommands;
+            std::vector<SGFProperty> illegalCommands;
 
             for (const auto& attribute : attributes){
                 if (not isSGFLegal(attribute.first, version)){
@@ -209,7 +209,7 @@ namespace sente {
             return illegalCommands;
         }
 
-        std::vector<std::string> SGFNode::getCommand(SGFCommand command) const {
+        std::vector<std::string> SGFNode::getCommand(SGFProperty command) const {
 
             std::vector<std::string> values = attributes.at(command);
 
@@ -220,7 +220,7 @@ namespace sente {
             return values;
         }
 
-        std::unordered_map<SGFCommand, std::vector<std::string>> SGFNode::getAttributes() const {
+        std::unordered_map<SGFProperty, std::vector<std::string>> SGFNode::getAttributes() const {
             return attributes;
         }
 

@@ -8,7 +8,7 @@
 #include <string>
 
 #include "Tree.h"
-#include "SGFCommands.h"
+#include "SGFProperty.h"
 #include "../Game/GoGame.h"
 #include "../Game/GoComponents.h"
 

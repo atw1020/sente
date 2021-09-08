@@ -2,14 +2,14 @@
 // Created by arthur wesley on 8/27/21.
 //
 
-#ifndef SENTE_SGFCOMMANDS_H
-#define SENTE_SGFCOMMANDS_H
+#ifndef SENTE_SGFPROPERTY_H
+#define SENTE_SGFPROPERTY_H
 
 #include <string>
 
 namespace sente {
     namespace utils {
-        enum SGFCommand {
+        enum SGFProperty {
             NONE,
             /// data taken from https://www.red-bean.com/sgf/properties.html
             /// Move properties
@@ -110,12 +110,12 @@ namespace sente {
             WS, // white species todo: support
         };
 
-        SGFCommand fromStr(const std::string& sgfCommand);
-        std::string toStr(SGFCommand command);
+        SGFProperty fromStr(const std::string& sgfCommand);
+        std::string toStr(SGFProperty command);
 
         bool isCommand(std::string command);
-        bool isFileWide(SGFCommand command);
-        bool isSGFLegal(SGFCommand command, unsigned version);
+        bool isFileWide(SGFProperty command);
+        bool isSGFLegal(SGFProperty command, unsigned version);
 
     }
 }
@@ -123,9 +123,9 @@ namespace sente {
 namespace std {
 
     template<>
-    struct hash<sente::utils::SGFCommand> {
-        size_t operator()(const sente::utils::SGFCommand& sgfCommand) const noexcept;
+    struct hash<sente::utils::SGFProperty> {
+        size_t operator()(const sente::utils::SGFProperty& sgfCommand) const noexcept;
     };
 }
 
-#endif //SENTE_SGFCOMMANDS_H
+#endif //SENTE_SGFPROPERTY_H

@@ -6,7 +6,7 @@
 
 #include <pybind11/pybind11.h>
 
-#include "../Include/Utils/SGFCommands.h"
+#include "../Include/Utils/SGFProperty.h"
 #include "../Include/Utils/SenteExceptions.h"
 
 #define stringify(x) #x
@@ -14,7 +14,7 @@
 namespace sente {
     namespace utils {
 
-        bool isSGFLegal(SGFCommand command, unsigned version){
+        bool isSGFLegal(SGFProperty command, unsigned version){
 
             // from version list https://www.red-bean.com/sgf/proplist_ff.html
             switch (command){
@@ -118,7 +118,7 @@ namespace sente {
 
         }
 
-        std::unordered_map<std::string, SGFCommand> strToCommand {
+        std::unordered_map<std::string, SGFProperty> strToCommand {
                 {""     , NONE},
                 {stringify(B),   B},
                 {stringify(KO), KO},
@@ -206,7 +206,7 @@ namespace sente {
                 {stringify(WS), WS},
         };
 
-        std::unordered_map<SGFCommand, std::string> commandToStr {
+        std::unordered_map<SGFProperty, std::string> commandToStr {
                 {B,  stringify(B) },
                 {KO, stringify(KO)},
                 {MN, stringify(MN)},
@@ -293,16 +293,16 @@ namespace sente {
                 {WS, stringify(WS)}
         };
 
-        SGFCommand fromStr(const std::string& sgfCommand){
-            if (strToCommand.find(sgfCommand) != strToCommand.end()){
-                return strToCommand[sgfCommand];
+        SGFProperty fromStr(const std::string& SGFProperty){
+            if (strToCommand.find(SGFProperty) != strToCommand.end()){
+                return strToCommand[SGFProperty];
             }
             else {
-                throw InvalidSGFException("Invalid SGF command: \"" + sgfCommand + "\"");
+                throw InvalidSGFException("Invalid SGF command: \"" + SGFProperty + "\"");
             }
         }
 
-        std::string toStr(SGFCommand command){
+        std::string toStr(SGFProperty command){
             return commandToStr[command];
         }
 
@@ -310,7 +310,7 @@ namespace sente {
             return strToCommand.find(command) != strToCommand.end();
         }
 
-        bool isFileWide(SGFCommand command){
+        bool isFileWide(SGFProperty command){
             switch (command){
                 case AP:
                 case CA:
@@ -353,7 +353,7 @@ namespace sente {
 }
 
 namespace std {
-    size_t std::hash<sente::utils::SGFCommand>::operator()(const sente::utils::SGFCommand &sgfCommand) const noexcept {
-        return unsigned(sgfCommand);
+    size_t std::hash<sente::utils::SGFProperty>::operator()(const sente::utils::SGFProperty &SGFProperty) const noexcept {
+        return unsigned(SGFProperty);
     }
 }
