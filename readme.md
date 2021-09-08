@@ -6,9 +6,9 @@
 [![pip](https://github.com/atw1020/sente/actions/workflows/pip.yml/badge.svg)](https://pypi.org/project/sente/)
 
 
-Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient chinese board game Go/Badok/Weiqi. 
+Sente (from the Japanese せんて/先手) is a general-purpose open-source python library for the ancient chinese board game Go/Badok/Weiqi.
+It allows for python code to simulate and play a game of Go and also read, edit and create SGF files.
 Sente is designed to be a Python 3 replacement for the [gomill](https://github.com/mattheww/gomill) library. 
-
 In addition to supporting Python 3, Sente is written in C++ which allows AIs that use Sente to take advantage of C++'s superior performance.
 
 
@@ -17,11 +17,11 @@ Installation & Requirements
 
 Sente runs on any operating system with python 3.5, 3.8 and 3.9 and can be installed via pip.
 
-```zsh
+```bash
 $ pip install sente
 ```
 -- or --
-```zsh
+```bash
 $ python3 -m pip install sente
 ```
 
@@ -72,18 +72,37 @@ moves can be played on the game using the `play()` method, and the board can be 
     A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
 ```
-The Sente board display is designed to be similar to the [gomill ascii boards output](https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html).
-A hash (`#`) denotes a Black stone and an "O" (`O`) denotes a white stone. 
-One difference between sente and gomill is that in sente, the star points are denoted using an asterisk (`*`)
+The text created by printing a Sente board is designed to be similar to the [gomill ascii boards output](https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html).
+Unlike Gomill however, Sente uses unicode characters to represent black and white stones to make complex board positions more visible and also plots star points.
 
-Finally, Sente also provides the ability to check if a move is legal using the `is_legal()` method
+Finally, Sente also provides utilities for reading and saving SGF files using the `sente.SGF` module
 
 ```python
->>> import sente
->>> game = sente.Game()
->>> game.play(4, 4)
->>> game.is_legal(4, 4)
-False
+>>> from sente import sgf
+>>> game = sgf.load("Lee Sedol ladder game.sgf")
+>>> move_sequence = game.get_default_sequence()[:95]
+>>> game.play_sequence(move_sequence)
+>>> print(game)
+1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+2  .  ⚪ ⚫ ⚪ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+3  .  .  ⚪ ⚫ ⚫ .  .  .  .  .  .  .  .  ⚫ .  .  .  .  .
+4  .  .  .  ⚪ .  ⚫ .  .  .  *  .  .  .  .  .  ⚫ .  .  .
+5  .  .  ⚪ ⚪ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+6  .  .  ⚪ ⚫ ⚫ .  .  .  .  .  .  .  .  .  .  .  .  .  .
+7  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  .  .  .  .  .  .  .  .  .
+8  .  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  .  .  .  .  .  .  .  .
+9  .  .  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  .  .  .  .  .  .  .
+10  .  .  .  *  .  ⚫ ⚪ ⚪ ⚫ *  .  .  .  .  .  *  .  ⚫ .
+11  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  ⚫ .  ⚫ ⚪ .
+12  .  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚫ .  ⚪ ⚫ .  ⚫ .  ⚪ ⚪
+13  .  .  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚫ ⚪ ⚫ ⚫ ⚪ ⚪ ⚪ .
+14  .  .  .  .  .  .  .  .  .  ⚫ ⚪ ⚫ ⚪ ⚪ ⚪ ⚫ ⚫ ⚫ ⚪
+15  .  .  ⚪ .  .  .  .  .  .  .  .  ⚫ ⚫ ⚫ ⚫ ⚪ ⚪ ⚫ ⚪
+16  .  .  .  *  .  .  .  .  .  *  .  .  ⚪ .  .  ⚪ ⚪ ⚫ .
+17  .  .  .  ⚪ .  .  .  .  ⚫ .  .  .  .  ⚫ ⚫ ⚫ ⚪ ⚫ ⚫
+18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚪ ⚪ ⚫
+19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚪ .
+A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 ```
 
 ### Further Reading
@@ -103,13 +122,13 @@ C++ compiler that supports C++11. You can install these
 using a software package installer like homebrew or apt.
 
 OSx
-```zsh
+```bash
 $ brew install git
 $ brew install cmake
 $ brew install clang++
 ```
 Debian/Ubuntu
-```zsh
+```bash
 $ sudo apt-get install git
 $ sudo apt-get install cmake
 $ sudo apt-get install g++
@@ -117,12 +136,12 @@ $ sudo apt-get install g++
 
 A sente binary can be built by running the setup script.
 
-```zsh
+```bash
 $ python3 setup.py develop
 ```
 
 To import the resulting .so file, simply import sente in a local python interpreter
-```zsh
+```bash
 $ python3 setup.py develop
 $ python3
 ```
@@ -137,7 +156,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 ### Building documentation
 
 in order to build the documentation, you will need to have [sphinx](https://www.sphinx-doc.org/en/master/) installed and build a development version of sente.
-```zsh
+```bash
 $ pip install -r requirements.txt # install sphinx
 $ python setup.py develop # build a development version of sente
 $ cd docs

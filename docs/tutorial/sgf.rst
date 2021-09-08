@@ -20,6 +20,7 @@ SGF files can be loaded into sente using the ``sgf.load`` function.
     >>> game = sgf.load("Lee Sedol ladder game.sgf")
 
 .. doctest::
+    :invisible:
 
     >>> from sente import sgf
     >>> game = sgf.load("../tests/sgf/Lee Sedol ladder game.sgf")
@@ -58,6 +59,7 @@ However, if the ``get_children`` method is called we can see that the opening mo
     [<sente.Move B[dp]>]
 
 .. doctest::
+    :invisible:
 
     >>> print(game) # the board is empty but the SGF file is loaded
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -112,6 +114,7 @@ If we wish to play the game all the way through to Hong Jansik's resignation at 
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
 .. doctest::
+    :invisible:
 
     >>> game.play_default_sequence()
     >>> print(game)
@@ -167,6 +170,7 @@ Because the sequence of moves is a python list, it is subject to python list sli
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
 .. doctest::
+    :invisible:
 
     >>> game.advance_to_root()
     >>> sequence = game.get_default_sequence()

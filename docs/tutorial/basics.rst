@@ -31,6 +31,7 @@ The Basic element in Sente is the ``sente.Game`` object which represents a Simpl
     >>> game = sente.Game()
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game()
 
@@ -43,6 +44,7 @@ By default, sente creates a 19x19 game with Chinese Rules.
     >>> game = sente.Game(19, sente.rules.JAPANESE)
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(13)
     >>> game = sente.Game(19, sente.rules.JAPANESE)
@@ -78,51 +80,36 @@ Moves can be played on the game using the ``play()`` method, and the board can b
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
-.. doctest::
+The text created by printing a Sente board is designed to be similar to the [gomill ascii boards output](https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html).
+Unlike Gomill however, Sente uses unicode characters to represent black and white stones to make complex board positions more visible and also plots star points.
 
-    >>> game = sente.Game()
-    >>> game.play(4, 4)
-    >>> game.play(16, 4)
-    >>> game.play(4, 17)
-    >>> print(game)
-     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  ⚫ .  .
-     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    16  .  .  .  ⚪ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-
-The Sente board display is designed to be similar to the `gomill ascii boards output <https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html>`_, only unicode characters are used for the respective black and white stones.
-One difference between sente and gomill is that in sente, the star points are denoted using an asterisk (``*``)
-
-Finally, Sente also provides the ability to check if a move is legal using the `is_legal()` method.
+Finally, Sente also provides utilities for reading and saving SGF files using the `sente.SGF` module
 
 .. code-block:: python
 
-    >>> import sente
-    >>> game = sente.Game()
-    >>> game.play(4, 4)
-    >>> game.is_legal(4, 4)
-    False
-
-.. doctest::
-
-    >>> game = sente.Game()
-    >>> game.play(4, 4)
-    >>> print(game.is_legal(4, 4))
-    False
+    >>> from sente import sgf
+    >>> game = sgf.load("Lee Sedol ladder game.sgf")
+    >>> move_sequence = game.get_default_sequence()[:95]
+    >>> game.play_sequence(move_sequence)
+    >>> print(game)
+    1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    2  .  ⚪ ⚫ ⚪ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    3  .  .  ⚪ ⚫ ⚫ .  .  .  .  .  .  .  .  ⚫ .  .  .  .  .
+    4  .  .  .  ⚪ .  ⚫ .  .  .  *  .  .  .  .  .  ⚫ .  .  .
+    5  .  .  ⚪ ⚪ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    6  .  .  ⚪ ⚫ ⚫ .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    7  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  .  .  .  .  .  .  .  .  .
+    8  .  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  .  .  .  .  .  .  .  .
+    9  .  .  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  ⚫ ⚪ ⚪ ⚫ *  .  .  .  .  .  *  .  ⚫ .
+    11  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚫ .  .  .  .  ⚫ .  ⚫ ⚪ .
+    12  .  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚫ .  ⚪ ⚫ .  ⚫ .  ⚪ ⚪
+    13  .  .  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚫ ⚪ ⚫ ⚫ ⚪ ⚪ ⚪ .
+    14  .  .  .  .  .  .  .  .  .  ⚫ ⚪ ⚫ ⚪ ⚪ ⚪ ⚫ ⚫ ⚫ ⚪
+    15  .  .  ⚪ .  .  .  .  .  .  .  .  ⚫ ⚫ ⚫ ⚫ ⚪ ⚪ ⚫ ⚪
+    16  .  .  .  *  .  .  .  .  .  *  .  .  ⚪ .  .  ⚪ ⚪ ⚫ .
+    17  .  .  .  ⚪ .  .  .  .  ⚫ .  .  .  .  ⚫ ⚫ ⚫ ⚪ ⚫ ⚫
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚪ ⚪ ⚫
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚪ .
+    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 

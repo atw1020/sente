@@ -31,6 +31,7 @@ The ``game.play()`` method plays at a given point on the board.
         A  B  C  D  E  F  G  H  J
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(9) # creates a 9x9 board
     >>> game.play(4, 4) # plays a stone on the 4-4 point
@@ -70,6 +71,7 @@ The ``game.step_up()`` method on the other hand, undoes the previous move played
         A  B  C  D  E  F  G  H  J
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
@@ -108,6 +110,7 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
         A  B  C  D  E  F  G  H  J
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
@@ -148,6 +151,7 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
         A  B  C  D  E  F  G  H  J
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
@@ -178,6 +182,7 @@ Once moves have been undone, the move(s) played at a given node of the tree can 
     [<sente.Move W[gg]>]
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
@@ -210,6 +215,7 @@ The ``get_branches()`` method returns a python list containing all of the moves 
         A  B  C  D  E  F  G  H  J
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
@@ -255,6 +261,7 @@ The comment associated with the current node can be accessed through the ``comme
     the start of the game
 
 .. doctest::
+    :invisible:
 
     >>> game = sente.Game()
     >>> game.comment = "the start of the game"
