@@ -29,7 +29,7 @@ The ``sente.game`` object provides the ``numpy()`` method to create a numpy repr
       [0 0 1 0]]]
 
 .. doctest:: python
-    :invisible:
+    :hide:
 
     >>> import sente
     >>> game = sente.Game()
@@ -59,7 +59,7 @@ However, if a different set of features is desired, it is possible to pass the `
     (19, 19, 2)
 
 .. doctest:: python
-    :invisible:
+    :hide:
 
     >>> import sente
     >>> game = sente.Game()

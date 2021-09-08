@@ -31,7 +31,7 @@ The Basic element in Sente is the ``sente.Game`` object which represents a Simpl
     >>> game = sente.Game()
 
 .. doctest::
-    :invisible:
+    :hide:
 
     >>> game = sente.Game()
 
@@ -44,7 +44,7 @@ By default, sente creates a 19x19 game with Chinese Rules.
     >>> game = sente.Game(19, sente.rules.JAPANESE)
 
 .. doctest::
-    :invisible:
+    :hide:
 
     >>> game = sente.Game(13)
     >>> game = sente.Game(19, sente.rules.JAPANESE)
