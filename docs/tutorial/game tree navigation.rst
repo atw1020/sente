@@ -32,7 +32,6 @@ The ``game.play()`` method plays at a given point on the board.
 
 .. doctest::
 
-    >>> import sente
     >>> game = sente.Game(9) # creates a 9x9 board
     >>> game.play(4, 4) # plays a stone on the 4-4 point
     >>> print(game)
@@ -55,7 +54,6 @@ The ``game.step_up()`` method on the other hand, undoes the previous move played
 
 .. code-block:: python
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.step_up() # undo the previous move
@@ -73,7 +71,6 @@ The ``game.step_up()`` method on the other hand, undoes the previous move played
 
 .. doctest::
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.step_up() # undo the previous move
@@ -93,7 +90,6 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
 
 .. code-block:: python
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -113,7 +109,6 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
 
 .. doctest::
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -135,7 +130,6 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
 
 .. code-block:: python
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -155,7 +149,6 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
 
 .. doctest::
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -177,7 +170,6 @@ Once moves have been undone, the move(s) played at a given node of the tree can 
 
 .. code-block:: python
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -187,7 +179,6 @@ Once moves have been undone, the move(s) played at a given node of the tree can 
 
 .. doctest::
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -200,7 +191,6 @@ The ``get_branches()`` method returns a python list containing all of the moves 
 
 .. code-block:: python
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -221,7 +211,6 @@ The ``get_branches()`` method returns a python list containing all of the moves 
 
 .. doctest::
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -272,8 +261,8 @@ The comment associated with the current node can be accessed through the ``comme
     >>> print(game.comment)
     the start of the game
     >>> game.play(4, 4)
-    >>> print(game.comment) # the comment from the start of the game is still stored,
-
+    >>> print(game.comment == "") # the comment from the start of the game is still stored,
+    True
     >>> game.comment = "the first move of the game"
     >>> print(game.comment)
     the first move of the game
@@ -295,66 +284,9 @@ To make game tree navigation easier, the ``sente.Game`` Object contains a method
     >>> print(game.get_sequence())
     [<sente.Move B[dd]>, <sente.Move W[od]>, <sente.Move B[oo]>]
 
-.. doctest:: python
-
-    >>> game = sente.Game()
-    >>> game.play(4, 4)
-    >>> game.play(15, 4)
-    >>> game.play(15, 15)
-    >>> print(game.get_sequence())
-    [<sente.Move B[dd]>, <sente.Move W[do]>, <sente.Move B[oo]>]
-
 If the moves in a sequence are undone, the board position can be restored by using the ``play_sequence()`` method.
 
 .. code-block:: python
-
-    >>> print(game)
-     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
-    16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-    >>> move_sequence = game.get_sequence()
-    >>> game.step_up(3) # alternatively, you could use the advance_to_root() method
-    >>> game.play_sequence(move_sequence)
-    >>> print(game)
-     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
-    16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-
-.. doctest:: python
 
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
