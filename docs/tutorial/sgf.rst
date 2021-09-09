@@ -216,10 +216,10 @@ In addition to containing a record of the sequence of moves in a game, SGF files
 This metadata might include things like the name of the black player, the Komi the match was played with or a point on the board marked with a circle.
 Each such piece of metadata is called a "property" in the SGF file format.
 Each property has a two-capitol-letter code associated with it that uniquely identifies that property.
-For example, the "KM" property
+For example, the "KM" property records the Komi of the game.
 
-A full list of all legal metadata parameters and descriptions of them may be found at `this red-bean archive <https://www.red-bean.com/sgf/properties.html>`_.
-A partial list of metadata is given below.
+A full list of all legal properties and descriptions of them may be found at `this red-bean archive <https://www.red-bean.com/sgf/properties.html>`_.
+A partial list of properties is given below.
 
 .. list-table:: SGF Properties
     :widths: 10 20 70
@@ -262,13 +262,15 @@ A partial list of metadata is given below.
       - Node
       - Add a White stone at the specified point.
 
-Sente divides metadata into two categories:
 
-- **Root Metadata:** metadata associated with the game as a whole.
+
+Sente divides properties into two categories: Root properties and Node properties
+
+- **Root Properties:** information associated with the game as a whole.
     - KM (the amount of Komi associated with the game)
     - PB (the name of the person playing with the black stones)
     - RU (the ruleset of the game)
-- **Node Metadata:** metadata associated with the current node of the game tree.
+- **Node Properties:** information associated with the current node of the game tree.
     - C (puts a comment on the node)
     - CR (marks a point on the board with a circle)
     - AB (adds a white stone to the board, regardless of whose turn it currently is)

@@ -172,7 +172,7 @@ class TestMetadata(TestCase):
 
         game = sente.Game()
 
-        game.set_metadata("C", "This is a comment")
+        game.set_property("C", "This is a comment")
 
         self.assertEqual(game.comment, "This is a comment")
 
@@ -204,11 +204,11 @@ class TestMetadata(TestCase):
         game = sente.Game()
 
         game.play(4, 4)
-        game.set_metadata("AP", "Sente")
+        game.set_property("AP", "Sente")
 
-        self.assertEqual(game.get_metadata()["AP"], "Sente")
+        self.assertEqual(game.get_property()["AP"], "Sente")
         game.step_up()
-        self.assertEqual(game.get_metadata()["AP"], "Sente")
+        self.assertEqual(game.get_property()["AP"], "Sente")
 
     def test_closing_bracket_backslash_invisible(self):
         """
@@ -219,7 +219,7 @@ class TestMetadata(TestCase):
         """
 
         game = sente.Game()
-        game.set_metadata("C", "[]")
+        game.set_property("C", "[]")
 
         self.assertEqual(game.comment, "[]")
 

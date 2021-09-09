@@ -172,7 +172,7 @@ class TestBasics(DoesNotRaiseTestCase):
 
         self.assertIn("C[brackets! [\\]]", sgf.dumps(game))
 
-    def test_set_metadata_brackets(self):
+    def test_set_property_brackets(self):
         """
 
         tests to make sure that close
@@ -181,7 +181,7 @@ class TestBasics(DoesNotRaiseTestCase):
         """
 
         game = sente.Game()
-        game.set_metadata("C", "brackets! []")
+        game.set_property("C", "brackets! []")
 
         self.assertIn("C[brackets! [\\]", sgf.dumps(game))
 
@@ -194,7 +194,7 @@ class TestBasics(DoesNotRaiseTestCase):
         """
 
         game = sente.Game()
-        game.set_metadata("C", "[]")
+        game.set_property("C", "[]")
 
         self.assertEqual(game.comment, "[]")
 

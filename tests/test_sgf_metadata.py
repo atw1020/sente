@@ -43,7 +43,7 @@ class LoadMetadata(TestCase):
             "RU": "Chinese"
         }
 
-        self.assertEqual(correct, game.get_metadata())
+        self.assertEqual(correct, game.get_property())
 
     def test_remove_labels(self):
         """
@@ -68,7 +68,7 @@ class LoadMetadata(TestCase):
             "PB": "Black",
         }
 
-        self .assertEqual(correct, game.get_metadata())
+        self .assertEqual(correct, game.get_property())
 
     def test_metadata_list(self):
         """
@@ -79,27 +79,27 @@ class LoadMetadata(TestCase):
         """
 
         game = sgf.load("sgf/metadata list.sgf")
-        metadata = game.get_metadata()
+        metadata = game.get_property()
 
         self.assertEqual(metadata["TR"], ["dd", "qd", "dq", "pp"])
 
     def test_added_stones_are_not_metadata(self):
         """
 
-        tests to see if the get_metadata() function ignores "AW" and "AB" parameters
+        tests to see if the get_property() function ignores "AW" and "AB" parameters
 
         :return:
         """
 
         game = sgf.load("sgf/multiple stones at once.sgf")
 
-        self.assertNotIn("AB", game.get_metadata())
-        self.assertNotIn("AW", game.get_metadata())
+        self.assertNotIn("AB", game.get_property())
+        self.assertNotIn("AW", game.get_property())
 
 
 class StoreMetadata(TestCase):
 
-    def test_set_metadata_inline(self):
+    def test_set_property_inline(self):
         """
 
         tests to see if attributes can be successfully added to the SGF
@@ -109,8 +109,8 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        game.set_metadata("BR", "8k")
-        game.set_metadata("WR", "7k")
+        game.set_property("BR", "8k")
+        game.set_property("WR", "7k")
 
         serialized = sgf.dumps(game)
 
@@ -131,7 +131,7 @@ class StoreMetadata(TestCase):
         game = sente.Game()
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            game.set_metadata("this is invalid", "video killed the radio star")
+            game.set_property("this is invalid", "video killed the radio star")
 
     def test_override_params(self):
         """
@@ -142,7 +142,7 @@ class StoreMetadata(TestCase):
         """
 
         game = sente.Game()
-        game.set_metadata("RU", "Japanese")
+        game.set_property("RU", "Japanese")
 
         serialized = sgf.dumps(game)
 
@@ -159,7 +159,7 @@ class StoreMetadata(TestCase):
         game = sente.Game()
 
         with self.assertRaises(ValueError):
-            game.set_metadata("SZ", "13")
+            game.set_property("SZ", "13")
 
     def test_default_params_ignored(self):
         """
@@ -171,7 +171,7 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        game.set_metadata("FF", 3)
+        game.set_property("FF", 3)
 
         serialized = sgf.dumps(game)[22:]
 
@@ -190,7 +190,7 @@ class StoreMetadata(TestCase):
         game = sente.Game()
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            game.set_metadata("EX", "bb")
+            game.set_property("EX", "bb")
 
 
 
