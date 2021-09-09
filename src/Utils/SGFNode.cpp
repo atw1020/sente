@@ -153,6 +153,7 @@ namespace sente {
             else {
                 // replace all the closing brackets "]" with backslash closing bracket "\]"
                 std::string copy = value;
+                replace(copy, "\\", "\\\\");
                 replace(copy, "]", "\\]");
                 properties[property].push_back(value);
             }
@@ -176,6 +177,7 @@ namespace sente {
             else {
                 std::vector<std::string> copy = value;
                 for (auto & item : copy){
+                    replace(item, "\\", "\\\\");
                     replace(item, "]", "\\]");
                 }
                 properties[property] = copy;
@@ -209,6 +211,7 @@ namespace sente {
 
             for (auto& item : values){
                 replace(item, "\\]", "]");
+                replace(item, "\\\\", "\\");
             }
 
             return values;

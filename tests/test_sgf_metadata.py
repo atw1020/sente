@@ -106,7 +106,7 @@ class LoadMetadata(TestCase):
 
         game = sgf.load("sgf/backslash at end of comment.sgf")
 
-        self.assertEqual("C[backslashes! \\]", game.comment)
+        self.assertEqual("backslashes! \\", game.comment)
 
 
 class StoreMetadata(TestCase):
