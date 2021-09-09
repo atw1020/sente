@@ -45,15 +45,15 @@ namespace sente {
         utils::SGFNode rootNode;
 
         // add the defualt metadata
-        rootNode.setProperty(utils::FF, "4");
-        rootNode.setProperty(utils::SZ, std::to_string(side));
+        rootNode.setProperty(utils::FF, {"4"});
+        rootNode.setProperty(utils::SZ, {std::to_string(side)});
 
         switch (rules){
             case CHINESE:
-                rootNode.setProperty(utils::RU, "Chinese");
+                rootNode.setProperty(utils::RU, {"Chinese"});
                 break;
             case JAPANESE:
-                rootNode.setProperty(utils::RU, "Japanese");
+                rootNode.setProperty(utils::RU, {"Japanese"});
                 break;
         }
 
@@ -185,7 +185,7 @@ namespace sente {
                 throw std::domain_error("Game cannot be forfeited; the game is already over");
             }
             else {
-                gameTree.getRoot().setProperty(utils::RE, move.getStone() == BLACK ? "W+R" : "B+R");
+                gameTree.getRoot().setProperty(utils::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
             }
             return;
         }

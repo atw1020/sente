@@ -135,7 +135,7 @@ namespace sente {
             return move;
         }
 
-        void SGFNode::setProperty(SGFProperty property, const std::string &value) {
+        void SGFNode::appendProperty(SGFProperty property, const std::string &value) {
             if (property == B or property == W){
                 // the move must contain either
                 if (value.empty()){
@@ -144,7 +144,7 @@ namespace sente {
                 else {
                     // make sure the value is valid
                     if (value.size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value + "]");
+                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value + "]\"");
                     }
                     // get the co-ordinates from the move
                     move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), property == B ? BLACK : WHITE};
@@ -161,13 +161,13 @@ namespace sente {
         void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &value) {
             if (property == B or property == W){
                 // the move must contain either
-                if (value.empty()){
+                if (value[0].empty()){
                     move = Move::pass(property == B ? BLACK : WHITE);
                 }
                 else {
                     // make sure the value is valid
-                    if (value.size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value[0] + "]");
+                    if (value[0].size() != 2){
+                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value[0] + "]\"");
                     }
                     // get the co-ordinates from the move
                     move = {unsigned(value[0][1] - 'a'), unsigned(value[0][0] - 'a'), property == B ? BLACK : WHITE};

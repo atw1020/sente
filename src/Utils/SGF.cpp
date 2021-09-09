@@ -59,10 +59,10 @@ namespace sente {
                     case '[':
 
                         if (not inBrackets){
-                            // slice out the command
+                            // slice out the property
                             temp = strip(std::string(previousSlice, cursor));
 
-                            // only make a new command if a new command exists
+                            // only make a new property if a new property exists
                             if (not temp.empty()){
                                 if (isProperty(temp)){
                                     lastCommand = fromStr(strip(temp));
@@ -81,17 +81,17 @@ namespace sente {
                         break;
                     case ']':
 
-                        // slice out the argument of the command
+                        // slice out the argument of the property
                         temp = strip(std::string(previousSlice, cursor));
 
-                        // add the command
+                        // add the property
                         if (lastCommand == NONE){
                             throw InvalidSGFException("No Command listed: " +
                             std::string(SGFText.begin(), cursor));
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
-                            node.setProperty(lastCommand, temp);
+                            node.appendProperty(lastCommand, {temp});
                         }
 
                         inBrackets = false;
@@ -169,7 +169,7 @@ namespace sente {
                             temp = strip(std::string(previousSlice, cursor));
 
                             if (not temp.empty()) {
-                                // add the command prior to this one
+                                // add the property prior to this one
                                 tempNode = nodeFromText(temp);
 
                                 if (firstNode){
@@ -195,7 +195,7 @@ namespace sente {
                                 }
                             }
 
-                            // with the command added to the tree, the push the depth of the current node onto the stack
+                            // with the property added to the tree, the push the depth of the current node onto the stack
                             branchDepths.push(SGFTree.getDepth());
 
                             // update the previousSlice
@@ -208,7 +208,7 @@ namespace sente {
                             temp = strip(std::string(previousSlice, cursor));
 
                             if (not temp.empty()) {
-                                // add the command prior to this one
+                                // add the property prior to this one
                                 tempNode = nodeFromText(temp);
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
