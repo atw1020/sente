@@ -625,6 +625,34 @@ class TestTreeNavigation(TestCase):
 
         self.assertEqual("this is the new string", game.comment)
 
+    def test_comment_brackets(self):
+        """
+
+        tests to see if comments can have brackets in them
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "here are some brackets [[]] ]["
+
+        self.assertEqual("here are some brackets [[]] ][", game.comment)
+
+    def test_backslashes_not_ignored(self):
+        """
+
+        tests to see if backslashes in comments are legal
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "here is a backslash \\"
+
+        self.assertEqual("here is a backslash \\", game.comment)
+
 
 class TestNumpy(DoesNotRaiseTestCase):
 

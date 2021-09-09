@@ -154,7 +154,7 @@ namespace sente {
                 // replace all the closing brackets "]" with backslash closing bracket "\]"
                 std::string copy = value;
                 replace(copy, "]", "\\]");
-                attributes[property].push_back(value);
+                properties[property] = std::vector<std::string>{value};
             }
         }
 
@@ -178,23 +178,23 @@ namespace sente {
                 for (auto & item : copy){
                     replace(item, "]", "\\]");
                 }
-                attributes[property] = copy;
+                properties[property] = copy;
             }
         }
 
         bool SGFNode::hasProperty(SGFProperty property) const {
-            return attributes.find(property) != attributes.end();
+            return properties.find(property) != properties.end();
         }
 
         bool SGFNode::isEmpty() const {
-            return attributes.empty() and move == Move::nullMove;
+            return properties.empty() and move == Move::nullMove;
         }
 
         std::vector<SGFProperty> SGFNode::getInvalidProperties(unsigned version) const{
 
             std::vector<SGFProperty> illegalCommands;
 
-            for (const auto& attribute : attributes){
+            for (const auto& attribute : properties){
                 if (not isSGFLegal(attribute.first, version)){
                     illegalCommands.push_back(attribute.first);
                 }
@@ -205,7 +205,7 @@ namespace sente {
 
         std::vector<std::string> SGFNode::getProperty(SGFProperty property) const {
 
-            std::vector<std::string> values = attributes.at(property);
+            std::vector<std::string> values = properties.at(property);
 
             for (auto& item : values){
                 replace(item, "\\]", "]");
@@ -214,8 +214,8 @@ namespace sente {
             return values;
         }
 
-        std::unordered_map<SGFProperty, std::vector<std::string>> SGFNode::getAttributes() const {
-            return attributes;
+        std::unordered_map<SGFProperty, std::vector<std::string>> SGFNode::getProperties() const {
+            return properties;
         }
 
         SGFNode::operator std::string() const {
@@ -227,9 +227,9 @@ namespace sente {
             }
 
             for (const auto& property : precedenceOrder){
-                if (attributes.find(property) != attributes.end()){
+                if (properties.find(property) != properties.end()){
                     acc << toStr(property);
-                    for (const auto& entry : attributes.at(property)){
+                    for (const auto& entry : properties.at(property)){
                         acc << "[" << entry << "]";
                     }
                 }

@@ -342,23 +342,23 @@ namespace sente {
 
     std::unordered_map<std::string, std::vector<std::string>> GoGame::getProperties() const {
 
-        // get the attributes from the root node
+        // get the properties from the root node
         auto node = gameTree.getRoot();
 
-        std::unordered_map<std::string, std::vector<std::string>> attributes;
+        std::unordered_map<std::string, std::vector<std::string>> properties;
 
-        for (const auto& attribute : node.getAttributes()){
-            attributes[utils::toStr(attribute.first)] = attribute.second;
+        for (const auto& property : node.getProperties()){
+            properties[utils::toStr(property.first)] = property.second;
         }
 
-        // add the attributes from this node
+        // add the properties from this node
         node = gameTree.get();
 
-        for (const auto& attribute : node.getAttributes()){
-            attributes[utils::toStr(attribute.first)] = attribute.second;
+        for (const auto& property : node.getProperties()){
+            properties[utils::toStr(property.first)] = property.second;
         }
 
-        return attributes;
+        return properties;
 
     }
 

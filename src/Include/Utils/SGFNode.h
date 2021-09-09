@@ -26,7 +26,7 @@ namespace sente {
             bool isEmpty() const;
             std::vector<SGFProperty> getInvalidProperties(unsigned version) const;
 
-            std::unordered_map<SGFProperty, std::vector<std::string>> getAttributes() const;
+            std::unordered_map<SGFProperty, std::vector<std::string>> getProperties() const;
 
             std::vector<std::string> getProperty(SGFProperty property) const;
 
@@ -36,7 +36,7 @@ namespace sente {
         private:
 
             Move move;
-            std::unordered_map<SGFProperty, std::vector<std::string>> attributes;
+            std::unordered_map<SGFProperty, std::vector<std::string>> properties;
 
         };
     }

@@ -81,7 +81,7 @@ class LoadMetadata(TestCase):
         game = sgf.load("sgf/metadata list.sgf")
         metadata = game.get_properties()
 
-        self.assertEqual(metadata["TR"], ["dd", "qd", "dq", "pp"])
+        self.assertEqual(["dd", "qd", "dq", "pp"], metadata["TR"])
 
     def test_added_stones_are_not_metadata(self):
         """
