@@ -90,8 +90,8 @@ namespace sente {
                             std::string(SGFText.begin(), cursor));
                         }
                         else {
-                            // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
-                            node.appendProperty(lastCommand, {temp});
+                            // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand) + "\"");
+                            node.appendProperty(lastCommand, temp);
                         }
 
                         inBrackets = false;

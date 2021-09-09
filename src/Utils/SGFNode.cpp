@@ -154,7 +154,7 @@ namespace sente {
                 // replace all the closing brackets "]" with backslash closing bracket "\]"
                 std::string copy = value;
                 replace(copy, "]", "\\]");
-                properties[property] = std::vector<std::string>{value};
+                properties[property].push_back(value);
             }
         }
 

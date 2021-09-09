@@ -96,6 +96,18 @@ class LoadMetadata(TestCase):
         self.assertNotIn("AB", game.get_properties())
         self.assertNotIn("AW", game.get_properties())
 
+    def test_load_backslashes(self):
+        """
+
+        tests to see if backslashes are properly loaded into comments
+
+        :return:
+        """
+
+        game = sgf.load("sgf/backslash at end of comment.sgf")
+
+        self.assertEqual("C[backslashes! \\]", game.comment)
+
 
 class StoreMetadata(TestCase):
 

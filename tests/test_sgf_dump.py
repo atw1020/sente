@@ -199,3 +199,15 @@ class TestBasics(DoesNotRaiseTestCase):
         self.assertEqual(game.comment, "[]")
 
         self.assertIn("[\\]", sgf.dumps(game))
+
+    def test_load_dumps_backslashes(self):
+        """
+
+        tests to see if we can load and then dump backslashes
+
+        :return:
+        """
+
+        game = sgf.load("sgf/backslash at end of comment.sgf")
+
+        self.assertIn("C[backslashes! \\\\]", sgf.dumps(game))
