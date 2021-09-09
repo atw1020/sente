@@ -102,7 +102,7 @@ Finally, Sente also provides utilities for reading and saving SGF files using th
 17  .  .  .  ⚪ .  .  .  .  ⚫ .  .  .  .  ⚫ ⚫ ⚫ ⚪ ⚫ ⚫
 18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚪ ⚪ ⚫
 19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚪ .
-A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 ```
 
 ### Further Reading
