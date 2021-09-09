@@ -43,7 +43,7 @@ class LoadMetadata(TestCase):
             "RU": "Chinese"
         }
 
-        self.assertEqual(correct, game.get_property())
+        self.assertEqual(correct, game.get_properties())
 
     def test_remove_labels(self):
         """
@@ -68,7 +68,7 @@ class LoadMetadata(TestCase):
             "PB": "Black",
         }
 
-        self .assertEqual(correct, game.get_property())
+        self .assertEqual(correct, game.get_properties())
 
     def test_metadata_list(self):
         """
@@ -79,22 +79,22 @@ class LoadMetadata(TestCase):
         """
 
         game = sgf.load("sgf/metadata list.sgf")
-        metadata = game.get_property()
+        metadata = game.get_properties()
 
         self.assertEqual(metadata["TR"], ["dd", "qd", "dq", "pp"])
 
     def test_added_stones_are_not_metadata(self):
         """
 
-        tests to see if the get_property() function ignores "AW" and "AB" parameters
+        tests to see if the get_properties() function ignores "AW" and "AB" parameters
 
         :return:
         """
 
         game = sgf.load("sgf/multiple stones at once.sgf")
 
-        self.assertNotIn("AB", game.get_property())
-        self.assertNotIn("AW", game.get_property())
+        self.assertNotIn("AB", game.get_properties())
+        self.assertNotIn("AW", game.get_properties())
 
 
 class StoreMetadata(TestCase):

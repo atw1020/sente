@@ -64,7 +64,7 @@ namespace sente {
 
                             // only make a new command if a new command exists
                             if (not temp.empty()){
-                                if (isCommand(temp)){
+                                if (isProperty(temp)){
                                     lastCommand = fromStr(strip(temp));
                                 }
                                 else {
@@ -91,7 +91,7 @@ namespace sente {
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand));
-                            node.addCommand(lastCommand, temp);
+                            node.setProperty(lastCommand, temp);
                         }
 
                         inBrackets = false;
@@ -175,8 +175,8 @@ namespace sente {
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
-                                    if (SGFTree.get().hasCommand(FF)){
-                                        FFVersion = std::stoi(SGFTree.get().getCommand(FF)[0]);
+                                    if (SGFTree.get().hasProperty(FF)){
+                                        FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
                                     }
                                     else {
                                         // the file format must be FF[1] because it's not specified
@@ -187,9 +187,9 @@ namespace sente {
                                     SGFTree.insert(tempNode);
                                 }
                                 // validate the result with the file format version
-                                if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
+                                if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
                                     throw InvalidSGFException("The Command \"" +
-                                          toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
+                                          toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
                                 }
@@ -213,8 +213,8 @@ namespace sente {
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
-                                    if (SGFTree.get().hasCommand(FF)){
-                                        FFVersion = std::stoi(SGFTree.get().getCommand(FF)[0]);
+                                    if (SGFTree.get().hasProperty(FF)){
+                                        FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
                                     }
                                     else {
                                         // the file format must be FF[1] because it's not specified
@@ -225,9 +225,9 @@ namespace sente {
                                     SGFTree.insert(tempNode);
                                 }
                                 // validate the result with the file format version
-                                if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
+                                if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
                                     throw InvalidSGFException("The Command \"" +
-                                          toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
+                                          toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
                                 }
@@ -258,8 +258,8 @@ namespace sente {
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
-                                    if (SGFTree.get().hasCommand(FF)){
-                                        FFVersion = std::stoi(SGFTree.get().getCommand(FF)[0]);
+                                    if (SGFTree.get().hasProperty(FF)){
+                                        FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
                                     }
                                     else {
                                         // the file format must be FF[1] because it's not specified
@@ -270,9 +270,9 @@ namespace sente {
                                     SGFTree.insert(tempNode);
                                 }
                                 // validate the result with the file format version
-                                if (not SGFTree.get().getInvalidCommands(FFVersion).empty()){
+                                if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
                                     throw InvalidSGFException("The Command \"" +
-                                          toStr(SGFTree.get().getInvalidCommands(FFVersion)[0]) +
+                                          toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
                                 }
@@ -294,8 +294,8 @@ namespace sente {
             }
 
             // make sure that the game we loaded is a go game
-            if (SGFTree.get().hasCommand(GM)){
-                if (SGFTree.get().getCommand(GM)[0] != "1"){
+            if (SGFTree.get().hasProperty(GM)){
+                if (SGFTree.get().getProperty(GM)[0] != "1"){
                     throw InvalidSGFException("Game is not a Go Game (Sente only parses Go Games)");
                 }
             }

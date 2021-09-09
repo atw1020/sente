@@ -206,9 +206,9 @@ class TestMetadata(TestCase):
         game.play(4, 4)
         game.set_property("AP", "Sente")
 
-        self.assertEqual(game.get_property()["AP"], "Sente")
+        self.assertEqual(game.get_properties()["AP"], "Sente")
         game.step_up()
-        self.assertEqual(game.get_property()["AP"], "Sente")
+        self.assertEqual(game.get_properties()["AP"], "Sente")
 
     def test_closing_bracket_backslash_invisible(self):
         """
@@ -623,7 +623,7 @@ class TestTreeNavigation(TestCase):
         game.comment = "this is the original string"
         game.comment = "this is the new string"
 
-        self.assertEqual(game.comment, "this is the new string")
+        self.assertEqual("this is the new string", game.comment)
 
 
 class TestNumpy(DoesNotRaiseTestCase):

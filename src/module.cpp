@@ -511,9 +511,9 @@ PYBIND11_MODULE(sente, module){
         .def("numpy", [](const sente::GoGame& game){
             return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
         })
-        .def("get_property", [](const sente::GoGame& game) -> py::dict{
+        .def("get_properties", [](const sente::GoGame& game) -> py::dict{
                 py::dict response;
-                std::unordered_map<std::string, std::vector<std::string>> metadata = game.getMetadata();
+                std::unordered_map<std::string, std::vector<std::string>> metadata = game.getProperties();
 
                 for (const auto& item : metadata){
                     if (item.second.size() == 1){
@@ -528,32 +528,32 @@ PYBIND11_MODULE(sente, module){
 
             },
             R"pbdoc(
-                Get the metadata from the SGF file.
+                Get all of the properties from the SGF file.
 
                 :return: a python dictionary that maps from metadata parameters (ie. SZ[], FF[]) to their values
             )pbdoc")
         .def("set_property", [](sente::GoGame& game, const std::string& command, double value){
-                game.setMetadata(command, std::to_string(value));
+                game.setProperty(command, std::to_string(value));
             }, R"pbdoc(
-                Adds the specified metadata to the game
+                Adds the specified property to the game
 
                 :param command: SGF command to set the value of
                 :param value: value to set the metadata to
                 :return: None
             )pbdoc")
         .def("set_property", [](sente::GoGame& game, const std::string& command, const std::string& value){
-                game.setMetadata(command, value);
+                game.setProperty(command, value);
             }, R"pbdoc(
-                Adds the specified metadata to the game
+                Adds the specified property to the game
 
                 :param command: SGF command to set the value of
                 :param value: value to set the metadata to
                 :return: None
             )pbdoc")
         .def("set_property", [](sente::GoGame& game, const std::string& command, const std::vector<std::string>& values){
-                game.setMetadata(command, values);
+                game.setProperty(command, values);
             }, R"pbdoc(
-                Adds the specified metadata to the game
+                Adds the specified property to the game
 
                 :param command: SGF command to set the value of
                 :param value: value to set the metadata to

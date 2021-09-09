@@ -74,10 +74,10 @@ namespace sente {
         unsigned getMoveNumber() const;
         utils::Tree<utils::SGFNode> getMoveTree() const;
 
-        std::unordered_map<std::string, std::vector<std::string>> getMetadata() const;
+        std::unordered_map<std::string, std::vector<std::string>> getProperties() const;
 
-        void setMetadata(const std::string& command, const std::string& value);
-        void setMetadata(const std::string& command, const std::vector<std::string>& values);
+        void setProperty(const std::string& command, const std::string& value);
+        void setProperty(const std::string& command, const std::vector<std::string>& values);
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;

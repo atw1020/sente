@@ -19,18 +19,16 @@ namespace sente {
 
             Move getMove() const;
 
-            void addCommand(SGFProperty command, const std::string& value);
-            void setCommand(SGFProperty command, const std::vector<std::string>& value);
+            void setProperty(SGFProperty property, const std::string& value);
+            void setProperty(SGFProperty property, const std::vector<std::string>& value);
 
-            std::vector<std::string> removeCommand(SGFProperty command);
-
-            bool hasCommand(SGFProperty command) const;
+            bool hasProperty(SGFProperty property) const;
             bool isEmpty() const;
-            std::vector<SGFProperty> getInvalidCommands(unsigned version) const;
+            std::vector<SGFProperty> getInvalidProperties(unsigned version) const;
 
             std::unordered_map<SGFProperty, std::vector<std::string>> getAttributes() const;
 
-            std::vector<std::string> getCommand(SGFProperty command) const;
+            std::vector<std::string> getProperty(SGFProperty property) const;
 
             explicit operator std::string() const;
             bool operator==(const SGFNode& other) const;

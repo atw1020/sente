@@ -135,42 +135,42 @@ namespace sente {
             return move;
         }
 
-        void SGFNode::addCommand(SGFProperty command, const std::string &value) {
-            if (command == B or command == W){
+        void SGFNode::setProperty(SGFProperty property, const std::string &value) {
+            if (property == B or property == W){
                 // the move must contain either
                 if (value.empty()){
-                    move = Move::pass(command == B ? BLACK : WHITE);
+                    move = Move::pass(property == B ? BLACK : WHITE);
                 }
                 else {
                     // make sure the value is valid
                     if (value.size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (command == B ? "B" : "W") + "[" + value + "]");
+                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value + "]");
                     }
                     // get the co-ordinates from the move
-                    move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), command == B ? BLACK : WHITE};
+                    move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), property == B ? BLACK : WHITE};
                 }
             }
             else {
                 // replace all the closing brackets "]" with backslash closing bracket "\]"
                 std::string copy = value;
                 replace(copy, "]", "\\]");
-                attributes[command].push_back(value);
+                attributes[property].push_back(value);
             }
         }
 
-        void SGFNode::setCommand(SGFProperty command, const std::vector<std::string> &value) {
-            if (command == B or command == W){
+        void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &value) {
+            if (property == B or property == W){
                 // the move must contain either
                 if (value.empty()){
-                    move = Move::pass(command == B ? BLACK : WHITE);
+                    move = Move::pass(property == B ? BLACK : WHITE);
                 }
                 else {
                     // make sure the value is valid
                     if (value.size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (command == B ? "B" : "W") + "[" + value[0] + "]");
+                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value[0] + "]");
                     }
                     // get the co-ordinates from the move
-                    move = {unsigned(value[0][1] - 'a'), unsigned(value[0][0] - 'a'), command == B ? BLACK : WHITE};
+                    move = {unsigned(value[0][1] - 'a'), unsigned(value[0][0] - 'a'), property == B ? BLACK : WHITE};
                 }
             }
             else {
@@ -178,25 +178,19 @@ namespace sente {
                 for (auto & item : copy){
                     replace(item, "]", "\\]");
                 }
-                attributes[command] = copy;
+                attributes[property] = copy;
             }
         }
 
-        std::vector<std::string> SGFNode::removeCommand(SGFProperty command) {
-            auto result = attributes[command];
-            attributes.erase(command);
-            return result;
-        }
-
-        bool SGFNode::hasCommand(SGFProperty command) const {
-            return attributes.find(command) != attributes.end();
+        bool SGFNode::hasProperty(SGFProperty property) const {
+            return attributes.find(property) != attributes.end();
         }
 
         bool SGFNode::isEmpty() const {
             return attributes.empty() and move == Move::nullMove;
         }
 
-        std::vector<SGFProperty> SGFNode::getInvalidCommands(unsigned version) const{
+        std::vector<SGFProperty> SGFNode::getInvalidProperties(unsigned version) const{
 
             std::vector<SGFProperty> illegalCommands;
 
@@ -209,9 +203,9 @@ namespace sente {
             return illegalCommands;
         }
 
-        std::vector<std::string> SGFNode::getCommand(SGFProperty command) const {
+        std::vector<std::string> SGFNode::getProperty(SGFProperty property) const {
 
-            std::vector<std::string> values = attributes.at(command);
+            std::vector<std::string> values = attributes.at(property);
 
             for (auto& item : values){
                 replace(item, "\\]", "]");
@@ -232,10 +226,10 @@ namespace sente {
                 acc << std::string(move);
             }
 
-            for (const auto& command : precedenceOrder){
-                if (attributes.find(command) != attributes.end()){
-                    acc << toStr(command);
-                    for (const auto& entry : attributes.at(command)){
+            for (const auto& property : precedenceOrder){
+                if (attributes.find(property) != attributes.end()){
+                    acc << toStr(property);
+                    for (const auto& entry : attributes.at(property)){
                         acc << "[" << entry << "]";
                     }
                 }

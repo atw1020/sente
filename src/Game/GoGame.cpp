@@ -45,15 +45,15 @@ namespace sente {
         utils::SGFNode rootNode;
 
         // add the defualt metadata
-        rootNode.setCommand(utils::FF, {"4"});
-        rootNode.setCommand(utils::SZ, {std::to_string(side)});
+        rootNode.setProperty(utils::FF, "4");
+        rootNode.setProperty(utils::SZ, std::to_string(side));
 
         switch (rules){
             case CHINESE:
-                rootNode.setCommand(utils::RU, {"Chinese"});
+                rootNode.setProperty(utils::RU, "Chinese");
                 break;
             case JAPANESE:
-                rootNode.setCommand(utils::RU, {"Japanese"});
+                rootNode.setProperty(utils::RU, "Japanese");
                 break;
         }
 
@@ -66,30 +66,30 @@ namespace sente {
 
         auto rootNode = gameTree.getRoot();
 
-        if (rootNode.hasCommand(utils::SZ)){
+        if (rootNode.hasProperty(utils::SZ)){
             // parse if available
-            makeBoard(std::stoi(rootNode.getCommand(utils::SZ)[0]));
+            makeBoard(std::stoi(rootNode.getProperty(utils::SZ)[0]));
         }
         else {
             // default board size
             makeBoard(19);
         }
 
-        if (rootNode.hasCommand(utils::RU)){
+        if (rootNode.hasProperty(utils::RU)){
 
-            std::string ruleString = rootNode.getCommand(utils::RU)[0];
+            std::string ruleString = rootNode.getProperty(utils::RU)[0];
             rules = rulesFromStr(ruleString);
         }
         else {
             rules = CHINESE; // default
         }
 
-        if (rootNode.hasCommand(utils::KM)){
-            if (rootNode.getCommand(utils::KM)[0].empty()){
+        if (rootNode.hasProperty(utils::KM)){
+            if (rootNode.getProperty(utils::KM)[0].empty()){
                 komi = 0;
             }
             else {
-                komi = std::stod(rootNode.getCommand(utils::KM)[0]);
+                komi = std::stod(rootNode.getProperty(utils::KM)[0]);
             }
         }
         else {
@@ -170,7 +170,7 @@ namespace sente {
         if (move.isPass()){
             gameTree.insert(node);
             if (++passCount >= 2){
-                gameTree.getRoot().setCommand(utils::RE, {});
+                gameTree.getRoot().setProperty(utils::RE, std::vector<std::string>());
             }
             return;
         }
@@ -180,12 +180,12 @@ namespace sente {
 
         if (move.isResign()){
             // get the root node
-            if (gameTree.getRoot().hasCommand(utils::RE)){
+            if (gameTree.getRoot().hasProperty(utils::RE)){
                 // if the game has been resigned raise an exception
                 throw std::domain_error("Game cannot be forfeited; the game is already over");
             }
             else {
-                gameTree.getRoot().setCommand(utils::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
+                gameTree.getRoot().setProperty(utils::RE, move.getStone() == BLACK ? "W+R" : "B+R");
             }
             return;
         }
@@ -340,7 +340,7 @@ namespace sente {
         return gameTree;
     }
 
-    std::unordered_map<std::string, std::vector<std::string>> GoGame::getMetadata() const {
+    std::unordered_map<std::string, std::vector<std::string>> GoGame::getProperties() const {
 
         // get the attributes from the root node
         auto node = gameTree.getRoot();
@@ -362,14 +362,14 @@ namespace sente {
 
     }
 
-    void GoGame::setMetadata(const std::string& command, const std::string& value) {
-        if (utils::isCommand(command)){
-            // get the command
-            utils::SGFProperty SGFProperty = utils::fromStr(command);
+    void GoGame::setProperty(const std::string& property, const std::string& value) {
+        if (utils::isProperty(property)){
+            // get the property
+            utils::SGFProperty SGFProperty = utils::fromStr(property);
 
-            // check to see if the command is legal for this version of SGF
-            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
-                throw utils::InvalidSGFException("SGF Command \"" + command + "\" is not supported for SGF FF[" + gameTree.getRoot().getCommand(utils::FF)[0] + "]");
+            // check to see if the property is legal for this version of SGF
+            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getProperty(utils::FF)[0]))){
+                throw utils::InvalidSGFException("SGF Property \"" + property + "\" is not supported for SGF FF[" + gameTree.getRoot().getProperty(utils::FF)[0] + "]");
             }
 
             // we can't edit the size of the board
@@ -377,25 +377,25 @@ namespace sente {
                 throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
             }
             if (utils::isFileWide(SGFProperty)){
-                gameTree.getRoot().setCommand(SGFProperty, {value});
+                gameTree.getRoot().setProperty(SGFProperty, {value});
             }
             else {
-                gameTree.get().setCommand(SGFProperty, {value});
+                gameTree.get().setProperty(SGFProperty, {value});
             }
         }
         else {
-            throw utils::InvalidSGFException("unknown SGF command \"" + command + "\"");
+            throw utils::InvalidSGFException("unknown SGF Property \"" + property + "\"");
         }
     }
 
-    void GoGame::setMetadata(const std::string& command, const std::vector<std::string>& values) {
-        if (utils::isCommand(command)){
+    void GoGame::setProperty(const std::string& property, const std::vector<std::string>& values) {
+        if (utils::isProperty(property)){
 
-            utils::SGFProperty SGFProperty = utils::fromStr(command);
+            utils::SGFProperty SGFProperty = utils::fromStr(property);
 
-            // check to see if the command is legal for this version of SGF
-            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getCommand(utils::FF)[0]))){
-                throw utils::InvalidSGFException("SGF Command \"" + command + "\" is not supported for SGF FF[" + gameTree.getRoot().getCommand(utils::FF)[0] + "]");
+            // check to see if the property is legal for this version of SGF
+            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getProperty(utils::FF)[0]))){
+                throw utils::InvalidSGFException("SGF Property \"" + property + "\" is not supported for SGF FF[" + gameTree.getRoot().getProperty(utils::FF)[0] + "]");
             }
 
             if (SGFProperty == utils::SZ){
@@ -403,14 +403,14 @@ namespace sente {
             }
 
             if (utils::isFileWide(SGFProperty)){
-                gameTree.getRoot().setCommand(SGFProperty, values);
+                gameTree.getRoot().setProperty(SGFProperty, values);
             }
             else {
-                gameTree.get().setCommand(SGFProperty, values);
+                gameTree.get().setProperty(SGFProperty, values);
             }
         }
         else {
-            throw utils::InvalidSGFException("unknown SGF command \"" + command + "\"");
+            throw utils::InvalidSGFException("unknown SGF Property \"" + property + "\"");
         }
     }
 
@@ -435,7 +435,7 @@ namespace sente {
             return score();
         }
         else {
-            std::string results = gameTree.getRoot().getCommand(utils::RE)[0];
+            std::string results = gameTree.getRoot().getProperty(utils::RE)[0];
             switch (results[0]){
                 case 'W':
                     return Results(BLACK);
@@ -563,15 +563,15 @@ namespace sente {
     }
 
     std::string GoGame::getComment() const {
-        if (gameTree.get().hasCommand(utils::C)){
-            return gameTree.get().getCommand(utils::C)[0];
+        if (gameTree.get().hasProperty(utils::C)){
+            return gameTree.get().getProperty(utils::C)[0];
         }
         else {
             return "";
         }
     };
     void GoGame::setComment(const std::string& comment) const {
-        gameTree.get().setCommand(utils::C, {comment});
+        gameTree.get().setProperty(utils::C, {comment});
     };
 
     GoGame::operator std::string() const {
@@ -757,7 +757,7 @@ namespace sente {
     }
 
     bool GoGame::isOver() const {
-        return gameTree.getRoot().hasCommand(utils::RE);
+        return gameTree.getRoot().hasProperty(utils::RE);
     }
 
     /**

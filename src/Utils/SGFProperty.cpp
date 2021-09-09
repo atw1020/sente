@@ -14,10 +14,10 @@
 namespace sente {
     namespace utils {
 
-        bool isSGFLegal(SGFProperty command, unsigned version){
+        bool isSGFLegal(SGFProperty property, unsigned version){
 
             // from version list https://www.red-bean.com/sgf/proplist_ff.html
-            switch (command){
+            switch (property){
                 case EL:
                 case EX:
                 case L:
@@ -118,7 +118,7 @@ namespace sente {
 
         }
 
-        std::unordered_map<std::string, SGFProperty> strToCommand {
+        std::unordered_map<std::string, SGFProperty> strToProperty {
                 {""     , NONE},
                 {stringify(B),   B},
                 {stringify(KO), KO},
@@ -206,7 +206,7 @@ namespace sente {
                 {stringify(WS), WS},
         };
 
-        std::unordered_map<SGFProperty, std::string> commandToStr {
+        std::unordered_map<SGFProperty, std::string> propertyToStr {
                 {B,  stringify(B) },
                 {KO, stringify(KO)},
                 {MN, stringify(MN)},
@@ -294,20 +294,20 @@ namespace sente {
         };
 
         SGFProperty fromStr(const std::string& SGFProperty){
-            if (strToCommand.find(SGFProperty) != strToCommand.end()){
-                return strToCommand[SGFProperty];
+            if (strToProperty.find(SGFProperty) != strToProperty.end()){
+                return strToProperty[SGFProperty];
             }
             else {
                 throw InvalidSGFException("Invalid SGF command: \"" + SGFProperty + "\"");
             }
         }
 
-        std::string toStr(SGFProperty command){
-            return commandToStr[command];
+        std::string toStr(SGFProperty property){
+            return propertyToStr[property];
         }
 
-        bool isCommand(std::string command){
-            return strToCommand.find(command) != strToCommand.end();
+        bool isProperty(std::string property){
+            return strToProperty.find(property) != strToProperty.end();
         }
 
         bool isFileWide(SGFProperty command){

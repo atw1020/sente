@@ -262,8 +262,6 @@ A partial list of properties is given below.
       - Node
       - Add a White stone at the specified point.
 
-
-
 Sente divides properties into two categories: Root properties and Node properties
 
 - **Root Properties:** information associated with the game as a whole.
@@ -274,6 +272,8 @@ Sente divides properties into two categories: Root properties and Node propertie
     - C (puts a comment on the node)
     - CR (marks a point on the board with a circle)
     - AB (adds a white stone to the board, regardless of whose turn it currently is)
+
+To obtain metadata properties from a ``sente.Game`` Object, simply call the ``get_properties``
 
 ``loads`` and ``dumps``
 -----------------------

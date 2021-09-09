@@ -110,12 +110,12 @@ namespace sente {
             WS, // white species todo: support
         };
 
-        SGFProperty fromStr(const std::string& sgfCommand);
-        std::string toStr(SGFProperty command);
+        SGFProperty fromStr(const std::string& sgfProperty);
+        std::string toStr(SGFProperty property);
 
-        bool isCommand(std::string command);
-        bool isFileWide(SGFProperty command);
-        bool isSGFLegal(SGFProperty command, unsigned version);
+        bool isProperty(std::string property);
+        bool isFileWide(SGFProperty property);
+        bool isSGFLegal(SGFProperty property, unsigned version);
 
     }
 }
@@ -124,7 +124,7 @@ namespace std {
 
     template<>
     struct hash<sente::utils::SGFProperty> {
-        size_t operator()(const sente::utils::SGFProperty& sgfCommand) const noexcept;
+        size_t operator()(const sente::utils::SGFProperty& sgfProperty) const noexcept;
     };
 }
 
