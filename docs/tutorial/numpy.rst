@@ -28,6 +28,22 @@ The ``sente.game`` object provides the ``numpy()`` method to create a numpy repr
       [0 0 1 0]
       [0 0 1 0]]]
 
+.. doctest:: python
+    :hide:
+
+    >>> import sente
+    >>> game = sente.Game()
+    >>> numpy_array = game.numpy()
+    >>> print(numpy_array)
+    [[[0 0 1 0]
+      [0 0 1 0]
+      [0 0 1 0]
+      ...
+      [0 0 1 0]
+      [0 0 1 0]
+      [0 0 1 0]]]
+
+
 Sente converts a game to a numpy array by creating several 19x19 (or 9x9 or 13x13 respectively) numpy array that contains some feature associated with each point on the board.
 These features are 1-hot encoded facts about the board such as the presence of a black or white stone or whether or not the point in question is a Ko point.
 
@@ -35,6 +51,15 @@ By default, the ``numpy()`` method uses 4 such features, namely the presence of 
 However, if a different set of features is desired, it is possible to pass the ``numpy()`` method a list of strings specifying the desired features as such.
 
 .. code-block:: python
+
+    >>> import sente
+    >>> game = sente.Game()
+    >>> array = game.numpy(["black_stones", "white_stones"])
+    >>> array.shape
+    (19, 19, 2)
+
+.. doctest:: python
+    :hide:
 
     >>> import sente
     >>> game = sente.Game()

@@ -147,6 +147,82 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         with self.assertRaises(IndexError):
             game.get_point(30, 30)
 
+    def test__str__(self):
+        """
+
+        tests to see if __str__ can be called on the object
+
+        :return: None
+        """
+
+        game = sente.Game()
+
+        self.assertEqual(str(game.get_board()), str(game))
+
+
+class TestMetadata(TestCase):
+
+    def test_add_metadata(self):
+        """
+
+        tests to see if metadata can be added to a game
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.set_property("C", "This is a comment")
+
+        self.assertEqual(game.comment, "This is a comment")
+
+    def test_non_root_metadata(self):
+        """
+
+        tests to see if non root metadata is only available at the node it is put at
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "TILL THEN I WALK ALONG"
+
+        game.play(4, 4)
+        self.assertEqual(game.comment, "")
+        game.step_up()
+        self.assertEqual(game.comment, "TILL THEN I WALK ALONG")
+
+    def test_add_not_at_root(self):
+        """
+
+        tests to see if root attributes can be added at places other than the root
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.set_property("AP", "Sente")
+
+        self.assertEqual(game.get_properties()["AP"], "Sente")
+        game.step_up()
+        self.assertEqual(game.get_properties()["AP"], "Sente")
+
+    def test_closing_bracket_backslash_invisible(self):
+        """
+
+        makes sure that if SGF puts a backslash into a SGF field
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_property("C", "[]")
+
+        self.assertEqual(game.comment, "[]")
+
 
 class TestTreeNavigation(TestCase):
 
@@ -473,7 +549,6 @@ class TestTreeNavigation(TestCase):
         game = sente.Game()
 
         game.resign()
-        game.step_up()
 
         self.assertTrue(game.is_legal(3, 3))
 
@@ -492,6 +567,91 @@ class TestTreeNavigation(TestCase):
 
         game.advance_to_root()
         self.assertTrue(game.is_legal(3, 3))
+
+    def test_comment_write(self):
+        """
+
+        tests to see if comments can be added and stored
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "This is the Root"
+
+        self.assertEqual(game.comment, "This is the Root")
+
+    def test_comment_long_term(self):
+        """
+
+        tests to see if comments persist after moves are undone and other comments are set
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "This is the Root"
+
+        game.play(4, 4)
+        game.comment = "this is the first branch"
+        game.step_up()
+        game.play(16, 4)
+        game.comment = "this is the second branch"
+
+        game.advance_to_root()
+        self.assertEqual(game.comment, "This is the Root")
+
+        game.play(4, 4)
+        self.assertEqual(game.comment, "this is the first branch")
+        game.step_up()
+
+        game.play(16, 4)
+        self.assertEqual(game.comment, "this is the second branch")
+
+    def test_comment_override(self):
+        """
+
+        tests to see if comments can be overridden
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "this is the original string"
+        game.comment = "this is the new string"
+
+        self.assertEqual("this is the new string", game.comment)
+
+    def test_comment_brackets(self):
+        """
+
+        tests to see if comments can have brackets in them
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "here are some brackets [[]] ]["
+
+        self.assertEqual("here are some brackets [[]] ][", game.comment)
+
+    def test_backslashes_not_ignored(self):
+        """
+
+        tests to see if backslashes in comments are legal
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.comment = "here is a backslash \\"
+
+        self.assertEqual("here is a backslash \\", game.comment)
 
 
 class TestNumpy(DoesNotRaiseTestCase):

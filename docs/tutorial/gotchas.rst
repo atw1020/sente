@@ -4,6 +4,52 @@ Gotchas
 This page contains some easy-to-make mistakes that come up when writing code using sente.
 These Issues may lead to sleeper
 
+Sente says my SGF file is "Invalid" but I can open it without errors in CGoban/Sabaki
+-------------------------------------------------------------------------------------
+
+.. code-block:: python
+
+    >>> from sente import sgf
+    >>> game = sgf.load("some SGF file.sgf")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    sente.exceptions.InvalidSGFException: The Property "AP" is not supported on this version of SGF (FF[3])
+    >>> game = sgf.load("some other SGF file.sgf")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    sente.exceptions.InvalidSGFException: Unknown SGF Property: "JD"
+
+Sente is a Stricter enforcer of the SGF standard than most go programs which means there may be some SGF files which it refuses to open dispute other programs being able to.
+Future versions of Sente will include functionality that allows sente to open such files regardless.
+
+At Present, the best thing to do is to find the problematic SGF property (the one listed in the error) and remove it from the file.
+
+SGF files are a kind of `plain text file<https://en.wikipedia.org/wiki/Plain_text>`_ and so can be viewed using text editing programs like TextEdit (OSx) or Notepad (Windows).
+For example, ``some SGF file.sgf`` Contains the following text:
+
+.. code-block::
+    :emphasize-lines: 11
+
+    FF[3]
+    EV[3rd Siptan tournament 1st round]
+    PB[Lee Changho]
+    BR[Wangwi]
+    PW[Kang Dongyun]
+    WR[7d]
+    KM[6.5]
+    RE[B+R]
+    DT[2007-09-20]
+    SZ[19]
+    AP[Free Climber 0 . 8 . 11 . 61] # delete this line
+
+The Error says that the "AP" property is illegal, so if we delete it, Sente will be able to parse the file.
+
+.. code-block::
+
+    >>> from sente import sgf
+    >>> game = sgf.load("some SGF file.sgf")
+    >>>
+
 Boards vs Games
 ---------------
 
@@ -36,11 +82,3 @@ However ``sente.Move`` objects use `Internal` Indexing and thus, if you wish to 
 
 
 Because of this, Instantiating the ``sente.Move`` object directly is inadvisable and using ``sente.play(x, y)`` is prefered.
-
-Slicing Sequences of Moves
---------------------------
-
-As mentioned in game tree navigation, sequences of moves obtained using the ``game.get_sequence()`` method are python lists of ``sente.Move`` objects which means that python list slicing may be used on them.
-However, when you make a slice, you must be very careful about the indices you slice at to ensure that it starts with a move belonging to the correct player.
-
-For example,

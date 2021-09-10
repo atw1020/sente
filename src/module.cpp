@@ -8,10 +8,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
 
-#include "include/SGF.h"
-#include "include/GoGame.h"
-#include "include/Numpy.h"
-#include "include/SenteExceptions.h"
+#include "Include/Utils/SGF.h"
+#include "Include/Game/GoGame.h"
+#include "Include/Utils/Numpy.h"
+#include "Include/Utils/SenteExceptions.h"
 
 namespace py = pybind11;
 
@@ -511,12 +511,64 @@ PYBIND11_MODULE(sente, module){
         .def("numpy", [](const sente::GoGame& game){
             return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
         })
+        .def("get_properties", [](const sente::GoGame& game) -> py::dict{
+                py::dict response;
+                std::unordered_map<std::string, std::vector<std::string>> metadata = game.getProperties();
+
+                for (const auto& item : metadata){
+                    if (item.second.size() == 1){
+                        response[py::str(item.first)] = item.second[0];
+                    }
+                    else {
+                        response[py::str(item.first)] = item.second;
+                    }
+                }
+
+                return response;
+
+            },
+            R"pbdoc(
+                Get all of the properties from the SGF file.
+
+                :return: a python dictionary that maps from metadata parameters (ie. SZ[], FF[]) to their values
+            )pbdoc")
+        .def("set_property", [](sente::GoGame& game, const std::string& command, double value){
+                game.setProperty(command, std::to_string(value));
+            }, R"pbdoc(
+                Adds the specified property to the game
+
+                :param command: SGF command to set the value of
+                :param value: value to set the metadata to
+                :return: None
+            )pbdoc")
+        .def("set_property", [](sente::GoGame& game, const std::string& command, const std::string& value){
+                game.setProperty(command, value);
+            }, R"pbdoc(
+                Adds the specified property to the game
+
+                :param command: SGF command to set the value of
+                :param value: value to set the metadata to
+                :return: None
+            )pbdoc")
+        .def("set_property", [](sente::GoGame& game, const std::string& command, const std::vector<std::string>& values){
+                game.setProperty(command, values);
+            }, R"pbdoc(
+                Adds the specified property to the game
+
+                :param command: SGF command to set the value of
+                :param value: value to set the metadata to
+                :return: None
+            )pbdoc")
+        .def_property("comment", &sente::GoGame::getComment, &sente::GoGame::setComment,
+            R"pbdoc(
+                The comment associated with the given node
+            )pbdoc")
         .def("__str__", [](const sente::GoGame& game){
             return std::string(game);
         });
 
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
-        .def("load", [](const std::string& fileName){
+        .def("load", [](const std::string& fileName) -> sente::GoGame {
 
                 std::string SGFText;
 
@@ -529,48 +581,28 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    return sente::utils::loadSGF(SGFText);
+                    auto tree = sente::utils::loadSGF(SGFText);
+                    return sente::GoGame(tree);
                 }
             },
             py::arg("filename"),
             "Loads a go game from an SGF file")
-        .def("dump", [](const sente::GoGame& game, const std::string& fileName, std::unordered_map<std::string, std::string> params){
+        .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
-                output << sente::utils::dumpSGF(game, params);
+                output << sente::utils::dumpSGF(game);
             },
              py::arg("game"),
              py::arg("file_name"),
-             py::arg("metadata") = py::dict(),
              "saves a game as an SGF")
-        .def("loads", [](const std::string& SGFText){
-                return sente::utils::loadSGF(SGFText);
+        .def("loads", [](const std::string& SGFText) -> sente::GoGame {
+                auto tree = sente::utils::loadSGF(SGFText);
+                return sente::GoGame(tree);
             })
-        .def("dumps", [](const sente::GoGame& game, std::unordered_map<std::string, std::string> params){
-                return sente::utils::dumpSGF(game, params);
+        .def("dumps", [](const sente::GoGame& game){
+                return sente::utils::dumpSGF(game);
             },
             py::arg("game"),
-            py::arg("metadata") = py::dict(),
-            "Serialize a string as an SGF")
-        .def("get_metadata", [](const std::string& fileName){
-
-                 std::string SGFText;
-
-                 // load the text from the file
-                 std::ifstream filePointer(fileName);
-
-                 if (not filePointer.good()){
-                     throw sente::utils::FileNotFoundException(fileName);
-                 }
-                 else {
-                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
-                                           std::istreambuf_iterator<char>());
-
-                     return sente::utils::getMetadata(SGFText);
-                 }
-
-            },
-            py::arg("filename"),
-            "extracts metadata from a SGF file and puts it into a python dictionary");
+            "Serialize a string as an SGF");
 
     auto exceptions = module.def_submodule("exceptions", "various exceptions used by sente");
 

@@ -1,11 +1,15 @@
 Game Tree Navigation
 ====================
 
+The ``sente.game`` object records all of the moves played in a tree structure.
+Sente provides utilities for navigating around this tree with the ``game.play()``, ``game.step_up()`` and ``game.get_branches()`` methods.
+
 Playing Stones
 --------------
 
-The ``sente.game`` object records all of the moves played in a tree structure.
-Sente provides utilities for navigating around this tree with the ``game.play()``, ``game.step_up()`` and ``game.get_branches()`` methods.
+.. testsetup::
+
+    import sente
 
 The ``game.play()`` method plays at a given point on the board.
 
@@ -18,7 +22,24 @@ The ``game.play()`` method plays at a given point on the board.
      1  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .
      3  .  .  *  .  .  .  *  .  .
-     4  .  .  .  ⚫ .  .  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .
+     5  .  .  .  .  *  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .
+     7  .  .  *  .  .  .  *  .  .
+     8  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game(9) # creates a 9x9 board
+    >>> game.play(4, 4) # plays a stone on the 4-4 point
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .
+     3  .  .  *  .  .  .  *  .  .
+     4  .  .  .  ⚫ .  .  .  .  .
      5  .  .  .  .  *  .  .  .  .
      6  .  .  .  .  .  .  .  .  .
      7  .  .  *  .  .  .  *  .  .
@@ -34,8 +55,25 @@ The ``game.step_up()`` method on the other hand, undoes the previous move played
 
 .. code-block:: python
 
-    >>> import sente
-    >>> game = sente.Game()
+    >>> game = sente.Game(9)
+    >>> game.play(4, 4)
+    >>> game.step_up() # undo the previous move
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .
+     3  .  .  *  .  .  .  *  .  .
+     4  .  .  .  .  .  .  .  .  .
+     5  .  .  .  .  *  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .
+     7  .  .  *  .  .  .  *  .  .
+     8  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.step_up() # undo the previous move
     >>> print(game)
@@ -54,8 +92,7 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
 
 .. code-block:: python
 
-    >>> import sente
-    >>> game = sente.Game()
+    >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
     >>> game.play(7, 4)
@@ -64,7 +101,27 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
      1  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .
      3  .  .  *  .  .  .  *  .  .
-     4  .  .  .  ⚫ .  .  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .
+     5  .  .  .  .  *  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .
+     7  .  .  *  .  .  .  *  .  .
+     8  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game(9)
+    >>> game.play(4, 4)
+    >>> game.play(7, 7)
+    >>> game.play(7, 4)
+    >>> game.step_up(2) # undo two moves
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .
+     3  .  .  *  .  .  .  *  .  .
+     4  .  .  .  ⚫ .  .  .  .  .
      5  .  .  .  .  *  .  .  .  .
      6  .  .  .  .  .  .  .  .  .
      7  .  .  *  .  .  .  *  .  .
@@ -76,8 +133,27 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
 
 .. code-block:: python
 
-    >>> import sente
-    >>> game = sente.Game()
+    >>> game = sente.Game(9)
+    >>> game.play(4, 4)
+    >>> game.play(7, 7)
+    >>> game.play(7, 4)
+    >>> game.advance_to_root()
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .
+     3  .  .  *  .  .  .  *  .  .
+     4  .  .  .  .  .  .  .  .  .
+     5  .  .  .  .  *  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .
+     7  .  .  *  .  .  .  *  .  .
+     8  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
     >>> game.play(7, 4)
@@ -98,7 +174,16 @@ Once moves have been undone, the move(s) played at a given node of the tree can 
 
 .. code-block:: python
 
-    >>> import sente
+    >>> game = sente.Game(9)
+    >>> game.play(4, 4)
+    >>> game.play(7, 7)
+    >>> game.step_up()
+    >>> print(game.get_branches())
+    [<sente.Move W[gg]>]
+
+.. doctest::
+    :hide:
+
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -111,7 +196,6 @@ The ``get_branches()`` method returns a python list containing all of the moves 
 
 .. code-block:: python
 
-    >>> import sente
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
@@ -122,15 +206,76 @@ The ``get_branches()`` method returns a python list containing all of the moves 
      1  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .
      3  .  .  *  .  .  .  *  .  .
-     4  .  .  .  ⚫ .  .  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .
      5  .  .  .  .  *  .  .  .  .
      6  .  .  .  .  .  .  .  .  .
-     7  .  .  *  .  .  .  ⚪ .  .
+     7  .  .  *  .  .  .  ⚪ .  .
+     8  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game(9)
+    >>> game.play(4, 4)
+    >>> game.play(7, 7)
+    >>> game.step_up()
+    >>> branches = game.get_branches()
+    >>> game.play(branches[0])
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .
+     3  .  .  *  .  .  .  *  .  .
+     4  .  .  .  ⚫ .  .  .  .  .
+     5  .  .  .  .  *  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .
+     7  .  .  *  .  .  .  ⚪ .  .
      8  .  .  .  .  .  .  .  .  .
      9  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J
 
 If multiple branches exist from the current node, then ``get_branches()`` will return a list containing all of them.
+
+Move Comments
+-------------
+
+Each node of the Game tree is allowed to have a "comment" associated with it.
+These comments typically include commentary on the game and can also include messages sent by the players during the game.
+The comment associated with the current node can be accessed through the ``comment`` attribute.
+
+.. code-block:: python
+
+    >>> game = sente.Game()
+    >>> game.comment = "the start of the game"
+    >>> print(game.comment)
+    the start of the game
+    >>> game.play(4, 4)
+    >>> print(game.comment) # the comment from the start of the game is still stored,
+
+    >>> game.comment = "the first move of the game"
+    >>> print(game.comment)
+    the first move of the game
+    >>> game.step_up()
+    >>> print(game.comment)
+    the start of the game
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game()
+    >>> game.comment = "the start of the game"
+    >>> print(game.comment)
+    the start of the game
+    >>> game.play(4, 4)
+    >>> print(game.comment == "") # the comment from the start of the game is still stored,
+    True
+    >>> game.comment = "the first move of the game"
+    >>> print(game.comment)
+    the first move of the game
+    >>> game.step_up()
+    >>> print(game.comment)
+    the start of the game
 
 Move Sequences
 --------------
@@ -154,7 +299,7 @@ If the moves in a sequence are undone, the board position can be restored by usi
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
      5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -165,7 +310,7 @@ If the moves in a sequence are undone, the board position can be restored by usi
     12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
+    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
     16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
     17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -178,7 +323,7 @@ If the moves in a sequence are undone, the board position can be restored by usi
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
      5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -189,7 +334,7 @@ If the moves in a sequence are undone, the board position can be restored by usi
     12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
+    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
     16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
     17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .

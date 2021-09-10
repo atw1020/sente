@@ -20,7 +20,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.get_metadata("sgf/0.5 Komi.sgf")
+        game = sgf.load("sgf/0.5 Komi.sgf")
 
         correct = {
             "FF": "4",
@@ -34,6 +34,8 @@ class LoadMetadata(TestCase):
             "BR": "32k",
             "WR": "6k",
             "TM": "259200",
+            'C':  "noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo "
+                  "will be accepted. You can send undo message if you need.\n",
             "OT": "86400 fischer",
             "RE": "W+368.5",
             "SZ": "19",
@@ -41,7 +43,7 @@ class LoadMetadata(TestCase):
             "RU": "Chinese"
         }
 
-        self.assertEqual(correct, metadata)
+        self.assertEqual(correct, game.get_properties())
 
     def test_remove_labels(self):
         """
@@ -51,7 +53,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        metadata = sgf.get_metadata("sgf/3-4.sgf")
+        game = sgf.load("sgf/3-4.sgf")
 
         correct = {
             "FF": "4",
@@ -66,56 +68,50 @@ class LoadMetadata(TestCase):
             "PB": "Black",
         }
 
-        self .assertEqual(correct, metadata)
+        self .assertEqual(correct, game.get_properties())
 
-    def test_wrong_file_format(self):
+    def test_metadata_list(self):
         """
 
-
+        tests to make sure that metadata may be in list format
 
         :return:
         """
 
-        metadata = sgf.get_metadata("invalid sgf/backgammon.sgf")
+        game = sgf.load("sgf/metadata list.sgf")
+        metadata = game.get_properties()
 
-        correct = {
-            "FF": "4",
-            "CA": "UTF-8",
-            "GM": "3",
-            "DT": "2021-06-27",
-            "PC": "OGS: https://online-go.com/game/34839594",
-            "GN": "Friendly Match",
-            "PB": "noob_bot_3",
-            "PW": "IDW64",
-            "BR": "32k",
-            "WR": "6k",
-            "TM": "259200",
-            "OT": "86400 fischer",
-            "RE": "W+368.5",
-            "SZ": "19",
-            "KM": "0.5",
-            "RU": "Chinese"
-        }
-
-        self.assertEqual(correct, metadata)
+        self.assertEqual(["dd", "qd", "dq", "pp"], metadata["TR"])
 
     def test_added_stones_are_not_metadata(self):
         """
 
-        tests to see if the get_metadata() function ignores "AW" and "AB" parameters
+        tests to see if the get_properties() function ignores "AW" and "AB" parameters
 
         :return:
         """
 
-        metadata = sgf.get_metadata("sgf/multiple stones at once.sgf")
+        game = sgf.load("sgf/multiple stones at once.sgf")
 
-        self.assertNotIn("AB", metadata)
-        self.assertNotIn("AW", metadata)
+        self.assertNotIn("AB", game.get_properties())
+        self.assertNotIn("AW", game.get_properties())
+
+    def test_load_backslashes(self):
+        """
+
+        tests to see if backslashes are properly loaded into comments
+
+        :return:
+        """
+
+        game = sgf.load("sgf/backslash at end of comment.sgf")
+
+        self.assertEqual("backslashes! \\", game.comment)
 
 
 class StoreMetadata(TestCase):
 
-    def test_attribute(self):
+    def test_set_property_inline(self):
         """
 
         tests to see if attributes can be successfully added to the SGF
@@ -125,12 +121,10 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "BR": "8k",
-            "WR": "7k"
-        }
+        game.set_property("BR", "8k")
+        game.set_property("WR", "7k")
 
-        serialized = sgf.dumps(game, params)
+        serialized = sgf.dumps(game)
 
         self.assertEqual("(;FF[4]", serialized[:7])
         self.assertIn("SZ[19]", serialized)
@@ -148,12 +142,8 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "this is invalid": "video killed the radio star"
-        }
-
-        with self.assertRaises(ValueError):
-            sgf.dumps(game, params)
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            game.set_property("this is invalid", "video killed the radio star")
 
     def test_override_params(self):
         """
@@ -164,12 +154,9 @@ class StoreMetadata(TestCase):
         """
 
         game = sente.Game()
+        game.set_property("RU", "Japanese")
 
-        params = {
-            "RU": "Japanese"
-        }
-
-        serialized = sgf.dumps(game, params)
+        serialized = sgf.dumps(game)
 
         self.assertIn("RU[Japanese]", serialized)
 
@@ -183,12 +170,8 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "SZ": "19"
-        }
-
         with self.assertRaises(ValueError):
-            sgf.dumps(game, params)
+            game.set_property("SZ", "13")
 
     def test_default_params_ignored(self):
         """
@@ -200,17 +183,26 @@ class StoreMetadata(TestCase):
 
         game = sente.Game()
 
-        params = {
-            "FF": "3",
-            "GM": "2",
-            "CA": "UTF-16"
-        }
+        game.set_property("FF", 3)
 
-        serialized = sgf.dumps(game, params)[22:]
+        serialized = sgf.dumps(game)[22:]
 
         self.assertNotIn("FF[3]", serialized)
         self.assertNotIn("GM[2]", serialized)
         self.assertNotIn("CA[UTF-8]", serialized)
+
+    def test_adding_unsupported_FF(self):
+        """
+
+        tests to see if adding an unsupported command for a particular version
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            game.set_property("EX", "bb")
 
 
 

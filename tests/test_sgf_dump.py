@@ -25,11 +25,25 @@ class TestBasics(DoesNotRaiseTestCase):
 
         serialized = sgf.dumps(game)
 
-        self.assertEqual("(;FF[4]", serialized[:7])
+        self.assertIn("B[dd]", serialized)
+
+    def test_default_parameters(self):
+        """
+
+        tests to see if the game adds the default parameters
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+
+        serialized = sgf.dumps(game)
+
+        self.assertIn("FF[4]", serialized)
         self.assertIn("SZ[19]", serialized)
         self.assertIn("RU[Chinese]", serialized)
-
-        self.assertEqual(";B[dd])", serialized[-7:])
 
     def test_multiple_moves(self):
         """
@@ -74,11 +88,7 @@ class TestBasics(DoesNotRaiseTestCase):
 
         serialized = sgf.dumps(game)
 
-        self.assertEqual("(;FF[4]", serialized[:7])
-        self.assertIn("SZ[19]", serialized)
-        self.assertIn("RU[Chinese]", serialized)
-
-        self.assertEqual(";B[dd]\n(;W[dp])\n(;W[pd]))", serialized[-25:])
+        self.assertEqual("(;FF[4]SZ[19]RU[Chinese]\n;B[dd]\n(;W[dp])\n(;W[pd]))", serialized)
 
     def test_resigned_game(self):
         """
@@ -132,7 +142,72 @@ class TestBasics(DoesNotRaiseTestCase):
 
         :return:
         """
+        game = sgf.load("sgf/3-4.sgf")
 
         with self.assertDoesNotRaise(ValueError):
-            game = sgf.load("sgf/3-4.sgf")
+            sgf.dumps(game)
 
+    def test_FF1_not_produced(self):
+        """
+
+        tests to see if a game in File format 1 does not add the parameter "FF[1]"
+
+        :return:
+        """
+
+        game = sgf.load("sgf/Lee Sedol ladder game.sgf")
+
+        self.assertNotIn("FF", sgf.dumps(game))
+
+    def test_backslashes_in_comments(self):
+        """
+
+        tests to see if backslashes automatically added to comments with brackets in them
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.comment = "brackets! []"
+
+        self.assertIn("C[brackets! [\\]]", sgf.dumps(game))
+
+    def test_set_property_brackets(self):
+        """
+
+        tests to make sure that close
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_property("C", "brackets! []")
+
+        self.assertIn("C[brackets! [\\]", sgf.dumps(game))
+
+    def test_access_bracket_backslash_non_destructive(self):
+        """
+
+        makes sure that if SGF puts a backslash into a SGF field
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_property("C", "[]")
+
+        self.assertEqual(game.comment, "[]")
+
+        self.assertIn("[\\]", sgf.dumps(game))
+
+    def test_load_dumps_backslashes(self):
+        """
+
+        tests to see if we can load and then dump backslashes
+
+        :return:
+        """
+
+        game = sgf.load("sgf/backslash at end of comment.sgf")
+
+        self.assertIn("C[backslashes! \\\\]", sgf.dumps(game))
