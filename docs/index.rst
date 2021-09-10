@@ -15,6 +15,7 @@ Docs
    tutorial/basics
    tutorial/game tree navigation
    tutorial/sgf
+   tutorial/SGF Metadata
    tutorial/numpy
    tutorial/gotchas
 

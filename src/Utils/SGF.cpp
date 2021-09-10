@@ -46,7 +46,7 @@ namespace sente {
             SGFNode node;
             std::string temp;
 
-            SGFProperty lastCommand;
+            SGFProperty lastProperty;
 
             auto cursor = SGFText.begin();
             auto previousSlice = cursor;
@@ -65,10 +65,10 @@ namespace sente {
                             // only make a new property if a new property exists
                             if (not temp.empty()){
                                 if (isProperty(temp)){
-                                    lastCommand = fromStr(strip(temp));
+                                    lastProperty = fromStr(strip(temp));
                                 }
                                 else {
-                                    throw InvalidSGFException("Unknown SGF Directive: \"" + temp + "\"");
+                                    throw InvalidSGFException("Unknown SGF Property: \"" + temp + "\"");
                                 }
                             }
 
@@ -85,13 +85,13 @@ namespace sente {
                         temp = strip(std::string(previousSlice, cursor));
 
                         // add the property
-                        if (lastCommand == NONE){
+                        if (lastProperty == NONE){
                             throw InvalidSGFException("No Command listed: " +
                             std::string(SGFText.begin(), cursor));
                         }
                         else {
                             // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand) + "\"");
-                            node.appendProperty(lastCommand, temp);
+                            node.appendProperty(lastProperty, temp);
                         }
 
                         inBrackets = false;
@@ -188,7 +188,7 @@ namespace sente {
                                 }
                                 // validate the result with the file format version
                                 if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                    throw InvalidSGFException("The Command \"" +
+                                    throw InvalidSGFException("The Property \"" +
                                           toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
@@ -226,7 +226,7 @@ namespace sente {
                                 }
                                 // validate the result with the file format version
                                 if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                    throw InvalidSGFException("The Command \"" +
+                                    throw InvalidSGFException("The Property \"" +
                                           toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
@@ -271,7 +271,7 @@ namespace sente {
                                 }
                                 // validate the result with the file format version
                                 if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                    throw InvalidSGFException("The Command \"" +
+                                    throw InvalidSGFException("The Property \"" +
                                           toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
