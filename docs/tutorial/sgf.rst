@@ -203,11 +203,21 @@ Saving Games
 ------------
 
 Once a game has been played out, the ``sgf.dump()`` function can be used to save a SGF of the file.
+If it is desired to add SGF metadata to the file such as the player's names and ranks, it must be done before dumping the game.
+See `Setting metadata`_ for more details
 
 .. code-block:: python
 
     >>> game.play_sequence(long_sequence)
     >>> sgf.dump(game, "my game.sgf")
+
+
+``loads`` and ``dumps``
+-----------------------
+
+SGF files are a kind of `raw text file <https://en.wikipedia.org/wiki/Plain_text>`_ similarly to ``.py``, ``.csv`` and ``.json`` files.
+Because of this, Sente's internal file reader is capable of decoding plain text and the sgf module provides this utility in the from of the ``sgf.loads`` and ``sgf.dumps`` functions.
+This is similar to how python's built-in `json library <https://docs.python.org/3/library/json.html>`_ works.
 
 Metadata
 --------
@@ -215,8 +225,8 @@ Metadata
 In addition to containing a record of the sequence of moves in a game, SGF files contain metadata associated with the games.
 This metadata might include things like the name of the black player, the Komi the match was played with or a point on the board marked with a circle.
 Each such piece of metadata is called a "property" in the SGF file format.
-Each property has a two-capitol-letter code associated with it that uniquely identifies that property.
-For example, the "KM" property records the Komi of the game.
+Each property has a two-capitol-letter code associated with it that uniquely identifies that property called the "property code".
+For example, the "KM" property code refers to the place where the komi of the game is recorded.
 
 A full list of all legal properties and descriptions of them may be found at `this red-bean archive <https://www.red-bean.com/sgf/properties.html>`_.
 A partial list of properties is given below.
@@ -275,10 +285,76 @@ Sente divides properties into two categories: Root properties and Node propertie
 
 To obtain metadata properties from a ``sente.Game`` Object, simply call the ``get_properties``
 
-``loads`` and ``dumps``
------------------------
+Reading metadata
+----------------
 
-SGF files are a kind of `raw text file <https://en.wikipedia.org/wiki/Plain_text>`_ similarly to ``.py``, ``.csv`` and ``.json`` files.
-Because of this, Sente's internal file reader is capable of decoding plain text and the sgf module provides this utility in the from of the ``sgf.loads`` and ``sgf.dumps`` functions.
-This is similar to how python's built-in `json library <https://docs.python.org/3/library/json.html>`_ works.
+The ``Game.get_properties()`` method can be used to obtain metadata from a SGF file.
+
+For example, say we have a sgf file containing a game record of the Honinbo Shusaku's famous "Ear-Reddening Game".
+
+.. code-block:: python
+
+    >>> game = sgf.load("ear reddening game.sgf")
+    >>> game.get_properties()
+    {'PB': 'Yasuda Shusaku',        # PB: Name of the black player
+     'BR': '4d',                    # BR: Rank of the black player
+     'PW': 'Inoue Gennan Inseki',   # PW: Name of the white player
+     'RE': 'B+2',                   # RE: Result of the game (Black wins by 2 points)
+     'WR': '8d',                    # WR: Rank of the white player
+     'DT': '1846-09-11,14,15'}      # DT: Date(s) the game was played
+
+As seen above, the resulting dictionary will map from the property code to the value associated with the property.
+This value is typically a string, but in some cases may be a list of strings if the property is associated with multiple values.
+
+The ``get_properties()`` method will return all of the root properties of the game as well as properties associated with the current active node in the SGF tree.
+Thus, while the root properties will be the same no matter what move of the game you are on, the node properties will change as you step through a game.
+
+Setting metadata
+----------------
+
+Sente can set the metadata properties of a ``Game`` object using the ``set_property()`` method.
+
+.. code-block::
+
+    >>> game = sente.Game()
+    >>> game.set_property("PB", "Arthur Wesley")
+    >>> game.set_property("PW", "Lucas Wesley")
+    >>> game.get_properties()
+    {'FF': '4',
+     'SZ': '19',
+     'PB': 'Arthur Wesley',
+     'RU': 'Chinese',
+     'PW': 'Lucas Wesley'}
+
+.. doctest::
+    :hide:
+
+    >>> import sente
+    >>> game = sente.Game()
+    >>> game.set_property("PB", "Arthur Wesley")
+    >>> game.set_property("PW", "Lucas Wesley")
+    >>> game.get_properties()
+    {'FF': '4', 'SZ': '19', 'PB': 'Arthur Wesley', 'RU': 'Chinese', 'PW': 'Lucas Wesley'}
+
+As mentioned above, Sente strictly enforces conformity to the official SGF file format and custom SGF properties are not permitted as metadata.
+Thus, trying to set a property not defined by the standard will result in an error.
+
+.. code-block::
+
+    >>> game = sente.Game()
+    >>> game.set_property("JD", "Kaei 5-11-17")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    sente.exceptions.InvalidSGFException: unknown SGF Property "JD"
+
+.. doctest::
+    :hide:
+
+    >>> game = sente.Game()
+    >>> game.set_property("JD", "Kaei 5-11-17")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    sente.exceptions.InvalidSGFException: unknown SGF Property "JD"
+
+.. note:: Although SGF files from the internet frequently contain the "JD" property (Japanese Date) it is not officially documented.
 
