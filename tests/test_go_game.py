@@ -427,10 +427,32 @@ class TestTreeNavigation(TestCase):
             game.play_sequence(moves)
         self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
 
-    def test_get_default_sequence(self):
+    def test_get_default_sequence_root(self):
         """
 
         tests to see if the game correctly obtains the default sequence of moves
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.play(16, 4)
+        game.play(4, 16)
+
+        game.advance_to_root()
+
+        default_branch = game.get_default_sequence()
+
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE), sente.Move(3, 15, sente.stone.BLACK)]
+
+        self.assertEqual(moves, default_branch)
+
+    def test_get_default_sequence_child(self):
+        """
+
+        makes sure that the "default sequence" refers to the sequence of moves *continuing* from the current node
 
         :return:
         """
@@ -445,13 +467,31 @@ class TestTreeNavigation(TestCase):
 
         default_branch = game.get_default_sequence()
 
-        self.assertEqual(game.get_point(4, 16), sente.stone.EMPTY)
-        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
-        self.assertEqual(game.get_point(16, 4), sente.stone.WHITE)
-
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE), sente.Move(3, 15, sente.stone.BLACK)]
+        moves = [sente.Move(3, 15, sente.stone.BLACK)]
 
         self.assertEqual(moves, default_branch)
+
+    def test_get_all_sequences(self):
+        """
+
+        tests the get_all_sequences() method
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.play(4, 16)
+
+        game.advance_to_root()
+
+        game.play(16, 4)
+        game.play(16, 16)
+
+        game.advance_to_root()
+
+        print(game.get_sequences())
 
     def test_is_at_root(self):
         """
