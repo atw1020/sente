@@ -113,7 +113,7 @@ namespace sente {
         SGFProperty fromStr(const std::string& sgfProperty);
         std::string toStr(SGFProperty property);
 
-        bool isProperty(std::string property);
+        bool isProperty(const std::string& property);
         bool isFileWide(SGFProperty property);
         bool isSGFLegal(SGFProperty property, unsigned version);
         std::vector<unsigned> getPossibleSGFVersions(const std::unordered_set<SGFProperty>& properties);

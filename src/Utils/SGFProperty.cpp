@@ -334,7 +334,7 @@ namespace sente {
             return propertyToStr[property];
         }
 
-        bool isProperty(std::string property){
+        bool isProperty(const std::string& property){
             return strToProperty.find(property) != strToProperty.end();
         }
 

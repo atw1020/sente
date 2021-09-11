@@ -143,10 +143,12 @@ namespace sente {
         SGFNode nodeFromText(const std::string& SGFText, bool disableWarnings,
                                                          bool ignoreIllegalProperties){
 
+            // py::print("entering nodeFromText with text", SGFText);
+
             SGFNode node;
             std::string temp;
 
-            SGFProperty lastProperty;
+            SGFProperty lastProperty = NONE;
 
             auto cursor = SGFText.begin();
             auto previousSlice = cursor;
@@ -169,6 +171,7 @@ namespace sente {
                                 }
                                 else {
                                     handleUnknownSGFProperty(temp, disableWarnings, ignoreIllegalProperties);
+                                    lastProperty = NONE;
                                 }
                             }
 
@@ -184,13 +187,9 @@ namespace sente {
                         // slice out the argument of the property
                         temp = strip(std::string(previousSlice, cursor));
 
-                        // add the property
-                        if (lastProperty == NONE){
-                            throw InvalidSGFException("No Property listed: " +
-                            std::string(SGFText.begin(), cursor));
-                        }
-                        else {
-                            // py::print("putting in \"" + temp + "\" for \"" + toStr(lastProperty) + "\"");
+                        // if the "last property" value is set, then add the property
+                        // otherwise do nothing
+                        if (lastProperty != NONE){
                             node.appendProperty(lastProperty, temp);
                         }
 
@@ -348,6 +347,7 @@ namespace sente {
                         break;
                     case ';':
                         if (not inBrackets){
+
                             if (previousSlice + 1 < cursor){
                                 // get the node from the text
                                 tempNode = nodeFromText(strip(std::string(previousSlice, cursor)),

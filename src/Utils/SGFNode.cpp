@@ -30,7 +30,7 @@ namespace sente {
                 NONE,
                 /// Root Properties
                 AP, // application used to create the file 
-                CA, // charset 
+                CA, // charset
                 FF, // file format
                 GM, // Game mode
                 ST, // how many variations should be shown 
@@ -194,15 +194,15 @@ namespace sente {
 
         std::vector<SGFProperty> SGFNode::getInvalidProperties(unsigned version) const{
 
-            std::vector<SGFProperty> illegalCommands;
+            std::vector<SGFProperty> invalidProperties;
 
             for (const auto& attribute : properties){
                 if (not isSGFLegal(attribute.first, version)){
-                    illegalCommands.push_back(attribute.first);
+                    invalidProperties.push_back(attribute.first);
                 }
             }
 
-            return illegalCommands;
+            return invalidProperties;
         }
 
         std::vector<std::string> SGFNode::getProperty(SGFProperty property) const {
