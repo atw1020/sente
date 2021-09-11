@@ -464,23 +464,39 @@ PYBIND11_MODULE(sente, module){
 
                 :return: list of branches at the current node of the tree
             )pbdoc")
-        .def("get_default_sequence", &sente::GoGame::getDefaultBranch,
+        .def("get_default_sequence", &sente::GoGame::getDefaultSequence,
             R"pbdoc(
                 generates a list of the moves in the default branch.
 
                 :return: the sequence of moves that leads to the current board position.
             )pbdoc")
-        .def("play_default_sequence", &sente::GoGame::playDefaultBranch,
-            R"pbdoc(
-                plays out the moves in the default (first) branch of the tree
-            )pbdoc")
+        .def("get_current_sequence", &sente::GoGame::getMoveSequence,
+             R"pbdoc(
+                generate the sequence of moves that leads to the current board position
+
+                :return: a python list containing the moves that lead to this position.
+             )pbdoc")
+        .def("get_all_sequences", [](sente::GoGame& game){
+                return game.getSequences({});
+            },
+             R"pbdoc(
+                generates a list of all variations currently in the game
+
+                the "default" sequences is the first element in this list
+
+                :return: a list of lists of moves where each move is the move sequence.
+             )pbdoc")
         .def("play_sequence", &sente::GoGame::playMoveSequence,
-            py::arg("moves"),
-            R"pbdoc(
+                 py::arg("moves"),
+                 R"pbdoc(
                 plays all of the moves in a given list of moves
 
                 :param moves: a list of move objects to play
                 :raises IllegalMoveException: If any move in the sequence is illegal
+            )pbdoc")
+        .def("play_default_sequence", &sente::GoGame::playDefaultSequence,
+            R"pbdoc(
+                plays out the moves in the default (first) branch of the tree
             )pbdoc")
         .def("get_legal_moves", &sente::GoGame::getLegalMoves, py::return_value_policy::reference_internal,
             R"pbdoc(
@@ -493,12 +509,6 @@ PYBIND11_MODULE(sente, module){
                 determine if the game is over yet
 
                 :return: whether or not the game has ended
-            )pbdoc")
-        .def("get_sequence", &sente::GoGame::getMoveSequence,
-            R"pbdoc(
-                generate the sequence of moves that leads to the current board position
-
-                :return: a python list containing the moves that lead to this position.
             )pbdoc")
         .def("get_board", &sente::GoGame::getBoard,
              py::return_value_policy::reference,

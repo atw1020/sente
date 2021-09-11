@@ -65,11 +65,14 @@ namespace sente {
         void advanceToRoot();
         void stepUp(unsigned steps);
 
-        void playDefaultBranch();
-        std::vector<Move> getDefaultBranch();
+        void playDefaultSequence();
         void playMoveSequence(const std::vector<Move>& moves);
-        std::vector<Move> getMoveSequence();
+
         std::vector<Move> getBranches();
+        std::vector<Move> getMoveSequence();
+        std::vector<Move> getDefaultSequence();
+
+        std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
 
         unsigned getMoveNumber() const;
         utils::Tree<utils::SGFNode> getMoveTree() const;

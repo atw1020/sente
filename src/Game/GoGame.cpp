@@ -248,33 +248,7 @@ namespace sente {
 
     }
 
-    std::vector<Move> GoGame::getDefaultBranch() {
-
-        std::vector<Move> defaultBranch;
-
-        auto bookmark = gameTree.getSequence();
-
-        // advance the moveTree to the root
-        gameTree.advanceToRoot();
-
-        while (not gameTree.isAtLeaf()){
-            auto child = gameTree.getChildren()[0];
-            defaultBranch.push_back(child.getMove());
-            gameTree.stepDown();
-        }
-
-        // now that we have found the sequence, return to our original position
-        gameTree.advanceToRoot();
-        for (const auto& move : bookmark){
-            utils::SGFNode node(move);
-            gameTree.stepTo(node);
-        }
-
-        return defaultBranch;
-
-    }
-
-    void GoGame::playDefaultBranch(){
+    void GoGame::playDefaultSequence(){
 
         resetBoard();
 
@@ -330,6 +304,61 @@ namespace sente {
         }
 
         return moveSequence;
+    }
+
+
+    std::vector<Move> GoGame::getDefaultSequence() {
+
+        std::vector<Move> defaultBranch;
+
+        auto bookmark = gameTree.getSequence();
+
+        while (not gameTree.isAtLeaf()){
+            auto child = gameTree.getChildren()[0];
+            defaultBranch.push_back(child.getMove());
+            gameTree.stepDown();
+        }
+
+        // now that we have found the sequence, return to our original position
+        gameTree.advanceToRoot();
+        for (const auto& move : bookmark){
+            utils::SGFNode node(move);
+            gameTree.stepTo(node);
+        }
+
+        return defaultBranch;
+
+    }
+
+    std::vector<std::vector<Move>> GoGame::getSequences(const std::vector<Move>& currentSequence) {
+
+        std::vector<std::vector<Move>> sequences;
+
+        if (gameTree.isAtLeaf()){
+            // if we are at a leaf, set the vector to just be the current Sequence
+            sequences = {currentSequence};
+        }
+        else {
+            // otherwise, add all the children
+            for (auto& child : gameTree.getChildren()){
+                // copy the current sequence
+                std::vector<Move> temp(currentSequence.begin(), currentSequence.end());
+
+                // add the current move
+                temp.push_back(child.getMove());
+
+                // step into the child and get its sequences
+                gameTree.stepTo(child);
+                auto childSequences = getSequences(temp);
+                gameTree.stepUp();
+
+                // add all the children to the sequences
+                sequences.insert(sequences.end(), childSequences.begin(), childSequences.end());
+            }
+        }
+
+        return sequences;
+
     }
 
     unsigned GoGame::getMoveNumber() const {
