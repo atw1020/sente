@@ -389,19 +389,6 @@ class InvalidSGF(TestCase):
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/missing square bracket.sgf")
 
-    def test_unsupported_file_formats(self):
-        """
-
-        tests to see if the program correclty identifies that an incorrect file format has been used
-
-        :return:
-        """
-
-        with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/FF[1] with FF.sgf")
-        with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/FF[2] with RU.sgf")
-
 
     def test_incorrect_parentheses(self):
         """
@@ -458,3 +445,56 @@ class InvalidSGF(TestCase):
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             sgf.load("invalid sgf/backgammon.sgf")
+
+
+class InvalidSGFWarnings(TestCase):
+
+    def test_all_SGF_warnings(self):
+        """
+
+        tests to make sure that all of the files in the "SGF warnings" directory create warnings
+
+        :return:
+        """
+
+        files = os.listdir("warning sgf")
+
+        for file in files:
+            with self.assertWarns(Warning):
+                sgf.load(str(Path("warning sgf")/file))
+
+    def test_silence_warnings(self):
+        """
+
+        makes sure that warnings can be silenced using the disable_warnings option
+
+        :return:
+        """
+
+        files = os.listdir("warning sgf")
+
+        for file in files:
+            sgf.load(str(Path("warning sgf")/file), disable_warnings=True)
+
+    def test_unsupported_file_formats(self):
+        """
+
+        tests to see if the program correclty identifies that an incorrect file format has been used
+
+        :return:
+        """
+
+        with self.assertWarns(Warning):
+            sgf.load("warning sgf/FF[1] with FF.sgf")
+        with self.assertWarns(Warning):
+            sgf.load("warning sgf/FF[2] with RU.sgf")
+
+    def test_change_ff(self):
+        """
+
+        tests to see if sente successfully switches a file to a new format
+
+        :return:
+        """
+
+        sgf.load("warning sgf/LeeSedol-WangYao34615.sgf")

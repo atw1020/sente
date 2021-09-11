@@ -204,7 +204,7 @@ Saving Games
 
 Once a game has been played out, the ``sgf.dump()`` function can be used to save a SGF of the file.
 If it is desired to add SGF metadata to the file such as the player's names and ranks, it must be done before dumping the game.
-See `Setting metadata`_ for more details
+See `SGF Metadata`_ for more details
 
 .. code-block:: python
 

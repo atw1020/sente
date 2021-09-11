@@ -578,7 +578,9 @@ PYBIND11_MODULE(sente, module){
         });
 
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
-        .def("load", [](const std::string& fileName) -> sente::GoGame {
+        .def("load", [](const std::string& fileName, bool disableWarnings,
+                                                     bool ignoreIllegalProperties,
+                                                     bool fixFileFormat) -> sente::GoGame {
 
                 std::string SGFText;
 
@@ -591,11 +593,14 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    auto tree = sente::utils::loadSGF(SGFText);
+                    auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                     return sente::GoGame(tree);
                 }
             },
             py::arg("filename"),
+            py::arg("disable_warnings") = false,
+            py::arg("ignore_illegal_properties") = true,
+            py::arg("fix_file_format") = true,
             "Loads a go game from an SGF file")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
@@ -604,10 +609,16 @@ PYBIND11_MODULE(sente, module){
              py::arg("game"),
              py::arg("file_name"),
              "saves a game as an SGF")
-        .def("loads", [](const std::string& SGFText) -> sente::GoGame {
-                auto tree = sente::utils::loadSGF(SGFText);
+        .def("loads", [](const std::string& SGFText, bool disableWarnings,
+                                                     bool ignoreIllegalProperties,
+                                                     bool fixFileFormat) -> sente::GoGame {
+                auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
-            })
+            },
+            py::arg("sgf_text"),
+            py::arg("disable_warnings") = false,
+            py::arg("ignore_illegal_properties") = true,
+            py::arg("fix_file_format") = true)
         .def("dumps", [](const sente::GoGame& game){
                 return sente::utils::dumpSGF(game);
             },
