@@ -601,7 +601,15 @@ PYBIND11_MODULE(sente, module){
             py::arg("disable_warnings") = false,
             py::arg("ignore_illegal_properties") = true,
             py::arg("fix_file_format") = true,
-            "Loads a go game from an SGF file")
+            R"pbdoc(
+                Loads a go game from an SGF file
+
+                :param filename: the name of the file
+                :param disable_warnings: whether to ignore warnings when loading an illegal SGF file
+                :param ignore_illegal_properties:
+                :param fix_file_format:
+                :return:
+            )pbdoc")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
                 output << sente::utils::dumpSGF(game);

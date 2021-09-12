@@ -497,4 +497,33 @@ class InvalidSGFWarnings(TestCase):
         :return:
         """
 
-        sgf.load("warning sgf/LeeSedol-WangYao34615.sgf")
+        with self.assertWarns(Warning):
+            sgf.load("warning sgf/LeeSedol-WangYao34615.sgf")
+
+    def test_turn_off_fix_file_format(self):
+        """
+
+        tests to see if turning off the "fix file format" option causes stuff to error out
+
+        :return:
+        """
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("warning sgf/FF[1] with FF.sgf", fix_file_format=False)
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("warning sgf/FF[2] with RU.sgf", fix_file_format=False)
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("warning sgf/LeeSedol-WangYao34615.sgf", fix_file_format=False)
+
+    def test_turn_off_ignore_illegal_properties(self):
+        """
+
+        tests to see if turning off the "ignore invalid properties" option causes stuff to error out
+
+        :return:
+        """
+
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("warning sgf/Jappanese Date (JD) property.sgf", ignore_illegal_properties=False)
+        with self.assertRaises(sente.exceptions.InvalidSGFException):
+            sgf.load("warning sgf/ParkJaegeun-LeeJihyun72148.sgf", ignore_illegal_properties=False)
