@@ -6,8 +6,6 @@ The ``sente.sgf`` module contains functions for parsing SGF (Smart Game Format) 
 SGF is a standard encoding for go games that is capable of encoding "forked" go games in addition to a raw sequence of moves.
 SGF files can be viewed in programs like `CGoban <https://www.gokgs.com/download.jsp>`_ or `Sabaki <https://sabaki.yichuanshen.de>`_.
 
-.. note:: Relative to other SGF parsing tools, sente is a relatively strict enforcer of the SGF format and may reject SGF files that can be opened using other tools.
-
 .. note:: sente is a library for Go and cannot be used for other games.
 
 Loading Games
@@ -204,7 +202,7 @@ Saving Games
 
 Once a game has been played out, the ``sgf.dump()`` function can be used to save a SGF of the file.
 If it is desired to add SGF metadata to the file such as the player's names and ranks, it must be done before dumping the game.
-See `SGF Metadata`_ for more details
+See :ref:`SGF Metadata` for more details
 
 .. code-block:: python
 
