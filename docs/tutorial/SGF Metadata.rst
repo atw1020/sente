@@ -135,5 +135,3 @@ Thus, trying to set a property not defined by the standard will result in an err
       File "<stdin>", line 1, in <module>
     sente.exceptions.InvalidSGFException: unknown SGF Property "JD"
 
-.. note:: Although SGF files from the internet frequently contain the "JD" property (Japanese Date) it is not officially documented.
-

@@ -39,14 +39,116 @@ std::string strip(const std::string &input)
 namespace sente {
     namespace utils {
 
-        SGFNode nodeFromText(const std::string& SGFText){
+        void warn(const std::string& message){
+            PyErr_WarnEx(PyExc_Warning, message.c_str(), 1);
+        }
 
-            // py::print("entering nodeFromText with \"" + SGFText + "\"");
+        void addChildrenSGFProperties(Tree<SGFNode>& SGFTree, std::unordered_set<SGFProperty>& properties){
+
+            // add all the properties from this Node
+            std::unordered_map<SGFProperty, std::vector<std::string>> currentProperties = SGFTree.get().getProperties();
+
+            for (const auto& item : currentProperties){
+                properties.insert(item.first);
+            }
+
+            // add all the children's properties
+            for (auto& child : SGFTree.getChildren()){
+                SGFTree.stepTo(child);
+                addChildrenSGFProperties(SGFTree, properties);
+                SGFTree.stepUp();
+            }
+
+        }
+
+        std::unordered_set<SGFProperty> getTreeProperties(Tree<SGFNode>& SGFTree){
+
+            // record the current sequence of moves to get to this node
+            std::vector<SGFNode> currentSequence = SGFTree.getSequence();
+
+            // go to the root of the tree
+            SGFTree.advanceToRoot();
+
+            // add all the properties from all the nodes
+            std::unordered_set<SGFProperty> properties;
+            addChildrenSGFProperties(SGFTree, properties);
+
+            // return to the original position
+            SGFTree.advanceToRoot();
+            for (auto& item : currentSequence){
+                SGFTree.stepTo(item);
+            }
+
+            return properties;
+
+        }
+
+        void handleUnknownSGFProperty(const std::string& unknownProperty, bool disableWarnings,
+                                                                          bool ignoreIllegalProperties) {
+
+            std::string message = "Unknown SGF Property: \"" + unknownProperty + "\"";
+
+            if (ignoreIllegalProperties) {
+                // if we are ignoring illegal properties, warn the user (unless
+                if (not disableWarnings){
+                    warn(message);
+                }
+            }
+            else {
+                throw InvalidSGFException(message);
+            }
+        }
+
+        void handleUnsupportedProperty(Tree<SGFNode>& SGFTree, unsigned& FFVersion, bool disableWarnings,
+                                                                                    bool fixFileFormat) {
+
+            unsigned oldFF = FFVersion;
+
+            auto offendingProperty = SGFTree.get().getInvalidProperties(FFVersion)[0];
+
+            if (fixFileFormat){
+                // fix the file format if we can
+                std::unordered_set<SGFProperty> properties = getTreeProperties(SGFTree);
+                auto possibleVersions = getPossibleSGFVersions(properties);
+
+                // update to the latest possible File format
+                if (not possibleVersions.empty()){
+                    FFVersion = *std::max_element(possibleVersions.begin(),  possibleVersions.end());
+                }
+
+            }
+
+            if (SGFTree.get().getInvalidProperties(FFVersion).empty()){
+
+                // if the file format was fixed, issue a warning to the user if they have warnings enabled
+                if (not disableWarnings){
+
+                    std::string message = "The Property \"" +
+                                          toStr(offendingProperty) +
+                                          "\" is not supported on this version of SGF (FF[" +
+                                          std::to_string(oldFF) + "])\nThe file was automatically converted to FF[" +
+                                          std::to_string(FFVersion) + "]";
+
+                    warn(message);
+                }
+            }
+            else {
+                throw InvalidSGFException("The Property \"" +
+                                          toStr(offendingProperty) +
+                                          "\" is not supported on this version of SGF (FF[" +
+                                          std::to_string(FFVersion) + "])");
+            }
+        }
+
+        SGFNode nodeFromText(const std::string& SGFText, bool disableWarnings,
+                                                         bool ignoreIllegalProperties){
+
+            // py::print("entering nodeFromText with text", SGFText);
 
             SGFNode node;
             std::string temp;
 
-            SGFProperty lastProperty;
+            SGFProperty lastProperty = NONE;
 
             auto cursor = SGFText.begin();
             auto previousSlice = cursor;
@@ -68,7 +170,8 @@ namespace sente {
                                     lastProperty = fromStr(strip(temp));
                                 }
                                 else {
-                                    throw InvalidSGFException("Unknown SGF Property: \"" + temp + "\"");
+                                    handleUnknownSGFProperty(temp, disableWarnings, ignoreIllegalProperties);
+                                    lastProperty = NONE;
                                 }
                             }
 
@@ -84,13 +187,9 @@ namespace sente {
                         // slice out the argument of the property
                         temp = strip(std::string(previousSlice, cursor));
 
-                        // add the property
-                        if (lastProperty == NONE){
-                            throw InvalidSGFException("No Command listed: " +
-                            std::string(SGFText.begin(), cursor));
-                        }
-                        else {
-                            // py::print("putting in \"" + temp + "\" for \"" + toStr(lastCommand) + "\"");
+                        // if the "last property" value is set, then add the property
+                        // otherwise do nothing
+                        if (lastProperty != NONE){
                             node.appendProperty(lastProperty, temp);
                         }
 
@@ -116,7 +215,9 @@ namespace sente {
 
         }
 
-        Tree<SGFNode> loadSGF(const std::string& SGFText){
+        Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
+                                                          bool ignoreIllegalProperties,
+                                                          bool fixFileFormat){
 
             // py::print("entering SGFText");
             // py::print(SGFText.size());
@@ -170,7 +271,7 @@ namespace sente {
 
                             if (not temp.empty()) {
                                 // add the property prior to this one
-                                tempNode = nodeFromText(temp);
+                                tempNode = nodeFromText(temp, disableWarnings, ignoreIllegalProperties);
 
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
@@ -188,10 +289,7 @@ namespace sente {
                                 }
                                 // validate the result with the file format version
                                 if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                    throw InvalidSGFException("The Property \"" +
-                                          toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
-                                          "\" is not supported on this version of SGF (FF[" +
-                                          std::to_string(FFVersion) + "])");
+                                    handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
                                 }
                             }
 
@@ -209,7 +307,7 @@ namespace sente {
 
                             if (not temp.empty()) {
                                 // add the property prior to this one
-                                tempNode = nodeFromText(temp);
+                                tempNode = nodeFromText(temp, disableWarnings, ignoreIllegalProperties);
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
@@ -226,10 +324,7 @@ namespace sente {
                                 }
                                 // validate the result with the file format version
                                 if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                    throw InvalidSGFException("The Property \"" +
-                                          toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
-                                          "\" is not supported on this version of SGF (FF[" +
-                                          std::to_string(FFVersion) + "])");
+                                    handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
                                 }
                             }
 
@@ -252,9 +347,11 @@ namespace sente {
                         break;
                     case ';':
                         if (not inBrackets){
+
                             if (previousSlice + 1 < cursor){
                                 // get the node from the text
-                                tempNode = nodeFromText(strip(std::string(previousSlice, cursor)));
+                                tempNode = nodeFromText(strip(std::string(previousSlice, cursor)),
+                                                        disableWarnings, ignoreIllegalProperties);
                                 if (firstNode){
                                     SGFTree = Tree<SGFNode>(tempNode);
                                     firstNode = false;
@@ -271,10 +368,7 @@ namespace sente {
                                 }
                                 // validate the result with the file format version
                                 if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                    throw InvalidSGFException("The Property \"" +
-                                          toStr(SGFTree.get().getInvalidProperties(FFVersion)[0]) +
-                                          "\" is not supported on this version of SGF (FF[" +
-                                          std::to_string(FFVersion) + "])");
+                                    handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
                                 }
                             }
 

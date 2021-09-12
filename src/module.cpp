@@ -78,6 +78,9 @@ PYBIND11_MODULE(sente, module){
         .value("JAPANESE", sente::Rules::JAPANESE, R"pbdoc(
             The `Japanese rules <https://senseis.xmp.net/?JapaneseRules>`_ for go.
         )pbdoc")
+            .value("KOREAN", sente::Rules::KOREAN, R"pbdoc(
+            The `Korean rules <https://senseis.xmp.net/?KoreanRules>`_ for go.
+        )pbdoc")
         .export_values();
 
     py::class_<sente::Move>(module, "Move", R"pbdoc(
@@ -464,23 +467,39 @@ PYBIND11_MODULE(sente, module){
 
                 :return: list of branches at the current node of the tree
             )pbdoc")
-        .def("get_default_sequence", &sente::GoGame::getDefaultBranch,
+        .def("get_default_sequence", &sente::GoGame::getDefaultSequence,
             R"pbdoc(
                 generates a list of the moves in the default branch.
 
                 :return: the sequence of moves that leads to the current board position.
             )pbdoc")
-        .def("play_default_sequence", &sente::GoGame::playDefaultBranch,
-            R"pbdoc(
-                plays out the moves in the default (first) branch of the tree
-            )pbdoc")
+        .def("get_current_sequence", &sente::GoGame::getMoveSequence,
+             R"pbdoc(
+                generate the sequence of moves that leads to the current board position
+
+                :return: a python list containing the moves that lead to this position.
+             )pbdoc")
+        .def("get_all_sequences", [](sente::GoGame& game){
+                return game.getSequences({});
+            },
+             R"pbdoc(
+                generates a list of all variations currently in the game
+
+                the "default" sequences is the first element in this list
+
+                :return: a list of lists of moves where each move is the move sequence.
+             )pbdoc")
         .def("play_sequence", &sente::GoGame::playMoveSequence,
-            py::arg("moves"),
-            R"pbdoc(
+                 py::arg("moves"),
+                 R"pbdoc(
                 plays all of the moves in a given list of moves
 
                 :param moves: a list of move objects to play
                 :raises IllegalMoveException: If any move in the sequence is illegal
+            )pbdoc")
+        .def("play_default_sequence", &sente::GoGame::playDefaultSequence,
+            R"pbdoc(
+                plays out the moves in the default (first) branch of the tree
             )pbdoc")
         .def("get_legal_moves", &sente::GoGame::getLegalMoves, py::return_value_policy::reference_internal,
             R"pbdoc(
@@ -493,12 +512,6 @@ PYBIND11_MODULE(sente, module){
                 determine if the game is over yet
 
                 :return: whether or not the game has ended
-            )pbdoc")
-        .def("get_sequence", &sente::GoGame::getMoveSequence,
-            R"pbdoc(
-                generate the sequence of moves that leads to the current board position
-
-                :return: a python list containing the moves that lead to this position.
             )pbdoc")
         .def("get_board", &sente::GoGame::getBoard,
              py::return_value_policy::reference,
@@ -532,30 +545,30 @@ PYBIND11_MODULE(sente, module){
 
                 :return: a python dictionary that maps from metadata parameters (ie. SZ[], FF[]) to their values
             )pbdoc")
-        .def("set_property", [](sente::GoGame& game, const std::string& command, double value){
-                game.setProperty(command, std::to_string(value));
+        .def("set_property", [](sente::GoGame& game, const std::string& property, double value){
+                game.setProperty(property, std::to_string(value));
             }, R"pbdoc(
                 Adds the specified property to the game
 
-                :param command: SGF command to set the value of
+                :param property: SGF property to set the value of
                 :param value: value to set the metadata to
                 :return: None
             )pbdoc")
-        .def("set_property", [](sente::GoGame& game, const std::string& command, const std::string& value){
-                game.setProperty(command, value);
+        .def("set_property", [](sente::GoGame& game, const std::string& property, const std::string& value){
+                game.setProperty(property, value);
             }, R"pbdoc(
                 Adds the specified property to the game
 
-                :param command: SGF command to set the value of
+                :param property: SGF property to set the value of
                 :param value: value to set the metadata to
                 :return: None
             )pbdoc")
-        .def("set_property", [](sente::GoGame& game, const std::string& command, const std::vector<std::string>& values){
-                game.setProperty(command, values);
+        .def("set_property", [](sente::GoGame& game, const std::string& property, const std::vector<std::string>& values){
+                game.setProperty(property, values);
             }, R"pbdoc(
                 Adds the specified property to the game
 
-                :param command: SGF command to set the value of
+                :param property: SGF property to set the value of
                 :param value: value to set the metadata to
                 :return: None
             )pbdoc")
@@ -568,7 +581,9 @@ PYBIND11_MODULE(sente, module){
         });
 
     auto sgf = module.def_submodule("sgf", "utilities for parsing SGF (Smart Game Format) files")
-        .def("load", [](const std::string& fileName) -> sente::GoGame {
+        .def("load", [](const std::string& fileName, bool disableWarnings,
+                                                     bool ignoreIllegalProperties,
+                                                     bool fixFileFormat) -> sente::GoGame {
 
                 std::string SGFText;
 
@@ -581,12 +596,23 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    auto tree = sente::utils::loadSGF(SGFText);
+                    auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                     return sente::GoGame(tree);
                 }
             },
             py::arg("filename"),
-            "Loads a go game from an SGF file")
+            py::arg("disable_warnings") = false,
+            py::arg("ignore_illegal_properties") = true,
+            py::arg("fix_file_format") = true,
+            R"pbdoc(
+                Loads a go game from an SGF file.
+
+                :param filename: the name of the file
+                :param disable_warnings: whether to ignore warnings when loading an illegal SGF file
+                :param ignore_illegal_properties: whether or not to ignore illegal SGF properties
+                :param fix_file_format: whether or not to fix the file format if it is wrong
+                :return: a ``sente.Game`` object populated with data from the SGF file
+            )pbdoc")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
                 output << sente::utils::dumpSGF(game);
@@ -594,10 +620,25 @@ PYBIND11_MODULE(sente, module){
              py::arg("game"),
              py::arg("file_name"),
              "saves a game as an SGF")
-        .def("loads", [](const std::string& SGFText) -> sente::GoGame {
-                auto tree = sente::utils::loadSGF(SGFText);
+        .def("loads", [](const std::string& SGFText, bool disableWarnings,
+                                                     bool ignoreIllegalProperties,
+                                                     bool fixFileFormat) -> sente::GoGame {
+                auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
-            })
+            },
+            py::arg("sgf_text"),
+            py::arg("disable_warnings") = false,
+            py::arg("ignore_illegal_properties") = true,
+            py::arg("fix_file_format") = true,
+            R"pbdoc(
+                Loads a go game from an SGF file.
+
+                :param sgf_text: the text of the SGF file to read from
+                :param disable_warnings: whether to ignore warnings when loading an illegal SGF file
+                :param ignore_illegal_properties: whether or not to ignore illegal SGF properties
+                :param fix_file_format: whether or not to fix the file format if it is wrong
+                :return: a ``sente.Game`` object populated with data from the SGF file
+            )pbdoc")
         .def("dumps", [](const sente::GoGame& game){
                 return sente::utils::dumpSGF(game);
             },

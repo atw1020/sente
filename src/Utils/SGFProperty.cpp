@@ -118,6 +118,34 @@ namespace sente {
 
         }
 
+        std::vector<unsigned> getPossibleSGFVersions(const std::unordered_set<SGFProperty>& properties){
+
+            std::vector<unsigned> versions = {1, 2, 3, 4};
+            std::vector<unsigned> illegalVersions;
+
+            for (auto property : properties){
+
+                // reset the list of illegal versions
+                illegalVersions = {};
+
+                // for each version
+                for (auto version : versions){
+                    // check to see if this property is illegal on this version
+                    if (not isSGFLegal(property, version)){
+                        illegalVersions.push_back(version);
+                    }
+                }
+
+                // remove the illegal versions from the list of versions
+                for (auto version : illegalVersions){
+                    versions.erase(std::find(versions.begin(),  versions.end(), version));
+                }
+            }
+
+            return versions;
+
+        }
+
         std::unordered_map<std::string, SGFProperty> strToProperty {
                 {""     , NONE},
                 {stringify(B),   B},
@@ -306,7 +334,7 @@ namespace sente {
             return propertyToStr[property];
         }
 
-        bool isProperty(std::string property){
+        bool isProperty(const std::string& property){
             return strToProperty.find(property) != strToProperty.end();
         }
 

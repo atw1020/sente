@@ -27,7 +27,9 @@ namespace sente {
     namespace utils {
 
         // GoGame loadSGF(const std::string &SGFText);
-        Tree<SGFNode> loadSGF(const std::string& SGFText);
+        Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
+                                                          bool ignoreIllegalProperties,
+                                                          bool fixFileFormat);
 
         std::string dumpSGF(const GoGame& game);
         // std::string dumpSGF(const Tree<SGFNode>& game);

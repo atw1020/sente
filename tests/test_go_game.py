@@ -409,7 +409,7 @@ class TestTreeNavigation(TestCase):
 
         game.play_sequence(moves)
 
-        self.assertEqual(moves, game.get_sequence())
+        self.assertEqual(moves, game.get_current_sequence())
 
     def test_illegal_move_sequence(self):
         """
@@ -491,7 +491,39 @@ class TestTreeNavigation(TestCase):
 
         game.advance_to_root()
 
-        print(game.get_sequences())
+        sequences = game.get_all_sequences()
+
+        self.assertEqual([[sente.Move(3, 3, sente.stone.BLACK), sente.Move(3, 15, sente.stone.WHITE)],
+                          [sente.Move(15, 3, sente.stone.BLACK), sente.Move(15, 15, sente.stone.WHITE)]], sequences)
+
+    def test_get_all_sequences_does_not_move(self):
+        """
+
+        makes sure that calling the get_all_sequences() method does not move the current posisiton in the game tree
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.play(4, 16)
+
+        game.advance_to_root()
+
+        game.play(16, 4)
+        game.play(16, 16)
+
+        game.step_up()
+
+        sequences = game.get_all_sequences()
+
+        # we should only get one branch
+        self.assertEqual([[sente.Move(15, 15, sente.stone.WHITE)]], sequences)
+
+        # and that branch should not have been played
+        self.assertEqual(sente.stone.BLACK, game.get_point(16, 4))
+        self.assertEqual(sente.stone.EMPTY, game.get_point(16, 16))
 
     def test_is_at_root(self):
         """
