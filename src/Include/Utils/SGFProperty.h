@@ -23,7 +23,7 @@ namespace sente {
             AW, // add white stone todo: support
             PL, // get player name todo: support
             /// Node Annotations
-            C,  // comment todo: support
+            C,  // comment
             DM, // position is even for both players todo: support
             GB, // good for black to play todo: support
             GW, // good for white to play todo: support

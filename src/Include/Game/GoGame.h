@@ -45,7 +45,7 @@ namespace sente {
         void resetBoard();
 
         ///
-        /// Move Legality
+        /// Moves
         ///
 
         bool isLegal(const Move& move) const;
@@ -56,6 +56,10 @@ namespace sente {
         void playStone(const Move& move);
         void playStone(unsigned x, unsigned y);
         void playStone(unsigned x, unsigned y, Stone stone);
+
+        bool isAddLegal(const Move& move);
+
+        void addStone(const Move& move);
 
         ///
         /// movement through the game tree
@@ -77,10 +81,21 @@ namespace sente {
         unsigned getMoveNumber() const;
         utils::Tree<utils::SGFNode> getMoveTree() const;
 
+        ///
+        /// Getting and setting properties
+        ///
+
         std::unordered_map<std::string, std::vector<std::string>> getProperties() const;
 
         void setProperty(const std::string& command, const std::string& value);
         void setProperty(const std::string& command, const std::vector<std::string>& values);
+
+        std::string getComment() const;
+        void setComment(const std::string& comment) const;
+
+        ///
+        /// Getter and Setter methods
+        ///
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
@@ -92,9 +107,6 @@ namespace sente {
         std::vector<Move> getLegalMoves() const;
 
         Point getKoPoint() const;
-
-        std::string getComment() const;
-        void setComment(const std::string& comment) const;
 
         explicit operator std::string() const;
 

@@ -218,6 +218,92 @@ namespace sente {
 
     }
 
+    /**
+     *
+     * checks to see if a move is legal as an "add" move
+     *
+     * in other words determine if the move is legal regardless of whether or not it is the player in question's turn
+     *
+     * @param move to determine if it is legal
+     * @return whether or not the move is legal as an add move
+     */
+    bool GoGame::isAddLegal(const Move& move){
+
+        if (not board->isOnBoard(move)){
+            return false;
+        }
+        // std::cout << "passed isOnBoard" << std::endl;
+        bool isEmpty = board->isEmpty(move);
+        // std::cout << "passed isEmpty" << std::endl;
+        bool notSelfCapture = isNotSelfCapture(move);
+        // std::cout << "passed isNotSelfCapture" << std::endl;
+        bool notKoPoint = isNotKoPoint(move);
+
+        return isEmpty and notSelfCapture and notKoPoint;
+
+    }
+
+    /**
+     *
+     * adds a stone to the board
+     *
+     * @param move to add to the board
+     */
+    void GoGame::addStone(const Move& move){
+
+        // error handling
+        if (not isAddLegal(move)){
+            if (not board->isOnBoard(move)){
+                throw utils::IllegalMoveException(utils::OFF_BOARD, move);
+            }
+            if (not board->isEmpty(move)){
+                throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
+            }
+            if (not isNotSelfCapture(move)){
+                throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
+            }
+            if (not isNotKoPoint(move)){
+                throw utils::IllegalMoveException(utils::KO_POINT, move);
+            }
+        }
+
+        // figure out what kind of property we are dealing with
+        utils::SGFProperty property;
+
+        switch (move.getStone()){
+            case BLACK:
+                property = utils::AB;
+                break;
+            case WHITE:
+                property = utils::AW;
+                break;
+            case EMPTY:
+                property = utils::AE;
+                break;
+        }
+
+        // if the stone we are adding has not been to the game tree, add it
+        if (gameTree.get().hasProperty(property)){
+
+            // insert the added move into the game tree
+            std::string positionInfo = std::string(move);
+            positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
+
+            // generate the list of all stones added to the property
+            auto addedStones = gameTree.get().getProperty(property);
+
+            // if the property has not been added to the SGF tree, add it
+            if (std::find(addedStones.begin(),  addedStones.end(), positionInfo) != addedStones.end()){
+                gameTree.get().appendProperty(property, positionInfo);
+            }
+        }
+
+        // put the stone into the board and update the board
+        board->playStone(move);
+        updateBoard(move);
+
+    }
+
     bool GoGame::isAtRoot() const{
         return gameTree.isAtRoot();
     }
@@ -502,7 +588,7 @@ namespace sente {
 
         for (const auto& region : regions){
 
-            // go through all of the adjacent groups
+            // go through all the adjacent groups
             auto adjacentGroups = utils::getAdjacentGroups(region, *board, groups);
 
             auto iter = adjacentGroups.begin();

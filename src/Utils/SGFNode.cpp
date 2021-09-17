@@ -137,6 +137,11 @@ namespace sente {
 
         void SGFNode::appendProperty(SGFProperty property, const std::string &value) {
             if (property == B or property == W){
+
+                if (hasProperty(AW) or hasProperty(AB)){
+                    throw utils::InvalidSGFException("Moves cannot be played in a node that already contains added stones");
+                }
+
                 // the move must contain either
                 if (value.empty()){
                     move = Move::pass(property == B ? BLACK : WHITE);
@@ -146,8 +151,31 @@ namespace sente {
                     if (value.size() != 2){
                         throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value + "]\"");
                     }
+                    if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
+                        throw utils::InvalidSGFException("move does not use alphabetical letters");
+                    }
                     // get the co-ordinates from the move
                     move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), property == B ? BLACK : WHITE};
+                }
+            }
+            else if (property == AB or property == AW){
+
+                if (hasProperty(B) or hasProperty(W)){
+                    throw utils::InvalidSGFException("Stones cannot be added to a node which already contains a played move");
+                }
+
+                if (value.empty()){
+                    throw InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + value + "]\"");
+                }
+                else if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
+                    throw utils::InvalidSGFException("move does not use alphabetical letters");
+                }
+
+                if (property == AB){
+                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), BLACK});
+                }
+                else {
+                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), WHITE});
                 }
             }
             else {
@@ -159,23 +187,49 @@ namespace sente {
             }
         }
 
-        void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &value) {
+        void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &values) {
             if (property == B or property == W){
                 // the move must contain either
-                if (value[0].empty()){
+                if (hasProperty(AW) or hasProperty(AB)){
+                    throw utils::InvalidSGFException("Moves cannot be played in a node that already contains added stones");
+                }
+                if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
+                    throw utils::InvalidSGFException("move does not use alphabetical letters");
+                }
+                if (values[0].empty()){
                     move = Move::pass(property == B ? BLACK : WHITE);
                 }
                 else {
                     // make sure the value is valid
-                    if (value[0].size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value[0] + "]\"");
+                    if (values[0].size() != 2){
+                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + values[0] + "]\"");
                     }
                     // get the co-ordinates from the move
-                    move = {unsigned(value[0][1] - 'a'), unsigned(value[0][0] - 'a'), property == B ? BLACK : WHITE};
+                    move = {unsigned(values[0][1] - 'a'), unsigned(values[0][0] - 'a'), property == B ? BLACK : WHITE};
+                }
+            }
+            else if (property == AB or property == AW){
+                if (hasProperty(B) or hasProperty(W)){
+                    throw utils::InvalidSGFException("Stones cannot be added to a node which already contains a played move");
+                }
+
+                for (const auto& item : values){
+                    if (item.empty()){
+                        throw InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + item + "]\"");
+                    }
+                    if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
+                        throw utils::InvalidSGFException("move does not use alphabetical letters");
+                    }
+                    if (property == AB){
+                        addedMoves.push_back({unsigned(item[1] - 'a'), unsigned(item[0] - 'a'), BLACK});
+                    }
+                    else {
+                        addedMoves.push_back({unsigned(item[1] - 'a'), unsigned(item[0] - 'a'), WHITE});
+                    }
                 }
             }
             else {
-                std::vector<std::string> copy = value;
+                std::vector<std::string> copy = values;
                 for (auto & item : copy){
                     replace(item, "\\", "\\\\");
                     replace(item, "]", "\\]");
@@ -229,7 +283,37 @@ namespace sente {
                 acc << std::string(move);
             }
 
+            std::vector<Move> blackAdds;
+            std::vector<Move> whiteAdds;
+
+            for (const auto& addedStone : addedMoves){
+                if (addedStone.getStone() == BLACK){
+                    blackAdds.push_back(addedStone);
+                }
+                else {
+                    whiteAdds.push_back(addedStone);
+                }
+            }
+
             for (const auto& property : precedenceOrder){
+                if (property == AB){
+                    if (not blackAdds.empty()){
+                        acc << toStr(property);
+                        for (const auto& blackStones : blackAdds){
+                            auto temp = std::string(blackStones);
+                            acc << std::string(temp.begin() + 1, temp.end());
+                        }
+                    }
+                }
+                if (property == AW){
+                    if (not whiteAdds.empty()){
+                        acc << toStr(property);
+                        for (const auto& blackStones : whiteAdds){
+                            auto temp = std::string(blackStones);
+                            acc << std::string(temp.begin() + 1, temp.end());
+                        }
+                    }
+                }
                 if (properties.find(property) != properties.end()){
                     acc << toStr(property);
                     for (const auto& entry : properties.at(property)){
