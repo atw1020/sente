@@ -48,9 +48,9 @@ namespace sente {
         /// Moves
         ///
 
-        bool isLegal(const Move& move) const;
-        bool isLegal(unsigned x, unsigned y) const;
-        bool isLegal(unsigned x, unsigned y, Stone stone) const;
+        bool isLegal(const Move& move);
+        bool isLegal(unsigned x, unsigned y);
+        bool isLegal(unsigned x, unsigned y, Stone stone);
         bool isOver() const;
 
         void playStone(const Move& move);
@@ -104,7 +104,7 @@ namespace sente {
 
         Results getResults() const;
         Results score() const;
-        std::vector<Move> getLegalMoves() const;
+        std::vector<Move> getLegalMoves();
 
         Point getKoPoint() const;
 
@@ -134,7 +134,7 @@ namespace sente {
         void updateBoard(const Move& move);
         void connectGroups(const Move& move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);
 
-        bool isCorrectColor(const Move& move) const;
+        bool isCorrectColor(const Move& move);
         bool isNotSelfCapture(const Move& move) const;
         bool isNotKoPoint(const Move& move) const;
 

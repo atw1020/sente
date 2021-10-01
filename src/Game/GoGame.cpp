@@ -119,15 +119,15 @@ namespace sente {
 
     }
 
-    bool GoGame::isLegal(unsigned x, unsigned y) const{
+    bool GoGame::isLegal(unsigned x, unsigned y) {
         return isLegal(Move(x, y, gameTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }
 
-    bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) const {
+    bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) {
         return isLegal(Move(x, y, stone));
     }
 
-    bool GoGame::isLegal(const Move& move) const {
+    bool GoGame::isLegal(const Move& move) {
         // std::cout << "passed isOver" << std::endl;
         if (not board->isOnBoard(move)){
             return false;
@@ -645,7 +645,7 @@ namespace sente {
         return {rules, komi, blackTerritory, whiteTerritory, blackStones, whiteStones};
     }
 
-    std::vector<Move> GoGame::getLegalMoves() const {
+    std::vector<Move> GoGame::getLegalMoves() {
         py::gil_scoped_release release;
 
         // go through the entire board
@@ -809,8 +809,30 @@ namespace sente {
 
     }
 
-    bool GoGame::isCorrectColor(const Move &move) const {
-        return move.getStone() == ((gameTree.getDepth() % 2 == 0) ? BLACK : WHITE);
+    bool GoGame::isCorrectColor(const Move &move) {
+        // go through the tree until we get our parents
+        std::stack<utils::SGFNode> previousMoves;
+
+        while (gameTree.get().getMove() == Move::nullMove and not gameTree.isAtRoot()){
+            previousMoves.push(gameTree.get());
+            gameTree.stepUp();
+        }
+
+        bool result;
+
+        if (gameTree.isAtRoot()){
+            result = move.getStone() == BLACK;
+        }
+        else {
+            result = move.getStone() != gameTree.get().getMove().getStone();
+        }
+
+        while (not previousMoves.empty()){
+            gameTree.stepTo(previousMoves.top());
+            previousMoves.pop();
+        }
+
+        return result;
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{
