@@ -9,7 +9,7 @@
 #include "../../Game/Move.h"
 
 namespace sente {
-    namespace utils {
+    namespace sgf {
 
         class SGFNode {
         public:

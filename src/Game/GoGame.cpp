@@ -41,54 +41,54 @@ namespace sente {
         resetKoPoint();
 
         // create the rootnode
-        utils::SGFNode rootNode;
+        sgf::SGFNode rootNode;
 
         // add the defualt metadata
-        rootNode.setProperty(utils::FF, {"4"});
-        rootNode.setProperty(utils::SZ, {std::to_string(side)});
+        rootNode.setProperty(sgf::FF, {"4"});
+        rootNode.setProperty(sgf::SZ, {std::to_string(side)});
 
         switch (rules){
             case CHINESE:
-                rootNode.setProperty(utils::RU, {"Chinese"});
+                rootNode.setProperty(sgf::RU, {"Chinese"});
                 break;
             case JAPANESE:
-                rootNode.setProperty(utils::RU, {"Japanese"});
+                rootNode.setProperty(sgf::RU, {"Japanese"});
                 break;
         }
 
-        gameTree = utils::Tree<utils::SGFNode>(rootNode);
+        gameTree = utils::Tree<sgf::SGFNode>(rootNode);
 
     }
 
-    GoGame::GoGame(utils::Tree<utils::SGFNode> &SGFTree) {
+    GoGame::GoGame(utils::Tree<sgf::SGFNode> &SGFTree) {
         gameTree = SGFTree;
 
         auto rootNode = gameTree.getRoot();
 
-        if (rootNode.hasProperty(utils::SZ)){
+        if (rootNode.hasProperty(sgf::SZ)){
             // parse if available
-            makeBoard(std::stoi(rootNode.getProperty(utils::SZ)[0]));
+            makeBoard(std::stoi(rootNode.getProperty(sgf::SZ)[0]));
         }
         else {
             // default board size
             makeBoard(19);
         }
 
-        if (rootNode.hasProperty(utils::RU)){
+        if (rootNode.hasProperty(sgf::RU)){
 
-            std::string ruleString = rootNode.getProperty(utils::RU)[0];
+            std::string ruleString = rootNode.getProperty(sgf::RU)[0];
             rules = rulesFromStr(ruleString);
         }
         else {
             rules = CHINESE; // default
         }
 
-        if (rootNode.hasProperty(utils::KM)){
-            if (rootNode.getProperty(utils::KM)[0].empty()){
+        if (rootNode.hasProperty(sgf::KM)){
+            if (rootNode.getProperty(sgf::KM)[0].empty()){
                 komi = 0;
             }
             else {
-                komi = std::stod(rootNode.getProperty(utils::KM)[0]);
+                komi = std::stod(rootNode.getProperty(sgf::KM)[0]);
             }
         }
         else {
@@ -163,13 +163,13 @@ namespace sente {
     void GoGame::playStone(const Move &move) {
 
         // create a new SGF node
-        utils::SGFNode node(move);
+        sgf::SGFNode node(move);
 
         // check for pass/resign
         if (move.isPass()){
             gameTree.insert(node);
             if (++passCount >= 2){
-                gameTree.getRoot().setProperty(utils::RE, std::vector<std::string>());
+                gameTree.getRoot().setProperty(sgf::RE, std::vector<std::string>());
             }
             return;
         }
@@ -179,12 +179,12 @@ namespace sente {
 
         if (move.isResign()){
             // get the root node
-            if (gameTree.getRoot().hasProperty(utils::RE)){
+            if (gameTree.getRoot().hasProperty(sgf::RE)){
                 // if the game has been resigned raise an exception
                 throw std::domain_error("Game cannot be forfeited; the game is already over");
             }
             else {
-                gameTree.getRoot().setProperty(utils::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
+                gameTree.getRoot().setProperty(sgf::RE, {move.getStone() == BLACK ? "W+R" : "B+R"});
             }
             return;
         }
@@ -267,17 +267,17 @@ namespace sente {
         }
 
         // figure out what kind of property we are dealing with
-        utils::SGFProperty property;
+        sgf::SGFProperty property;
 
         switch (move.getStone()){
             case BLACK:
-                property = utils::AB;
+                property = sgf::AB;
                 break;
             case WHITE:
-                property = utils::AW;
+                property = sgf::AW;
                 break;
             case EMPTY:
-                property = utils::AE;
+                property = sgf::AE;
                 break;
         }
 
@@ -407,7 +407,7 @@ namespace sente {
         // now that we have found the sequence, return to our original position
         gameTree.advanceToRoot();
         for (const auto& move : bookmark){
-            utils::SGFNode node(move);
+            sgf::SGFNode node(move);
             gameTree.stepTo(node);
         }
 
@@ -450,7 +450,7 @@ namespace sente {
         return gameTree.getDepth();
     }
 
-    utils::Tree<utils::SGFNode> GoGame::getMoveTree() const {
+    utils::Tree<sgf::SGFNode> GoGame::getMoveTree() const {
         return gameTree;
     }
 
@@ -462,14 +462,14 @@ namespace sente {
         std::unordered_map<std::string, std::vector<std::string>> properties;
 
         for (const auto& property : node.getProperties()){
-            properties[utils::toStr(property.first)] = property.second;
+            properties[sgf::toStr(property.first)] = property.second;
         }
 
         // add the properties from this node
         node = gameTree.get();
 
         for (const auto& property : node.getProperties()){
-            properties[utils::toStr(property.first)] = property.second;
+            properties[sgf::toStr(property.first)] = property.second;
         }
 
         return properties;
@@ -477,20 +477,20 @@ namespace sente {
     }
 
     void GoGame::setProperty(const std::string& property, const std::string& value) {
-        if (utils::isProperty(property)){
+        if (sgf::isProperty(property)){
             // get the property
-            utils::SGFProperty SGFProperty = utils::fromStr(property);
+            sgf::SGFProperty SGFProperty = sgf::fromStr(property);
 
             // check to see if the property is legal for this version of SGF
-            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getProperty(utils::FF)[0]))){
-                throw utils::InvalidSGFException("SGF Property \"" + property + "\" is not supported for SGF FF[" + gameTree.getRoot().getProperty(utils::FF)[0] + "]");
+            if (not sgf::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getProperty(sgf::FF)[0]))){
+                throw utils::InvalidSGFException("SGF Property \"" + property + "\" is not supported for SGF FF[" + gameTree.getRoot().getProperty(sgf::FF)[0] + "]");
             }
 
             // we can't edit the size of the board
-            if (SGFProperty == utils::SZ){
+            if (SGFProperty == sgf::SZ){
                 throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
             }
-            if (utils::isFileWide(SGFProperty)){
+            if (sgf::isFileWide(SGFProperty)){
                 gameTree.getRoot().setProperty(SGFProperty, {value});
             }
             else {
@@ -503,20 +503,20 @@ namespace sente {
     }
 
     void GoGame::setProperty(const std::string& property, const std::vector<std::string>& values) {
-        if (utils::isProperty(property)){
+        if (sgf::isProperty(property)){
 
-            utils::SGFProperty SGFProperty = utils::fromStr(property);
+            sgf::SGFProperty SGFProperty = sgf::fromStr(property);
 
             // check to see if the property is legal for this version of SGF
-            if (not utils::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getProperty(utils::FF)[0]))){
-                throw utils::InvalidSGFException("SGF Property \"" + property + "\" is not supported for SGF FF[" + gameTree.getRoot().getProperty(utils::FF)[0] + "]");
+            if (not sgf::isSGFLegal(SGFProperty, std::stoi(gameTree.getRoot().getProperty(sgf::FF)[0]))){
+                throw utils::InvalidSGFException("SGF Property \"" + property + "\" is not supported for SGF FF[" + gameTree.getRoot().getProperty(sgf::FF)[0] + "]");
             }
 
-            if (SGFProperty == utils::SZ){
+            if (SGFProperty == sgf::SZ){
                 throw std::domain_error("Cannot edit the \"SZ\" value of an SGF file (it would change the size of the board)");
             }
 
-            if (utils::isFileWide(SGFProperty)){
+            if (sgf::isFileWide(SGFProperty)){
                 gameTree.getRoot().setProperty(SGFProperty, values);
             }
             else {
@@ -549,7 +549,7 @@ namespace sente {
             return score();
         }
         else {
-            std::string results = gameTree.getRoot().getProperty(utils::RE)[0];
+            std::string results = gameTree.getRoot().getProperty(sgf::RE)[0];
             switch (results[0]){
                 case 'W':
                     return Results(BLACK);
@@ -677,15 +677,15 @@ namespace sente {
     }
 
     std::string GoGame::getComment() const {
-        if (gameTree.get().hasProperty(utils::C)){
-            return gameTree.get().getProperty(utils::C)[0];
+        if (gameTree.get().hasProperty(sgf::C)){
+            return gameTree.get().getProperty(sgf::C)[0];
         }
         else {
             return "";
         }
     };
     void GoGame::setComment(const std::string& comment) const {
-        gameTree.get().setProperty(utils::C, {comment});
+        gameTree.get().setProperty(sgf::C, {comment});
     };
 
     GoGame::operator std::string() const {
@@ -810,7 +810,7 @@ namespace sente {
 
     bool GoGame::isCorrectColor(const Move &move) {
         // go through the tree until we get our parents
-        std::stack<utils::SGFNode> previousMoves;
+        std::stack<sgf::SGFNode> previousMoves;
 
         while (gameTree.get().getMove() == Move::nullMove and not gameTree.isAtRoot()){
             previousMoves.push(gameTree.get());
@@ -893,7 +893,7 @@ namespace sente {
     }
 
     bool GoGame::isOver() const {
-        return gameTree.getRoot().hasProperty(utils::RE);
+        return gameTree.getRoot().hasProperty(sgf::RE);
     }
 
     /**

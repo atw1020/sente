@@ -37,13 +37,13 @@ std::string strip(const std::string &input)
 }
 
 namespace sente {
-    namespace utils {
+    namespace sgf {
 
         void warn(const std::string& message){
             PyErr_WarnEx(PyExc_Warning, message.c_str(), 1);
         }
 
-        void addChildrenSGFProperties(Tree<SGFNode>& SGFTree, std::unordered_set<SGFProperty>& properties){
+        void addChildrenSGFProperties(utils::Tree<SGFNode>& SGFTree, std::unordered_set<SGFProperty>& properties){
 
             // add all the properties from this Node
             std::unordered_map<SGFProperty, std::vector<std::string>> currentProperties = SGFTree.get().getProperties();
@@ -61,7 +61,7 @@ namespace sente {
 
         }
 
-        std::unordered_set<SGFProperty> getTreeProperties(Tree<SGFNode>& SGFTree){
+        std::unordered_set<SGFProperty> getTreeProperties(utils::Tree<SGFNode>& SGFTree){
 
             // record the current sequence of moves to get to this node
             std::vector<SGFNode> currentSequence = SGFTree.getSequence();
@@ -95,11 +95,11 @@ namespace sente {
                 }
             }
             else {
-                throw InvalidSGFException(message);
+                throw utils::InvalidSGFException(message);
             }
         }
 
-        void handleUnsupportedProperty(Tree<SGFNode>& SGFTree, unsigned& FFVersion, bool disableWarnings,
+        void handleUnsupportedProperty(utils::Tree<SGFNode>& SGFTree, unsigned& FFVersion, bool disableWarnings,
                                                                                     bool fixFileFormat) {
 
             unsigned oldFF = FFVersion;
@@ -133,7 +133,7 @@ namespace sente {
                 }
             }
             else {
-                throw InvalidSGFException("The Property \"" +
+                throw utils::InvalidSGFException("The Property \"" +
                                           toStr(offendingProperty) +
                                           "\" is not supported on this version of SGF (FF[" +
                                           std::to_string(FFVersion) + "])");
@@ -215,7 +215,7 @@ namespace sente {
 
         }
 
-        Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
+        utils::Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
                                                           bool ignoreIllegalProperties,
                                                           bool fixFileFormat){
 
@@ -224,7 +224,7 @@ namespace sente {
             // py::print("the first character is", *SGFText.begin());
 
             if (SGFText.empty()){
-                throw InvalidSGFException("File is Empty or unreadable");
+                throw utils::InvalidSGFException("File is Empty or unreadable");
             }
 
             bool inBrackets = false;
@@ -240,7 +240,7 @@ namespace sente {
 
             std::stack<unsigned> branchDepths{};
 
-            Tree<SGFNode> SGFTree;
+            utils::Tree<SGFNode> SGFTree;
             SGFNode tempNode;
 
             // go through the rest of the tree
@@ -259,7 +259,7 @@ namespace sente {
                             inBrackets = false;
                         }
                         else {
-                            throw InvalidSGFException("Extra Closing Bracket");
+                            throw utils::InvalidSGFException("Extra Closing Bracket");
                         }
                         break;
                     case '\\':
@@ -274,7 +274,7 @@ namespace sente {
                                 tempNode = nodeFromText(temp, disableWarnings, ignoreIllegalProperties);
 
                                 if (firstNode){
-                                    SGFTree = Tree<SGFNode>(tempNode);
+                                    SGFTree = utils::Tree<SGFNode>(tempNode);
                                     firstNode = false;
                                     if (SGFTree.get().hasProperty(FF)){
                                         FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
@@ -309,7 +309,7 @@ namespace sente {
                                 // add the property prior to this one
                                 tempNode = nodeFromText(temp, disableWarnings, ignoreIllegalProperties);
                                 if (firstNode){
-                                    SGFTree = Tree<SGFNode>(tempNode);
+                                    SGFTree = utils::Tree<SGFNode>(tempNode);
                                     firstNode = false;
                                     if (SGFTree.get().hasProperty(FF)){
                                         FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
@@ -340,7 +340,7 @@ namespace sente {
                                 branchDepths.pop();
                             }
                             else {
-                                throw InvalidSGFException("extra closing parentheses");
+                                throw utils::InvalidSGFException("extra closing parentheses");
                             }
 
                         }
@@ -353,7 +353,7 @@ namespace sente {
                                 tempNode = nodeFromText(strip(std::string(previousSlice, cursor)),
                                                         disableWarnings, ignoreIllegalProperties);
                                 if (firstNode){
-                                    SGFTree = Tree<SGFNode>(tempNode);
+                                    SGFTree = utils::Tree<SGFNode>(tempNode);
                                     firstNode = false;
                                     if (SGFTree.get().hasProperty(FF)){
                                         FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
@@ -380,17 +380,17 @@ namespace sente {
             }
 
             if (firstNode){
-                throw InvalidSGFException("Unable to find any SGF nodes in file");
+                throw utils::InvalidSGFException("Unable to find any SGF nodes in file");
             }
 
             if (SGFTree.getDepth() != 0){
-                throw InvalidSGFException("Missing Closing parentheses");
+                throw utils::InvalidSGFException("Missing Closing parentheses");
             }
 
             // make sure that the game we loaded is a go game
             if (SGFTree.get().hasProperty(GM)){
                 if (SGFTree.get().getProperty(GM)[0] != "1"){
-                    throw InvalidSGFException("Game is not a Go Game (Sente only parses Go Games)");
+                    throw utils::InvalidSGFException("Game is not a Go Game (Sente only parses Go Games)");
                 }
             }
 
@@ -398,7 +398,7 @@ namespace sente {
 
         }
 
-        void insertIntoSGF(Tree<SGFNode>& moves, std::stringstream& SGF){
+        void insertIntoSGF(utils::Tree<SGFNode>& moves, std::stringstream& SGF){
 
             // insert the current node
             SGF << ";" << std::string(moves.get());

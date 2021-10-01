@@ -13,7 +13,7 @@
 #define stringify(x) #x
 
 namespace sente {
-    namespace utils {
+    namespace sgf {
 
         bool isSGFLegal(SGFProperty property, unsigned version){
 
@@ -327,7 +327,7 @@ namespace sente {
                 return strToProperty[SGFProperty];
             }
             else {
-                throw InvalidSGFException("Invalid SGF command: \"" + SGFProperty + "\"");
+                throw utils::InvalidSGFException("Invalid SGF command: \"" + SGFProperty + "\"");
             }
         }
 
@@ -382,7 +382,7 @@ namespace sente {
 }
 
 namespace std {
-    size_t std::hash<sente::utils::SGFProperty>::operator()(const sente::utils::SGFProperty &SGFProperty) const noexcept {
+    size_t std::hash<sente::sgf::SGFProperty>::operator()(const sente::sgf::SGFProperty &SGFProperty) const noexcept {
         return unsigned(SGFProperty);
     }
 }

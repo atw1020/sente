@@ -9,7 +9,7 @@
 #include "../../Include/Utils/SenteExceptions.h"
 
 namespace sente {
-    namespace utils {
+    namespace sgf {
 
         void replace(std::string& base, const std::string& from, const std::string& to){
 
@@ -149,7 +149,7 @@ namespace sente {
                 else {
                     // make sure the value is valid
                     if (value.size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value + "]\"");
+                        throw utils::InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + value + "]\"");
                     }
                     if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
                         throw utils::InvalidSGFException("move does not use alphabetical letters");
@@ -165,7 +165,7 @@ namespace sente {
                 }
 
                 if (value.empty()){
-                    throw InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + value + "]\"");
+                    throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + value + "]\"");
                 }
                 else if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
                     throw utils::InvalidSGFException("move does not use alphabetical letters");
@@ -202,7 +202,7 @@ namespace sente {
                 else {
                     // make sure the value is valid
                     if (values[0].size() != 2){
-                        throw InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + values[0] + "]\"");
+                        throw utils::InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + values[0] + "]\"");
                     }
                     // get the co-ordinates from the move
                     move = {unsigned(values[0][1] - 'a'), unsigned(values[0][0] - 'a'), property == B ? BLACK : WHITE};
@@ -215,7 +215,7 @@ namespace sente {
 
                 for (const auto& item : values){
                     if (item.empty()){
-                        throw InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + item + "]\"");
+                        throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + item + "]\"");
                     }
                     if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
                         throw utils::InvalidSGFException("move does not use alphabetical letters");

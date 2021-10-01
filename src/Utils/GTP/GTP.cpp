@@ -3,4 +3,5 @@
 //
 // GTP reference http://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2.pdf
 
-#include "../include/GTP/Controller.h"
+#include "../../Include/Utils/GTP/GTP.h"
+

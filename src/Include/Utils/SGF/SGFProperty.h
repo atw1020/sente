@@ -8,7 +8,7 @@
 #include <string>
 
 namespace sente {
-    namespace utils {
+    namespace sgf {
         enum SGFProperty {
             NONE,
             /// data taken from https://www.red-bean.com/sgf/properties.html
@@ -124,8 +124,8 @@ namespace sente {
 namespace std {
 
     template<>
-    struct hash<sente::utils::SGFProperty> {
-        size_t operator()(const sente::utils::SGFProperty& sgfProperty) const noexcept;
+    struct hash<sente::sgf::SGFProperty> {
+        size_t operator()(const sente::sgf::SGFProperty& sgfProperty) const noexcept;
     };
 }
 

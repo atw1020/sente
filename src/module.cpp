@@ -596,7 +596,7 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+                    auto tree = sente::sgf::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                     return sente::GoGame(tree);
                 }
             },
@@ -615,7 +615,7 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
-                output << sente::utils::dumpSGF(game);
+                output << sente::sgf::dumpSGF(game);
             },
              py::arg("game"),
              py::arg("file_name"),
@@ -623,7 +623,7 @@ PYBIND11_MODULE(sente, module){
         .def("loads", [](const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
-                auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+                auto tree = sente::sgf::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
             },
             py::arg("sgf_text"),
@@ -640,7 +640,7 @@ PYBIND11_MODULE(sente, module){
                 :return: a ``sente.Game`` object populated with data from the SGF file
             )pbdoc")
         .def("dumps", [](const sente::GoGame& game){
-                return sente::utils::dumpSGF(game);
+                return sente::sgf::dumpSGF(game);
             },
             py::arg("game"),
             "Serialize a string as an SGF");
