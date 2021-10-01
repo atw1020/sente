@@ -271,7 +271,7 @@ PYBIND11_MODULE(sente, module){
 
                 :return: the stone color of the active player.
             )pbdoc")
-        .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y){
+        .def("is_legal", [](sente::GoGame& game, unsigned x, unsigned y){
                 return game.isLegal(x - 1, y - 1);
             },
             py::arg("x"),
@@ -291,7 +291,7 @@ PYBIND11_MODULE(sente, module){
                 :param y: The y co-ordinate of the move.
                 :return: whether or not the move satisfies the above conditions.
             )pbdoc")
-        .def("is_legal", [](const sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
+        .def("is_legal", [](sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
                 return game.isLegal(x - 1, y - 1, stone);
             },
             py::arg("x"),
@@ -307,7 +307,7 @@ PYBIND11_MODULE(sente, module){
                 :param stone: The color of the player making the move.
                 :return: whether or not the move satisfies the above conditions.
             )pbdoc")
-        .def("is_legal", [](const sente::GoGame& game, const sente::Move& move){
+        .def("is_legal", [](sente::GoGame& game, const sente::Move& move){
                 return game.isLegal(move);
             },
             py::arg("move"),

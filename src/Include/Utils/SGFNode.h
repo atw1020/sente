@@ -16,6 +16,7 @@ namespace sente {
 
             explicit SGFNode() = default;
             explicit SGFNode(const Move& move);
+            explicit SGFNode(const std::vector<std::string>& addedMoves);
 
             Move getMove() const;
 
@@ -36,6 +37,7 @@ namespace sente {
         private:
 
             Move move;
+            std::vector<Move> addedMoves;
             std::unordered_map<SGFProperty, std::vector<std::string>> properties;
 
         };

@@ -45,17 +45,21 @@ namespace sente {
         void resetBoard();
 
         ///
-        /// Move Legality
+        /// Moves
         ///
 
-        bool isLegal(const Move& move) const;
-        bool isLegal(unsigned x, unsigned y) const;
-        bool isLegal(unsigned x, unsigned y, Stone stone) const;
+        bool isLegal(const Move& move);
+        bool isLegal(unsigned x, unsigned y);
+        bool isLegal(unsigned x, unsigned y, Stone stone);
         bool isOver() const;
 
         void playStone(const Move& move);
         void playStone(unsigned x, unsigned y);
         void playStone(unsigned x, unsigned y, Stone stone);
+
+        bool isAddLegal(const Move& move);
+
+        void addStone(const Move& move);
 
         ///
         /// movement through the game tree
@@ -77,10 +81,21 @@ namespace sente {
         unsigned getMoveNumber() const;
         utils::Tree<utils::SGFNode> getMoveTree() const;
 
+        ///
+        /// Getting and setting properties
+        ///
+
         std::unordered_map<std::string, std::vector<std::string>> getProperties() const;
 
         void setProperty(const std::string& command, const std::string& value);
         void setProperty(const std::string& command, const std::vector<std::string>& values);
+
+        std::string getComment() const;
+        void setComment(const std::string& comment) const;
+
+        ///
+        /// Getter and Setter methods
+        ///
 
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
@@ -89,12 +104,9 @@ namespace sente {
 
         Results getResults() const;
         Results score() const;
-        std::vector<Move> getLegalMoves() const;
+        std::vector<Move> getLegalMoves();
 
         Point getKoPoint() const;
-
-        std::string getComment() const;
-        void setComment(const std::string& comment) const;
 
         explicit operator std::string() const;
 
@@ -122,7 +134,7 @@ namespace sente {
         void updateBoard(const Move& move);
         void connectGroups(const Move& move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);
 
-        bool isCorrectColor(const Move& move) const;
+        bool isCorrectColor(const Move& move);
         bool isNotSelfCapture(const Move& move) const;
         bool isNotKoPoint(const Move& move) const;
 
