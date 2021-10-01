@@ -19,10 +19,11 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
 
 add_subdirectory(pybind11)
-# pybind11_add_module(sente src/module.cpp src/Include/Move.h src/Move.cpp)
-pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Group.h src/Include/Game/GoGame.h src/Game/GoGame.cpp
-                    src/Game/Move.cpp src/Include/Game/Move.h src/Include/Game/Board.h src/Game/Board.cpp src/Include/Utils/Tree.h
-        src/Utils/SGF/SGF.cpp src/Include/Utils/SGF/SGF.h src/Include/Game/GoComponents.h src/Game/GoComponents.cpp
-                    src/Utils/SenteExceptions.cpp src/Include/Utils/SenteExceptions.h src/Include/Game/LifeAndDeath.h
-                    src/Game/LifeAndDeath.cpp src/Include/Utils/Numpy.h src/Utils/Numpy.cpp src/Include/Utils/SGF/SGFNode.h
-        src/Utils/SGF/SGFNode.cpp src/Include/Utils/SGF/SGFProperty.h src/Utils/SGF/SGFProperty.cpp)
+# pybind11_add_module(sente src/module.cpp src/include/Move.h src/Move.cpp)
+pybind11_add_module(sente src/module.cpp src/Group.cpp src/include/Group.h src/include/GoGame.h src/GoGame.cpp
+                          src/Move.cpp src/include/Move.h src/include/Board.h src/Board.cpp src/include/Tree.h
+                          src/SGF.cpp src/include/SGF.h src/include/GoComponents.h src/GoComponents.cpp
+                          src/SenteExceptions.cpp src/include/SenteExceptions.h src/include/LifeAndDeath.h
+                          src/LifeAndDeath.cpp src/include/Numpy.h src/Numpy.cpp src/include/GTP/Controller.h
+                          src/GTP/Controller.cpp src/include/GTP/Connector.h src/GTP/Connector.cpp
+                          src/include/GTP/GTP.h src/GTP/GTP.cpp src/GTP/Commands/Command.h src/GTP/Commands/Response.h)

@@ -1,8 +1,11 @@
-![](sente_logo.svg)
+[![](sente_logo.svg)](https://discord.gg/RyeFekyrFA)
+
+
+[<img src="https://discord.com/assets/ff41b628a47ef3141164bfedb04fb220.png" alt="drawing" width="200"/>](https://discord.gg/RyeFekyrFA)
 
 [![PyPI version](https://badge.fury.io/py/sente.svg)](https://badge.fury.io/py/sente)
 [![docs](https://readthedocs.org/projects/sente/badge/?version=latest)](https://sente.readthedocs.io/en/latest/)
-![tests](https://github.com/atw1020/sente/actions/workflows/tests.yml/badge.svg)
+[![tests](https://github.com/atw1020/sente/actions/workflows/tests.yml/badge.svg)](https://github.com/atw1020/sente/actions/workflows/tests.yml)
 [![pip](https://github.com/atw1020/sente/actions/workflows/pip.yml/badge.svg)](https://pypi.org/project/sente/)
 
 
