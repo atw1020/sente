@@ -17,7 +17,7 @@
 #include "../Utils/Tree.h"
 #include "Group.h"
 #include "GoComponents.h"
-#include "../Utils/SGFNode.h"
+#include "../Utils/SGF/SGFNode.h"
 
 #ifdef __CYGWIN__
 #include <ciso646>

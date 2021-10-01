@@ -8,7 +8,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
 
-#include "Include/Utils/SGF.h"
+#include "Include/Utils/SGF/SGF.h"
 #include "Include/Game/GoGame.h"
 #include "Include/Utils/Numpy.h"
 #include "Include/Utils/SenteExceptions.h"

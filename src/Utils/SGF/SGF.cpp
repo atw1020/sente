@@ -8,8 +8,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "../Include/Utils/SGF.h"
-#include "../Include/Utils/SenteExceptions.h"
+#include "../../Include/Utils/SGF/SGF.h"
+#include "../../Include/Utils/SenteExceptions.h"
 
 namespace py = pybind11;
 

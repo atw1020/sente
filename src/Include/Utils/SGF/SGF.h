@@ -7,10 +7,10 @@
 
 #include <string>
 
-#include "Tree.h"
+#include "../Tree.h"
 #include "SGFProperty.h"
-#include "../Game/GoGame.h"
-#include "../Game/GoComponents.h"
+#include "../../Game/GoGame.h"
+#include "../../Game/GoComponents.h"
 
 #ifdef __CYGWIN__
 #include <ciso646>

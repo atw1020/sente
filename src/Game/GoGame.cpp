@@ -2,12 +2,9 @@
 // Created by arthur wesley on 6/28/21.
 //
 
-#include <regex>
-#include <iostream>
+#include <stack>
 
 // #Include <pybind11/pybind11.h>
-
-#include <stack>
 
 #include "../Include/Game/GoGame.h"
 #include "../Include/Game/LifeAndDeath.h"
