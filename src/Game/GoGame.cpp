@@ -7,6 +7,8 @@
 
 // #Include <pybind11/pybind11.h>
 
+#include <stack>
+
 #include "../Include/Game/GoGame.h"
 #include "../Include/Game/LifeAndDeath.h"
 #include "../Include/Utils/SenteExceptions.h"
