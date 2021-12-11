@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(sente)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -26,5 +26,13 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Gro
                     src/Utils/SenteExceptions.cpp src/Include/Utils/SenteExceptions.h src/Include/Game/LifeAndDeath.h
                     src/Game/LifeAndDeath.cpp src/Include/Utils/Numpy.h src/Utils/Numpy.cpp src/Include/Utils/SGF/SGFNode.h
                     src/Utils/SGF/SGFNode.cpp src/Include/Utils/SGF/SGFProperty.h src/Utils/SGF/SGFProperty.cpp
-                    src/include/Utils/GTP/Command.h src/include/Utils/GTP/Response.h src/Utils/GTP/Connector.cpp
-                    src/Utils/GTP/Controller.cpp src/Utils/GTP/GTP.cpp)
+                    src/Include/Utils/GTP/Lexer/Token.h src/Include/Utils/GTP/Lexer/Operator.h
+                    src/Include/Utils/GTP/Lexer/Keyword.h src/Include/Utils/GTP/Lexer/Seperator.h
+                    src/Include/Utils/GTP/Lexer/Literals.h
+                    src/Include/Utils/GTP/Commands/ProtocolVersion.h src/Utils/GTP/Commands/ProtocolVersion.cpp
+                    src/Include/Utils/GTP/Commands/Name.h src/Utils/GTP/Commands/Name.cpp
+                    src/Include/Utils/GTP/Commands/KnownCommand.h src/Utils/GTP/Commands/KnownCommand.cpp
+                    src/Include/Utils/GTP/Exceptions/NotImplementedException.h src/Utils/GTP/Exceptions/NotImplementedException.cpp
+                    src/Include/Utils/GTP/Commands/ListCommands.h src/Utils/GTP/Commands/ListCommands.cpp
+                    src/Include/Utils/GTP/Commands/Quit.h src/Utils/GTP/Commands/Quit.cpp
+                    src/Include/Utils/GTP/Commands/SupportedCommands.h)
