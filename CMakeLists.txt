@@ -29,10 +29,10 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Gro
                     src/Include/Utils/GTP/Lexer/Token.h src/Include/Utils/GTP/Lexer/Operator.h
                     src/Include/Utils/GTP/Lexer/Keyword.h src/Include/Utils/GTP/Lexer/Seperator.h
                     src/Include/Utils/GTP/Lexer/Literals.h
-                    src/Include/Utils/GTP/Commands/ProtocolVersion.h src/Utils/GTP/Commands/ProtocolVersion.cpp
-                    src/Include/Utils/GTP/Commands/Name.h src/Utils/GTP/Commands/Name.cpp
-                    src/Include/Utils/GTP/Commands/KnownCommand.h src/Utils/GTP/Commands/KnownCommand.cpp
+                    src/Include/Utils/GTP/Commands/Administrative/ProtocolVersion.h src/Utils/GTP/Commands/Administrative/ProtocolVersion.cpp
+                    src/Include/Utils/GTP/Commands/Administrative/Name.h src/Utils/GTP/Commands/Administrative/Name.cpp
+                    src/Include/Utils/GTP/Commands/Administrative/KnownCommand.h src/Utils/GTP/Commands/Administrative/KnownCommand.cpp
                     src/Include/Utils/GTP/Exceptions/NotImplementedException.h src/Utils/GTP/Exceptions/NotImplementedException.cpp
-                    src/Include/Utils/GTP/Commands/ListCommands.h src/Utils/GTP/Commands/ListCommands.cpp
-                    src/Include/Utils/GTP/Commands/Quit.h src/Utils/GTP/Commands/Quit.cpp
-                    src/Include/Utils/GTP/Commands/SupportedCommands.h)
+                    src/Include/Utils/GTP/Commands/Administrative/ListCommands.h src/Utils/GTP/Commands/Administrative/ListCommands.cpp
+                    src/Include/Utils/GTP/Commands/Administrative/Quit.h src/Utils/GTP/Commands/Administrative/Quit.cpp
+                    src/Include/Utils/GTP/Commands/Administrative/SupportedCommands.h)

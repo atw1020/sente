@@ -5,7 +5,7 @@
 #ifndef SENTE_QUIT_H
 #define SENTE_QUIT_H
 
-#include "../Lexer/Operator.h"
+#include "../../Lexer/Operator.h"
 
 namespace sente::GTP {
 

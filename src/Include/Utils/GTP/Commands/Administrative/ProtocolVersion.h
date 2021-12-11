@@ -5,7 +5,7 @@
 #ifndef SENTE_PROTOCOLVERSION_H
 #define SENTE_PROTOCOLVERSION_H
 
-#include "../Lexer/Operator.h"
+#include "../../Lexer/Operator.h"
 
 namespace sente::GTP {
 

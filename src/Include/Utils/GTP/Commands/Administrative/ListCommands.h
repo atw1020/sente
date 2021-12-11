@@ -5,7 +5,7 @@
 #ifndef SENTE_LISTCOMMANDS_H
 #define SENTE_LISTCOMMANDS_H
 
-#include "../Lexer/Operator.h"
+#include "../../Lexer/Operator.h"
 
 namespace sente::GTP {
 

@@ -5,7 +5,7 @@
 #ifndef SENTE_NAME_H
 #define SENTE_NAME_H
 
-#include "../Lexer/Operator.h"
+#include "../../Lexer/Operator.h"
 
 namespace sente::GTP {
 

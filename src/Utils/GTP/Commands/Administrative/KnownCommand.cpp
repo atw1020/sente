@@ -2,9 +2,9 @@
 // Created by arthur wesley on 12/11/21.
 //
 
-#include "../../../Include/Utils/GTP/Commands/KnownCommand.h"
+#include "../../../../Include/Utils/GTP/Commands/Administrative/KnownCommand.h"
 
-#include "../../../Include/Utils/GTP/Commands/SupportedCommands.h"
+#include "../../../../Include/Utils/GTP/Commands/Administrative/SupportedCommands.h"
 
 namespace sente::GTP {
 
