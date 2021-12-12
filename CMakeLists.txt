@@ -26,13 +26,9 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Gro
                     src/Utils/SenteExceptions.cpp src/Include/Utils/SenteExceptions.h src/Include/Game/LifeAndDeath.h
                     src/Game/LifeAndDeath.cpp src/Include/Utils/Numpy.h src/Utils/Numpy.cpp src/Include/Utils/SGF/SGFNode.h
                     src/Utils/SGF/SGFNode.cpp src/Include/Utils/SGF/SGFProperty.h src/Utils/SGF/SGFProperty.cpp
-                    src/Include/Utils/GTP/Lexer/Token.h src/Include/Utils/GTP/Lexer/Operator.h
-                    src/Include/Utils/GTP/Lexer/Keyword.h src/Include/Utils/GTP/Lexer/Seperator.h
-                    src/Include/Utils/GTP/Lexer/Literals.h
-                    src/Include/Utils/GTP/Commands/Administrative/ProtocolVersion.h src/Utils/GTP/Commands/Administrative/ProtocolVersion.cpp
-                    src/Include/Utils/GTP/Commands/Administrative/Name.h src/Utils/GTP/Commands/Administrative/Name.cpp
-                    src/Include/Utils/GTP/Commands/Administrative/KnownCommand.h src/Utils/GTP/Commands/Administrative/KnownCommand.cpp
-                    src/Include/Utils/GTP/Exceptions/NotImplementedException.h src/Utils/GTP/Exceptions/NotImplementedException.cpp
-                    src/Include/Utils/GTP/Commands/Administrative/ListCommands.h src/Utils/GTP/Commands/Administrative/ListCommands.cpp
-                    src/Include/Utils/GTP/Commands/Administrative/Quit.h src/Utils/GTP/Commands/Administrative/Quit.cpp
-                    src/Include/Utils/GTP/Commands/Administrative/SupportedCommands.h)
+                    src/Include/Utils/GTP/Tokens/Token.h src/Utils/GTP/Tokens/Token.cpp
+                    src/Include/Utils/GTP/Tokens/Operator.h src/Utils/GTP/Tokens/Operator.cpp
+                    src/Include/Utils/GTP/Tokens/Keyword.h src/Utils/GTP/Tokens/Keyword.cpp
+                    src/Include/Utils/GTP/Tokens/Seperator.h src/Utils/GTP/Tokens/Seperator.cpp
+                    src/Include/Utils/GTP/Tokens/Literal.h src/Utils/GTP/Tokens/Literal.cpp
+                    src/Include/Utils/GTP/Parser.h src/Utils/GTP/Parser.cpp)

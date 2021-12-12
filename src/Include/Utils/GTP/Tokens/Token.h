@@ -7,17 +7,11 @@
 
 #include <string>
 
+
 namespace sente::GTP {
 
     class Token {
-    public:
 
-        explicit Token(std::string);
-
-        std::string getValue();
-
-    protected:
-        std::string value;
     };
 }
 

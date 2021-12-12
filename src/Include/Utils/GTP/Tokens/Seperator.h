@@ -5,13 +5,15 @@
 #ifndef SENTE_SEPERATOR_H
 #define SENTE_SEPERATOR_H
 
+
 #include "Token.h"
 
 namespace sente::GTP {
 
-    class Seperator : Token {
+    class Seperator : public Token{
 
     };
+
 }
 
 
