@@ -11,7 +11,8 @@
 namespace sente::GTP {
 
     class Seperator : public Token{
-
+    public:
+        explicit Seperator(std::string text) : Token(std::move(text)) {};
     };
 
 }

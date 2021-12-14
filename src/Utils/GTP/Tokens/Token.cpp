@@ -3,3 +3,11 @@
 //
 
 #include "../../../Include/Utils/GTP/Tokens/Token.h"
+
+namespace sente::GTP {
+
+    Token::Token(std::string text) {
+        this->text = std::move(text);
+    }
+
+}

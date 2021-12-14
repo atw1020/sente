@@ -12,7 +12,7 @@ namespace sente::GTP {
     class Operator : public Token {
     public:
 
-        Operator(std::string value);
+        explicit Operator(std::string value) : Token(std::move(value)) {};
 
     };
 
