@@ -55,10 +55,10 @@ namespace sente::GTP {
 
     }
 
-    std::vector<std::unique_ptr<Token>> parse(const std::string& text){
+    std::vector<std::shared_ptr<Token>> parse(const std::string& text){
 
         // begin by splitting the text on spaces
-        std::vector<std::unique_ptr<Token>> tokens;
+        std::vector<std::shared_ptr<Token>> tokens;
 
         unsigned position = 0;
 
@@ -74,36 +74,36 @@ namespace sente::GTP {
 
         // add a newline if the last element we parse is not a seperator
         if (not instanceof<Seperator>(tokens[-1].get())){
-            tokens.push_back(std::make_unique<Seperator>("\n"));
+            tokens.push_back(std::make_shared<Seperator>("\n"));
         }
 
         return tokens;
 
     }
 
-    std::unique_ptr<Token> parseToken(const std::string& token){
+    std::shared_ptr<Token> parseToken(const std::string& token){
 
         // regex for a vertex
         std::regex vertex("[A-H,J-Z]\\d{1,2}");
 
         if (operators.find(token) != operators.end()){
-            return std::make_unique<Operator>(token);
+            return std::make_shared<Operator>(token);
         }
 
         if (keywords.find(token) != keywords.end()){
-            return std::make_unique<Keyword>(token);
+            return std::make_shared<Keyword>(token);
         }
 
         if (std::regex_match(token, vertex)){
-            return std::make_unique<Vertex>(token);
+            return std::make_shared<Vertex>(token);
         }
 
         if (std::all_of(token.begin(), token.end(), ::isnumber)){
-            return std::make_unique<Integer>(token);
+            return std::make_shared<Integer>(token);
         }
 
         else {
-            return std::make_unique<String>(token);
+            return std::make_shared<String>(token);
         }
 
     }

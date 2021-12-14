@@ -13,7 +13,9 @@ namespace sente::GTP {
     class Token {
     public:
 
-        Token(std::string text);
+        explicit Token(std::string text);
+
+        std::string getText();
 
     protected:
 

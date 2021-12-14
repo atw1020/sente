@@ -3,3 +3,15 @@
 //
 
 #include "../../../Include/Utils/GTP/Tokens/Operator.h"
+
+namespace sente::GTP {
+
+    Operator::Operator(std::string value) : Token(std::move(value)) {
+        name = operators[value];
+    }
+
+    OperatorName Operator::getName() const {
+        return name;
+    }
+
+}
