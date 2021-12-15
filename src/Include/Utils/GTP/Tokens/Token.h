@@ -10,12 +10,23 @@
 
 namespace sente::GTP {
 
+    enum tokenType {
+        OPERATOR,
+        KEYWORD,
+        SEPERATOR,
+        LITERAL_INTEGER,
+        LITERAL_VERTEX,
+        LITERAL_STRING
+    };
+
     class Token {
     public:
 
         explicit Token(std::string text);
 
         std::string getText();
+
+        virtual tokenType getType() const;
 
     protected:
 

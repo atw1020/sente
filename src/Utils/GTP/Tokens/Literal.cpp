@@ -2,10 +2,10 @@
 // Created by arthur wesley on 12/11/21.
 //
 
+#include "../../../Include/Utils/GTP/Tokens/Literal.h"
+
 #include <string>
 #include <utility>
-
-#include "../../../Include/Utils/GTP/Tokens/Literal.h"
 
 namespace sente::GTP {
 
@@ -19,12 +19,20 @@ namespace sente::GTP {
         return value;
     }
 
+    tokenType Integer::getType() const {
+        return LITERAL_INTEGER;
+    }
+
     unsigned int Vertex::getX() const {
         return x;
     }
 
     unsigned Vertex::getY() const {
         return y;
+    }
+
+    tokenType Vertex::getType() const {
+        return LITERAL_VERTEX;
     }
 
     Vertex::Vertex(const std::string& vertex) : Literal(vertex) {
@@ -45,4 +53,9 @@ namespace sente::GTP {
     String::String(const std::string& text) : Literal(text) {
         this->text = text;
     }
+
+    tokenType String::getType() const {
+        return LITERAL_STRING;
+    }
+
 }

@@ -13,6 +13,8 @@ namespace sente::GTP {
     class Literal : public Token{
     public:
         explicit Literal(std::string text);
+
+        virtual tokenType getType() const;
     };
 
     class Integer : public Literal {
@@ -22,10 +24,11 @@ namespace sente::GTP {
 
         unsigned getValue() const;
 
+        tokenType getType() const;
+
     private:
 
         unsigned value;
-
     };
 
     class Vertex : public Literal{
@@ -35,6 +38,8 @@ namespace sente::GTP {
 
         unsigned getX() const;
         unsigned getY() const;
+
+        tokenType getType() const;
 
     private:
 
@@ -46,6 +51,7 @@ namespace sente::GTP {
     class String : public Literal {
     public:
         explicit String(const std::string& text);
+        tokenType getType() const;
     };
 
 }
