@@ -19,6 +19,8 @@ namespace sente::GTP {
         LITERAL_STRING
     };
 
+    std::string toString(tokenType type);
+
     class Token {
     public:
 

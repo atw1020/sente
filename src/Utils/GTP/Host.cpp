@@ -163,27 +163,42 @@ namespace sente::GTP {
 
         if (candidates.empty()){
             // if there are no valid candidates, give an error based on the number of arguments
-            message << "invalid number of arguments; expected";
+            message << "invalid number of arguments for function " << arguments[0]->getText() << "; expected ";
 
             std::set<unsigned> expectedArguments;
 
             for (const auto& pattern : argumentPatterns){
-                expectedArguments.insert(pattern.size());
+                expectedArguments.insert(pattern.size() - 1); // minus 1 because the first argument is the operator
             }
 
             message << *expectedArguments.begin();
 
-            for (auto argumentCount = ++expectedArguments.begin();
-                 argumentCount != --expectedArguments.end() and argumentCount != expectedArguments.end(); argumentCount++){
-                message << ", " << *argumentCount;
+            if (expectedArguments.size() > 2){
+                for (auto argumentCount = ++expectedArguments.begin();
+                     argumentCount != --expectedArguments.end(); argumentCount++){
+                    message << ", " << *argumentCount;
+                }
             }
 
-            message << "or, " << *(--expectedArguments.end());
+            if (expectedArguments.size() > 1){
+                message << "or " << *(--expectedArguments.end());
+            }
+
+            message << " arguments, got " << arguments.size();
+
         }
         else {
 
-            for (const auto& candidate : candidates){
+            message << "no viable argument pattern for function " << arguments[0]->getText();
 
+            for (const auto& candidate : candidates){
+                // find the error
+                for (unsigned i = 0; i < arguments.size(); i++){
+                    if (arguments[i]->getType() != candidate[i].second){
+                        message << std::endl << "candidate pattern not valid: expected " << toString(candidate[i].second)
+                        << " in position " << i << ", got" << toString(arguments[i]->getType());
+                    }
+                }
             }
 
         }
