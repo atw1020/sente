@@ -914,4 +914,12 @@ namespace sente {
         }
     }
 
+    Rules GoGame::getRules() const {
+        return rules;
+    }
+
+    double GoGame::getKomi() const {
+        return komi;
+    }
+
 }

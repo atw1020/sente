@@ -20,6 +20,8 @@ namespace sente::GTP {
 
         explicit Integer(const std::string& literal);
 
+        unsigned getValue() const;
+
     private:
 
         unsigned value;

@@ -108,6 +108,9 @@ namespace sente {
 
         Point getKoPoint() const;
 
+        Rules getRules() const;
+        double getKomi() const;
+
         explicit operator std::string() const;
 
     private:

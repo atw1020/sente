@@ -37,9 +37,11 @@ namespace sente::GTP {
             if (instanceof<Integer>(arguments[0].get())){
                 candidate = arguments[1];
                 // TODO: check for invalid command number
+                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 2, arguments.end());
             }
             else {
                 candidate = arguments[0];
+                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
             }
 
             if (instanceof<Operator>(&candidate)){
@@ -48,29 +50,29 @@ namespace sente::GTP {
 
                 switch (command->getName()){
                     case PROTOCOL_VERSION:
-                        response << protocolVersion() << std::endl;
+                        response << protocolVersion(arguments);
                         break;
                     case NAME:
-                        response << name() << std::endl;
+                        response << name(arguments);
                         break;
-                    case KNOWN_COMMANDS:
-                        response << knownCommands() << std::endl;
+                    case KNOWN_COMMAND:
+                        response << knownCommand(arguments);
                         break;
-                    case QUIT:
-                        // exit the function
-                        return response.str();
                     case BOARD_SIZE:
-
+                        response << boardSize(arguments);
+                        break;
                     case VERSION:
                         // TODO: implement
                     default:
-                        response << errorMessage("Unimplemented GTP command \"" + candidate->getText() + "\"")
-                                 << std::endl;
+                        response << errorMessage("Unimplemented GTP command \"" + candidate->getText() + "\"");
                         continue;
+                    case QUIT:
+                        // exit the function
+                        return response.str();
                 }
             }
             else {
-                response << errorMessage("Unknown GTP command \"" + candidate->getText() + "\"") << std::endl;
+                response << errorMessage("Unknown GTP command \"" + candidate->getText() + "\"");
                 continue;
             }
 
@@ -80,25 +82,95 @@ namespace sente::GTP {
     }
 
     std::string Host::errorMessage(const std::string& message) const {
-        return "?" + std::to_string(commandIndex) + message;
+        return "?" + std::to_string(commandIndex) + " " + message + "\n\n";
     }
 
-    std::string Host::protocolVersion() {
-        return "2";
+    std::string Host::statusMessage(const std::string &message) const {
+        return "=" + std::to_string(commandIndex) + " " + message + "\n\n";
     }
 
-    std::string Host::name() {
-        return "Engine running with Sente";
+    std::string Host::tooManyArgumentsError(const std::vector<std::shared_ptr<Token>> &arguments,
+                                            unsigned expectedArguments) const {
+        std::stringstream message;
+
+        assert(arguments.size() > expectedArguments);
+
+        message << "got " << arguments.size() - expectedArguments << " unexpected arguments";
+
+        for (unsigned i = expectedArguments; i < arguments.size(); i++){
+            message << std::endl << "unexpected argument: " << arguments[i]->getText();
+        }
+
+        return errorMessage(message.str());
+
     }
 
-    std::string Host::knownCommands() {
+    std::string Host::notEnoughArgumentsError(const std::vector<std::shared_ptr<Token>> &arguments,
+                                              const std::vector<std::string> argumentNames) const {
+
+        std::stringstream message;
+
+        assert(arguments.size() < argumentNames.size());
+
+        message << "missing " << argumentNames.size() - arguments.size() << " arguments";
+
+        for (unsigned i = arguments.size(); i < argumentNames.size(); i++){
+            message << std::endl << "missing argument \"" << argumentNames[i] << "\"";
+        }
+
+        return errorMessage(message.str());
+    }
+
+    std::string Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
+        if (arguments.size() == 0){
+            return statusMessage("2");
+        }
+        else {
+            return errorMessage("unexpected arguments");
+        }
+    }
+
+    std::string Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
+        return "=Engine running with Sente";
+    }
+
+    std::string Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
         std::stringstream response;
 
+        // TODO: check to see if each item should be on a newline
         for (const auto& item : operators){
             response << item.first << std::endl;
         }
 
-        return response.str();
+        return statusMessage(response.str());
+    }
+
+    std::string Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
+
+        if (instanceof<String>(arg)){
+            auto* command = (String*) arg;
+            if (operators.find(arg->getText()) != operators.end()){
+                return statusMessage("true");
+            }
+            else {
+                return statusMessage("false");
+            }
+        }
+        else {
+            return statusMessage("false");
+        }
+
+    }
+
+    std::string Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
+        if (instanceof<Integer>(token)){
+            unsigned side = ((Integer*) token)->getValue();
+            game = GoGame(side, game.getRules(), game.getKomi());
+            return statusMessage("");
+        }
+        else {
+            return errorMessage("unacceptable size");
+        }
     }
 
 }

@@ -15,6 +15,10 @@ namespace sente::GTP {
         value = std::stoi(text);
     }
 
+    unsigned int Integer::getValue() const {
+        return value;
+    }
+
     unsigned int Vertex::getX() const {
         return x;
     }
