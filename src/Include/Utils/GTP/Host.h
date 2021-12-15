@@ -33,13 +33,8 @@ namespace sente::GTP {
         std::string errorMessage(const std::string& message) const;
         std::string statusMessage(const std::string& message) const;
 
-        std::string tooManyArgumentsError(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
-                                          const std::vector<std::shared_ptr<Token>> &arguments) const;
-        std::string notEnoughArgumentsError(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
-                                            const std::vector<std::shared_ptr<Token>> &arguments) const;
-
-        static bool doArgumentsMatch(const std::vector<std::pair<std::string, tokenType>>& expectedTypes,
-                                     const std::vector<std::shared_ptr<Token>>& arguments);
+        static bool argumentsMatch(const std::vector<std::pair<std::string, tokenType>>& expectedTypes,
+                                   const std::vector<std::shared_ptr<Token>>& arguments);
         std::string invalidArgumentsErrorMessage(const std::unordered_set<std::vector<std::pair<std::string, tokenType>>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments) const;
 

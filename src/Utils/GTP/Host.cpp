@@ -11,7 +11,6 @@
 #include "../../Include/JavaUtils.h"
 #include "../../Include/Utils/GTP/Tokens/Seperator.h"
 #include "../../Include/Utils/GTP/Tokens/Operator.h"
-#include "../../Include/Utils/GTP/Tokens/Literal.h"
 
 namespace sente::GTP {
 
@@ -38,11 +37,10 @@ namespace sente::GTP {
             if (instanceof<Integer>(arguments[0].get())){
                 candidate = arguments[1];
                 // TODO: check for invalid command number
-                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 2, arguments.end());
+                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
             }
             else {
                 candidate = arguments[0];
-                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
             }
 
             if (instanceof<Operator>(&candidate)){
@@ -90,47 +88,7 @@ namespace sente::GTP {
         return "=" + std::to_string(commandIndex) + " " + message + "\n\n";
     }
 
-    std::string Host::tooManyArgumentsError(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
-                                            const std::vector<std::shared_ptr<Token>> &arguments) const {
-        std::stringstream message;
-
-        assert(arguments.size() > expectedArguments.size());
-
-        message << "got " << arguments.size() - expectedArguments.size() << " unexpected arguments";
-
-        for (unsigned i = expectedArguments.size(); i < arguments.size(); i++){
-            message << std::endl << "unexpected argument: " << arguments[i]->getText();
-        }
-
-        return errorMessage(message.str());
-
-    }
-
-    std::string Host::notEnoughArgumentsError(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
-                                              const std::vector<std::shared_ptr<Token>> &arguments) const {
-
-        std::stringstream message;
-
-        assert(arguments.size() < expectedArguments.size());
-
-        message << "missing " << expectedArguments.size() - arguments.size() << " arguments";
-
-        for (unsigned i = arguments.size(); i < expectedArguments.size(); i++){
-            message << std::endl << "missing argument \"" << expectedArguments[i].first << "\" in position " << i;
-        }
-
-        return errorMessage(message.str());
-    }
-
-    /**
-     *
-     * counts the number of arguments that match the expected argument pattern
-     *
-     * @param expectedArguments
-     * @param arguments
-     * @return
-     */
-    bool Host::doArgumentsMatch(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
+    bool Host::argumentsMatch(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
@@ -163,7 +121,7 @@ namespace sente::GTP {
 
         if (candidates.empty()){
             // if there are no valid candidates, give an error based on the number of arguments
-            message << "invalid number of arguments for function " << arguments[0]->getText() << "; expected ";
+            message << "invalid number of arguments for command \"" << arguments[0]->getText() << "\"; expected ";
 
             std::set<unsigned> expectedArguments;
 
@@ -189,7 +147,7 @@ namespace sente::GTP {
         }
         else {
 
-            message << "no viable argument pattern for function " << arguments[0]->getText();
+            message << "no viable argument pattern for command \"" << arguments[0]->getText() << "\"";
 
             for (const auto& candidate : candidates){
                 // find the error
@@ -209,26 +167,40 @@ namespace sente::GTP {
 
 
     std::string Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
-        if (arguments.size() == 0){
+
+        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+                {{"command", OPERATOR}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
             return statusMessage("2");
         }
         else {
-            return tooManyArgumentsError(arguments, 0);
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
+
     }
 
     std::string Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
-        if (arguments.size() == 0){
+        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+                {{"command", OPERATOR}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
             return statusMessage(engineName);
         }
         else {
-            return tooManyArgumentsError(arguments, 0);
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
 
     std::string Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        if (arguments.size() == 0){
+        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+                {{"command", OPERATOR}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
             std::stringstream response;
 
             // TODO: check to see if each item should be on a newline
@@ -239,28 +211,46 @@ namespace sente::GTP {
             return statusMessage(response.str());
         }
         else {
-            return tooManyArgumentsError(arguments, 0);
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
 
     std::string Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
-        if (instanceof<Operator>(arguments[0].get())){
-            return statusMessage("true");
+
+        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+                {{"command", OPERATOR}, {"command", OPERATOR}},
+                {{"command", OPERATOR}, {"string", LITERAL_STRING}}
+        };
+
+        if (std::any_of(argumentPatterns.begin(), argumentPatterns.end(),this->argumentsMatch)){
+
+            if (arguments[1]->getType() == OPERATOR){
+                return statusMessage("true");
+            }
+            else {
+                return statusMessage("false");
+            }
+
         }
         else {
-            return statusMessage("false");
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
 
     }
 
     std::string Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
-        if (instanceof<Integer>(token)){
-            unsigned side = ((Integer*) token)->getValue();
+
+        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+                {{"command", OPERATOR}, {"command", LITERAL_INTEGER}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
+            unsigned side = ((Integer*) arguments[1].get())->getValue();
             game = GoGame(side, game.getRules(), game.getKomi());
             return statusMessage("");
         }
         else {
-            return errorMessage("unacceptable size");
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
 }
