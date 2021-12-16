@@ -10,12 +10,25 @@
 
 namespace sente::GTP {
 
+    enum literalType {
+        INTEGER,
+        VERTEX,
+        STRING,
+        COLOR,
+        FLOAT,
+        BOOLEAN
+    };
+
     class Literal : public Token{
     public:
-        explicit Literal(std::string text);
 
-        virtual tokenType getType() const;
+        explicit Literal(const std::string& text);
+
+        virtual tokenType getTokenType() const override final;
+        virtual literalType getLiteralType() const;
     };
+
+    std::string toString(literalType type);
 
     class Integer : public Literal {
     public:
@@ -24,7 +37,7 @@ namespace sente::GTP {
 
         unsigned getValue() const;
 
-        tokenType getType() const;
+        literalType getLiteralType() const override;
 
     private:
 
@@ -39,19 +52,30 @@ namespace sente::GTP {
         unsigned getX() const;
         unsigned getY() const;
 
-        tokenType getType() const;
+        literalType getLiteralType() const override;
 
     private:
 
         unsigned x;
         unsigned y;
-
     };
 
     class String : public Literal {
     public:
-        explicit String(const std::string& text);
-        tokenType getType() const;
+        literalType getLiteralType() const;
+    };
+
+    enum color {
+        BLACK,
+        WHITE
+    };
+
+    class Color : public Literal {
+    public:
+        explicit Color(const std::string& text);
+        literalType getLiteralType() const;
+    private:
+
     };
 
 }

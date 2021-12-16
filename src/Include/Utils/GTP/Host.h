@@ -8,6 +8,7 @@
 #include "Parser.h"
 
 #include <string>
+#include <variant>
 
 #include "../../Game/GoGame.h"
 
@@ -33,9 +34,9 @@ namespace sente::GTP {
         std::string errorMessage(const std::string& message) const;
         std::string statusMessage(const std::string& message) const;
 
-        static bool argumentsMatch(const std::vector<std::pair<std::string, tokenType>>& expectedTypes,
+        static bool argumentsMatch(const std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>& expectedTypes,
                                    const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string invalidArgumentsErrorMessage(const std::unordered_set<std::vector<std::pair<std::string, tokenType>>>& argumentPatterns,
+        std::string invalidArgumentsErrorMessage(const std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments) const;
 
         std::string protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
@@ -43,6 +44,7 @@ namespace sente::GTP {
         std::string knownCommand(const std::vector<std::shared_ptr<Token>>& arguments);
         std::string listCommands(const std::vector<std::shared_ptr<Token>>& arguments);
         std::string boardSize(const std::vector<std::shared_ptr<Token>>& arguments);
+        std::string resetBoard(const std::vector<std::shared_ptr<Token>>& arguments);
 
     };
 }

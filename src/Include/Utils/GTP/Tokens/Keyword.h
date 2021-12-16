@@ -11,24 +11,12 @@
 
 namespace sente::GTP {
 
-    enum KeywordName {
-        BLACK,
-        WHITE
-    };
-
-    std::map<std::string, KeywordName> keywords{
-            {"black", BLACK},
-            {"white", WHITE},
-            {"b", BLACK},
-            {"w", WHITE}
-    };
-
     class Keyword : public Token{
     public:
 
         Keyword(std::string);
 
-        tokenType getType() const;
+        tokenType getTokenType() const;
 
     };
 }

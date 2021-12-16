@@ -147,7 +147,6 @@ namespace sente {
 
         }
 
-
         explicit operator std::string() const override{
 
             std::stringstream accumulator;

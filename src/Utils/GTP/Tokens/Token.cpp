@@ -14,12 +14,8 @@ namespace sente::GTP {
                 return "keyword";
             case SEPERATOR:
                 return "seperator";
-            case LITERAL_INTEGER:
-                return "integer";
-            case LITERAL_VERTEX:
-                return "vertex";
-            case LITERAL_STRING:
-                return "string";
+            case LITERAL:
+                return "";
         }
     }
 

@@ -14,9 +14,7 @@ namespace sente::GTP {
         OPERATOR,
         KEYWORD,
         SEPERATOR,
-        LITERAL_INTEGER,
-        LITERAL_VERTEX,
-        LITERAL_STRING
+        LITERAL
     };
 
     std::string toString(tokenType type);
@@ -26,9 +24,9 @@ namespace sente::GTP {
 
         explicit Token(std::string text);
 
-        std::string getText();
+        virtual std::string getText();
 
-        virtual tokenType getType() const;
+        virtual tokenType getTokenType() const = 0;
 
     protected:
 

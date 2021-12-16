@@ -4,8 +4,8 @@
 
 #include "../../Include/Utils/GTP/Host.h"
 
-#include <vector>
 #include <set>
+#include <vector>
 
 #include "../../Include/Utils/GTP/Parser.h"
 #include "../../Include/JavaUtils.h"
@@ -60,6 +60,9 @@ namespace sente::GTP {
                     case BOARD_SIZE:
                         response << boardSize(arguments);
                         break;
+                    case LIST_COMMANDS:
+                        response << listCommands(arguments);
+                        break;
                     case VERSION:
                         // TODO: implement
                     default:
@@ -88,7 +91,7 @@ namespace sente::GTP {
         return "=" + std::to_string(commandIndex) + " " + message + "\n\n";
     }
 
-    bool Host::argumentsMatch(const std::vector<std::pair<std::string, tokenType>> &expectedArguments,
+    bool Host::argumentsMatch(const std::vector<std::pair<std::string, std::variant<literalType, tokenType>>> &expectedArguments,
                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
@@ -96,7 +99,7 @@ namespace sente::GTP {
         }
 
         for (unsigned i = 0; i < arguments.size(); i++){
-            if (arguments[i]->getType() != expectedArguments[i].second){
+            if (arguments[i]->getTokenType() != expectedArguments[i].second){
                 return false;
             }
         }
@@ -105,12 +108,12 @@ namespace sente::GTP {
 
     }
 
-    std::string Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<std::pair<std::string, tokenType>>>& argumentPatterns,
+    std::string Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>>& argumentPatterns,
                                                    const std::vector<std::shared_ptr<Token>> &arguments) const {
 
         std::stringstream message;
 
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> candidates;
+        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> candidates;
 
         // first, find all the candidate patterns (patters with the correct number of arguments)
         for (const auto& pattern : argumentPatterns){
@@ -152,9 +155,9 @@ namespace sente::GTP {
             for (const auto& candidate : candidates){
                 // find the error
                 for (unsigned i = 0; i < arguments.size(); i++){
-                    if (arguments[i]->getType() != candidate[i].second){
+                    if (arguments[i]->getTokenType() != candidate[i].second){
                         message << std::endl << "candidate pattern not valid: expected " << toString(candidate[i].second)
-                        << " in position " << i << ", got" << toString(arguments[i]->getType());
+                        << " in position " << i << ", got" << toString(arguments[i]->getTokenType());
                     }
                 }
             }
@@ -168,7 +171,7 @@ namespace sente::GTP {
 
     std::string Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -182,7 +185,7 @@ namespace sente::GTP {
     }
 
     std::string Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -196,7 +199,7 @@ namespace sente::GTP {
 
     std::string Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -217,14 +220,14 @@ namespace sente::GTP {
 
     std::string Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
                 {{"command", OPERATOR}, {"command", OPERATOR}},
-                {{"command", OPERATOR}, {"string", LITERAL_STRING}}
+                {{"command", OPERATOR}, {"string", STRING}}
         };
 
         if (std::any_of(argumentPatterns.begin(), argumentPatterns.end(),this->argumentsMatch)){
 
-            if (arguments[1]->getType() == OPERATOR){
+            if (arguments[1]->getTokenType() == OPERATOR){
                 return statusMessage("true");
             }
             else {
@@ -240,8 +243,9 @@ namespace sente::GTP {
 
     std::string Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
-                {{"command", OPERATOR}, {"command", LITERAL_INTEGER}}
+        // TODO: check to make sure that boardSize clears the board
+        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
+                {{"command", OPERATOR}, {"command", INTEGER}}
         };
 
         if (argumentsMatch(*argumentPatterns.begin(), arguments)){
@@ -253,4 +257,11 @@ namespace sente::GTP {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
+
+    std::string Host::resetBoard(const std::vector<std::shared_ptr<Token>> &arguments) {
+        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+                {{"command", OPERATOR}}
+        };
+    }
+
 }

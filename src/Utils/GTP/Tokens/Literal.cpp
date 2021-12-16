@@ -9,7 +9,28 @@
 
 namespace sente::GTP {
 
-    Literal::Literal(std::string text) : Token(std::move(text)){}
+    std::string toString(literalType type){
+        switch (type){
+            case INTEGER:
+                return "integer";
+            case VERTEX:
+                return "vertex";
+            case STRING:
+                return "string";
+            case COLOR:
+                return "color";
+            case FLOAT:
+                return "float";
+            case BOOLEAN:
+                return "bool";
+        }
+    }
+
+    Literal::Literal(const std::string &text) : Token(text) {}
+
+    tokenType Literal::getTokenType() const {
+        return LITERAL;
+    }
 
     Integer::Integer(const std::string &text) : Literal(text) {
         value = std::stoi(text);
@@ -19,8 +40,8 @@ namespace sente::GTP {
         return value;
     }
 
-    tokenType Integer::getType() const {
-        return LITERAL_INTEGER;
+    literalType Integer::getLiteralType() const {
+        return INTEGER;
     }
 
     unsigned int Vertex::getX() const {
@@ -29,10 +50,6 @@ namespace sente::GTP {
 
     unsigned Vertex::getY() const {
         return y;
-    }
-
-    tokenType Vertex::getType() const {
-        return LITERAL_VERTEX;
     }
 
     Vertex::Vertex(const std::string& vertex) : Literal(vertex) {
@@ -50,12 +67,20 @@ namespace sente::GTP {
 
     }
 
-    String::String(const std::string& text) : Literal(text) {
-        this->text = text;
+    literalType Vertex::getLiteralType() const {
+        return VERTEX;
     }
 
-    tokenType String::getType() const {
-        return LITERAL_STRING;
+    literalType String::getLiteralType() const {
+        return STRING;
     }
 
+
+    Color::Color(const std::string &text) : Literal(text){
+
+    }
+
+    literalType Color::getLiteralType() const {
+        return COLOR;
+    }
 }

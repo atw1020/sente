@@ -46,7 +46,7 @@ namespace sente::GTP {
 
         OperatorName getName() const;
 
-        tokenType getType() const;
+        tokenType getTokenType() const;
 
     private:
 
