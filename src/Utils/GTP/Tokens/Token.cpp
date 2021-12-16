@@ -15,7 +15,7 @@ namespace sente::GTP {
             case SEPERATOR:
                 return "seperator";
             case LITERAL:
-                return "";
+                return "literal";
         }
     }
 

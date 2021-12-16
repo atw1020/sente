@@ -91,7 +91,7 @@ namespace sente::GTP {
         return "=" + std::to_string(commandIndex) + " " + message + "\n\n";
     }
 
-    bool Host::argumentsMatch(const std::vector<std::pair<std::string, std::variant<literalType, tokenType>>> &expectedArguments,
+    bool Host::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
@@ -99,8 +99,20 @@ namespace sente::GTP {
         }
 
         for (unsigned i = 0; i < arguments.size(); i++){
-            if (arguments[i]->getTokenType() != expectedArguments[i].second){
-                return false;
+            // check to see if the argument is a literal
+            if (std::holds_alternative<tokenType>(expectedArguments[i].second)){
+                // if we have a token, check to see if we expect a token
+                if (arguments[i]->getTokenType() != std::get<tokenType>(expectedArguments[i].second)){
+                    return false;
+                }
+            }
+            else {
+                // if we have a literal, cast the argument to a literal and see if we have
+                // a literal
+                auto argument = (Literal*) arguments[i].get();
+                if (argument->getLiteralType() != std::get<literalType>(expectedArguments[i].second)){
+                    return false;
+                }
             }
         }
 
@@ -108,12 +120,12 @@ namespace sente::GTP {
 
     }
 
-    std::string Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>>& argumentPatterns,
+    std::string Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
                                                    const std::vector<std::shared_ptr<Token>> &arguments) const {
 
         std::stringstream message;
 
-        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> candidates;
+        std::unordered_set<std::vector<ArgumentPattern>> candidates;
 
         // first, find all the candidate patterns (patters with the correct number of arguments)
         for (const auto& pattern : argumentPatterns){
@@ -155,9 +167,18 @@ namespace sente::GTP {
             for (const auto& candidate : candidates){
                 // find the error
                 for (unsigned i = 0; i < arguments.size(); i++){
-                    if (arguments[i]->getTokenType() != candidate[i].second){
-                        message << std::endl << "candidate pattern not valid: expected " << toString(candidate[i].second)
-                        << " in position " << i << ", got" << toString(arguments[i]->getTokenType());
+                    if (std::holds_alternative<tokenType>(candidate[i].second)){
+                        if (arguments[i]->getTokenType() != std::get<tokenType>(candidate[i].second)){
+                            message << std::endl << "candidate pattern not valid: expected " << toString(std::get<tokenType>(candidate[i].second))
+                                    << " in position " << i << ", got" << toString(arguments[i]->getTokenType());
+                        }
+                    }
+                    else {
+                        auto argument = (Literal*) arguments[i].get();
+                        if (argument->getLiteralType() != std::get<literalType>(candidate[i].second)){
+                            message << std::endl << "candidate pattern not valid: expected " << toString(std::get<tokenType>(candidate[i].second))
+                                    << " in position " << i << ", got" << toString(arguments[i]->getTokenType());
+                        }
                     }
                 }
             }
@@ -171,7 +192,7 @@ namespace sente::GTP {
 
     std::string Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -185,7 +206,7 @@ namespace sente::GTP {
     }
 
     std::string Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
-        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -199,7 +220,7 @@ namespace sente::GTP {
 
     std::string Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -220,7 +241,7 @@ namespace sente::GTP {
 
     std::string Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}, {"command", OPERATOR}},
                 {{"command", OPERATOR}, {"string", STRING}}
         };
@@ -244,7 +265,7 @@ namespace sente::GTP {
     std::string Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
 
         // TODO: check to make sure that boardSize clears the board
-        std::unordered_set<std::vector<std::pair<std::string, std::variant<literalType, tokenType>>>> argumentPatterns = {
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}, {"command", INTEGER}}
         };
 
@@ -259,9 +280,18 @@ namespace sente::GTP {
     }
 
     std::string Host::resetBoard(const std::vector<std::shared_ptr<Token>> &arguments) {
-        std::unordered_set<std::vector<std::pair<std::string, tokenType>>> argumentPatterns = {
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
+            game = GoGame(game.getBoard().getSide(), game.getRules(), game.getKomi());
+            return statusMessage("");
+        }
+        else {
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
+        }
+
     }
 
 }
