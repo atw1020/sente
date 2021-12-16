@@ -2,12 +2,12 @@ SGF Metadata
 ============
 
 In addition to containing a record of the sequence of moves in a game, SGF files contain metadata associated with the games.
-This metadata might include things like the name of the black player, the Komi the match was played with or a point on the board marked with a circle.
+This metadata might include things like the name of the black player, the Komi the match was played with, or a point on the board marked with a circle.
 Each such piece of metadata is called a "property" in the SGF file format.
-Each property has a two-capitol-letter code associated with it that uniquely identifies that property called the "property code".
+Each property has a two-capitol-letter code that uniquely identifies that property called the "property code."
 For example, the "KM" property code refers to the place where the komi of the game is recorded.
 
-A full list of all legal properties and descriptions of them may be found at `this red-bean archive <https://www.red-bean.com/sgf/properties.html>`_.
+A complete list of all legal properties and their descriptions may be found at `this red-bean archive <https://www.red-bean.com/sgf/properties.html>`_.
 A partial list of properties is given below.
 
 .. list-table:: SGF Properties
@@ -62,14 +62,14 @@ Sente divides properties into two categories: Root properties and Node propertie
     - CR (marks a point on the board with a circle)
     - AB (adds a white stone to the board, regardless of whose turn it currently is)
 
-To obtain metadata properties from a ``sente.Game`` Object, simply call the ``get_properties``
+To obtain metadata properties from a ``sente.Game`` Object, call the ``get_properties``
 
 Reading metadata
 ----------------
 
-The ``Game.get_properties()`` method can be used to obtain metadata from a SGF file.
+The ``Game.get_properties()`` method can obtain metadata from an SGF file.
 
-For example, say we have a sgf file containing a game record of the Honinbo Shusaku's famous "Ear-Reddening Game".
+For example, say we have an SGF file containing a game record of the Honinbo Shusaku's famous "Ear-Reddening Game."
 
 .. code-block:: python
 
@@ -83,9 +83,9 @@ For example, say we have a sgf file containing a game record of the Honinbo Shus
      'DT': '1846-09-11,14,15'}      # DT: Date(s) the game was played
 
 As seen above, the resulting dictionary will map from the property code to the value associated with the property.
-This value is typically a string, but in some cases may be a list of strings if the property is associated with multiple values.
+This value is typically a string, but in some cases, it may be a list of strings if the property is associated with multiple values.
 
-The ``get_properties()`` method will return all of the root properties of the game as well as properties associated with the current active node in the SGF tree.
+The ``get_properties()`` method will return all of the root properties of the game as well as properties associated with the currently active node in the SGF tree.
 Thus, while the root properties will be the same no matter what move of the game you are on, the node properties will change as you step through a game.
 
 Setting metadata
@@ -115,8 +115,8 @@ Sente can set the metadata properties of a ``Game`` object using the ``set_prope
     >>> game.get_properties()
     {'FF': '4', 'SZ': '19', 'PB': 'Arthur Wesley', 'RU': 'Chinese', 'PW': 'Lucas Wesley'}
 
-As mentioned above, Sente strictly enforces conformity to the official SGF file format and custom SGF properties are not permitted as metadata.
-Thus, trying to set a property not defined by the standard will result in an error.
+As mentioned above, Sente strictly enforces conformity to the official SGF file format, and custom SGF properties are not permitted as metadata.
+Thus, setting a property not defined by the standard will result in an error.
 
 .. code-block::
 

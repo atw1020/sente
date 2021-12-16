@@ -279,9 +279,9 @@ PYBIND11_MODULE(sente, module){
             R"pbdoc(
                 Checks to see if a move is legal.
 
-                Sente checks 5 conditions to see if a move is illegal
+                Sente checks five conditions to see if a move is illegal
 
-                #. Are the co-ordinates of the move located on the board?
+                #. Are the coordinates of the move located on the board?
                 #. Does the move lie on an occupied point?
                 #. Is it the person playing the stone's turn?
                 #. Does the move result in self-capture?
@@ -300,7 +300,7 @@ PYBIND11_MODULE(sente, module){
             R"pbdoc(
                 Checks to see if a move is legal.
 
-                Sente checks 5 conditions to see if a move is illegal (see above).
+                Sente checks five conditions to see if a move is illegal (see above).
 
                 :param x: The x co-ordinate of the move.
                 :param y: The y co-ordinate of the move.
@@ -314,7 +314,7 @@ PYBIND11_MODULE(sente, module){
             R"pbdoc(
                 Checks to see if a move is legal.
 
-                Sente checks 5 conditions to see if a move is illegal (see above).
+                Sente checks five conditions to see if a move is illegal (see above).
 
                 :param move: A move object to play
                 :return: whether or not the move satisfies the above conditions.
@@ -323,8 +323,8 @@ PYBIND11_MODULE(sente, module){
             return obj.is_none();
         },
             R"pbdoc(
-                An overloaded extension of the ``is_legal`` method that accepts ``None`` as an argument.
-                using ``game.play(None)`` is interpreted as passing and this method ensures that such a move is legal.
+                An overloaded extension of the ``is_legal`` method accepts ``None`` as an argument.
+                Using ``game.play(None)`` is interpreted as passing, and this method ensures that such a move is legal.
 
                 :param move: A move object to play
                 :return: whether or not the move satisfies the above conditions.

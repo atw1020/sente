@@ -81,7 +81,7 @@ Moves can be played on the game using the ``play()`` method, and the board can b
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
 The text created by printing a Sente board is designed to be similar to the [gomill ascii boards output](https://mjw.woodcraft.me.uk/gomill/doc/0.7/ascii_boards.html).
-Unlike Gomill however, Sente uses unicode characters to represent black and white stones to make complex board positions more visible and also plots star points.
+Unlike Gomill however, Sente uses Unicode characters to represent black and white stones to make complex board positions more visible and plot star points.
 
 Finally, Sente also provides utilities for reading and saving SGF files using the `sente.SGF` module
 
