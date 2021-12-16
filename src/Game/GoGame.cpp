@@ -51,11 +51,15 @@ namespace sente {
         rootNode.setProperty(utils::SZ, {std::to_string(side)});
 
         switch (rules){
+            case OTHER:
             case CHINESE:
                 rootNode.setProperty(utils::RU, {"Chinese"});
                 break;
             case JAPANESE:
                 rootNode.setProperty(utils::RU, {"Japanese"});
+                break;
+            case KOREAN:
+                rootNode.setProperty(utils::RU, {"Korean"});
                 break;
         }
 
