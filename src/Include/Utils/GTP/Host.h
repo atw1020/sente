@@ -16,6 +16,7 @@
 
 namespace sente::GTP {
 
+    typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, std::variant<literalType, tokenType>> ArgumentPattern;
 
     class Host {
@@ -29,24 +30,26 @@ namespace sente::GTP {
 
         GoGame game;
 
-        unsigned commandIndex;
-
         std::string engineName = "Engine using Sente GTP";
 
         std::string errorMessage(const std::string& message) const;
+        std::string errorMessage(const std::string& message, unsigned i) const;
         std::string statusMessage(const std::string& message) const;
+        std::string statusMessage(const std::string& message, unsigned i) const;
 
         static bool argumentsMatch(const std::vector<ArgumentPattern>& expectedTypes,
                                    const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
+        Response invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments) const;
 
-        std::string protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string name(const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string knownCommand(const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string listCommands(const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string boardSize(const std::vector<std::shared_ptr<Token>>& arguments);
-        std::string resetBoard(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response name(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response knownCommand(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response listCommands(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response boardSize(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response clearBoard(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response komi(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response play(const std::vector<std::shared_ptr<Token>>& arguments);
 
     };
 }

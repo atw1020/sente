@@ -76,11 +76,33 @@ namespace sente::GTP {
     }
 
 
-    Color::Color(const std::string &text) : Literal(text){
+    Color::Color(std::string text) : Literal(text){
+        // convert the text to lowercase
+        std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+        if (text == "black" or text == "b"){
+            color = BLACK;
+        }
+        else if (text == "white" or text == "w"){
+            color = WHITE;
+        }
 
     }
 
     literalType Color::getLiteralType() const {
         return COLOR;
     }
+
+    Float::Float(const std::string &text) : Literal(text){
+        value = std::stof(text);
+    }
+
+    float Float::getValue() const {
+        return value;
+    }
+
+    literalType Float::getLiteralType() const {
+        return FLOAT;
+    }
+
 }

@@ -18,25 +18,33 @@ namespace sente::GTP {
 
         auto tokens = parse(text);
 
-        std::stringstream response;
+        std::stringstream outputStream;
 
         unsigned start = 0;
 
         // iterate through the tokens
         for (unsigned index = 0; index < tokens.size(); index++){
 
+            Response response;
+
             // keep incrementing until we find a seperator
             while (not instanceof<Seperator>(tokens[index++].get())) {}
 
             auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.end() + index);
 
-            // begin parsing by checking to see if the first element is an integer literal
+            for (const auto & argument : arguments){
+                outputStream << argument->getText() << " ";
+            }
 
+            // begin interpreting by checking to see if the first element is an integer literal
             std::shared_ptr<Token> candidate;
 
-            if (instanceof<Integer>(arguments[0].get())){
+            bool precedingID = instanceof<Integer>(arguments[0].get());
+            unsigned id;
+
+            if (precedingID){
+                id = ((Integer*) arguments[0].get())->getValue();
                 candidate = arguments[1];
-                // TODO: check for invalid command number
                 arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
             }
             else {
@@ -49,46 +57,75 @@ namespace sente::GTP {
 
                 switch (command->getName()){
                     case PROTOCOL_VERSION:
-                        response << protocolVersion(arguments);
+                        response = protocolVersion(arguments);
                         break;
                     case NAME:
-                        response << name(arguments);
+                        response = name(arguments);
                         break;
                     case KNOWN_COMMAND:
-                        response << knownCommand(arguments);
+                        response = knownCommand(arguments);
                         break;
                     case BOARD_SIZE:
-                        response << boardSize(arguments);
+                        response = boardSize(arguments);
                         break;
                     case LIST_COMMANDS:
-                        response << listCommands(arguments);
+                        response = listCommands(arguments);
                         break;
+                    case CLEAR_BOARD:
+                        response = clearBoard(arguments);
                     case VERSION:
                         // TODO: implement
                     default:
-                        response << errorMessage("Unimplemented GTP command \"" + candidate->getText() + "\"");
-                        continue;
+                        response = {false, "Unimplemented GTP command \"" + candidate->getText() + "\""};
+                        break;
                     case QUIT:
                         // exit the function
-                        return response.str();
+                        return outputStream.str();
+                }
+
+            }
+            else {
+                response = {false, "unknown command"};
+            }
+
+            if (response.first){
+                // if we successfully execute the command
+                if (precedingID){
+                    // if there is a preceding ID, include it in the answer
+                    outputStream << statusMessage(response.second, id);
+                }
+                else {
+                    outputStream << statusMessage(response.second);
                 }
             }
             else {
-                response << errorMessage("Unknown GTP command \"" + candidate->getText() + "\"");
-                continue;
+                if (precedingID){
+                    outputStream << errorMessage(response.second, id);
+                }
+                else {
+                    outputStream << errorMessage(response.second);
+                }
             }
 
         }
 
-        return response.str();
+        return outputStream.str();
     }
 
     std::string Host::errorMessage(const std::string& message) const {
-        return "?" + std::to_string(commandIndex) + " " + message + "\n\n";
+        return "? " + message + "\n\n";
+    }
+
+    std::string Host::errorMessage(const std::string &message, unsigned id) const {
+        return "= " + std::to_string(id) + message + "\n\n";
     }
 
     std::string Host::statusMessage(const std::string &message) const {
-        return "=" + std::to_string(commandIndex) + " " + message + "\n\n";
+        return "= " + message + "\n\n";
+    }
+
+    std::string Host::statusMessage(const std::string &message, unsigned id) const {
+        return "= " + std::to_string(id) + message + "\n\n";
     }
 
     bool Host::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
@@ -120,7 +157,7 @@ namespace sente::GTP {
 
     }
 
-    std::string Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
+    Response Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
                                                    const std::vector<std::shared_ptr<Token>> &arguments) const {
 
         std::stringstream message;
@@ -185,19 +222,19 @@ namespace sente::GTP {
 
         }
 
-        return errorMessage(message.str());
+        return {false, message.str()};
 
     }
 
 
-    std::string Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
+    Response Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
 
         std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
         if (argumentsMatch(*argumentPatterns.begin(), arguments)){
-            return statusMessage("2");
+            return {true, "2"};
         }
         else {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
@@ -205,20 +242,20 @@ namespace sente::GTP {
 
     }
 
-    std::string Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
+    Response Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
         std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
         if (argumentsMatch(*argumentPatterns.begin(), arguments)){
-            return statusMessage(engineName);
+            return {true, engineName};
         }
         else {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
 
-    std::string Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
+    Response Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
 
         std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
@@ -232,27 +269,27 @@ namespace sente::GTP {
                 response << item.first << std::endl;
             }
 
-            return statusMessage(response.str());
+            return {true, response.str()};
         }
         else {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
 
-    std::string Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
+    Response Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
 
         std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}, {"command", OPERATOR}},
                 {{"command", OPERATOR}, {"string", STRING}}
         };
 
-        if (std::any_of(argumentPatterns.begin(), argumentPatterns.end(),this->argumentsMatch)){
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
 
             if (arguments[1]->getTokenType() == OPERATOR){
-                return statusMessage("true");
+                return {true, "true"};
             }
             else {
-                return statusMessage("false");
+                return {true, "false"};
             }
 
         }
@@ -262,7 +299,7 @@ namespace sente::GTP {
 
     }
 
-    std::string Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
+    Response Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
 
         // TODO: check to make sure that boardSize clears the board
         std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
@@ -271,22 +308,72 @@ namespace sente::GTP {
 
         if (argumentsMatch(*argumentPatterns.begin(), arguments)){
             unsigned side = ((Integer*) arguments[1].get())->getValue();
-            game = GoGame(side, game.getRules(), game.getKomi());
-            return statusMessage("");
+            if (side == 9 or side == 13 or side == 19){
+                game = GoGame(side, game.getRules(), game.getKomi());
+                return {true, ""};
+            }
+            else {
+                return {false, "unacceptable size"};
+            }
         }
         else {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
     }
 
-    std::string Host::resetBoard(const std::vector<std::shared_ptr<Token>> &arguments) {
+    Response Host::clearBoard(const std::vector<std::shared_ptr<Token>> &arguments) {
         std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
         if (argumentsMatch(*argumentPatterns.begin(), arguments)){
             game = GoGame(game.getBoard().getSide(), game.getRules(), game.getKomi());
-            return statusMessage("");
+            return {true, ""};
+        }
+        else {
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
+        }
+
+    }
+
+    Response Host::komi(const std::vector<std::shared_ptr<Token>>& arguments) {
+
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+                {{"command", OPERATOR}},
+                {{"new komi", FLOAT}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
+            float komi = ((Float*) arguments[1].get())->getValue();
+            game.setKomi(komi);
+        }
+        else {
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
+        }
+
+    }
+
+    Response Host::play(const std::vector<std::shared_ptr<Token>>& arguments){
+        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+                {{"command", OPERATOR}},
+                {{"color", COLOR}},
+                {{"vertex", VERTEX}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
+            auto* color = (Color*) arguments[1].get();
+            auto* vertex = (Vertex*) arguments[1].get();
+
+            Stone moveColor = color->getColor() == BLACK ? Stone::BLACK : Stone::EMPTY;
+
+            if (game.getActivePlayer() == moveColor){
+                // if it is the active player's turn, play a move
+                game.playStone(vertex->getX(), vertex->getY());
+            }
+            else {
+                game.addStone(Move(vertex->getX(), vertex->getY(), moveColor));
+            }
+
         }
         else {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);

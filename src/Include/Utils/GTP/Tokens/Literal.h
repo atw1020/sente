@@ -65,17 +65,29 @@ namespace sente::GTP {
         literalType getLiteralType() const;
     };
 
-    enum color {
+    enum GoColor {
         BLACK,
         WHITE
     };
 
     class Color : public Literal {
     public:
-        explicit Color(const std::string& text);
+        explicit Color(std::string text);
+        literalType getLiteralType() const;
+        GoColor getColor() const;
+    private:
+        GoColor color;
+    };
+
+    class Float : public Literal {
+    public:
+        explicit Float(const std::string& text);
+
+        float getValue() const;
+
         literalType getLiteralType() const;
     private:
-
+        float value;
     };
 
 }
