@@ -922,4 +922,8 @@ namespace sente {
         return komi;
     }
 
+    void GoGame::setKomi(double newKomi) {
+        komi = newKomi;
+    }
+
 }

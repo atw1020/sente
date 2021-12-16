@@ -111,6 +111,8 @@ namespace sente {
         Rules getRules() const;
         double getKomi() const;
 
+        void setKomi(double newKomi);
+
         explicit operator std::string() const;
 
     private:
