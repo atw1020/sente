@@ -3,3 +3,10 @@
 //
 
 #include "../../../Include/Utils/GTP/Tokens/Seperator.h"
+
+namespace sente::GTP {
+
+    tokenType Seperator::getTokenType() const {
+        return SEPERATOR;
+    }
+}

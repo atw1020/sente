@@ -9,6 +9,20 @@
 
 #include "Token.h"
 
+#define OPERATORS std::map<std::string, OperatorName> { \
+    {"protocol_version", PROTOCOL_VERSION}, \
+    {"name", NAME}, \
+    {"version", VERSION}, \
+    {"known_command", KNOWN_COMMAND}, \
+    {"list_commands", LIST_COMMANDS}, \
+    {"quit", QUIT}, \
+    {"boardsize", BOARD_SIZE}, \
+    {"clear_board", CLEAR_BOARD}, \
+    {"komi", KOMI}, \
+    {"play", PLAY}, \
+    {"genmove", GEN_MOVE} \
+}
+
 namespace sente::GTP {
 
     enum OperatorName {
@@ -23,20 +37,6 @@ namespace sente::GTP {
         KOMI,
         PLAY,
         GEN_MOVE
-    };
-
-    std::map<std::string, OperatorName> operators{
-            {"protocol_version", PROTOCOL_VERSION},
-            {"name", NAME},
-            {"version", VERSION},
-            {"known_command", KNOWN_COMMAND},
-            {"list_commands", LIST_COMMANDS},
-            {"quit", QUIT},
-            {"boardsize", BOARD_SIZE},
-            {"clear_board", CLEAR_BOARD},
-            {"komi", KOMI},
-            {"play", PLAY},
-            {"genmove", GEN_MOVE}
     };
 
     class Operator : public Token {

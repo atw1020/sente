@@ -23,6 +23,7 @@ namespace sente::GTP {
     public:
 
         explicit Token(std::string text);
+        virtual ~Token();
 
         virtual std::string getText();
 

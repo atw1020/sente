@@ -45,6 +45,8 @@ namespace sente {
 
         virtual explicit operator std::string() const = 0;
 
+        virtual ~_board();
+
     };
 
     template<unsigned side>
@@ -103,7 +105,7 @@ namespace sente {
             return getStone(point.first, point.second);
         }
 
-        bool operator==(const Board<side>& other) const{
+        bool operator==(const Board<side>& other) const {
 
             for (unsigned i = 0; i < side; i++){
                 for (unsigned j = 0; j < side; j++){

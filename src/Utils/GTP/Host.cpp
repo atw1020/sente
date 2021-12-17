@@ -157,17 +157,17 @@ namespace sente::GTP {
 
     }
 
-    Response Host::invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
+    Response Host::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
                                                    const std::vector<std::shared_ptr<Token>> &arguments) const {
 
         std::stringstream message;
 
-        std::unordered_set<std::vector<ArgumentPattern>> candidates;
+        std::vector<std::vector<ArgumentPattern>> candidates;
 
         // first, find all the candidate patterns (patters with the correct number of arguments)
         for (const auto& pattern : argumentPatterns){
             if (pattern.size() == arguments.size()){
-                candidates.insert(pattern);
+                candidates.push_back(pattern);
             }
         }
 
@@ -229,7 +229,7 @@ namespace sente::GTP {
 
     Response Host::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -243,7 +243,7 @@ namespace sente::GTP {
     }
 
     Response Host::name(const std::vector<std::shared_ptr<Token>>& arguments) {
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -257,7 +257,7 @@ namespace sente::GTP {
 
     Response Host::listCommands(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -265,7 +265,7 @@ namespace sente::GTP {
             std::stringstream response;
 
             // TODO: check to see if each item should be on a newline
-            for (const auto& item : operators){
+            for (const auto& item : OPERATORS){
                 response << item.first << std::endl;
             }
 
@@ -278,7 +278,7 @@ namespace sente::GTP {
 
     Response Host::knownCommand(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}, {"command", OPERATOR}},
                 {{"command", OPERATOR}, {"string", STRING}}
         };
@@ -302,7 +302,7 @@ namespace sente::GTP {
     Response Host::boardSize(const std::vector<std::shared_ptr<Token>>& arguments) {
 
         // TODO: check to make sure that boardSize clears the board
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}, {"command", INTEGER}}
         };
 
@@ -322,7 +322,7 @@ namespace sente::GTP {
     }
 
     Response Host::clearBoard(const std::vector<std::shared_ptr<Token>> &arguments) {
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}}
         };
 
@@ -338,7 +338,7 @@ namespace sente::GTP {
 
     Response Host::komi(const std::vector<std::shared_ptr<Token>>& arguments) {
 
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}},
                 {{"new komi", FLOAT}}
         };
@@ -346,6 +346,7 @@ namespace sente::GTP {
         if (argumentsMatch(*argumentPatterns.begin(), arguments)){
             float komi = ((Float*) arguments[1].get())->getValue();
             game.setKomi(komi);
+            return {true, ""};
         }
         else {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
@@ -354,7 +355,7 @@ namespace sente::GTP {
     }
 
     Response Host::play(const std::vector<std::shared_ptr<Token>>& arguments){
-        std::unordered_set<std::vector<ArgumentPattern>> argumentPatterns = {
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
                 {{"command", OPERATOR}},
                 {{"color", COLOR}},
                 {{"vertex", VERTEX}}
@@ -373,6 +374,8 @@ namespace sente::GTP {
             else {
                 game.addStone(Move(vertex->getX(), vertex->getY(), moveColor));
             }
+
+            return {true, ""};
 
         }
         else {

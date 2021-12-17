@@ -12,6 +12,7 @@
 #include "Include/Game/GoGame.h"
 #include "Include/Utils/Numpy.h"
 #include "Include/Utils/SenteExceptions.h"
+#include "Include/Utils/GTP/Host.h"
 
 namespace py = pybind11;
 
@@ -655,5 +656,11 @@ PYBIND11_MODULE(sente, module){
 #else
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
+
+    auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
+
+    py::class_<sente::GTP::Host>(module, "GTPHost")
+            .def(py::init<std::string>())
+            .def("evaluate", &sente::GTP::Host::evaluate);
 
 }

@@ -86,12 +86,8 @@ namespace sente::GTP {
         // regex for a vertex
         std::regex vertex("[A-H,J-Z]\\d{1,2}");
 
-        if (operators.find(token) != operators.end()){
+        if (OPERATORS.find(token) != OPERATORS.end()){
             return std::make_shared<Operator>(token);
-        }
-
-        if (keywords.find(token) != keywords.end()){
-            return std::make_shared<Keyword>(token);
         }
 
         if (std::regex_match(token, vertex)){

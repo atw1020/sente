@@ -22,7 +22,7 @@ namespace sente::GTP {
     class Host {
     public:
 
-        Host();
+        Host(std::string engineName = "Engine using Sente GTP");
 
         std::string evaluate(std::string text);
 
@@ -30,7 +30,7 @@ namespace sente::GTP {
 
         GoGame game;
 
-        std::string engineName = "Engine using Sente GTP";
+        std::string engineName;
 
         std::string errorMessage(const std::string& message) const;
         std::string errorMessage(const std::string& message, unsigned i) const;
@@ -39,7 +39,7 @@ namespace sente::GTP {
 
         static bool argumentsMatch(const std::vector<ArgumentPattern>& expectedTypes,
                                    const std::vector<std::shared_ptr<Token>>& arguments);
-        Response invalidArgumentsErrorMessage(const std::unordered_set<std::vector<ArgumentPattern>>& argumentPatterns,
+        Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments) const;
 
         Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);

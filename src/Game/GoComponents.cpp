@@ -7,7 +7,7 @@
 
 namespace sente {
 
-    double getKomi(Rules ruleset) {
+    double determineKomi(Rules ruleset) {
         switch (ruleset){
         case CHINESE:
         case OTHER:

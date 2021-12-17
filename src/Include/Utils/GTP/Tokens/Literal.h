@@ -62,6 +62,8 @@ namespace sente::GTP {
 
     class String : public Literal {
     public:
+        String(const std::string& value);
+
         literalType getLiteralType() const;
     };
 

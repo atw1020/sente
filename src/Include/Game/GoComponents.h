@@ -20,7 +20,7 @@ namespace sente {
         OTHER
     };
 
-    double getKomi(Rules ruleset);
+    double determineKomi(Rules ruleset);
 
     Rules rulesFromStr(std::string ruleString);
 

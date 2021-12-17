@@ -29,7 +29,7 @@ namespace sente {
 
         // default Komi values
         if (komi == INFINITY){
-            this->komi = getKomi(rules);
+            this->komi = determineKomi(rules);
         }
         else {
             this->komi = komi;
@@ -92,7 +92,7 @@ namespace sente {
             }
         }
         else {
-            komi = getKomi(rules);
+            komi = determineKomi(rules);
         }
     }
 

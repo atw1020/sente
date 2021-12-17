@@ -71,6 +71,8 @@ namespace sente::GTP {
         return VERTEX;
     }
 
+    String::String(const std::string &value) : Literal(value){}
+
     literalType String::getLiteralType() const {
         return STRING;
     }

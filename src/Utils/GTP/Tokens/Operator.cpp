@@ -7,7 +7,7 @@
 namespace sente::GTP {
 
     Operator::Operator(std::string value) : Token(std::move(value)) {
-        name = operators[value];
+        name = OPERATORS[value];
     }
 
     OperatorName Operator::getName() const {
