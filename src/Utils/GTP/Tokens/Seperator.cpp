@@ -9,4 +9,6 @@ namespace sente::GTP {
     tokenType Seperator::getTokenType() const {
         return SEPERATOR;
     }
+
+    Seperator::~Seperator() {}
 }

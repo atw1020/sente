@@ -27,4 +27,6 @@ namespace sente::GTP {
         return text;
     }
 
+    Token::~Token() {}
+
 }

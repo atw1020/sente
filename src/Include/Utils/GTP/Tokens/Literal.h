@@ -24,8 +24,8 @@ namespace sente::GTP {
 
         explicit Literal(const std::string& text);
 
-        virtual tokenType getTokenType() const override final;
-        virtual literalType getLiteralType() const;
+        tokenType getTokenType() const final;
+        virtual literalType getLiteralType() const = 0;
     };
 
     std::string toString(literalType type);
@@ -34,10 +34,11 @@ namespace sente::GTP {
     public:
 
         explicit Integer(const std::string& literal);
+        ~Integer() final;
 
         unsigned getValue() const;
 
-        literalType getLiteralType() const override;
+        literalType getLiteralType() const final;
 
     private:
 
@@ -48,11 +49,12 @@ namespace sente::GTP {
     public:
 
         explicit Vertex(const std::string& vertex);
+        ~Vertex() final;
 
         unsigned getX() const;
         unsigned getY() const;
 
-        literalType getLiteralType() const override;
+        literalType getLiteralType() const final;
 
     private:
 
@@ -63,8 +65,9 @@ namespace sente::GTP {
     class String : public Literal {
     public:
         String(const std::string& value);
+        ~String() override;
 
-        literalType getLiteralType() const;
+        literalType getLiteralType() const final;
     };
 
     enum GoColor {
@@ -75,8 +78,11 @@ namespace sente::GTP {
     class Color : public Literal {
     public:
         explicit Color(std::string text);
-        literalType getLiteralType() const;
+        ~Color() override;
+
+        literalType getLiteralType() const final;
         GoColor getColor() const;
+
     private:
         GoColor color;
     };
@@ -84,10 +90,11 @@ namespace sente::GTP {
     class Float : public Literal {
     public:
         explicit Float(const std::string& text);
+        ~Float() override;
 
         float getValue() const;
 
-        literalType getLiteralType() const;
+        literalType getLiteralType() const final;
     private:
         float value;
     };

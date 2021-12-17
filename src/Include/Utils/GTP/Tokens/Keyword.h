@@ -15,8 +15,9 @@ namespace sente::GTP {
     public:
 
         Keyword(std::string);
+        ~Keyword() override;
 
-        tokenType getTokenType() const;
+        tokenType getTokenType() const final;
 
     };
 }

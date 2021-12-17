@@ -56,7 +56,7 @@ namespace sente {
                 rootNode.setProperty(sgf::RU, {"Japanese"});
                 break;
             case KOREAN:
-                rootNode.setProperty(utils::RU, {"Korean"});
+                rootNode.setProperty(sgf::RU, {"Korean"});
                 break;
         }
 
@@ -558,6 +558,7 @@ namespace sente {
                 case 'W':
                     return Results(BLACK);
                 case 'B':
+                default:
                     return Results(WHITE);
             }
         }

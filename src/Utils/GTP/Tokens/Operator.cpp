@@ -14,4 +14,10 @@ namespace sente::GTP {
         return name;
     }
 
+    Operator::~Operator() {}
+
+    tokenType Operator::getTokenType() const {
+        return OPERATOR;
+    }
+
 }

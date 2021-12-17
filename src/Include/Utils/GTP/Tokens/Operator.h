@@ -43,10 +43,11 @@ namespace sente::GTP {
     public:
 
         explicit Operator(std::string value);
+        ~Operator() override;
 
         OperatorName getName() const;
 
-        tokenType getTokenType() const;
+        tokenType getTokenType() const final;
 
     private:
 

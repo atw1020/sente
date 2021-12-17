@@ -29,6 +29,9 @@ namespace sente {
 
     class _board {
     public:
+
+        virtual ~_board() {};
+
         virtual bool isOnBoard(const Move& move) const = 0;
         virtual bool isEmpty(const Move& move) const = 0;
 
@@ -44,8 +47,6 @@ namespace sente {
         virtual Stone getStone(Point point) const = 0;
 
         virtual explicit operator std::string() const = 0;
-
-        virtual ~_board();
 
     };
 

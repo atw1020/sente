@@ -44,6 +44,8 @@ namespace sente::GTP {
         return INTEGER;
     }
 
+    Integer::~Integer() {}
+
     unsigned int Vertex::getX() const {
         return x;
     }
@@ -71,12 +73,15 @@ namespace sente::GTP {
         return VERTEX;
     }
 
+    Vertex::~Vertex() {}
+
     String::String(const std::string &value) : Literal(value){}
 
     literalType String::getLiteralType() const {
         return STRING;
     }
 
+    String::~String() {}
 
     Color::Color(std::string text) : Literal(text){
         // convert the text to lowercase
@@ -95,6 +100,12 @@ namespace sente::GTP {
         return COLOR;
     }
 
+    Color::~Color() {}
+
+    GoColor Color::getColor() const {
+        return color;
+    }
+
     Float::Float(const std::string &text) : Literal(text){
         value = std::stof(text);
     }
@@ -106,5 +117,7 @@ namespace sente::GTP {
     literalType Float::getLiteralType() const {
         return FLOAT;
     }
+
+    Float::~Float() {}
 
 }
