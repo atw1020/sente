@@ -8,9 +8,6 @@
 #include <utility>
 #include <vector>
 
-#include "../../Include/Utils/GTP/Parser.h"
-#include "../../Include/JavaUtils.h"
-#include "../../Include/Utils/GTP/Tokens/Seperator.h"
 #include "../../Include/Utils/GTP/Tokens/Operator.h"
 
 namespace sente::GTP {
@@ -33,9 +30,9 @@ namespace sente::GTP {
             Response response;
 
             // keep incrementing until we find a seperator
-            while (not instanceof<Seperator>(tokens[index++].get())) {}
+            while (tokens[index++]->getTokenType() != SEPERATOR and index < tokens.size()) {}
 
-            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.end() + index);
+            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
 
             for (const auto & argument : arguments){
                 outputStream << argument->getText() << " ";
@@ -44,8 +41,13 @@ namespace sente::GTP {
             // begin interpreting by checking to see if the first element is an integer literal
             std::shared_ptr<Token> candidate;
 
-            bool precedingID = instanceof<Integer>(arguments[0].get());
+            bool precedingID = false;
             unsigned id;
+
+            if (arguments[0]->getTokenType() == LITERAL){
+                auto* literal = (Literal*) arguments[0].get();
+                precedingID = literal->getLiteralType() == INTEGER;
+            }
 
             if (precedingID){
                 id = ((Integer*) arguments[0].get())->getValue();
@@ -56,7 +58,7 @@ namespace sente::GTP {
                 candidate = arguments[0];
             }
 
-            if (instanceof<Operator>(&candidate)){
+            if (candidate->getTokenType() == OPERATOR){
                 // execute the command
                 auto* command = (Operator*) candidate.get();
 
@@ -78,6 +80,7 @@ namespace sente::GTP {
                         break;
                     case CLEAR_BOARD:
                         response = clearBoard(arguments);
+                        break;
                     case VERSION:
                         // TODO: implement
                     default:
@@ -113,6 +116,8 @@ namespace sente::GTP {
             }
 
         }
+
+        py::print("got past interpreting");
 
         return outputStream.str();
     }

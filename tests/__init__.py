@@ -12,3 +12,4 @@ from .test_score_board import *
 from .test_sgf_dump import *
 from .test_sgf_load import *
 from .test_sgf_metadata import *
+from .test_gtp_errors import *

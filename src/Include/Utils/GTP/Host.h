@@ -22,7 +22,7 @@ namespace sente::GTP {
     class Host {
     public:
 
-        Host(const std::string& engineName = "Engine using Sente GTP");
+        Host(const std::string& engineName);
 
         std::string evaluate(const std::string& text);
 

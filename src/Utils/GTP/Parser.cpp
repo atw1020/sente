@@ -10,7 +10,6 @@
 #include "../../Include/Utils/GTP/Tokens/Literal.h"
 #include "../../Include/Utils/GTP/Tokens/Keyword.h"
 #include "../../Include/Utils/GTP/Tokens/Operator.h"
-#include "../../Include/JavaUtils.h"
 #include "../../Include/Utils/GTP/Tokens/Seperator.h"
 
 namespace sente::GTP {
@@ -73,7 +72,7 @@ namespace sente::GTP {
         }
 
         // add a newline if the last element we parse is not a seperator
-        if (not instanceof<Seperator>(tokens[-1].get())){
+        if ((*tokens.rbegin())->getTokenType() == SEPERATOR){
             tokens.push_back(std::make_shared<Seperator>("\n"));
         }
 
