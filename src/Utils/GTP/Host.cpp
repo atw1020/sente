@@ -5,6 +5,7 @@
 #include "../../Include/Utils/GTP/Host.h"
 
 #include <set>
+#include <utility>
 #include <vector>
 
 #include "../../Include/Utils/GTP/Parser.h"
@@ -14,7 +15,11 @@
 
 namespace sente::GTP {
 
-    std::string Host::evaluate(std::string text) {
+    Host::Host(const std::string& engineName) : game(19, CHINESE, determineKomi(CHINESE)){
+        this->engineName = engineName;
+    }
+
+    std::string Host::evaluate(const std::string& text) {
 
         auto tokens = parse(text);
 
@@ -158,7 +163,7 @@ namespace sente::GTP {
     }
 
     Response Host::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
-                                                   const std::vector<std::shared_ptr<Token>> &arguments) const {
+                                                   const std::vector<std::shared_ptr<Token>> &arguments) {
 
         std::stringstream message;
 

@@ -22,9 +22,9 @@ namespace sente::GTP {
     class Host {
     public:
 
-        Host(std::string engineName = "Engine using Sente GTP");
+        Host(const std::string& engineName = "Engine using Sente GTP");
 
-        std::string evaluate(std::string text);
+        std::string evaluate(const std::string& text);
 
     private:
 
@@ -39,13 +39,13 @@ namespace sente::GTP {
 
         static bool argumentsMatch(const std::vector<ArgumentPattern>& expectedTypes,
                                    const std::vector<std::shared_ptr<Token>>& arguments);
-        Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
-                                                 const std::vector<std::shared_ptr<Token>>& arguments) const;
+        static Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
+                                                 const std::vector<std::shared_ptr<Token>>& arguments) ;
 
-        Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
+        static Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
         Response name(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response knownCommand(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response listCommands(const std::vector<std::shared_ptr<Token>>& arguments);
+        static Response knownCommand(const std::vector<std::shared_ptr<Token>>& arguments);
+        static Response listCommands(const std::vector<std::shared_ptr<Token>>& arguments);
         Response boardSize(const std::vector<std::shared_ptr<Token>>& arguments);
         Response clearBoard(const std::vector<std::shared_ptr<Token>>& arguments);
         Response komi(const std::vector<std::shared_ptr<Token>>& arguments);
