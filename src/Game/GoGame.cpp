@@ -48,11 +48,15 @@ namespace sente {
         rootNode.setProperty(sgf::SZ, {std::to_string(side)});
 
         switch (rules){
+            case OTHER:
             case CHINESE:
                 rootNode.setProperty(sgf::RU, {"Chinese"});
                 break;
             case JAPANESE:
                 rootNode.setProperty(sgf::RU, {"Japanese"});
+                break;
+            case KOREAN:
+                rootNode.setProperty(utils::RU, {"Korean"});
                 break;
         }
 
