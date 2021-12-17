@@ -33,7 +33,7 @@ namespace sente::GTP {
     }
 
     Integer::Integer(const std::string &text) : Literal(text) {
-        value = std::stoi(text);
+        value = std::stoul(text);
     }
 
     unsigned int Integer::getValue() const {
