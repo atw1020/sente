@@ -32,11 +32,19 @@ namespace sente::GTP {
             // keep incrementing until we find a seperator
             while (tokens[index++]->getTokenType() != SEPERATOR and index < tokens.size()) {}
 
-            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
-
-            for (const auto & argument : arguments){
-                outputStream << argument->getText() << " ";
+            // echo the tokens into the output
+            for (unsigned i = start; i < index; i++){
+                outputStream << tokens[i]->getText();
+                // add a space if the next item is not a seperator (newline)
+                if (i + 1 < tokens.size()){
+                    if (tokens[i + 1]->getTokenType() != SEPERATOR){
+                        outputStream << " ";
+                    }
+                }
             }
+
+            // slice the tokens and put them into a list
+            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index - 1);
 
             // begin interpreting by checking to see if the first element is an integer literal
             std::shared_ptr<Token> candidate;
@@ -117,8 +125,6 @@ namespace sente::GTP {
 
         }
 
-        py::print("got past interpreting");
-
         return outputStream.str();
     }
 
@@ -127,7 +133,7 @@ namespace sente::GTP {
     }
 
     std::string Host::errorMessage(const std::string &message, unsigned id) const {
-        return "= " + std::to_string(id) + message + "\n\n";
+        return "?" + std::to_string(id) + " " + message + "\n\n";
     }
 
     std::string Host::statusMessage(const std::string &message) const {
@@ -135,7 +141,7 @@ namespace sente::GTP {
     }
 
     std::string Host::statusMessage(const std::string &message, unsigned id) const {
-        return "= " + std::to_string(id) + message + "\n\n";
+        return "=" + std::to_string(id) + " " + message + "\n\n";
     }
 
     bool Host::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
@@ -204,7 +210,7 @@ namespace sente::GTP {
                 message << "or " << *(--expectedArguments.end());
             }
 
-            message << " arguments, got " << arguments.size();
+            message << ", got " << arguments.size() - 1;
 
         }
         else {

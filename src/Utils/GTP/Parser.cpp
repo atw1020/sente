@@ -4,6 +4,7 @@
 
 #include <regex>
 #include <sstream>
+#include <pybind11/pybind11.h>
 
 #include "../../Include/Utils/GTP/Parser.h"
 
@@ -11,6 +12,8 @@
 #include "../../Include/Utils/GTP/Tokens/Keyword.h"
 #include "../../Include/Utils/GTP/Tokens/Operator.h"
 #include "../../Include/Utils/GTP/Tokens/Seperator.h"
+
+namespace py = pybind11;
 
 namespace sente::GTP {
 
@@ -59,21 +62,32 @@ namespace sente::GTP {
         // begin by splitting the text on spaces
         std::vector<std::shared_ptr<Token>> tokens;
 
-        unsigned position = 0;
+        size_t start_index = 0;
+        size_t end_index;
 
-        while (text.find(' ', position) != std::string::npos){
+        while ((end_index = std::min(text.find(' ', start_index), text.find('\n', start_index))) !=
+               std::string::npos) {
 
-            unsigned end_index = text.find(' ', position);
-            auto token = std::string(text.begin() + position, text.begin() + end_index - 1);
-            tokens.push_back(parseToken(token));
+            auto token = std::string(text.begin() + start_index, text.begin() + end_index);
+            if (not token.empty()){
+                tokens.push_back(parseToken(token));
+            }
 
-            position = end_index;
+            start_index = end_index + 1;
 
         }
 
+        // parse the final token
+        auto token = std::string(text.begin() + start_index, text.end());
+        if (not token.empty()){
+            tokens.push_back(parseToken(std::string(text.begin() + start_index, text.end())));
+        }
+
         // add a newline if the last element we parse is not a seperator
-        if ((*tokens.rbegin())->getTokenType() == SEPERATOR){
-            tokens.push_back(std::make_shared<Seperator>("\n"));
+        if (not tokens.empty()){
+            if ((*tokens.rbegin())->getTokenType() != SEPERATOR){
+                tokens.push_back(std::make_shared<Seperator>("\n"));
+            }
         }
 
         return tokens;
@@ -85,7 +99,9 @@ namespace sente::GTP {
         // regex for a vertex
         std::regex vertex("[A-H,J-Z]\\d{1,2}");
 
-        if (OPERATORS.find(token) != OPERATORS.end()){
+        auto operators = OPERATORS;
+
+        if (operators.find(token) != operators.end()){
             return std::make_shared<Operator>(token);
         }
 
@@ -93,13 +109,11 @@ namespace sente::GTP {
             return std::make_shared<Vertex>(token);
         }
 
-        if (std::all_of(token.begin(), token.end(), ::isnumber)){
+        if (std::all_of(token.begin(), token.end(), ::isdigit)){
             return std::make_shared<Integer>(token);
         }
 
-        else {
-            return std::make_shared<String>(token);
-        }
+        return std::make_shared<String>(token);
 
     }
 

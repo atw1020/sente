@@ -22,5 +22,5 @@ class CommandFunctionality(TestCase):
 
         host = gtp.GTPHost()
 
-        self.assertEqual(host.evaluate("version"), "2")
+        self.assertEqual("1 protocol_version\n=1 2\n\n", host.evaluate("1 protocol_version\n"))
 
