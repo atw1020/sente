@@ -2,8 +2,8 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#ifndef SENTE_HOST_H
-#define SENTE_HOST_H
+#ifndef SENTE_ENGINE_H
+#define SENTE_ENGINE_H
 
 #include "Parser.h"
 
@@ -16,15 +16,15 @@
 
 namespace sente::GTP {
 
-    struct Host;
+    struct Engine;
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, std::variant<literalType, tokenType>> ArgumentPattern;
-    typedef Response (*CommandMethod)(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    typedef Response (*CommandMethod)(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
-    struct Host {
+    struct Engine {
 
-        Host(const std::string& engineName, const std::string& engineVersion);
+        Engine(const std::string& engineName, const std::string& engineVersion);
 
         GoGame game;
         std::string engineName;
@@ -53,4 +53,4 @@ namespace sente::GTP {
 }
 
 
-#endif //SENTE_HOST_H
+#endif //SENTE_ENGINE_H

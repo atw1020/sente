@@ -2,17 +2,17 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#include "../../Include/Utils/GTP/Host.h"
+#include "Engine.h"
 
 #include <set>
 #include <utility>
 #include <vector>
 
-#include "../../Include/Utils/GTP/Operators.h"
+#include "Operators.h"
 
 namespace sente::GTP {
 
-    Host::Host(const std::string& engineName, const std::string& engineVersion)
+    Engine::Engine(const std::string& engineName, const std::string& engineVersion)
         : game(19, CHINESE, determineKomi(CHINESE)){
         this->engineName = engineName;
         this->engineVersion = engineVersion;
@@ -29,13 +29,13 @@ namespace sente::GTP {
                 {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
                 {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
                 {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
-                {"play", {{&play, {{"operation", STRING}}, {"move", MOVE}}}},
+                {"play", {{&play, {{"operation", STRING}, {"move", MOVE}}}}},
                 {"genmove", {{&genMove, {{"operation", STRING}, {"color", COLOR}}}}},
         };
 
     }
 
-    std::string Host::evaluate(const std::string& text) {
+    std::string Engine::evaluate(const std::string& text) {
 
         auto tokens = parse(text);
 
@@ -128,8 +128,8 @@ namespace sente::GTP {
         return outputStream.str();
     }
 
-    void Host::registerCommand(const std::string& commandName, CommandMethod method,
-                               std::vector<ArgumentPattern> argumentPattern){
+    void Engine::registerCommand(const std::string& commandName, CommandMethod method,
+                                 std::vector<ArgumentPattern> argumentPattern){
         if (commands.find(commandName) == commands.end()){
             // create a new vector
             commands[commandName] = {{method, argumentPattern}};
@@ -140,23 +140,23 @@ namespace sente::GTP {
         }
     }
 
-    std::string Host::errorMessage(const std::string& message) const {
+    std::string Engine::errorMessage(const std::string& message) const {
         return "? " + message + "\n\n";
     }
 
-    std::string Host::errorMessage(const std::string &message, unsigned id) const {
+    std::string Engine::errorMessage(const std::string &message, unsigned id) const {
         return "?" + std::to_string(id) + " " + message + "\n\n";
     }
 
-    std::string Host::statusMessage(const std::string &message) const {
+    std::string Engine::statusMessage(const std::string &message) const {
         return "= " + message + "\n\n";
     }
 
-    std::string Host::statusMessage(const std::string &message, unsigned id) const {
+    std::string Engine::statusMessage(const std::string &message, unsigned id) const {
         return "=" + std::to_string(id) + " " + message + "\n\n";
     }
 
-    bool Host::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
+    bool Engine::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
@@ -185,8 +185,8 @@ namespace sente::GTP {
 
     }
 
-    Response Host::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
-                                                const std::vector<std::shared_ptr<Token>> &arguments) {
+    Response Engine::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
+                                                  const std::vector<std::shared_ptr<Token>> &arguments) {
 
         std::stringstream message;
 
@@ -254,7 +254,7 @@ namespace sente::GTP {
 
     }
 
-    Response Host::evaluateCommand(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments){
+    Response Engine::evaluateCommand(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments){
 
         // generate a list of possible argument patterns
         std::vector<std::vector<ArgumentPattern>> patterns;

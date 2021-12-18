@@ -2,8 +2,8 @@
 // Created by arthur wesley on 7/22/21.
 //
 
-#include "../Include/Game/GoComponents.h"
-#include "../Include/Utils/SenteExceptions.h"
+#include "GoComponents.h"
+#include "../Utils/SenteExceptions.h"
 
 namespace sente {
 

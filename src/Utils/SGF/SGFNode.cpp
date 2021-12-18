@@ -5,8 +5,8 @@
 #include <sstream>
 #include <pybind11/pybind11.h>
 
-#include "../../Include/Utils/SGF/SGFNode.h"
-#include "../../Include/Utils/SenteExceptions.h"
+#include "SGFNode.h"
+#include "../SenteExceptions.h"
 
 namespace sente {
     namespace sgf {

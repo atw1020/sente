@@ -2,7 +2,7 @@
 // Created by arthur wesley on 7/5/21.
 //
 
-#include "../Include/Utils/SenteExceptions.h"
+#include "SenteExceptions.h"
 
 namespace sente{
 

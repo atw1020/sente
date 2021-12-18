@@ -8,11 +8,11 @@
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
 
-#include "Include/Utils/SGF/SGF.h"
-#include "Include/Game/GoGame.h"
-#include "Include/Utils/Numpy.h"
-#include "Include/Utils/SenteExceptions.h"
-#include "Include/Utils/GTP/Host.h"
+#include "Utils/SGF/SGF.h"
+#include "Game/GoGame.h"
+#include "Utils/Numpy.h"
+#include "Utils/SenteExceptions.h"
+#include "Utils/GTP/Engine.h"
 
 namespace py = pybind11;
 
@@ -659,10 +659,10 @@ PYBIND11_MODULE(sente, module){
 
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
 
-    py::class_<sente::GTP::Host>(gtp, "GTPHost")
+    py::class_<sente::GTP::Engine>(gtp, "GTPHost")
             .def(py::init<std::string, std::string>(),
                     py::arg("engine_version") = "Engine using Sente GTP",
                     py::arg("engine_version") = "0.4.0")
-            .def("evaluate", &sente::GTP::Host::evaluate);
+            .def("evaluate", &sente::GTP::Engine::evaluate);
 
 }

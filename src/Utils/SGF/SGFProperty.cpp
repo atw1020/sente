@@ -7,8 +7,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "../../Include/Utils/SGF/SGFProperty.h"
-#include "../../Include/Utils/SenteExceptions.h"
+#include "SGFProperty.h"
+#include "../SenteExceptions.h"
 
 #define stringify(x) #x
 

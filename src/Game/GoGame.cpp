@@ -6,9 +6,9 @@
 
 // #Include <pybind11/pybind11.h>
 
-#include "../Include/Game/GoGame.h"
-#include "../Include/Game/LifeAndDeath.h"
-#include "../Include/Utils/SenteExceptions.h"
+#include "GoGame.h"
+#include "LifeAndDeath.h"
+#include "../Utils/SenteExceptions.h"
 
 namespace std {
 

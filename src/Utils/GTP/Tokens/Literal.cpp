@@ -2,7 +2,7 @@
 // Created by arthur wesley on 12/11/21.
 //
 
-#include "../../../Include/Utils/GTP/Tokens/Literal.h"
+#include "Literal.h"
 
 #include <string>
 #include <utility>

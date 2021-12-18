@@ -5,10 +5,10 @@
 #include <regex>
 #include <sstream>
 
-#include "../../Include/Utils/GTP/Parser.h"
+#include "Parser.h"
 
-#include "../../Include/Utils/GTP/Tokens/Literal.h"
-#include "../../Include/Utils/GTP/Tokens/Seperator.h"
+#include "Tokens/Literal.h"
+#include "Tokens/Seperator.h"
 
 namespace sente::GTP {
 
