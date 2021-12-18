@@ -65,7 +65,7 @@ namespace sente::GTP {
 
         auto temp = std::string(vertex.begin() + 1, vertex.end());
 
-        y = std::stoi(temp);
+        y = std::stoi(temp) - 1;
 
     }
 
@@ -120,4 +120,15 @@ namespace sente::GTP {
 
     Float::~Float() {}
 
+    Move::Move(Color color, Vertex vertex) : Literal(color.getText() + " " + vertex.getText()){
+        move = sente::Move(vertex.getX(), vertex.getY(), color.getColor() == BLACK ? Stone::BLACK : Stone::WHITE);
+    }
+
+    sente::Move Move::getMove() {
+        return move;
+    }
+
+    literalType Move::getLiteralType() const {
+        return MOVE;
+    }
 }

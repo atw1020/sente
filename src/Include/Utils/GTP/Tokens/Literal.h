@@ -7,6 +7,7 @@
 
 
 #include "Token.h"
+#include "../../../Game/Move.h"
 
 namespace sente::GTP {
 
@@ -16,6 +17,7 @@ namespace sente::GTP {
         STRING,
         COLOR,
         FLOAT,
+        MOVE,
         BOOLEAN
     };
 
@@ -97,6 +99,19 @@ namespace sente::GTP {
         literalType getLiteralType() const final;
     private:
         float value;
+    };
+
+    class Move final : public Literal {
+    public:
+        Move(Color color, Vertex vertex);
+
+        sente::Move getMove();
+
+        literalType getLiteralType() const final;
+    private:
+
+        sente::Move move;
+
     };
 
 }
