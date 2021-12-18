@@ -19,25 +19,27 @@ namespace sente::GTP {
     struct Engine;
 
     typedef std::pair<bool, std::string> Response;
-    typedef std::pair<std::string, std::variant<literalType, tokenType>> ArgumentPattern;
+    typedef std::pair<std::string, literalType> ArgumentPattern;
     typedef Response (*CommandMethod)(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
     struct Engine {
 
         Engine(const std::string& engineName, const std::string& engineVersion);
 
+        bool active = true;
+
         GoGame game;
         std::string engineName;
         std::string engineVersion;
 
-        std::string evaluate(const std::string& text);
+        std::string interpret(const std::string& text);
 
         void registerCommand(const std::string& commandName, CommandMethod method,
                              std::vector<ArgumentPattern> argumentPattern);
 
         std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 
-        Response evaluateCommand(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments);
+        Response execute(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments);
 
         std::string errorMessage(const std::string& message) const;
         std::string errorMessage(const std::string& message, unsigned i) const;

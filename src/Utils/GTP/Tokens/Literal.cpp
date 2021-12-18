@@ -23,6 +23,8 @@ namespace sente::GTP {
                 return "float";
             case BOOLEAN:
                 return "bool";
+            case MOVE:
+                return "move";
         }
     }
 

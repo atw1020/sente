@@ -2,6 +2,7 @@
 // Created by arthur wesley on 12/18/21.
 //
 
+#include <iostream>
 #include "Operators.h"
 
 namespace sente::GTP {
@@ -35,6 +36,7 @@ namespace sente::GTP {
 
     }
     Response quit(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        self->active = false;
         return {true, ""};
     }
     Response boardSize(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -59,9 +61,9 @@ namespace sente::GTP {
         return {true, ""};
     }
     Response play(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        // cast the argument to a move
-        auto* move = (Move*) arguments[1].get();
-        if (self->game.isLegal(move->getMove())){
+        // generate a move from the arguments
+        Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get());
+        if (self->game.isLegal(move.getMove())){
             return {true, ""};
         }
         else {
@@ -71,6 +73,9 @@ namespace sente::GTP {
     }
     Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         return {true, ""};
+    }
+    Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        return {true, std::string(self->game)};
     }
 
 }

@@ -20,12 +20,12 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
-        self.assertEqual("1 protocol_version\n=1 2\n\n", host.evaluate("1 protocol_version\n"))
-        self.assertEqual("5 protocol_version\n=5 2\n\n", host.evaluate("5 protocol_version\n"))
-        self.assertEqual("2 protocol_version\n=2 2\n\n", host.evaluate("2 protocol_version\n"))
-        self.assertEqual("4294967295 protocol_version\n=4294967295 2\n\n", host.evaluate("4294967295 protocol_version\n"))
+        self.assertEqual("=1 2\n\n", host.evaluate("1 protocol_version\n"))
+        self.assertEqual("=5 2\n\n", host.evaluate("5 protocol_version\n"))
+        self.assertEqual("=2 2\n\n", host.evaluate("2 protocol_version\n"))
+        self.assertEqual("=4294967295 2\n\n", host.evaluate("4294967295 protocol_version\n"))
 
     def test_protocol_version(self):
         """
@@ -35,9 +35,9 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
-        self.assertEqual("protocol_version\n= 2\n\n", host.evaluate("protocol_version\n"))
+        self.assertEqual("= 2\n\n", host.evaluate("protocol_version\n"))
 
     def test_name(self):
         """
@@ -47,12 +47,12 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
-        self.assertEqual("name\n= Engine using Sente GTP\n\n", host.evaluate("name\n"))
+        self.assertEqual("= Engine using Sente GTP\n\n", host.evaluate("name\n"))
 
-        host2 = gtp.GTPHost("Ceph the octopus")
-        self.assertEqual("name\n= Ceph the octopus\n\n", host2.evaluate("name\n"))
+        host2 = gtp.Engine("Ceph the octopus")
+        self.assertEqual("= Ceph the octopus\n\n", host2.evaluate("name\n"))
 
     def test_version(self):
         """
@@ -65,9 +65,9 @@ class CommandFunctionality(TestCase):
         with open("../version.txt") as file:
             version = file.read().strip()
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
-        self.assertEqual("version\n= " + version + "\n\n", host.evaluate("version\n"))
+        self.assertEqual("= " + version + "\n\n", host.evaluate("version\n"))
 
     def test_known_command(self):
         """
@@ -77,14 +77,14 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
-        self.assertEqual("known_command name\n= true\n\n", host.evaluate("known_command name\n"))
-        self.assertEqual("known_command known_command\n= true\n\n", host.evaluate("known_command known_command\n"))
-        self.assertEqual("known_command list_commands\n= true\n\n", host.evaluate("known_command list_commands\n"))
-        self.assertEqual("known_command quit\n= true\n\n", host.evaluate("known_command quit\n"))
-        self.assertEqual("known_command clearboard\n= true\n\n", host.evaluate("known_command clearboard\n"))
-        self.assertEqual("known_command play\n= true\n\n", host.evaluate("known_command play\n"))
+        self.assertEqual("= true\n\n", host.evaluate("known_command name\n"))
+        self.assertEqual("= true\n\n", host.evaluate("known_command known_command\n"))
+        self.assertEqual("= true\n\n", host.evaluate("known_command list_commands\n"))
+        self.assertEqual("= true\n\n", host.evaluate("known_command quit\n"))
+        self.assertEqual("= true\n\n", host.evaluate("known_command clearboard\n"))
+        self.assertEqual("= true\n\n", host.evaluate("known_command play\n"))
 
     def test_known_command_false(self):
         """
@@ -94,12 +94,11 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
-        self.assertEqual("known_command there's_no_risky_thing\n= false\n\n", host.evaluate("known_command there's_no_risky_thing\n"))
-        self.assertEqual("known_command for_a_man_whose_determined_to_fall\n= false\n\n",
-                         host.evaluate("known_command for_a_man_whose_determined_to_fall\n"))
-        self.assertEqual("known_command octopus\n= false\n\n", host.evaluate("known_command octopus\n"))
+        self.assertEqual("= false\n\n", host.evaluate("known_command there's_no_risky_thing\n"))
+        self.assertEqual("= false\n\n", host.evaluate("known_command for_a_man_whose_determined_to_fall\n"))
+        self.assertEqual("= false\n\n", host.evaluate("known_command octopus\n"))
 
     def test_known_command(self):
         """
@@ -109,7 +108,7 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        host = gtp.GTPHost()
+        host = gtp.Engine()
 
         commands = host.evaluate("list_commands")
 
@@ -128,7 +127,7 @@ class CommandFunctionality(TestCase):
     def test_boardsize(self):
         """
 
-        
+
 
         :return:
         """

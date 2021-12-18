@@ -7,6 +7,7 @@
 #include <set>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "Operators.h"
 
@@ -26,22 +27,27 @@ namespace sente::GTP {
                 {"known_command", {{&knownCommand, {{"operation", STRING}, {"command", STRING}}}}},
                 {"list_commands", {{&listCommands, {{"operation", STRING}}}}},
                 {"quit", {{&quit, {{"operation", STRING}}}}},
+                {"exit", {{&quit, {{"operation", STRING}}}}},
                 {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
                 {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
                 {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
-                {"play", {{&play, {{"operation", STRING}, {"move", MOVE}}}}},
+                {"play", {{&play, {{"operation", STRING}, {"color", COLOR}, {"vertex", VERTEX}}}}},
                 {"genmove", {{&genMove, {{"operation", STRING}, {"color", COLOR}}}}},
+                {"showboard", {{&showBoard, {{"operation", STRING}}}}},
         };
 
     }
 
-    std::string Engine::evaluate(const std::string& text) {
+    std::string Engine::interpret(const std::string& text) {
+
+        py::print("entering interpret");
 
         auto tokens = parse(text);
 
         std::stringstream outputStream;
 
         unsigned start = 0;
+        py::print("parsed tokens");
 
         // iterate through the tokens
         for (unsigned index = 0; index < tokens.size(); index++){
@@ -50,17 +56,6 @@ namespace sente::GTP {
 
             // keep incrementing until we find a seperator
             while (tokens[index++]->getTokenType() != SEPERATOR and index < tokens.size()) {}
-
-            // echo the tokens into the output
-            for (unsigned i = start; i < index; i++){
-                outputStream << tokens[i]->getText();
-                // add a space if the next item is not a seperator (newline)
-                if (i + 1 < tokens.size()){
-                    if (tokens[i + 1]->getTokenType() != SEPERATOR){
-                        outputStream << " ";
-                    }
-                }
-            }
 
             // slice the tokens and put them into a list
             auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index - 1);
@@ -85,6 +80,8 @@ namespace sente::GTP {
                 candidate = arguments[0];
             }
 
+            py::print("beginning interpretation");
+
             if (candidate->getTokenType() == LITERAL){
                 // make sure we have a string literal
                 auto* literal = (Literal*) candidate.get();
@@ -94,7 +91,7 @@ namespace sente::GTP {
                     // check to see if a command exists
                     if (commands.find(literal->getText()) != commands.end()){
                         // check the arguments for the command
-                        response = evaluateCommand(literal->getText(), arguments);
+                        response = execute(literal->getText(), arguments);
                     }
                     else {
                         response = {false, "unknown command"};
@@ -160,24 +157,16 @@ namespace sente::GTP {
                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
+            std::cout << "argument sizes didn't match" << std::endl;
             return false;
         }
 
         for (unsigned i = 0; i < arguments.size(); i++){
-            // check to see if the argument is a literal
-            if (std::holds_alternative<tokenType>(expectedArguments[i].second)){
-                // if we have a token, check to see if we expect a token
-                if (arguments[i]->getTokenType() != std::get<tokenType>(expectedArguments[i].second)){
-                    return false;
-                }
-            }
-            else {
-                // if we have a literal, cast the argument to a literal and see if we have
-                // a literal
-                auto argument = (Literal*) arguments[i].get();
-                if (argument->getLiteralType() != std::get<literalType>(expectedArguments[i].second)){
-                    return false;
-                }
+            // if we have a literal, cast the argument to a literal and see if we have
+            // a literal
+            auto argument = (Literal*) arguments[i].get();
+            if (argument->getLiteralType() != expectedArguments[i].second){
+                return false;
             }
         }
 
@@ -232,18 +221,10 @@ namespace sente::GTP {
             for (const auto& candidate : candidates){
                 // find the error
                 for (unsigned i = 0; i < arguments.size(); i++){
-                    if (std::holds_alternative<tokenType>(candidate[i].second)){
-                        if (arguments[i]->getTokenType() != std::get<tokenType>(candidate[i].second)){
-                            message << std::endl << "candidate pattern not valid: expected " << toString(std::get<tokenType>(candidate[i].second))
-                                    << " in position " << i << ", got" << toString(arguments[i]->getTokenType());
-                        }
-                    }
-                    else {
-                        auto argument = (Literal*) arguments[i].get();
-                        if (argument->getLiteralType() != std::get<literalType>(candidate[i].second)){
-                            message << std::endl << "candidate pattern not valid: expected " << toString(std::get<tokenType>(candidate[i].second))
-                                    << " in position " << i << ", got" << toString(arguments[i]->getTokenType());
-                        }
+                    auto argument = (Literal*) arguments[i].get();
+                    if (argument->getLiteralType() != candidate[i].second){
+                        message << std::endl << "candidate pattern not valid: expected " << toString(candidate[i].second)
+                                << " in position " << i << ", got " << toString(argument->getLiteralType());
                     }
                 }
             }
@@ -254,7 +235,7 @@ namespace sente::GTP {
 
     }
 
-    Response Engine::evaluateCommand(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments){
+    Response Engine::execute(const std::string &command, const std::vector<std::shared_ptr<Token>> &arguments) {
 
         // generate a list of possible argument patterns
         std::vector<std::vector<ArgumentPattern>> patterns;

@@ -205,6 +205,7 @@ namespace sente {
 
     private:
 
+        bool useASCII;
         std::array<std::array<Stone, side>, side> board;
 
     };

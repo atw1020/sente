@@ -20,6 +20,8 @@ namespace sente::GTP {
     Response komi(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
     Response play(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
     Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+
 }
 
 #endif //SENTE_OPERATORS_H
