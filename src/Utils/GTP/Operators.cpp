@@ -40,8 +40,13 @@ namespace sente::GTP {
     Response boardSize(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
         auto* size = (Integer*) arguments[1].get();
-        self->game = GoGame(size->getValue(), self->game.getRules(), self->game.getKomi());
-        return {true, ""};
+        if (size->getValue() == 9 or size->getValue() == 13 or size->getValue() == 19){
+            self->game = GoGame(size->getValue(), self->game.getRules(), self->game.getKomi());
+            return {true, ""};
+        }
+        else {
+            return {false, "unacceptable size"};
+        }
     }
     Response clearBoard(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
@@ -49,14 +54,22 @@ namespace sente::GTP {
         return {true, ""};
     }
     Response komi(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return {true, std::to_string(self->game.getKomi())};
-    }
-    Response play(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        // TODO: implement
+        auto* newKomi = (Float*) arguments[1].get();
+        self->game.setKomi(newKomi->getValue());
         return {true, ""};
     }
+    Response play(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        // cast the argument to a move
+        auto* move = (Move*) arguments[1].get();
+        if (self->game.isLegal(move->getMove())){
+            return {true, ""};
+        }
+        else {
+            // if the move is illegal, report it
+            return {false, "illegal move"};
+        }
+    }
     Response genMove(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        // TODO: implement
         return {true, ""};
     }
 
