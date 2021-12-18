@@ -39,3 +39,33 @@ class CommandFunctionality(TestCase):
 
         self.assertEqual("protocol_version\n= 2\n\n", host.evaluate("protocol_version\n"))
 
+    def test_name(self):
+        """
+
+        tests to see if the name command responds correctly
+
+        :return:
+        """
+
+        host = gtp.GTPHost()
+
+        self.assertEqual("name\n= Engine using Sente GTP\n\n", host.evaluate("name\n"))
+
+        host2 = gtp.GTPHost("Ceph the octopus")
+        self.assertEqual("name\n= Ceph the octopus\n\n", host2.evaluate("name\n"))
+
+    def test_version(self):
+        """
+
+        tests to see if the version command responds correctly
+
+        :return:
+        """
+
+        with open("../version.txt") as file:
+            version = file.read().strip()
+
+        host = gtp.GTPHost()
+
+        self.assertEqual("version\n= " + version + "\n\n", host.evaluate("version\n"))
+

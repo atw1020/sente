@@ -2,11 +2,15 @@
 // Created by arthur wesley on 12/11/21.
 //
 
+#include "pybind11/pybind11.h"
+
 #include "../../../Include/Utils/GTP/Tokens/Operator.h"
+
+namespace py = pybind11;
 
 namespace sente::GTP {
 
-    Operator::Operator(std::string value) : Token(std::move(value)) {
+    Operator::Operator(const std::string& value) : Token(value) {
         name = OPERATORS[value];
     }
 

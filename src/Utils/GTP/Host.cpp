@@ -90,7 +90,8 @@ namespace sente::GTP {
                         response = clearBoard(arguments);
                         break;
                     case VERSION:
-                        // TODO: implement
+                        response = version(arguments);
+                        break;
                     default:
                         response = {false, "Unimplemented GTP command \"" + candidate->getText() + "\""};
                         break;
@@ -398,6 +399,19 @@ namespace sente::GTP {
             return invalidArgumentsErrorMessage(argumentPatterns, arguments);
         }
 
+    }
+
+    Response Host::version(const std::vector<std::shared_ptr<Token>>& arguments){
+        std::vector<std::vector<ArgumentPattern>> argumentPatterns = {
+                {{"command", OPERATOR}}
+        };
+
+        if (argumentsMatch(*argumentPatterns.begin(), arguments)){
+            return {true, "0.4.0"};
+        }
+        else {
+            return invalidArgumentsErrorMessage(argumentPatterns, arguments);
+        }
     }
 
 }

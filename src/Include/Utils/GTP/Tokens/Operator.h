@@ -42,7 +42,7 @@ namespace sente::GTP {
     class Operator : public Token {
     public:
 
-        explicit Operator(std::string value);
+        explicit Operator(const std::string&);
         ~Operator() override;
 
         OperatorName getName() const;

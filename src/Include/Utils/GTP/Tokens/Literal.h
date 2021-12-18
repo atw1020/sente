@@ -30,7 +30,7 @@ namespace sente::GTP {
 
     std::string toString(literalType type);
 
-    class Integer : public Literal {
+    class Integer final : public Literal {
     public:
 
         explicit Integer(const std::string& literal);
@@ -45,7 +45,7 @@ namespace sente::GTP {
         unsigned value;
     };
 
-    class Vertex : public Literal{
+    class Vertex final : public Literal{
     public:
 
         explicit Vertex(const std::string& vertex);
@@ -62,10 +62,10 @@ namespace sente::GTP {
         unsigned y;
     };
 
-    class String : public Literal {
+    class String final : public Literal {
     public:
         String(const std::string& value);
-        ~String() override;
+        ~String() final;
 
         literalType getLiteralType() const final;
     };
@@ -75,10 +75,10 @@ namespace sente::GTP {
         WHITE
     };
 
-    class Color : public Literal {
+    class Color final : public Literal {
     public:
         explicit Color(std::string text);
-        ~Color() override;
+        ~Color() final;
 
         literalType getLiteralType() const final;
         GoColor getColor() const;
@@ -87,10 +87,10 @@ namespace sente::GTP {
         GoColor color;
     };
 
-    class Float : public Literal {
+    class Float final : public Literal {
     public:
         explicit Float(const std::string& text);
-        ~Float() override;
+        ~Float() final;
 
         float getValue() const;
 

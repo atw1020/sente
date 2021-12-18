@@ -26,6 +26,8 @@ namespace sente::GTP {
 
         std::string evaluate(const std::string& text);
 
+        Move genMove();
+
     private:
 
         GoGame game;
@@ -50,6 +52,7 @@ namespace sente::GTP {
         Response clearBoard(const std::vector<std::shared_ptr<Token>>& arguments);
         Response komi(const std::vector<std::shared_ptr<Token>>& arguments);
         Response play(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response version(const std::vector<std::shared_ptr<Token>>& arguments);
 
     };
 }
