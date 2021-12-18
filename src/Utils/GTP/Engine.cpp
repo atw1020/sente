@@ -40,14 +40,11 @@ namespace sente::GTP {
 
     std::string Engine::interpret(const std::string& text) {
 
-        py::print("entering interpret");
-
         auto tokens = parse(text);
 
         std::stringstream outputStream;
 
         unsigned start = 0;
-        py::print("parsed tokens");
 
         // iterate through the tokens
         for (unsigned index = 0; index < tokens.size(); index++){
@@ -79,8 +76,6 @@ namespace sente::GTP {
             else {
                 candidate = arguments[0];
             }
-
-            py::print("beginning interpretation");
 
             if (candidate->getTokenType() == LITERAL){
                 // make sure we have a string literal

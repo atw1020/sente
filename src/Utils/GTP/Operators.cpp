@@ -64,6 +64,7 @@ namespace sente::GTP {
         // generate a move from the arguments
         Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get());
         if (self->game.isLegal(move.getMove())){
+            self->game.playStone(move.getMove());
             return {true, ""};
         }
         else {

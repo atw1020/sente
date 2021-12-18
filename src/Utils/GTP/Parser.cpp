@@ -102,6 +102,10 @@ namespace sente::GTP {
             return std::make_shared<Integer>(token);
         }
 
+        if (Color::isColor(token)){
+            return std::make_shared<Color>(token);
+        }
+
         return std::make_shared<String>(token);
 
     }

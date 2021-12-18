@@ -85,6 +85,8 @@ namespace sente::GTP {
         literalType getLiteralType() const final;
         GoColor getColor() const;
 
+        static bool isColor(std::string text);
+
     private:
         GoColor color;
     };

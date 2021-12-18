@@ -6,6 +6,7 @@
 
 #include <string>
 #include <utility>
+#include <iostream>
 
 namespace sente::GTP {
 
@@ -58,7 +59,7 @@ namespace sente::GTP {
 
     Vertex::Vertex(const std::string& vertex) : Literal(vertex) {
 
-        if (vertex[0] > 'I'){
+        if (vertex[0] < 'I'){
             x = vertex[0] - 'A';
         }
         else {
@@ -102,10 +103,15 @@ namespace sente::GTP {
         return COLOR;
     }
 
-    Color::~Color() {}
+    Color::~Color() = default;
 
     GoColor Color::getColor() const {
         return color;
+    }
+
+    bool Color::isColor(std::string text) {
+        std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+        return text == "b" or text == "black" or text == "w" or text == "white";
     }
 
     Float::Float(const std::string &text) : Literal(text){
@@ -120,7 +126,7 @@ namespace sente::GTP {
         return FLOAT;
     }
 
-    Float::~Float() {}
+    Float::~Float() = default;
 
     Move::Move(Color color, Vertex vertex) : Literal(color.getText() + " " + vertex.getText()){
         move = sente::Move(vertex.getX(), vertex.getY(), color.getColor() == BLACK ? Stone::BLACK : Stone::WHITE);
