@@ -271,7 +271,7 @@ namespace sente::GTP {
 
         if (iter != patterns.end()){
             // look up the matching function in the table and evaluate it
-            return {true, commands[command][iter - patterns.begin()].first(this, arguments)};
+            return commands[command][iter - patterns.begin()].first(this, arguments);
         }
         else {
             return invalidArgumentsErrorMessage(patterns, arguments);

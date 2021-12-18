@@ -6,56 +6,58 @@
 
 namespace sente::GTP {
 
-    std::string protocolVersion(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return "2";
+    Response protocolVersion(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        return {true, "2"};
     }
 
-    std::string name(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return self->engineName;
+    Response name(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        return {true, self->engineName};
     }
-    std::string version(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return self->engineVersion;
+    Response version(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        return {true, self->engineVersion};
     }
-    std::string knownCommand(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+    Response knownCommand(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
         if (self->commands.find(arguments[1]->getText()) == self->commands.end()){
-            return "false";
+            return {true, "false"};
         }
         else {
-            return "true";
+            return {true, "true"};
         }
     }
-    std::string listCommands(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+    Response listCommands(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
         std::stringstream commands;
 
         for (const auto& command : self->commands){
             commands << command.first << std::endl;
         }
 
-        return commands.str();
+        return {true, commands.str()};
 
     }
-    std::string quit(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return "";
+    Response quit(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        return {true, ""};
     }
-    std::string boardSize(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+    Response boardSize(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
         auto* size = (Integer*) arguments[1].get();
         self->game = GoGame(size->getValue(), self->game.getRules(), self->game.getKomi());
-        return "";
+        return {true, ""};
     }
-    std::string clearBoard(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+    Response clearBoard(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
         self->game = GoGame(self->game.getBoard().getSide(), self->game.getRules(), self->game.getKomi());
-        return "";
+        return {true, ""};
     }
-    std::string komi(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return std::to_string(self->game.getKomi());
+    Response komi(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        return {true, std::to_string(self->game.getKomi())};
     }
-    std::string play(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return "";
+    Response play(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        // TODO: implement
+        return {true, ""};
     }
-    std::string genMove(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return "";
+    Response genMove(Host* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        // TODO: implement
+        return {true, ""};
     }
 
 }

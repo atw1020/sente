@@ -9,17 +9,17 @@
 
 namespace sente::GTP {
 
-    std::string protocolVersion(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string name(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string version(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string knownCommand(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string listCommands(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string quit(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string boardSize(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string clearBoard(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string komi(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string play(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    std::string genMove(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response protocolVersion(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response name(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response version(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response knownCommand(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response listCommands(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response quit(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response boardSize(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response clearBoard(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response komi(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response play(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response genMove(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
 }
 
 #endif //SENTE_OPERATORS_H
