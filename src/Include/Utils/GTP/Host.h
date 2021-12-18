@@ -16,24 +16,24 @@
 
 namespace sente::GTP {
 
+    struct Host;
+
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, std::variant<literalType, tokenType>> ArgumentPattern;
-    typedef std::string (*CommandMethod)(void* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    typedef std::string (*CommandMethod)(Host* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
-    class Host {
-    public:
+    struct Host {
 
-        Host(const std::string& engineName);
+        Host(const std::string& engineName, const std::string& engineVersion);
+
+        GoGame game;
+        std::string engineName;
+        std::string engineVersion;
 
         std::string evaluate(const std::string& text);
 
-        Move genMove();
-
-    private:
-
-        GoGame game;
-
-        std::string engineName;
+        void registerCommand(const std::string& commandName, CommandMethod method,
+                             std::vector<ArgumentPattern> argumentPattern);
 
         std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 
@@ -48,16 +48,6 @@ namespace sente::GTP {
                                    const std::vector<std::shared_ptr<Token>>& arguments);
         static Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments);
-
-        static Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response name(const std::vector<std::shared_ptr<Token>>& arguments);
-        static Response knownCommand(const std::vector<std::shared_ptr<Token>>& arguments);
-        static Response listCommands(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response boardSize(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response clearBoard(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response komi(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response play(const std::vector<std::shared_ptr<Token>>& arguments);
-        Response version(const std::vector<std::shared_ptr<Token>>& arguments);
 
     };
 }

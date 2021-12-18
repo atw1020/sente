@@ -660,8 +660,9 @@ PYBIND11_MODULE(sente, module){
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
 
     py::class_<sente::GTP::Host>(gtp, "GTPHost")
-            .def(py::init<std::string>(),
-                    py::arg("engine name") = "Engine using Sente GTP")
+            .def(py::init<std::string, std::string>(),
+                    py::arg("engine_version") = "Engine using Sente GTP",
+                    py::arg("engine_version") = "0.4.0")
             .def("evaluate", &sente::GTP::Host::evaluate);
 
 }

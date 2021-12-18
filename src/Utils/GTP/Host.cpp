@@ -8,10 +8,31 @@
 #include <utility>
 #include <vector>
 
+#include "../../Include/Utils/GTP/Operators.h"
+
 namespace sente::GTP {
 
-    Host::Host(const std::string& engineName) : game(19, CHINESE, determineKomi(CHINESE)){
+    Host::Host(const std::string& engineName, const std::string& engineVersion)
+        : game(19, CHINESE, determineKomi(CHINESE)){
         this->engineName = engineName;
+        this->engineVersion = engineVersion;
+
+        // initialize the base commands' sente implements
+
+        commands = {
+                {"protocol_version", {{&protocolVersion, {{"operation", STRING}}}}},
+                {"name", {{&name, {{"operation", STRING}}}}},
+                {"version", {{&version, {{"operation", STRING}}}}},
+                {"known_command", {{&knownCommand, {{"operation", STRING}, {"command", STRING}}}}},
+                {"list_commands", {{&listCommands, {{"operation", STRING}}}}},
+                {"quit", {{&quit, {{"operation", STRING}}}}},
+                {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
+                {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
+                {"komi", {{&komi, {{"operation", STRING}}}}},
+                {"play", {{&play, {{"operation", STRING}}}}},
+                {"genmove", {{&genMove, {{"operation", STRING}}}}},
+        };
+
     }
 
     std::string Host::evaluate(const std::string& text) {
@@ -105,6 +126,18 @@ namespace sente::GTP {
         }
 
         return outputStream.str();
+    }
+
+    void Host::registerCommand(const std::string& commandName, CommandMethod method,
+                               std::vector<ArgumentPattern> argumentPattern){
+        if (commands.find(commandName) == commands.end()){
+            // create a new vector
+            commands[commandName] = {{method, argumentPattern}};
+        }
+        else {
+            // append to an existing vector
+            commands[commandName].push_back({method, argumentPattern});
+        }
     }
 
     std::string Host::errorMessage(const std::string& message) const {
@@ -231,7 +264,10 @@ namespace sente::GTP {
         }
 
         // find a matching pattern
-        auto iter = std::find_if(patterns.begin(), patterns.end(), this->argumentsMatch);
+        auto iter = std::find_if(patterns.begin(), patterns.end(),
+                                 [arguments](const std::vector<ArgumentPattern>& pattern){
+            return argumentsMatch(pattern, arguments);
+        });
 
         if (iter != patterns.end()){
             // look up the matching function in the table and evaluate it

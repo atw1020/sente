@@ -4,15 +4,11 @@
 
 #include <regex>
 #include <sstream>
-#include <pybind11/pybind11.h>
 
 #include "../../Include/Utils/GTP/Parser.h"
 
 #include "../../Include/Utils/GTP/Tokens/Literal.h"
-#include "../../Include/Utils/GTP/Tokens/Keyword.h"
 #include "../../Include/Utils/GTP/Tokens/Seperator.h"
-
-namespace py = pybind11;
 
 namespace sente::GTP {
 

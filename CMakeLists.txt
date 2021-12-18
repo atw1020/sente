@@ -30,4 +30,5 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Gro
                     src/Include/Utils/GTP/Tokens/Seperator.h src/Utils/GTP/Tokens/Seperator.cpp
                     src/Include/Utils/GTP/Tokens/Literal.h src/Utils/GTP/Tokens/Literal.cpp
                     src/Include/Utils/GTP/Parser.h src/Utils/GTP/Parser.cpp
+                    src/Include/Utils/GTP/Operators.h src/Utils/GTP/Operators.cpp
                     src/Include/Utils/GTP/Host.h src/Utils/GTP/Host.cpp)
