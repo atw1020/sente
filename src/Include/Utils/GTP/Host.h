@@ -18,6 +18,7 @@ namespace sente::GTP {
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, std::variant<literalType, tokenType>> ArgumentPattern;
+    typedef std::string (*CommandMethod)(void* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
     class Host {
     public:
@@ -34,6 +35,10 @@ namespace sente::GTP {
 
         std::string engineName;
 
+        std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
+
+        Response evaluateCommand(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments);
+
         std::string errorMessage(const std::string& message) const;
         std::string errorMessage(const std::string& message, unsigned i) const;
         std::string statusMessage(const std::string& message) const;
@@ -42,7 +47,7 @@ namespace sente::GTP {
         static bool argumentsMatch(const std::vector<ArgumentPattern>& expectedTypes,
                                    const std::vector<std::shared_ptr<Token>>& arguments);
         static Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
-                                                 const std::vector<std::shared_ptr<Token>>& arguments) ;
+                                                 const std::vector<std::shared_ptr<Token>>& arguments);
 
         static Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
         Response name(const std::vector<std::shared_ptr<Token>>& arguments);

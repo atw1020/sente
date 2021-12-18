@@ -11,8 +11,6 @@
 namespace sente::GTP {
 
     enum tokenType {
-        OPERATOR,
-        KEYWORD,
         SEPERATOR,
         LITERAL
     };

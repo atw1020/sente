@@ -10,7 +10,6 @@
 
 #include "../../Include/Utils/GTP/Tokens/Literal.h"
 #include "../../Include/Utils/GTP/Tokens/Keyword.h"
-#include "../../Include/Utils/GTP/Tokens/Operator.h"
 #include "../../Include/Utils/GTP/Tokens/Seperator.h"
 
 namespace py = pybind11;
@@ -98,12 +97,6 @@ namespace sente::GTP {
 
         // regex for a vertex
         std::regex vertex("[A-H,J-Z]\\d{1,2}");
-
-        auto operators = OPERATORS;
-
-        if (operators.find(token) != operators.end()){
-            return std::make_shared<Operator>(token);
-        }
 
         if (std::regex_match(token, vertex)){
             return std::make_shared<Vertex>(token);

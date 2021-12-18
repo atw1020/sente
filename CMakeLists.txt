@@ -27,8 +27,6 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Include/Game/Gro
                     src/Game/LifeAndDeath.cpp src/Include/Utils/Numpy.h src/Utils/Numpy.cpp src/Include/Utils/SGF/SGFNode.h
                     src/Utils/SGF/SGFNode.cpp src/Include/Utils/SGF/SGFProperty.h src/Utils/SGF/SGFProperty.cpp
                     src/Include/Utils/GTP/Tokens/Token.h src/Utils/GTP/Tokens/Token.cpp
-                    src/Include/Utils/GTP/Tokens/Operator.h src/Utils/GTP/Tokens/Operator.cpp
-                    src/Include/Utils/GTP/Tokens/Keyword.h src/Utils/GTP/Tokens/Keyword.cpp
                     src/Include/Utils/GTP/Tokens/Seperator.h src/Utils/GTP/Tokens/Seperator.cpp
                     src/Include/Utils/GTP/Tokens/Literal.h src/Utils/GTP/Tokens/Literal.cpp
                     src/Include/Utils/GTP/Parser.h src/Utils/GTP/Parser.cpp
