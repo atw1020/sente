@@ -93,6 +93,8 @@ namespace sente::GTP {
 
         // regex for a vertex
         std::regex vertex("[A-H,J-Z]\\d{1,2}");
+        // regex for floating point number
+        std::regex floatRegex("[-+]?([0-9]*\\.[0-9]+|[0-9]+)");
 
         if (std::regex_match(token, vertex)){
             return std::make_shared<Vertex>(token);
@@ -104,6 +106,10 @@ namespace sente::GTP {
 
         if (Color::isColor(token)){
             return std::make_shared<Color>(token);
+        }
+
+        if (std::regex_match(token, floatRegex)){
+            return std::make_shared<Float>(token);
         }
 
         return std::make_shared<String>(token);

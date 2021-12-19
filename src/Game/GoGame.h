@@ -40,7 +40,7 @@ namespace sente {
     public:
 
         GoGame(unsigned side, Rules rules, double komi);
-        explicit GoGame(utils::Tree<sgf::SGFNode>& SGFTree);
+        explicit GoGame(utils::Tree<SGF::SGFNode>& SGFTree);
 
         void resetBoard();
 
@@ -79,7 +79,7 @@ namespace sente {
         std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
 
         unsigned getMoveNumber() const;
-        utils::Tree<sgf::SGFNode> getMoveTree() const;
+        utils::Tree<SGF::SGFNode> getMoveTree() const;
 
         ///
         /// Getting and setting properties
@@ -126,7 +126,7 @@ namespace sente {
         // todo: look into moving the board onto the stack
         std::unique_ptr<_board> board;
 
-        utils::Tree<sgf::SGFNode> gameTree;
+        utils::Tree<SGF::SGFNode> gameTree;
 
         std::unordered_map<Move, std::shared_ptr<Group>> groups;
         std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;
@@ -134,6 +134,7 @@ namespace sente {
         Move koPoint;
 
         void makeBoard(unsigned side);
+        void copyBoard(const _board& other);
         void resetKoPoint();
 
         void updateBoard(const Move& move);

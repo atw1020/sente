@@ -23,18 +23,17 @@
  * https://www.red-bean.com/sgf/properties.html
  *
  */
-namespace sente {
-    namespace sgf {
+namespace sente::SGF {
 
-        // GoGame loadSGF(const std::string &SGFText);
-        utils::Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
-                                                          bool ignoreIllegalProperties,
-                                                          bool fixFileFormat);
+    // GoGame loadSGF(const std::string &SGFText);
+    utils::Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
+                                                      bool ignoreIllegalProperties,
+                                                      bool fixFileFormat);
 
-        std::string dumpSGF(const GoGame& game);
-        // std::string dumpSGF(const Tree<SGFNode>& game);
+    std::string dumpSGF(const GoGame& game);
+    // std::string dumpSGF(const Tree<SGFNode>& game);
 
-    }
+
 }
 
 

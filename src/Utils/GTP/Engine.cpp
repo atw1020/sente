@@ -152,7 +152,6 @@ namespace sente::GTP {
                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
-            std::cout << "argument sizes didn't match" << std::endl;
             return false;
         }
 

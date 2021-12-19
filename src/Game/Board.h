@@ -56,6 +56,8 @@ namespace sente {
 
         Board() = default;
 
+        explicit Board(const Board& other) : Board(other.board) {};
+
         explicit Board(std::array<std::array<Stone, side>, side> stones){
             for (unsigned i = 0; i < side; i++){
                 for (unsigned j = 0; j < side; j++){
@@ -86,6 +88,7 @@ namespace sente {
         bool isStar(unsigned x, unsigned y) const;
 
         unsigned getSide() const override{
+            py::print("entering getSide");
             return side;
         }
 

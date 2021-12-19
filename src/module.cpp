@@ -597,7 +597,7 @@ PYBIND11_MODULE(sente, module){
                 else {
                     SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                           std::istreambuf_iterator<char>());
-                    auto tree = sente::sgf::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+                    auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                     return sente::GoGame(tree);
                 }
             },
@@ -616,7 +616,7 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
-                output << sente::sgf::dumpSGF(game);
+                output << sente::SGF::dumpSGF(game);
             },
              py::arg("game"),
              py::arg("file_name"),
@@ -624,7 +624,7 @@ PYBIND11_MODULE(sente, module){
         .def("loads", [](const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
-                auto tree = sente::sgf::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+                auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
             },
             py::arg("sgf_text"),
@@ -641,7 +641,7 @@ PYBIND11_MODULE(sente, module){
                 :return: a ``sente.Game`` object populated with data from the SGF file
             )pbdoc")
         .def("dumps", [](const sente::GoGame& game){
-                return sente::sgf::dumpSGF(game);
+                return sente::SGF::dumpSGF(game);
             },
             py::arg("game"),
             "Serialize a string as an SGF");
@@ -663,7 +663,13 @@ PYBIND11_MODULE(sente, module){
                     py::arg("engine_version") = "Engine using Sente GTP",
                     py::arg("engine_version") = "0.4.0")
             .def("interpret", &sente::GTP::Engine::interpret)
-            .def("active", [](sente::GTP::Engine& engine){
+            .def("get_game", [](sente::GTP::Engine& engine){
+                auto sequence = engine.game.getMoveSequence();
+                sente::GoGame game(engine.game.getBoard().getSide(), engine.game.getRules(), engine.game.getKomi());
+                game.playMoveSequence(sequence);
+                return game;
+            })
+            .def("active", [](const sente::GTP::Engine& engine){
                 return engine.active;
             });
 

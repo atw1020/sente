@@ -100,7 +100,7 @@ class CommandFunctionality(TestCase):
         self.assertEqual("= false\n\n", engine.interpret("known_command for_a_man_whose_determined_to_fall\n"))
         self.assertEqual("= false\n\n", engine.interpret("known_command octopus\n"))
 
-    def test_known_command(self):
+    def test_list_commands(self):
         """
 
         tests to see if the known_command command responds correctly
@@ -110,6 +110,7 @@ class CommandFunctionality(TestCase):
 
         engine = gtp.Engine()
 
+        # TODO: more precise testing
         commands = engine.interpret("list_commands")
 
         self.assertIn("protocol_version", commands)
@@ -124,13 +125,38 @@ class CommandFunctionality(TestCase):
         self.assertIn("play", commands)
         self.assertIn("genmove", commands)
 
-    def test_boardsize(self):
+    def test_quit(self):
         """
 
-
+        tests to see if the program quits
 
         :return:
         """
+
+        engine = gtp.Engine()
+
+        self.assertTrue(engine.active())
+        self.assertEqual("= \n\n", engine.interpret("quit"))
+        self.assertFalse(engine.active())
+
+    def test_board_size(self):
+        """
+
+        tests to see if the boardSize command works properly
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        # TODO: Fix Segault
+        self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
+        game = engine.get_game()
+        board = game.get_board()
+        side = board.get_side()
+        print(side)
+        game = engine.get_game().get_board().get_side()
+        # self.assertEqual(9, engine.game.get_board().get_side())
 
     def test_play(self):
         """
@@ -142,6 +168,6 @@ class CommandFunctionality(TestCase):
         
         engine = gtp.Engine()
 
-        print(engine.interpret("play B D4"))
-        print(engine.interpret("showboard"))
+        engine.interpret("play B D4\n")
+
 
