@@ -37,7 +37,6 @@ namespace sente::GTP {
         };
 
         // flip the co-ordinate label for the board
-        std::cout << "setting ASCII mode and lower left" << std::endl;
         game.setASCIIMode(true);
         game.setLowerLeftCornerCoOrdinates(true);
 

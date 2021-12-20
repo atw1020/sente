@@ -373,10 +373,10 @@ namespace sente {
     }
 
     void GoGame::setASCIIMode(bool useASCII) {
-        board->useASCII = useASCII;
+        board->setUseASCII(useASCII);
     }
     void GoGame::setLowerLeftCornerCoOrdinates(bool useLowerLeftOrigin) {
-        board->lowerLeftOrigin = useLowerLeftOrigin;
+        board->setLowerLeftOrigin(useLowerLeftOrigin);
     }
 
     std::vector<Move> GoGame::getBranches() {

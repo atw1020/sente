@@ -23,6 +23,8 @@
 #define BLACK_STONE " ⚫"
 #endif
 
+// unicode go characters https://unicode.org/L2/L2016/16108-n4719-go-game-encoding.pdf
+
 namespace py = pybind11;
 
 namespace sente {
@@ -48,16 +50,26 @@ namespace sente {
 
         virtual explicit operator std::string() const = 0;
 
-        bool lowerLeftOrigin;
+        void setUseASCII(bool useASCII) {
+            this->useASCII = useASCII;
+        }
+        void setLowerLeftOrigin(bool lowerLeftOrigin) {
+            this->lowerLeftOrigin = lowerLeftOrigin;
+        }
+
+    protected:
+
         bool useASCII;
+        bool lowerLeftOrigin;
 
     };
 
     template<unsigned side>
-    class Board : public _board{
+    class Board final : public _board{
     public:
 
         Board() = default;
+        ~Board() final = default;
 
         Board(const Board& other){
             for (unsigned i = 0; i < side; i++){
@@ -168,9 +180,6 @@ namespace sente {
         explicit operator std::string() const override{
 
             std::stringstream accumulator;
-
-            std::cout << "entering std::string, lower left is " << std::boolalpha << lowerLeftOrigin <<
-                         " use ASCII is " << std::boolalpha << useASCII << std::endl;
 
             for (unsigned i = 0; i < side; i++){
 

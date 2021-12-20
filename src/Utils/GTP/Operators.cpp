@@ -44,6 +44,8 @@ namespace sente::GTP {
         auto* size = (Integer*) arguments[1].get();
         if (size->getValue() == 9 or size->getValue() == 13 or size->getValue() == 19){
             self->game = GoGame(size->getValue(), self->game.getRules(), self->game.getKomi());
+            self->game.setASCIIMode(true);
+            self->game.setLowerLeftCornerCoOrdinates(true);
             return {true, ""};
         }
         else {
