@@ -26,21 +26,6 @@ namespace std {
 
 namespace sente {
 
-    /*
-    GoGame::GoGame(const GoGame &other) {
-        // copy the board
-        copyBoard(*other.board);
-
-        rules = other.rules;
-        komi = other.komi;
-
-        resetKoPoint();
-
-        gameTree = utils::Tree<SGF::SGFNode>(other.gameTree);
-
-    }
-     */
-
     GoGame::GoGame(unsigned side, Rules rules, double komi) {
 
         // default Komi values
@@ -555,8 +540,15 @@ namespace sente {
         return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
-    const _board& GoGame::getBoard() const {
-        return *board;
+    std::unique_ptr<_board> GoGame::getBoard() const {
+        switch (board->getSide()){
+            case 19:
+                return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+            case 13:
+                return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+            case 9:
+                return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+        }
     }
 
     Results GoGame::getResults() const {
@@ -733,28 +725,6 @@ namespace sente {
             default:
                 throw std::domain_error("Invalid Board size " +
                                             std::to_string(side) + " only 9x9, 13x13 and 19x19 are currently supported");
-        }
-    }
-
-    void GoGame::copyBoard(const _board& other){
-
-        Board<19>* cast19;
-        Board<13>* cast13;
-        Board<9>* cast9;
-
-        switch (other.getSide()){
-            case 19:
-                cast19 = (Board<19>*) &other;
-                board = std::make_unique<Board<19>>(*cast19);
-                break;
-            case 13:
-                cast13 = (Board<13>*) &other;
-                board = std::make_unique<Board<13>>(*cast13);
-                break;
-            case 9:
-                cast9 = (Board<9>*) &other;
-                board = std::make_unique<Board<9>>(*cast9);
-                break;
         }
     }
 

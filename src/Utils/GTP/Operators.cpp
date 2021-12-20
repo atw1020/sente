@@ -52,7 +52,7 @@ namespace sente::GTP {
     }
     Response clearBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
-        self->game = GoGame(self->game.getBoard().getSide(), self->game.getRules(), self->game.getKomi());
+        self->game = GoGame(self->game.getBoard()->getSide(), self->game.getRules(), self->game.getKomi());
         return {true, ""};
     }
     Response komi(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){

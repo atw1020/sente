@@ -8,12 +8,12 @@
 #include <array>
 #include <sstream>
 #include <ciso646>
+#include <iostream>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
 #include "Move.h"
-#include "Group.h"
 
 #ifdef __CYGWIN__
 #define WHITE_STONE " O "
@@ -56,7 +56,14 @@ namespace sente {
 
         Board() = default;
 
-        explicit Board(const Board& other) : Board(other.board) {};
+        Board(const Board& other){
+            for (unsigned i = 0; i < side; i++){
+                for (unsigned j = 0; j < side; j++){
+                    board[i][j] = other.board[i][j];
+                }
+            }
+            useASCII = false;
+        }
 
         explicit Board(std::array<std::array<Stone, side>, side> stones){
             for (unsigned i = 0; i < side; i++){
@@ -64,16 +71,17 @@ namespace sente {
                     board[i][j] = stones[i][j];
                 }
             }
+            useASCII = false;
         }
 
-        bool isOnBoard(const Move& move) const override {
+        [[nodiscard]] bool isOnBoard(const Move& move) const override {
 
             bool xInRange = 0 <= move.getX() and move.getX() < side;
             bool yInRange = 0 <= move.getY() and move.getY() < side;
 
             return xInRange and yInRange;
         }
-        bool isEmpty(const Move& move) const override {
+        [[nodiscard]] bool isEmpty(const Move& move) const override {
             return board[move.getX()][move.getY()] == EMPTY;
         }
 
@@ -85,31 +93,30 @@ namespace sente {
             board[move.getX()][move.getY()] = EMPTY;
         }
 
-        bool isStar(unsigned x, unsigned y) const;
+        [[nodiscard]] bool isStar(unsigned x, unsigned y) const;
 
-        unsigned getSide() const override{
-            py::print("entering getSide");
+        [[nodiscard]] unsigned getSide() const override{
             return side;
         }
 
-        Move getSpace(unsigned int x, unsigned int y) const override {
+        [[nodiscard]] Move getSpace(unsigned int x, unsigned int y) const override {
             if (not isOnBoard(Move(x, y, BLACK))){
                 throw std::out_of_range("Move not on board");
             }
             return Move(x, y, board[x][y]);
         }
-        Move getSpace(Point point) const override {
+        [[nodiscard]] Move getSpace(Point point) const override {
             return getSpace(point.first, point.second);
         }
 
-        Stone getStone(unsigned x, unsigned y) const override {
+        [[nodiscard]] Stone getStone(unsigned x, unsigned y) const override {
             return board[x][y];
         }
-        Stone getStone(Point point) const override {
+        [[nodiscard]] Stone getStone(Point point) const override {
             return getStone(point.first, point.second);
         }
 
-        bool operator==(const Board<side>& other) const {
+        bool operator ==(const Board<side>& other) const {
 
             for (unsigned i = 0; i < side; i++){
                 for (unsigned j = 0; j < side; j++){

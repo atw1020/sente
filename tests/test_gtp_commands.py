@@ -151,12 +151,13 @@ class CommandFunctionality(TestCase):
 
         # TODO: Fix Segault
         self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
-        game = engine.get_game()
-        board = game.get_board()
-        side = board.get_side()
-        print(side)
-        game = engine.get_game().get_board().get_side()
-        # self.assertEqual(9, engine.game.get_board().get_side())
+
+        board = engine.get_game().get_board()
+        print("point 1")
+        board.get_stone(4, 4)
+        print("point 2")
+
+        # engine.get_game().get_board().get_stone(4, 4)
 
     def test_play(self):
         """

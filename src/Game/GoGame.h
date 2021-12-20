@@ -100,7 +100,7 @@ namespace sente {
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
-        const _board& getBoard() const;
+        std::unique_ptr<_board> getBoard() const;
 
         Results getResults() const;
         Results score() const;
@@ -134,7 +134,6 @@ namespace sente {
         Move koPoint;
 
         void makeBoard(unsigned side);
-        void copyBoard(const _board& other);
         void resetKoPoint();
 
         void updateBoard(const Move& move);

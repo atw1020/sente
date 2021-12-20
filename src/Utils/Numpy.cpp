@@ -43,7 +43,7 @@ namespace sente {
          */
         py::array_t<uint8_t> getFeatures(const GoGame& game, const std::vector<feature>& features){
 
-            unsigned side = game.getBoard().getSide();
+            unsigned side = game.getBoard()->getSide();
 
             auto result = py::array_t<int8_t>(side * side * features.size());
             auto buffer = result.request(true);
@@ -95,7 +95,7 @@ namespace sente {
         void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
             // get the stone from the board
-            auto stone = game.getBoard().getStone(toCheck);
+            auto stone = game.getBoard()->getStone(toCheck);
 
             if (stone == BLACK){
                 buffer_ptr[bufferIndex] = 1;
@@ -118,7 +118,7 @@ namespace sente {
         void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
             // get the stone from the board
-            auto stone = game.getBoard().getStone(toCheck);
+            auto stone = game.getBoard()->getStone(toCheck);
 
             if (stone == WHITE){
                 buffer_ptr[bufferIndex] = 1;
@@ -140,7 +140,7 @@ namespace sente {
         void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
 
             // get the stone from the board
-            auto stone = game.getBoard().getStone(toCheck);
+            auto stone = game.getBoard()->getStone(toCheck);
 
             if (stone == EMPTY){
                 buffer_ptr[bufferIndex] = 1;

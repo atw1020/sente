@@ -160,6 +160,7 @@ PYBIND11_MODULE(sente, module){
                 :param move: the move object to play
             )pbdoc")
         .def("get_stone", [](const sente::Board<19>& board, unsigned x, unsigned y){
+                std::cout << "entering getStone" << std::endl;
                 return board.getSpace(x - 1, y - 1).getStone();
             }, R"pbdoc(
                 get the stone located on the specified point.
@@ -194,7 +195,7 @@ PYBIND11_MODULE(sente, module){
                 :param move: the move object to play
             )pbdoc")
         .def("get_stone", [](const sente::Board<13>& board, unsigned x, unsigned y){
-                return board.getSpace(x - 1, y - 1).getStone();
+                 return board.getSpace(x - 1, y - 1).getStone();
             },
             R"pbdoc(
                 get the stone located on the specified point.
@@ -515,7 +516,6 @@ PYBIND11_MODULE(sente, module){
                 :return: whether or not the game has ended
             )pbdoc")
         .def("get_board", &sente::GoGame::getBoard,
-             py::return_value_policy::reference,
              R"pbdoc(
                 Get the board object that the game is updating internally.
 
@@ -665,7 +665,7 @@ PYBIND11_MODULE(sente, module){
             .def("interpret", &sente::GTP::Engine::interpret)
             .def("get_game", [](sente::GTP::Engine& engine){
                 auto sequence = engine.game.getMoveSequence();
-                sente::GoGame game(engine.game.getBoard().getSide(), engine.game.getRules(), engine.game.getKomi());
+                sente::GoGame game(engine.game.getBoard()->getSide(), engine.game.getRules(), engine.game.getKomi());
                 game.playMoveSequence(sequence);
                 return game;
             })
