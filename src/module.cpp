@@ -4,6 +4,7 @@
  *
  */
 #include <fstream>
+#include <filesystem>
 
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
@@ -585,19 +586,23 @@ PYBIND11_MODULE(sente, module){
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
 
-                std::string SGFText;
+                auto path = std::filesystem::path(fileName);
 
-                // load the text from the file
-                std::ifstream filePointer(fileName);
+                if (std::filesystem::exists(path)){
 
-                if (not filePointer.good()){
-                    throw sente::utils::FileNotFoundException(fileName);
+                    // load the text from the file
+                    std::ifstream filePointer(fileName);
+                    std::string SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
+                                                      std::istreambuf_iterator<char>());
+
+                    // generate the move tree
+                    auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+
+                    // set the engine's game to be the move tree
+                    return sente::GoGame(tree);
                 }
                 else {
-                    SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
-                                          std::istreambuf_iterator<char>());
-                    auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
-                    return sente::GoGame(tree);
+                    throw sente::utils::FileNotFoundException(fileName);
                 }
             },
             py::arg("filename"),

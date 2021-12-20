@@ -25,7 +25,11 @@ namespace sente::GTP {
             {"clearboard", {{&clearBoard, {{"operation", STRING}}}}},
             {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
             {"play", {{&play, {{"operation", STRING}, {"color", COLOR}, {"vertex", VERTEX}}}}},
+            {"undo", {{&undoOnce, {{"operation", STRING}}},
+                      {&undoMultiple, {{"operation", STRING}, {"moves", INTEGER}}}}},
             {"showboard", {{&showBoard, {{"operation", STRING}}}}},
+            {"loadsgf", {{&loadSGF1, {{"operation", STRING}, {"file", STRING}}},
+                          {&loadSGF2, {{"operation", STRING}, {"file", STRING}, {"moves", INTEGER}}}}}
     };
 
     Engine::Engine(const std::string& engineName, const std::string& engineVersion)
@@ -40,10 +44,8 @@ namespace sente::GTP {
         // register the genMove command so that it can be overwritten
         registerCommand("genmove", &genMove, {{"operation", STRING}, {"color", COLOR}});
 
-        // flip the co-ordinate label for the board
-        game.setASCIIMode(true);
-        game.setLowerLeftCornerCoOrdinates(true);
-
+        // reset the board
+        setGTPDisplayFlags();
     }
 
     std::string Engine::interpret(const std::string& text) {
@@ -159,6 +161,11 @@ namespace sente::GTP {
                 commands[commandName].push_back({method, argumentPattern});
             }
         }
+    }
+    void Engine::setGTPDisplayFlags() {
+        // flip the co-ordinate label for the board
+        game.setASCIIMode(true);
+        game.setLowerLeftCornerCoOrdinates(true);
     }
 
     std::string Engine::errorMessage(const std::string& message) const {

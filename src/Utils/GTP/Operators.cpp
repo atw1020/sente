@@ -3,7 +3,11 @@
 //
 
 #include <iostream>
+#include <filesystem>
+
+
 #include "Operators.h"
+#include "../SGF/SGF.h"
 
 namespace sente::GTP {
 
@@ -44,8 +48,7 @@ namespace sente::GTP {
         auto* size = (Integer*) arguments[1].get();
         if (size->getValue() == 9 or size->getValue() == 13 or size->getValue() == 19){
             self->game = GoGame(size->getValue(), self->game.getRules(), self->game.getKomi());
-            self->game.setASCIIMode(true);
-            self->game.setLowerLeftCornerCoOrdinates(true);
+            self->setGTPDisplayFlags();
             return {true, ""};
         }
         else {
@@ -55,6 +58,7 @@ namespace sente::GTP {
     Response clearBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
         self->game = GoGame(self->game.getSide(), self->game.getRules(), self->game.getKomi());
+        self->setGTPDisplayFlags();
         return {true, ""};
     }
     Response komi(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -88,6 +92,72 @@ namespace sente::GTP {
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         return {true, "\n" + std::string(self->game)};
+    }
+    Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        if (not self->game.isAtRoot()){
+            self->game.stepUp(1);
+            return {true, ""};
+        }
+        else {
+            return {false, "cannot undo"};
+        }
+    }
+    Response undoMultiple(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        auto* steps = (Integer*) arguments[1].get();
+        if (self->game.getMoveSequence().size() >= steps->getValue()){
+            self->game.stepUp(steps->getValue());
+            return {true, ""};
+        }
+        else {
+            return {false, "cannot undo"};
+        }
+    }
+
+    Response baseLoadSGF(Engine* self, std::string filePath){
+
+        auto pathStr = std::filesystem::path(filePath);
+
+        if (std::filesystem::exists(filePath)){
+
+            // load the text from the file
+            std::ifstream filePointer(filePath);
+            std::string SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
+                                              std::istreambuf_iterator<char>());
+
+            // generate the move tree
+            auto tree = sente::SGF::loadSGF(SGFText, false, true, true);
+
+            // set the engine's game to be the move tree
+            self->game = GoGame(tree);
+            self->setGTPDisplayFlags();
+
+            return {true, ""};
+        }
+        else {
+            return {false, "cannot load file"};
+        }
+
+    }
+
+    Response loadSGF1(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        auto* pathStr = (String*) arguments[1].get();
+        return baseLoadSGF(self, pathStr->getText());
+    }
+
+    Response loadSGF2(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        // load the board
+        auto* pathStr = (String*) arguments[1].get();
+        auto* moves = (Integer*) arguments[2].get();
+        auto response = baseLoadSGF(self, pathStr->getText());
+
+        // play out the sequence
+        auto moveSequence = self->game.getDefaultSequence();
+        unsigned movesAdvanced = std::min(moves->getValue(), unsigned(moveSequence.size()));
+        moveSequence = std::vector<sente::Move>(moveSequence.begin(), moveSequence.begin() + movesAdvanced);
+
+        self->game.playMoveSequence(moveSequence);
+
+        return response;
     }
 
 }

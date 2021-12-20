@@ -36,6 +36,7 @@ namespace sente::GTP {
 
         void registerCommand(const std::string& commandName, CommandMethod method,
                              std::vector<ArgumentPattern> argumentPattern);
+        void setGTPDisplayFlags();
 
         std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 

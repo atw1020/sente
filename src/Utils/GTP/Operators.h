@@ -22,6 +22,11 @@ namespace sente::GTP {
     Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
+    Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response undoMultiple(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response loadSGF1(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response loadSGF2(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+
 }
 
 #endif //SENTE_OPERATORS_H
