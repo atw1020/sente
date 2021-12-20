@@ -65,8 +65,8 @@ namespace sente {
                     board[i][j] = other.board[i][j];
                 }
             }
-            useASCII = false;
-            lowerLeftOrigin = false;
+            useASCII = other.useASCII;
+            lowerLeftOrigin = other.lowerLeftOrigin;
         }
 
         explicit Board(std::array<std::array<Stone, side>, side> stones){
@@ -169,20 +169,23 @@ namespace sente {
 
             std::stringstream accumulator;
 
+            std::cout << "entering std::string, lower left is " << std::boolalpha << lowerLeftOrigin <<
+                         " use ASCII is " << std::boolalpha << useASCII << std::endl;
+
             for (unsigned i = 0; i < side; i++){
 
+                unsigned rowIndex = lowerLeftOrigin ? side - 1 - i : i;
+
                 // accumulate the beginning of the row
-                if (i + 1 < 10){
+                if (rowIndex + 1 < 10){
                     accumulator << " ";
                 }
 
-                accumulator << i + 1 << " ";
+                accumulator << rowIndex + 1 << " ";
 
                 for (unsigned j = 0; j < side; j++){
 
-                    unsigned rowIndex = lowerLeftOrigin ? side - 1 - i : i;
-
-                    switch(board[rowIndex][j]){
+                    switch(board[i][j]){
                         case BLACK:
                             accumulator << " ⚫";
                             break;
@@ -191,7 +194,7 @@ namespace sente {
                             break;
                         case EMPTY:
                             // check if we are on a star point
-                            if (isStar(rowIndex, j)){
+                            if (isStar(i, j)){
                                 accumulator << " *";
                             }
                             else {

@@ -105,7 +105,7 @@ namespace sente::GTP {
 
     class Move final : public Literal {
     public:
-        Move(Color color, Vertex vertex);
+        Move(Color color, Vertex vertex, unsigned boardSize);
 
         sente::Move getMove();
 

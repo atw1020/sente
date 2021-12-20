@@ -375,8 +375,8 @@ namespace sente {
     void GoGame::setASCIIMode(bool useASCII) {
         board->useASCII = useASCII;
     }
-    void GoGame::setLowerLeftCorner(bool useLowerLeftOrigin) {
-        board->useASCII = useLowerLeftOrigin;
+    void GoGame::setLowerLeftCornerCoOrdinates(bool useLowerLeftOrigin) {
+        board->lowerLeftOrigin = useLowerLeftOrigin;
     }
 
     std::vector<Move> GoGame::getBranches() {

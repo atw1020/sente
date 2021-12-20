@@ -62,7 +62,7 @@ namespace sente::GTP {
     }
     Response play(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // generate a move from the arguments
-        Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get());
+        Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get(), self->game.getSide());
         if (self->game.isLegal(move.getMove())){
             self->game.playStone(move.getMove());
             return {true, ""};
@@ -76,7 +76,7 @@ namespace sente::GTP {
         return {true, ""};
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return {true, std::string(self->game)};
+        return {true, "\n" + std::string(self->game)};
     }
 
 }

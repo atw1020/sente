@@ -98,7 +98,7 @@ namespace sente {
         ///
 
         void setASCIIMode(bool useASCII);
-        void setLowerLeftCorner(bool useLowerLeftOrigin);
+        void setLowerLeftCornerCoOrdinates(bool useLowerLeftOrigin);
 
         Stone getSpace(Point point) const;
         Stone getSpace(unsigned x, unsigned y) const;

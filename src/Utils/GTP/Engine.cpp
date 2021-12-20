@@ -36,6 +36,11 @@ namespace sente::GTP {
                 {"showboard", {{&showBoard, {{"operation", STRING}}}}},
         };
 
+        // flip the co-ordinate label for the board
+        std::cout << "setting ASCII mode and lower left" << std::endl;
+        game.setASCIIMode(true);
+        game.setLowerLeftCornerCoOrdinates(true);
+
     }
 
     std::string Engine::interpret(const std::string& text) {
