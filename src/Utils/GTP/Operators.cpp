@@ -63,11 +63,20 @@ namespace sente::GTP {
         return {true, ""};
     }
     Response play(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+
         // generate a move from the arguments
         Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get(), self->game.getSide());
-        if (self->game.isLegal(move.getMove())){
-            self->game.playStone(move.getMove());
-            return {true, ""};
+
+        if (self->game.isAddLegal(move.getMove())){
+            if (self->game.isLegal(move.getMove())){
+                // play the stone
+                self->game.playStone(move.getMove());
+                return {true, ""};
+            }
+            else {
+                self->game.addStone(move.getMove());
+                return {true, ""};
+            }
         }
         else {
             // if the move is illegal, report it

@@ -160,7 +160,6 @@ PYBIND11_MODULE(sente, module){
                 :param move: the move object to play
             )pbdoc")
         .def("get_stone", [](const sente::Board<19>& board, unsigned x, unsigned y){
-                std::cout << "entering getStone" << std::endl;
                 return board.getSpace(x - 1, y - 1).getStone();
             }, R"pbdoc(
                 get the stone located on the specified point.

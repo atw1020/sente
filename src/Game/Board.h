@@ -196,10 +196,20 @@ namespace sente {
 
                     switch(board[i][j]){
                         case BLACK:
-                            accumulator << " ⚫";
+                            if (not useASCII){
+                                accumulator << " ⚫";
+                            }
+                            else {
+                                accumulator << " X";
+                            }
                             break;
                         case WHITE:
-                            accumulator << " ⚪";
+                            if (not useASCII){
+                                accumulator << " ⚪";
+                            }
+                            else {
+                                return " O";
+                            }
                             break;
                         case EMPTY:
                             // check if we are on a star point

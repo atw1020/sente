@@ -156,9 +156,7 @@ class MinimumGTPCommands(TestCase):
         self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
 
         board = engine.get_game().get_board()
-        print("point 1")
         board.get_stone(4, 4)
-        print("point 2")
 
         # engine.get_game().get_board().get_stone(4, 4)
 
@@ -223,7 +221,20 @@ class ErrorMessages(TestCase):
 
         engine = gtp.Engine()
 
+        engine.interpret("play B D4")
         self.assertEqual("? illegal move\n\n", engine.interpret("play W D4"))
+
+    def test_wrong_color_not_rejected(self):
+        """
+
+        makes sure that moves that are of the wrong color can be played correctly
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        self.assertEqual("= \n\n", engine.interpret("play W D4"))
 
 
 class OtherCompliance(TestCase):
@@ -261,7 +272,7 @@ class OtherCompliance(TestCase):
                          " 7  .  .  *  .  .  .  *  .  .\n"
                          " 6  .  .  .  .  .  .  .  .  .\n"
                          " 5  .  .  .  .  *  .  .  .  .\n"
-                         " 4  .  .  .  ⚫ .  .  .  .  .\n"
+                         " 4  .  .  .  X .  .  .  .  .\n"
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
