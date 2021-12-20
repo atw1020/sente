@@ -48,6 +48,9 @@ namespace sente {
 
         virtual explicit operator std::string() const = 0;
 
+        bool lowerLeftOrigin;
+        bool useASCII;
+
     };
 
     template<unsigned side>
@@ -63,6 +66,7 @@ namespace sente {
                 }
             }
             useASCII = false;
+            lowerLeftOrigin = false;
         }
 
         explicit Board(std::array<std::array<Stone, side>, side> stones){
@@ -72,6 +76,7 @@ namespace sente {
                 }
             }
             useASCII = false;
+            lowerLeftOrigin = false;
         }
 
         [[nodiscard]] bool isOnBoard(const Move& move) const override {
@@ -175,7 +180,9 @@ namespace sente {
 
                 for (unsigned j = 0; j < side; j++){
 
-                    switch(board[i][j]){
+                    unsigned rowIndex = lowerLeftOrigin ? side - 1 - i : i;
+
+                    switch(board[rowIndex][j]){
                         case BLACK:
                             accumulator << " ⚫";
                             break;
@@ -184,7 +191,7 @@ namespace sente {
                             break;
                         case EMPTY:
                             // check if we are on a star point
-                            if (isStar(i, j)){
+                            if (isStar(rowIndex, j)){
                                 accumulator << " *";
                             }
                             else {
@@ -214,8 +221,6 @@ namespace sente {
         }
 
     private:
-
-        bool useASCII;
         std::array<std::array<Stone, side>, side> board;
 
     };

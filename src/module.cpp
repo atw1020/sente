@@ -515,9 +515,9 @@ PYBIND11_MODULE(sente, module){
 
                 :return: whether or not the game has ended
             )pbdoc")
-        .def("get_board", &sente::GoGame::getBoard,
+        .def("get_board", &sente::GoGame::copyBoard,
              R"pbdoc(
-                Get the board object that the game is updating internally.
+                Get a copy of the board object that the game is updating internally.
 
                 :return: a ``sente.Board`` object that represents the board to be played.
             )pbdoc")
@@ -663,9 +663,12 @@ PYBIND11_MODULE(sente, module){
                     py::arg("engine_version") = "Engine using Sente GTP",
                     py::arg("engine_version") = "0.4.0")
             .def("interpret", &sente::GTP::Engine::interpret)
+            .def("get_current_sequence", [](sente::GTP::Engine& engine){
+                return engine.game.getMoveSequence();
+            })
             .def("get_game", [](sente::GTP::Engine& engine){
                 auto sequence = engine.game.getMoveSequence();
-                sente::GoGame game(engine.game.getBoard()->getSide(), engine.game.getRules(), engine.game.getKomi());
+                sente::GoGame game(engine.game.getSide(), engine.game.getRules(), engine.game.getKomi());
                 game.playMoveSequence(sequence);
                 return game;
             })

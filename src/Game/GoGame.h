@@ -97,10 +97,15 @@ namespace sente {
         /// Getter and Setter methods
         ///
 
+        void setASCIIMode(bool useASCII);
+        void setLowerLeftCorner(bool useLowerLeftOrigin);
+
+        Stone getSpace(Point point) const;
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
-        std::unique_ptr<_board> getBoard() const;
+        std::unique_ptr<_board> copyBoard() const;
+        unsigned getSide() const;
 
         Results getResults() const;
         Results score() const;

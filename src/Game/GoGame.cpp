@@ -372,6 +372,13 @@ namespace sente {
         }
     }
 
+    void GoGame::setASCIIMode(bool useASCII) {
+        board->useASCII = useASCII;
+    }
+    void GoGame::setLowerLeftCorner(bool useLowerLeftOrigin) {
+        board->useASCII = useLowerLeftOrigin;
+    }
+
     std::vector<Move> GoGame::getBranches() {
 
         auto children = gameTree.getChildren();
@@ -533,6 +540,9 @@ namespace sente {
         }
     }
 
+    Stone GoGame::getSpace(Point point) const {
+        return getSpace(point.first, point.second);
+    }
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
         return board->getSpace(x, y).getStone();
     }
@@ -540,7 +550,7 @@ namespace sente {
         return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
-    std::unique_ptr<_board> GoGame::getBoard() const {
+    std::unique_ptr<_board> GoGame::copyBoard() const {
         switch (board->getSide()){
             case 19:
                 return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
@@ -549,6 +559,10 @@ namespace sente {
             case 9:
                 return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
         }
+    }
+
+    unsigned GoGame::getSide() const {
+        return board->getSide();
     }
 
     Results GoGame::getResults() const {
