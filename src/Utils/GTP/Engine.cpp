@@ -29,7 +29,7 @@ namespace sente::GTP {
                 {"quit", {{&quit, {{"operation", STRING}}}}},
                 {"exit", {{&quit, {{"operation", STRING}}}}},
                 {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
-                {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
+                {"clearboard", {{&clearBoard, {{"operation", STRING}}}}},
                 {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
                 {"play", {{&play, {{"operation", STRING}, {"color", COLOR}, {"vertex", VERTEX}}}}},
                 {"genmove", {{&genMove, {{"operation", STRING}, {"color", COLOR}}}}},

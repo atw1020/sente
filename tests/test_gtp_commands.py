@@ -120,7 +120,7 @@ class CommandFunctionality(TestCase):
         self.assertIn("list_commands", commands)
         self.assertIn("quit", commands)
         self.assertIn("boardsize", commands)
-        self.assertIn("clear_board", commands)
+        self.assertIn("clearboard", commands)
         self.assertIn("komi", commands)
         self.assertIn("play", commands)
         self.assertIn("genmove", commands)
