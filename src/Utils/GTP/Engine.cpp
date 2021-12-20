@@ -13,28 +13,32 @@
 
 namespace sente::GTP {
 
+    std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> builtins = {
+            {"protocol_version", {{&protocolVersion, {{"operation", STRING}}}}},
+            {"name", {{&name, {{"operation", STRING}}}}},
+            {"version", {{&version, {{"operation", STRING}}}}},
+            {"known_command", {{&knownCommand, {{"operation", STRING}, {"command", STRING}}}}},
+            {"list_commands", {{&listCommands, {{"operation", STRING}}}}},
+            {"quit", {{&quit, {{"operation", STRING}}}}},
+            {"exit", {{&quit, {{"operation", STRING}}}}},
+            {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
+            {"clearboard", {{&clearBoard, {{"operation", STRING}}}}},
+            {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
+            {"play", {{&play, {{"operation", STRING}, {"color", COLOR}, {"vertex", VERTEX}}}}},
+            {"showboard", {{&showBoard, {{"operation", STRING}}}}},
+    };
+
     Engine::Engine(const std::string& engineName, const std::string& engineVersion)
         : game(19, CHINESE, determineKomi(CHINESE)){
         this->engineName = engineName;
         this->engineVersion = engineVersion;
 
-        // initialize the base commands' sente implements
+        // initialize the builtin commands
+        // TODO: make sure this doesn't make commands global
+        commands = builtins;
 
-        commands = {
-                {"protocol_version", {{&protocolVersion, {{"operation", STRING}}}}},
-                {"name", {{&name, {{"operation", STRING}}}}},
-                {"version", {{&version, {{"operation", STRING}}}}},
-                {"known_command", {{&knownCommand, {{"operation", STRING}, {"command", STRING}}}}},
-                {"list_commands", {{&listCommands, {{"operation", STRING}}}}},
-                {"quit", {{&quit, {{"operation", STRING}}}}},
-                {"exit", {{&quit, {{"operation", STRING}}}}},
-                {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
-                {"clearboard", {{&clearBoard, {{"operation", STRING}}}}},
-                {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
-                {"play", {{&play, {{"operation", STRING}, {"color", COLOR}, {"vertex", VERTEX}}}}},
-                {"genmove", {{&genMove, {{"operation", STRING}, {"color", COLOR}}}}},
-                {"showboard", {{&showBoard, {{"operation", STRING}}}}},
-        };
+        // register the genMove command so that it can be overwritten
+        registerCommand("genmove", &genMove, {{"operation", STRING}, {"color", COLOR}});
 
         // flip the co-ordinate label for the board
         game.setASCIIMode(true);
@@ -126,13 +130,34 @@ namespace sente::GTP {
 
     void Engine::registerCommand(const std::string& commandName, CommandMethod method,
                                  std::vector<ArgumentPattern> argumentPattern){
+
+        // raise an exception if the command is non-modifiable
+        if (builtins.find(commandName) != builtins.end()){
+            throw std::domain_error("Cannot overwrite standard GTP command \"" + commandName + "\"");
+        }
+
         if (commands.find(commandName) == commands.end()){
             // create a new vector
             commands[commandName] = {{method, argumentPattern}};
         }
         else {
-            // append to an existing vector
-            commands[commandName].push_back({method, argumentPattern});
+
+            bool found = false;
+
+            for (auto& command : commands[commandName]){
+                if (command.second == argumentPattern){
+                    // overwrite the old method
+                    command.first = method;
+                    // say we've found the correct result and break
+                    found = true;
+                    break;
+                }
+            }
+
+            if (not found){
+                // append to existing options
+                commands[commandName].push_back({method, argumentPattern});
+            }
         }
     }
 

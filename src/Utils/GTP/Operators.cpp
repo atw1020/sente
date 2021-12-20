@@ -84,7 +84,7 @@ namespace sente::GTP {
         }
     }
     Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        return {true, ""};
+        return {false, "cannot generate move; no engine bound to generate move"};
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         return {true, "\n" + std::string(self->game)};

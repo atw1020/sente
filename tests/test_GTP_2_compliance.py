@@ -180,7 +180,9 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        pass
+        engine = gtp.Engine()
+
+        self.assertEqual("? cannot generate move; no engine bound to generate move\n\n", engine.interpret("genmove B"))
 
 
 class ErrorMessages(TestCase):
