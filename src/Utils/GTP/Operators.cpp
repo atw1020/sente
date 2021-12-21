@@ -91,6 +91,7 @@ namespace sente::GTP {
         return {false, "cannot generate move; no engine bound to generate move"};
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        std::cout << "entering showBoard" << std::endl;
         return {true, "\n" + std::string(self->game)};
     }
     Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -131,6 +132,8 @@ namespace sente::GTP {
             self->game = GoGame(tree);
             self->setGTPDisplayFlags();
 
+            std::cout << "leaving loadSGF" << std::endl;
+
             return {true, ""};
         }
         else {
@@ -141,7 +144,12 @@ namespace sente::GTP {
 
     Response loadSGF1(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         auto* pathStr = (String*) arguments[1].get();
-        return baseLoadSGF(self, pathStr->getText());
+        auto response = baseLoadSGF(self, pathStr->getText());
+
+        std::cout << "playing sequence" << std::endl;
+        self->game.playDefaultSequence();
+
+        return response;
     }
 
     Response loadSGF2(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -152,7 +160,9 @@ namespace sente::GTP {
 
         // play out the sequence
         auto moveSequence = self->game.getDefaultSequence();
+
         unsigned movesAdvanced = std::min(moves->getValue(), unsigned(moveSequence.size()));
+
         moveSequence = std::vector<sente::Move>(moveSequence.begin(), moveSequence.begin() + movesAdvanced);
 
         self->game.playMoveSequence(moveSequence);

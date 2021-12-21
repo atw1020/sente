@@ -109,7 +109,7 @@ namespace sente {
     void GoGame::resetBoard(){
 
         // create a new board
-        makeBoard(board->getSide());
+        clearBoard();
         // reset the tree to the root
         gameTree.advanceToRoot();
 
@@ -728,17 +728,34 @@ namespace sente {
 
         switch (side){
             case 19:
-                board = std::make_unique<Board<19>>();
+                board = std::make_unique<Board<19>>(false, false);
                 break;
             case 13:
-                board = std::make_unique<Board<13>>();
+                board = std::make_unique<Board<13>>(false, false);
                 break;
             case 9:
-                board = std::make_unique<Board<9>>();
+                board = std::make_unique<Board<9>>(false, false);
                 break;
             default:
                 throw std::domain_error("Invalid Board size " +
                                             std::to_string(side) + " only 9x9, 13x13 and 19x19 are currently supported");
+        }
+    }
+    void GoGame::clearBoard() {
+
+        switch (board->getSide()){
+            case 19:
+                board = std::make_unique<Board<19>>(board->getUseASCII(), board->getLowerLeftOrigin());
+                break;
+            case 13:
+                board = std::make_unique<Board<13>>(board->getUseASCII(), board->getLowerLeftOrigin());
+                break;
+            case 9:
+                board = std::make_unique<Board<9>>(board->getUseASCII(), board->getLowerLeftOrigin());
+                break;
+            default:
+                throw std::domain_error("Invalid Board size " +
+                                        std::to_string(board->getSide()) + " only 9x9, 13x13 and 19x19 are currently supported");
         }
     }
 

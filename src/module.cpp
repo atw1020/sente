@@ -145,7 +145,9 @@ PYBIND11_MODULE(sente, module){
             });
 
     py::class_<sente::Board<19>>(module, "Board19")
-        .def(py::init<>())
+        .def(py::init<bool, bool>(),
+             py::arg("use_ascii") = false,
+             py::arg("lower_left_origin") = false)
         .def(py::init<std::array<std::array<sente::Stone, 19>, 19>>())
         .def("get_side", &sente::Board<19>::getSide,
             R"pbdoc(
@@ -179,7 +181,9 @@ PYBIND11_MODULE(sente, module){
         });
 
     py::class_<sente::Board<13>>(module, "Board13")
-        .def(py::init<>())
+        .def(py::init<bool, bool>(),
+             py::arg("use_ascii") = false,
+             py::arg("lower_left_origin") = false)
         .def(py::init<std::array<std::array<sente::Stone, 13>, 13>>())
         .def("get_side", &sente::Board<13>::getSide,
             R"pbdoc(
@@ -214,7 +218,9 @@ PYBIND11_MODULE(sente, module){
         });
 
     py::class_<sente::Board<9>>(module, "Board9")
-        .def(py::init<>())
+        .def(py::init<bool, bool>(),
+                py::arg("use_ascii") = false,
+                py::arg("lower_left_origin") = false)
         .def(py::init<std::array<std::array<sente::Stone, 9>, 9>>())
         .def("get_side", &sente::Board<9>::getSide,
             R"pbdoc(

@@ -57,6 +57,13 @@ namespace sente {
             this->lowerLeftOrigin = lowerLeftOrigin;
         }
 
+        bool getUseASCII() const{
+            return useASCII;
+        }
+        bool getLowerLeftOrigin() const{
+            return lowerLeftOrigin;
+        }
+
     protected:
 
         bool useASCII;
@@ -68,7 +75,18 @@ namespace sente {
     class Board final : public _board{
     public:
 
-        Board() = default;
+        Board(bool useASCII, bool lowerLeftOrigin) {
+
+            for (unsigned i = 0; i < side; i++){
+                for (unsigned j = 0; j < side; j++){
+                    board[i][j] = EMPTY;
+                }
+            }
+
+            this->useASCII = useASCII;
+            this->lowerLeftOrigin = lowerLeftOrigin;
+
+        };
         ~Board() final = default;
 
         Board(const Board& other){
@@ -200,7 +218,7 @@ namespace sente {
                                 accumulator << " ⚫";
                             }
                             else {
-                                accumulator << " X";
+                                accumulator << " X ";
                             }
                             break;
                         case WHITE:
@@ -208,7 +226,7 @@ namespace sente {
                                 accumulator << " ⚪";
                             }
                             else {
-                                return " O";
+                                accumulator << " O ";
                             }
                             break;
                         case EMPTY:

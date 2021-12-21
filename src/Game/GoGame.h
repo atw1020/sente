@@ -139,6 +139,7 @@ namespace sente {
         Move koPoint;
 
         void makeBoard(unsigned side);
+        void clearBoard();
         void resetKoPoint();
 
         void updateBoard(const Move& move);
