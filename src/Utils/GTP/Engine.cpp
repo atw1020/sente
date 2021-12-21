@@ -238,7 +238,7 @@ namespace sente::GTP {
             }
 
             if (expectedArguments.size() > 1){
-                message << "or " << *(--expectedArguments.end());
+                message << " or " << *(--expectedArguments.end());
             }
 
             message << ", got " << arguments.size() - 1;
@@ -246,14 +246,14 @@ namespace sente::GTP {
         }
         else {
 
-            message << "no viable argument pattern for command \"" << arguments[0]->getText() << "\"";
+            message << "no viable argument pattern for command \"" << arguments[0]->getText() << "\";";
 
             for (const auto& candidate : candidates){
                 // find the error
                 for (unsigned i = 0; i < arguments.size(); i++){
                     auto argument = (Literal*) arguments[i].get();
                     if (argument->getLiteralType() != candidate[i].second){
-                        message << std::endl << "candidate pattern not valid: expected " << toString(candidate[i].second)
+                        message << " candidate pattern not valid: expected " << toString(candidate[i].second)
                                 << " in position " << i << ", got " << toString(argument->getLiteralType());
                     }
                 }

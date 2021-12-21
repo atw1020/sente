@@ -11,7 +11,7 @@
 
 namespace sente::GTP {
 
-    enum literalType {
+    enum LiteralType {
         INTEGER,
         VERTEX,
         STRING,
@@ -27,10 +27,10 @@ namespace sente::GTP {
         explicit Literal(const std::string& text);
 
         tokenType getTokenType() const final;
-        virtual literalType getLiteralType() const = 0;
+        virtual LiteralType getLiteralType() const = 0;
     };
 
-    std::string toString(literalType type);
+    std::string toString(LiteralType type);
 
     class Integer final : public Literal {
     public:
@@ -40,7 +40,7 @@ namespace sente::GTP {
 
         unsigned getValue() const;
 
-        literalType getLiteralType() const final;
+        LiteralType getLiteralType() const final;
 
     private:
 
@@ -56,7 +56,7 @@ namespace sente::GTP {
         unsigned getX() const;
         unsigned getY() const;
 
-        literalType getLiteralType() const final;
+        LiteralType getLiteralType() const final;
 
     private:
 
@@ -69,7 +69,7 @@ namespace sente::GTP {
         String(const std::string& value);
         ~String() final;
 
-        literalType getLiteralType() const final;
+        LiteralType getLiteralType() const final;
     };
 
     enum GoColor {
@@ -82,7 +82,7 @@ namespace sente::GTP {
         explicit Color(std::string text);
         ~Color() final;
 
-        literalType getLiteralType() const final;
+        LiteralType getLiteralType() const final;
         GoColor getColor() const;
 
         static bool isColor(std::string text);
@@ -98,7 +98,7 @@ namespace sente::GTP {
 
         float getValue() const;
 
-        literalType getLiteralType() const final;
+        LiteralType getLiteralType() const final;
     private:
         float value;
     };
@@ -109,7 +109,7 @@ namespace sente::GTP {
 
         sente::Move getMove();
 
-        literalType getLiteralType() const final;
+        LiteralType getLiteralType() const final;
     private:
 
         sente::Move move;

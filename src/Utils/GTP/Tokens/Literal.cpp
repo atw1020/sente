@@ -10,7 +10,7 @@
 
 namespace sente::GTP {
 
-    std::string toString(literalType type){
+    std::string toString(LiteralType type){
         switch (type){
             case INTEGER:
                 return "integer";
@@ -43,7 +43,7 @@ namespace sente::GTP {
         return value;
     }
 
-    literalType Integer::getLiteralType() const {
+    LiteralType Integer::getLiteralType() const {
         return INTEGER;
     }
 
@@ -72,7 +72,7 @@ namespace sente::GTP {
 
     }
 
-    literalType Vertex::getLiteralType() const {
+    LiteralType Vertex::getLiteralType() const {
         return VERTEX;
     }
 
@@ -80,7 +80,7 @@ namespace sente::GTP {
 
     String::String(const std::string &value) : Literal(value){}
 
-    literalType String::getLiteralType() const {
+    LiteralType String::getLiteralType() const {
         return STRING;
     }
 
@@ -99,7 +99,7 @@ namespace sente::GTP {
 
     }
 
-    literalType Color::getLiteralType() const {
+    LiteralType Color::getLiteralType() const {
         return COLOR;
     }
 
@@ -122,7 +122,7 @@ namespace sente::GTP {
         return value;
     }
 
-    literalType Float::getLiteralType() const {
+    LiteralType Float::getLiteralType() const {
         return FLOAT;
     }
 
@@ -137,7 +137,7 @@ namespace sente::GTP {
         return move;
     }
 
-    literalType Move::getLiteralType() const {
+    LiteralType Move::getLiteralType() const {
         return MOVE;
     }
 }

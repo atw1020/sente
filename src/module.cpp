@@ -14,6 +14,7 @@
 #include "Utils/Numpy.h"
 #include "Utils/SenteExceptions.h"
 #include "Utils/GTP/Engine.h"
+#include "Utils/GTP/CustomRegistration.h"
 
 namespace py = pybind11;
 
@@ -667,6 +668,8 @@ PYBIND11_MODULE(sente, module){
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
 
+    auto inspect = py::module_::import("inspect");
+
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
     py::class_<sente::GTP::Engine>(gtp, "Engine")
             .def(py::init<std::string, std::string>(),
@@ -675,6 +678,9 @@ PYBIND11_MODULE(sente, module){
             .def("interpret", &sente::GTP::Engine::interpret)
             .def("get_current_sequence", [](sente::GTP::Engine& engine){
                 return engine.game.getMoveSequence();
+            })
+            .def("register_command", [inspect](sente::GTP::Engine& engine, const py::function& function){
+                return sente::GTP::registerCommand(engine, function, inspect);
             })
             .def("get_game", [](sente::GTP::Engine& engine){
                 auto sequence = engine.game.getMoveSequence();

@@ -19,7 +19,7 @@ namespace sente::GTP {
     struct Engine;
 
     typedef std::pair<bool, std::string> Response;
-    typedef std::pair<std::string, literalType> ArgumentPattern;
+    typedef std::pair<std::string, LiteralType> ArgumentPattern;
     typedef Response (*CommandMethod)(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
     struct Engine {
