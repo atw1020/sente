@@ -82,3 +82,58 @@ class CommandFunctionality(TestCase):
                          " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n\n",
                          engine.interpret("showboard"))
+
+    def test_undo(self):
+        """
+
+        tests to see if the interpreter responds correctly to the "undo" command
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        engine.interpret("boardsize 9")
+        engine.interpret("play B D4")
+        engine.interpret("undo")
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         engine.interpret("showboard"))
+
+    def test_undo_multiple(self):
+        """
+
+        tests to see if undo multiple works
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        engine.interpret("boardsize 9")
+        engine.interpret("play B D4")
+        engine.interpret("play White F6")
+        engine.interpret("play black D6")
+        engine.interpret("undo 2")
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  X  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         engine.interpret("showboard"))

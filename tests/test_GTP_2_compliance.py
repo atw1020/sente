@@ -307,3 +307,16 @@ class OtherCompliance(TestCase):
 
         self.assertEqual("", engine.interpret("# this is a test"))
         self.assertEqual("=2\n\n", engine.interpret("protocol_version # this is a test"))
+
+    def test_multiple_commands_at_once(self):
+        """
+
+        tests to see if the interpreter can handle more than one command at a time
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        self.assertEqual(engine.interpret("boardsize 9") + engine.interpret("showboard"),
+                         engine.interpret("boardsize 9\nshowboard"))
