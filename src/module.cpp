@@ -673,23 +673,21 @@ PYBIND11_MODULE(sente, module){
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
     py::class_<sente::GTP::Engine>(gtp, "Engine")
             .def(py::init<std::string, std::string>(),
-                    py::arg("engine_version") = "Engine using Sente GTP",
-                    py::arg("engine_version") = "0.4.0")
+                    py::arg("engine_version") = "unimplemented_engine",
+                    py::arg("engine_version") = "0.0.0")
             .def("interpret", &sente::GTP::Engine::interpret)
             .def("get_current_sequence", [](sente::GTP::Engine& engine){
-                return engine.game.getMoveSequence();
+                return engine.masterGame.getMoveSequence();
             })
             .def("register_command", [inspect](sente::GTP::Engine& engine, const py::function& function){
                 engine.pyRegisterCommand(function, inspect);
             })
-            .def("get_game", [](sente::GTP::Engine& engine){
-                auto sequence = engine.game.getMoveSequence();
-                sente::GoGame game(engine.game.getSide(), engine.game.getRules(), engine.game.getKomi());
-                game.playMoveSequence(sequence);
-                return game;
+            .def("get_sequence", [](sente::GTP::Engine& engine){
+                return engine.masterGame.getMoveSequence();
             })
             .def("active", [](const sente::GTP::Engine& engine){
-                return engine.active;
-            });
+                return engine.isActive();
+            })
+            .def_property("name", &sente::GTP::Engine::getEngineName, &sente::GTP::Engine::setEngineName);
 
 }

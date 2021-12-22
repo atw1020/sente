@@ -19,14 +19,15 @@ namespace sente::GTP {
 
     Response name(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
-        return {true, self->engineName};
+        return {true, self->getEngineName()};
     }
     Response version(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
-        return {true, self->engineVersion};
+        return {true, self->getEngineVersion()};
     }
     Response knownCommand(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
-        if (self->commands.find(arguments[1]->getText()) == self->commands.end()){
+        auto commands = self->getCommands();
+        if (commands.find(arguments[1]->getText()) == commands.end()){
             return {true, "false"};
         }
         else {
@@ -37,7 +38,7 @@ namespace sente::GTP {
         (void) arguments;
         std::stringstream commands;
 
-        for (const auto& command : self->commands){
+        for (const auto& command : self->getCommands()){
             commands << command.first << std::endl;
         }
 
@@ -46,15 +47,14 @@ namespace sente::GTP {
     }
     Response quit(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
-        self->active = false;
+        self->setActive(false);
         return {true, ""};
     }
     Response boardSize(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         // reset the board
         auto* size = (Integer*) arguments[1].get();
         if (size->getValue() == 9 or size->getValue() == 13 or size->getValue() == 19){
-            self->game = GoGame(size->getValue(), self->game.getRules(), self->game.getKomi());
-            self->setGTPDisplayFlags();
+            self->masterGame = GoGame(size->getValue(), self->masterGame.getRules(), self->masterGame.getKomi());
             return {true, ""};
         }
         else {
@@ -64,28 +64,27 @@ namespace sente::GTP {
     Response clearBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
         // reset the board
-        self->game = GoGame(self->game.getSide(), self->game.getRules(), self->game.getKomi());
-        self->setGTPDisplayFlags();
+        self->masterGame = GoGame(self->masterGame.getSide(), self->masterGame.getRules(), self->masterGame.getKomi());
         return {true, ""};
     }
     Response komi(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         auto* newKomi = (Float*) arguments[1].get();
-        self->game.setKomi(newKomi->getValue());
+        self->masterGame.setKomi(newKomi->getValue());
         return {true, ""};
     }
     Response play(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
 
         // generate a move from the arguments
-        Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get(), self->game.getSide());
+        Move move(*(Color*) arguments[1].get(), *(Vertex*) arguments[2].get(), self->masterGame.getSide());
 
-        if (self->game.isAddLegal(move.getMove())){
-            if (self->game.isLegal(move.getMove())){
+        if (self->masterGame.isAddLegal(move.getMove())){
+            if (self->masterGame.isLegal(move.getMove())){
                 // play the stone
-                self->game.playStone(move.getMove());
+                self->masterGame.playStone(move.getMove());
                 return {true, ""};
             }
             else {
-                self->game.addStone(move.getMove());
+                self->masterGame.addStone(move.getMove());
                 return {true, ""};
             }
         }
@@ -101,12 +100,12 @@ namespace sente::GTP {
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
-        return {true, "\n" + std::string(self->game)};
+        return {true, "\n" + std::string(self->masterGame)};
     }
     Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
-        if (not self->game.isAtRoot()){
-            self->game.stepUp(1);
+        if (not self->masterGame.isAtRoot()){
+            self->masterGame.stepUp(1);
             return {true, ""};
         }
         else {
@@ -115,8 +114,8 @@ namespace sente::GTP {
     }
     Response undoMultiple(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         auto* steps = (Integer*) arguments[1].get();
-        if (self->game.getMoveSequence().size() >= steps->getValue()){
-            self->game.stepUp(steps->getValue());
+        if (self->masterGame.getMoveSequence().size() >= steps->getValue()){
+            self->masterGame.stepUp(steps->getValue());
             return {true, ""};
         }
         else {
@@ -139,7 +138,7 @@ namespace sente::GTP {
             auto tree = sente::SGF::loadSGF(SGFText, false, true, true);
 
             // set the engine's game to be the move tree
-            self->game = GoGame(tree);
+            self->masterGame = GoGame(tree);
             self->setGTPDisplayFlags();
 
             return {true, ""};
@@ -154,7 +153,7 @@ namespace sente::GTP {
         auto* pathStr = (String*) arguments[1].get();
         auto response = baseLoadSGF(self, pathStr->getText());
 
-        self->game.playDefaultSequence();
+        self->masterGame.playDefaultSequence();
 
         return response;
     }
@@ -166,13 +165,13 @@ namespace sente::GTP {
         auto response = baseLoadSGF(self, pathStr->getText());
 
         // play out the sequence
-        auto moveSequence = self->game.getDefaultSequence();
+        auto moveSequence = self->masterGame.getDefaultSequence();
 
         unsigned movesAdvanced = std::min(moves->getValue(), unsigned(moveSequence.size()));
 
         moveSequence = std::vector<sente::Move>(moveSequence.begin(), moveSequence.begin() + movesAdvanced);
 
-        self->game.playMoveSequence(moveSequence);
+        self->masterGame.playMoveSequence(moveSequence);
 
         return response;
     }

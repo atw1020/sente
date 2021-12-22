@@ -152,7 +152,20 @@ class EngineFunctionality(TestCase):
         with self.assertRaises(ValueError):
             gtp.Engine("this name has so many spaces in it!")
 
-    def test_no_dashes_in_name(self):
+    def test_no_spaces_in_name(self):
+        """
+
+        makes sure that we can't change an engine's name to something with dashes in it
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        with self.assertRaises(ValueError):
+            engine.name = "this name has so many spaces in it!"
+
+    def test_no_dashes_in_name_constructor(self):
         """
 
         makes sure that we can't name an engine something with dashes in it
@@ -162,6 +175,19 @@ class EngineFunctionality(TestCase):
 
         with self.assertRaises(ValueError):
             gtp.Engine("this-name-has-so-many-dashes-in-it!")
+
+    def test_no_dashes_in_name_setter(self):
+        """
+
+        makes sure that we can't change an engine's name to something with dashes in it
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        with self.assertRaises(ValueError):
+            engine.name = "this-name-has-so-many-dashes-in-it!"
 
     def test_quoted_strings(self):
         """

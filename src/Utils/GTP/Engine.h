@@ -16,30 +16,60 @@
 
 namespace sente::GTP {
 
-    struct Engine;
+    class Engine;
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, LiteralType> ArgumentPattern;
     typedef std::function<Response (Engine* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
 
-    struct Engine {
+    class Engine {
+    public:
+
+        GoGame masterGame;
 
         Engine(const std::string& engineName, const std::string& engineVersion);
 
+        // GTP interpreter
+        std::string interpret(const std::string& text);
+
+        // Custom GTP command Registration
+        void pyRegisterCommand(const py::function& function, const py::module_& inspect);
+
+        ///
+        /// Getter and Setter Methods
+        ///
+
+        [[nodiscard]] std::string getEngineName() const;
+        void setEngineName(std::string name);
+
+        [[nodiscard]] std::string getEngineVersion() const;
+        void setEngineVersion(std::string version);
+
+        [[nodiscard]] std::unordered_map<std::string, std::vector<std::pair<CommandMethod,
+                                                              std::vector<ArgumentPattern>>>> getCommands() const;
+
+        [[nodiscard]] bool isActive() const;
+        void setActive(bool set);
+
+        ///
+        /// Miscellaneous methods
+        ///
+
+        // for resting the game
+        void setGTPDisplayFlags();
+
+
+    private:
+
         bool active = true;
 
-        GoGame game;
         std::string engineName;
         std::string engineVersion;
 
-        std::string interpret(const std::string& text);
+        std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 
         void registerCommand(const std::string& commandName, CommandMethod method,
                              std::vector<ArgumentPattern> argumentPattern);
-        void pyRegisterCommand(const py::function& function, const py::module_& inspect);
-        void setGTPDisplayFlags();
-
-        std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 
         Response execute(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments);
 

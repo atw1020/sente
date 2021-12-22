@@ -67,7 +67,7 @@ class CustomGTPCommands(TestCase):
 
         engine = CustomGTPTester()
 
-        self.assertEqual("= " + engine.echo("test-greeting")[1] + "\n\n", engine.interpret("test-greeting"))
+        self.assertEqual("= " + engine.greeting()[1] + "\n\n", engine.interpret("test-greeting"))
 
 
 class InterpreterSyntaxChecking(TestCase):

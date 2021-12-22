@@ -43,9 +43,9 @@ namespace sente::GTP {
     };
 
     Engine::Engine(const std::string& engineName, const std::string& engineVersion)
-        : game(19, CHINESE, determineKomi(CHINESE)){
-        this->engineName = engineName;
-        this->engineVersion = engineVersion;
+        : masterGame(19, CHINESE, determineKomi(CHINESE)){
+        setEngineName(engineName);
+        setEngineVersion(engineVersion);
 
         // initialize the builtin commands
         // TODO: make sure this doesn't make commands global
@@ -307,10 +307,47 @@ namespace sente::GTP {
         registerCommand(engineName + "-" + name, wrapper, argumentPattern);
     }
 
+    std::string Engine::getEngineName() const {
+        return engineName;
+    }
+
+    void Engine::setEngineName(std::string name){
+        if (name.find(' ') != std::string::npos){
+            throw py::value_error("engine name \"" + name + "\"contains invalid character ' ' in position " +
+                                  std::to_string(name.find(' ')) + ".");
+        }
+        if (name.find('-') != std::string::npos){
+            throw py::value_error("engine name \"" + name + "\"contains invalid character '-' in position " +
+                                  std::to_string(name.find('-')) + ".");
+        }
+        engineName = name;
+    }
+
+    std::string Engine::getEngineVersion() const {
+        return engineVersion;
+    }
+
+    void Engine::setEngineVersion(std::string version){
+        engineVersion = version;
+    }
+
+    std::unordered_map<std::string, std::vector<std::pair<CommandMethod,
+            std::vector<ArgumentPattern>>>> Engine::getCommands() const {
+        return commands;
+    }
+
+    bool Engine::isActive() const {
+        return active;
+    }
+
+    void Engine::setActive(bool active) {
+        this->active = active;
+    }
+
     void Engine::setGTPDisplayFlags() {
         // flip the co-ordinate label for the board
-        game.setASCIIMode(true);
-        game.setLowerLeftCornerCoOrdinates(true);
+        masterGame.setASCIIMode(true);
+        masterGame.setLowerLeftCornerCoOrdinates(true);
     }
 
     std::string Engine::errorMessage(const std::string& message) {

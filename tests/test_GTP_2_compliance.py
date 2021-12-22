@@ -6,6 +6,7 @@ Author: Arthur Wesley
 
 from unittest import TestCase
 
+import sente
 from sente import gtp
 
 
@@ -48,10 +49,10 @@ class MinimumGTPCommands(TestCase):
 
         engine = gtp.Engine()
 
-        self.assertEqual("= Engine using Sente GTP\n\n", engine.interpret("name\n"))
+        self.assertEqual("= unimplemented_engine\n\n", engine.interpret("name\n"))
 
-        engine2 = gtp.Engine("Ceph the octopus")
-        self.assertEqual("= Ceph the octopus\n\n", engine2.interpret("name\n"))
+        engine2 = gtp.Engine("Ceph_the_octopus")
+        self.assertEqual("= Ceph_the_octopus\n\n", engine2.interpret("name\n"))
 
     def test_version(self):
         """
@@ -61,12 +62,9 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        with open("../version.txt") as file:
-            version = file.read().strip()
-
         engine = gtp.Engine()
 
-        self.assertEqual("= " + version + "\n\n", engine.interpret("version\n"))
+        self.assertEqual("= 0.0.0\n\n", engine.interpret("version\n"))
 
     def test_known_command(self):
         """
@@ -155,10 +153,7 @@ class MinimumGTPCommands(TestCase):
 
         self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
 
-        board = engine.get_game().get_board()
-        board.get_stone(4, 4)
-
-        # engine.get_game().get_board().get_stone(4, 4)
+        # TODO check that the size of the new board is actually 9
 
     def test_play(self):
         """
@@ -171,6 +166,29 @@ class MinimumGTPCommands(TestCase):
         engine = gtp.Engine()
 
         engine.interpret("play B D4\n")
+
+        self.assertEqual("= \n"
+                         "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .\n"
+                         "15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .\n"
+                         " 9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 4  .  .  .  X  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .\n"
+                         " 3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n\n",
+                         engine.interpret("showboard"))
 
     def test_genmove(self):
         """
