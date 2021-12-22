@@ -36,12 +36,16 @@ namespace sente::GTP {
         // slice off the first argument now that it has been checked
         argumentNames = argumentNames[py::slice(1, argumentNames.size(), 1)];
 
+        // add the command to the argument pattern
+        argumentPattern.emplace_back("command", STRING);
+
         // generate the argument pattern
         for (const auto& argument : argumentNames){
             // check to see if we have a type for this argument
             if (annotations.attr("__contains__")(argument)){
                 // if we do, add it to the argument pattern
-                argumentPattern.emplace_back(py::str(argument), argumentTypeMappings[py::str(annotations[argument])]);
+                argumentPattern.emplace_back(py::str(argument),
+                                             argumentTypeMappings[py::str(annotations[argument].attr("__name__"))]);
             }
             else {
                 throw pybind11::value_error("Custom GTP command \"" + name +"\" has no type specified for argument \"" +
@@ -52,7 +56,9 @@ namespace sente::GTP {
 
         // define the custom command using a lambda
 
-        CommandMethod customMethod = [&](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
+        CommandMethod wrapper = [&](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
+
+            py::print("entering wrapper");
 
             py::object pySelf = py::cast(self);
 
@@ -65,6 +71,8 @@ namespace sente::GTP {
             Float* float_;
             Move* move;
             Boolean* bool_;
+
+            py::print("got through argument casting");
 
             for (const auto& argument : arguments){
 
@@ -101,9 +109,11 @@ namespace sente::GTP {
                 }
             }
 
-            py::tuple args;
+            py::tuple args = py::make_tuple(pyArgs);
+            py::print("got past argument packing");
 
             py::object _response = function(*args);
+            py::print("got past function call");
 
             if (not py::type(_response).is(py::type(py::tuple()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response; "
@@ -131,7 +141,7 @@ namespace sente::GTP {
         };
 
         // register the command with the engine
-        engine.registerCommand(engine.engineName + "-" + name, customMethod, argumentPattern);
+        engine.registerCommand(engine.engineName + "-" + name, wrapper, argumentPattern);
 
     }
 
