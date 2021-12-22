@@ -12,13 +12,17 @@
 namespace sente::GTP {
 
     Response protocolVersion(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) self;
+        (void) arguments;
         return {true, "2"};
     }
 
     Response name(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         return {true, self->engineName};
     }
     Response version(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         return {true, self->engineVersion};
     }
     Response knownCommand(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -30,6 +34,7 @@ namespace sente::GTP {
         }
     }
     Response listCommands(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         std::stringstream commands;
 
         for (const auto& command : self->commands){
@@ -40,6 +45,7 @@ namespace sente::GTP {
 
     }
     Response quit(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         self->active = false;
         return {true, ""};
     }
@@ -56,6 +62,7 @@ namespace sente::GTP {
         }
     }
     Response clearBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         // reset the board
         self->game = GoGame(self->game.getSide(), self->game.getRules(), self->game.getKomi());
         self->setGTPDisplayFlags();
@@ -88,13 +95,17 @@ namespace sente::GTP {
         }
     }
     Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) self;
+        (void) arguments;
         return {false, "cannot generate move; no engine bound to generate move"};
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         std::cout << "entering showBoard" << std::endl;
         return {true, "\n" + std::string(self->game)};
     }
     Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
+        (void) arguments;
         if (not self->game.isAtRoot()){
             self->game.stepUp(1);
             return {true, ""};
@@ -114,7 +125,7 @@ namespace sente::GTP {
         }
     }
 
-    Response baseLoadSGF(Engine* self, std::string filePath){
+    Response baseLoadSGF(Engine* self, const std::string& filePath){
 
         auto pathStr = std::filesystem::path(filePath);
 

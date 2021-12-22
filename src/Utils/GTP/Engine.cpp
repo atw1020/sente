@@ -173,12 +173,10 @@ namespace sente::GTP {
         }
     }
 
-    void Engine::pyRegisterCommand(const py::function &function, const py::module_ &inspect) {
+    void Engine::pyRegisterCommand(const py::function& function, const py::module_ &inspect) {
 
         // obtain a reference to the function
-        function.inc_ref();
-
-        std::cout << "the function was registered at " << std::hex << &function << std::endl;
+        // function.inc_ref();
 
         // get the arguments and name from inspecting the function
         auto argSpec = inspect.attr("getfullargspec")(function);
@@ -218,12 +216,12 @@ namespace sente::GTP {
 
         // define the custom command using a lambda
 
-        CommandMethod wrapper = [&function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
+        CommandMethod wrapper = [function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
 
-            py::print("entering wrapper");
+            // the self argument is automatically passed by python
+            (void) self;
 
             auto pyArgs = py::list();
-            pyArgs.append(py::cast(self));
 
             // remove the first argument
             auto strippedArguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
@@ -234,8 +232,6 @@ namespace sente::GTP {
             Float* float_;
             Move* move;
             Boolean* bool_;
-
-            py::print("got through argument casting");
 
             for (const auto& argument : strippedArguments){
 
@@ -272,14 +268,11 @@ namespace sente::GTP {
                 }
             }
 
+            // pack the arguments and call the function
             auto args = py::tuple(pyArgs);
-
-            py::print("got past argument packing");
-
             py::object _response = function(*args);
-            py::print("got past function call");
 
-            if (not py::type(_response).is(py::type(py::tuple()))){
+            if (not py::type::of(_response).is(py::type::of(py::tuple()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response; "
                                            "expected tuple, got" + std::string(py::str(py::type(_response))));
             }
@@ -292,11 +285,11 @@ namespace sente::GTP {
             }
 
             // check that the responses are the right type
-            if (not py::type(response[0]).is(py::type(py::bool_()))){
+            if (not py::type::of(response[0]).is(py::type::of(py::bool_()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response in position 1, "
                                            "expected bool, got" + std::string(py::str(py::type(response[0]))));
             }
-            if (not py::type(response[1]).is(py::type(py::str()))){
+            if (not py::type::of(response[1]).is(py::type::of(py::str()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response in position 2, "
                                            "expected string, got" + std::string(py::str(py::type(response[0]))));
             }

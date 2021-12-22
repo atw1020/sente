@@ -3,7 +3,7 @@
  * Author: Arthur Wesley
  *
  */
-#include <fstream>
+
 #include <filesystem>
 
 #include <pybind11/stl.h>
@@ -328,6 +328,7 @@ PYBIND11_MODULE(sente, module){
                 :return: whether or not the move satisfies the above conditions.
             )pbdoc")
         .def("is_legal", [](sente::GoGame& game, const py::object& obj){
+            (void) game;
             return obj.is_none();
         },
             R"pbdoc(
@@ -678,7 +679,9 @@ PYBIND11_MODULE(sente, module){
             .def("get_current_sequence", [](sente::GTP::Engine& engine){
                 return engine.game.getMoveSequence();
             })
-            .def("register_command", &sente::GTP::Engine::pyRegisterCommand)
+            .def("register_command", [inspect](sente::GTP::Engine& engine, const py::function& function){
+                engine.pyRegisterCommand(function, inspect);
+            })
             .def("get_game", [](sente::GTP::Engine& engine){
                 auto sequence = engine.game.getMoveSequence();
                 sente::GoGame game(engine.game.getSide(), engine.game.getRules(), engine.game.getKomi());
