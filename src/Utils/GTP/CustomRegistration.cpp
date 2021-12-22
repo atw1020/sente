@@ -54,7 +54,53 @@ namespace sente::GTP {
 
         CommandMethod customMethod = [&](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
 
-            // construct a tuple from the arguments
+            py::object pySelf = py::cast(self);
+
+            auto pyArgs = py::list();
+            pyArgs.append(py::cast(self));
+
+            Integer* integer;
+            Vertex* vertex;
+            Color* color;
+            Float* float_;
+            Move* move;
+            Boolean* bool_;
+
+            for (const auto& argument : arguments){
+
+                auto* literal = (Literal*) argument.get();
+
+                switch (literal->getLiteralType()){
+                    case INTEGER:
+                        integer = (Integer*) literal;
+                        pyArgs.append(py::int_(integer->getValue()));
+                        break;
+                    case VERTEX:
+                        vertex = (Vertex*) literal;
+                        pyArgs.append(py::make_tuple(vertex->getX(), vertex->getY()));
+                        break;
+                    case STRING:
+                        pyArgs.append(py::str(literal->getText()));
+                        break;
+                    case COLOR:
+                        color = (Color*) literal;
+                        pyArgs.append(py::cast(color->getColor()));
+                        break;
+                    case FLOAT:
+                        float_ = (Float*) literal;
+                        pyArgs.append(py::cast(float_->getValue()));
+                        break;
+                    case MOVE:
+                        move = (Move*) literal;
+                        pyArgs.append(py::cast(move->getMove()));
+                        break;
+                    case BOOLEAN:
+                        bool_ = (Boolean*) literal;
+                        pyArgs.append(py::cast(bool_->getValue()));
+                        break;
+                }
+            }
+
             py::tuple args;
 
             py::object _response = function(*args);

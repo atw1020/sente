@@ -83,7 +83,7 @@ namespace sente::GTP {
         ~Color() final;
 
         LiteralType getLiteralType() const final;
-        GoColor getColor() const;
+        Stone getColor() const;
 
         static bool isColor(std::string text);
 
@@ -114,6 +114,18 @@ namespace sente::GTP {
 
         sente::Move move;
 
+    };
+
+    class Boolean final : public Literal {
+    public:
+        explicit Boolean(std::string text);
+
+        bool getValue() const;
+
+        LiteralType getLiteralType() const final;
+
+    private:
+        bool value;
     };
 
 }

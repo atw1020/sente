@@ -6,7 +6,6 @@
 
 #include <string>
 #include <utility>
-#include <iostream>
 
 namespace sente::GTP {
 
@@ -47,7 +46,7 @@ namespace sente::GTP {
         return INTEGER;
     }
 
-    Integer::~Integer() {}
+    Integer::~Integer() = default;
 
     unsigned int Vertex::getX() const {
         return x;
@@ -76,7 +75,7 @@ namespace sente::GTP {
         return VERTEX;
     }
 
-    Vertex::~Vertex() {}
+    Vertex::~Vertex() = default;
 
     String::String(const std::string &value) : Literal(value){}
 
@@ -84,7 +83,7 @@ namespace sente::GTP {
         return STRING;
     }
 
-    String::~String() {}
+    String::~String() = default;
 
     Color::Color(std::string text) : Literal(text){
         // convert the text to lowercase
@@ -105,8 +104,8 @@ namespace sente::GTP {
 
     Color::~Color() = default;
 
-    GoColor Color::getColor() const {
-        return color;
+    Stone Color::getColor() const {
+        return color == BLACK ? Stone::BLACK : Stone::WHITE;
     }
 
     bool Color::isColor(std::string text) {
@@ -129,8 +128,7 @@ namespace sente::GTP {
     Float::~Float() = default;
 
     Move::Move(Color color, Vertex vertex, unsigned boardSize) : Literal(color.getText() + " " + vertex.getText()){
-        move = sente::Move(boardSize - 1 - vertex.getY(), vertex.getX(),
-                           color.getColor() == BLACK ? Stone::BLACK : Stone::WHITE);
+        move = sente::Move(boardSize - 1 - vertex.getY(), vertex.getX(), color.getColor());
     }
 
     sente::Move Move::getMove() {
@@ -139,5 +137,18 @@ namespace sente::GTP {
 
     LiteralType Move::getLiteralType() const {
         return MOVE;
+    }
+
+    Boolean::Boolean(std::string text) : Literal(text) {
+        std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+        value = text.find("true") != std::string::npos;
+    }
+
+    bool Boolean::getValue() const {
+        return value;
+    }
+
+    LiteralType Boolean::getLiteralType() const {
+        return BOOLEAN;
     }
 }
