@@ -138,6 +138,31 @@ class CommandFunctionality(TestCase):
                          "    A  B  C  D  E  F  G  H  J\n\n",
                          engine.interpret("showboard"))
 
+
+class EngineFunctionality(TestCase):
+
+    def test_no_spaces_in_name(self):
+        """
+
+        makes sure that we can't name an engine something that has a space in it
+
+        :return:
+        """
+
+        with self.assertRaises(ValueError):
+            gtp.Engine("this name has so many spaces in it!")
+
+    def test_no_dashes_in_name(self):
+        """
+
+        makes sure that we can't name an engine something with dashes in it
+
+        :return:
+        """
+
+        with self.assertRaises(ValueError):
+            gtp.Engine("this-name-has-so-many-dashes-in-it!")
+
     def test_quoted_strings(self):
         """
 

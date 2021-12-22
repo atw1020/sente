@@ -190,7 +190,7 @@ namespace sente::GTP {
         // make sure that the first argument is the self argument
         if (std::string(py::str(argumentNames[0])) != "self"){
             throw pybind11::value_error("Custom GTP command \"" + name +"\" is not a method (i.e. it dose not belong "
-                                                                        "to a class). custom GTP commands must be methods");
+                                        "to a class). custom GTP commands must be methods");
         }
 
         // slice off the first argument now that it has been checked
@@ -208,7 +208,7 @@ namespace sente::GTP {
                                              argumentTypeMappings[py::str(annotations[argument].attr("__name__"))]);
             }
             else {
-                throw pybind11::value_error("Custom GTP command \"" + name +"\" has no type specified for argument \"" +
+                throw pybind11::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +
                                             std::string(py::str(argument)) + "\" (custom GTP commands must be "
                                                                              "strongly typed)");
             }
@@ -216,7 +216,8 @@ namespace sente::GTP {
 
         // define the custom command using a lambda
 
-        CommandMethod wrapper = [function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
+        CommandMethod wrapper = [function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments)
+                -> Response{
 
             // the self argument is automatically passed by python
             (void) self;
@@ -272,9 +273,14 @@ namespace sente::GTP {
             auto args = py::tuple(pyArgs);
             py::object _response = function(*args);
 
+            if (py::type::of(_response).is(py::type::of(py::str()))){
+                // if the response is a string, assume that the response is correct
+                return {true, py::str(_response)};
+            }
+
             if (not py::type::of(_response).is(py::type::of(py::tuple()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response; "
-                                           "expected tuple, got" + std::string(py::str(py::type(_response))));
+                                           "expected tuple, got" + std::string(py::str(py::type::of(_response))));
             }
 
             auto response = py::tuple(_response);
@@ -287,11 +293,11 @@ namespace sente::GTP {
             // check that the responses are the right type
             if (not py::type::of(response[0]).is(py::type::of(py::bool_()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response in position 1, "
-                                           "expected bool, got" + std::string(py::str(py::type(response[0]))));
+                                           "expected bool, got" + std::string(py::str(py::type::of(response[0]))));
             }
             if (not py::type::of(response[1]).is(py::type::of(py::str()))){
                 throw pybind11::type_error("Custom GTP command returned invalid response in position 2, "
-                                           "expected string, got" + std::string(py::str(py::type(response[0]))));
+                                           "expected string, got" + std::string(py::str(py::type::of(response[0]))));
             }
 
             return {py::bool_(response[0]), py::str(response[1])};

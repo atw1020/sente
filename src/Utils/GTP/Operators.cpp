@@ -101,7 +101,6 @@ namespace sente::GTP {
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
-        std::cout << "entering showBoard" << std::endl;
         return {true, "\n" + std::string(self->game)};
     }
     Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -143,8 +142,6 @@ namespace sente::GTP {
             self->game = GoGame(tree);
             self->setGTPDisplayFlags();
 
-            std::cout << "leaving loadSGF" << std::endl;
-
             return {true, ""};
         }
         else {
@@ -157,7 +154,6 @@ namespace sente::GTP {
         auto* pathStr = (String*) arguments[1].get();
         auto response = baseLoadSGF(self, pathStr->getText());
 
-        std::cout << "playing sequence" << std::endl;
         self->game.playDefaultSequence();
 
         return response;

@@ -12,4 +12,4 @@ from .test_score_board import *
 from .test_SGF_dump import *
 from .test_SGF_load import *
 from .test_SGF_metadata import *
-from .test_GTP_commands import *
+from .test_GTP_engine import *
