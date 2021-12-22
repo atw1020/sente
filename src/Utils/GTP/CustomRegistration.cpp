@@ -18,6 +18,11 @@ namespace sente::GTP {
 
     void registerCommand(Engine& engine, const py::function& function, const py::module_& inspect){
 
+        // obtain a reference to the function
+        function.inc_ref();
+
+        std::cout << "the function was registered at " << std::hex << &function << std::endl;
+
         // get the arguments and name from inspecting the function
         auto argSpec = inspect.attr("getfullargspec")(function);
         std::string name = py::str(function.attr("__name__"));
@@ -56,14 +61,15 @@ namespace sente::GTP {
 
         // define the custom command using a lambda
 
-        CommandMethod wrapper = [&](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
+        CommandMethod wrapper = [&function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments) -> Response{
 
             py::print("entering wrapper");
 
-            py::object pySelf = py::cast(self);
-
             auto pyArgs = py::list();
             pyArgs.append(py::cast(self));
+
+            // remove the first argument
+            auto strippedArguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
 
             Integer* integer;
             Vertex* vertex;
@@ -74,7 +80,7 @@ namespace sente::GTP {
 
             py::print("got through argument casting");
 
-            for (const auto& argument : arguments){
+            for (const auto& argument : strippedArguments){
 
                 auto* literal = (Literal*) argument.get();
 
@@ -109,7 +115,8 @@ namespace sente::GTP {
                 }
             }
 
-            py::tuple args = py::make_tuple(pyArgs);
+            auto args = py::tuple(pyArgs);
+
             py::print("got past argument packing");
 
             py::object _response = function(*args);

@@ -128,7 +128,7 @@ OSx
 ```bash
 $ brew install git
 $ brew install cmake
-$ brew install clang++
+$ xcode-select --install  # installs Apple clang++
 ```
 Debian/Ubuntu
 ```bash

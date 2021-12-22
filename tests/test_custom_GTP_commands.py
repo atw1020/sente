@@ -11,19 +11,20 @@ import sente
 from sente import gtp
 
 
-def add(self, a: int, b: tuple, c: str, d: sente.stone, e: float, f: sente.Move, g: bool):
-    return True, "success"
+class CustomGTPTester(gtp.Engine):
 
+    def __init__(self):
+        super().__init__("test")
 
-class MyClass:
-    def add(self, a: int, b: tuple, c: str, d: sente.stone, e: float, f: sente.Move, g: bool):
-        return True, "success"
+        # register commands
+        # self.register_command(self.echo)
+        self.register_command(self.octopus)
 
+    def echo(self, text: str):
+        return True, text
 
-def register_command(func):
-    arg_spec = inspect.getfullargspec(func)
-    print(arg_spec)
-    print(func.__name__)
+    def octopus(self):
+        return True, "https://github.com/atw1020/sente/blob/master/tests/invalid%20sgf/octopus.jpeg"
 
 
 class CustomGTPCommands(TestCase):
@@ -36,6 +37,7 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
-        instance = MyClass()
-        # engine.register_command(instance.add)
+        engine = CustomGTPTester()
+
+        print(isinstance(engine, gtp.Engine))
+        print(engine.interpret("test-octopus"))
