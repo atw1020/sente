@@ -36,16 +36,17 @@ namespace sente::GTP {
 
         void registerCommand(const std::string& commandName, CommandMethod method,
                              std::vector<ArgumentPattern> argumentPattern);
+        void pyRegisterCommand(const py::function& function, const py::module_& inspect);
         void setGTPDisplayFlags();
 
         std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 
         Response execute(const std::string& command, const std::vector<std::shared_ptr<Token>>& arguments);
 
-        std::string errorMessage(const std::string& message) const;
-        std::string errorMessage(const std::string& message, unsigned i) const;
-        std::string statusMessage(const std::string& message) const;
-        std::string statusMessage(const std::string& message, unsigned i) const;
+        static std::string errorMessage(const std::string& message) ;
+        static std::string errorMessage(const std::string& message, unsigned i) ;
+        static std::string statusMessage(const std::string& message) ;
+        static std::string statusMessage(const std::string& message, unsigned i) ;
 
         static bool argumentsMatch(const std::vector<ArgumentPattern>& expectedTypes,
                                    const std::vector<std::shared_ptr<Token>>& arguments);

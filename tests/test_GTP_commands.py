@@ -137,3 +137,15 @@ class CommandFunctionality(TestCase):
                          " 1  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J\n\n",
                          engine.interpret("showboard"))
+
+    def test_quoted_strings(self):
+        """
+
+        tests to see if the interpreter can handle quoted strings with spaces in them
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        self.assertEqual("= \n\n", engine.interpret("loadsgf \"Lee Sedol ladder game.sgf\""))

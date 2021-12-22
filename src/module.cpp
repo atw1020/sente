@@ -14,7 +14,6 @@
 #include "Utils/Numpy.h"
 #include "Utils/SenteExceptions.h"
 #include "Utils/GTP/Engine.h"
-#include "Utils/GTP/CustomRegistration.h"
 
 namespace py = pybind11;
 
@@ -679,9 +678,7 @@ PYBIND11_MODULE(sente, module){
             .def("get_current_sequence", [](sente::GTP::Engine& engine){
                 return engine.game.getMoveSequence();
             })
-            .def("register_command", [inspect](sente::GTP::Engine& engine, const py::function& function){
-                return sente::GTP::registerCommand(engine, function, inspect);
-            })
+            .def("register_command", &sente::GTP::Engine::pyRegisterCommand)
             .def("get_game", [](sente::GTP::Engine& engine){
                 auto sequence = engine.game.getMoveSequence();
                 sente::GoGame game(engine.game.getSide(), engine.game.getRules(), engine.game.getKomi());
