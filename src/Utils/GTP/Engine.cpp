@@ -78,12 +78,45 @@ namespace sente::GTP {
             }
 
             // slice the tokens and put them into a list
-            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
-
-            // replace instances of a stone followed by a point with a move
+            auto preArguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
 
             // update the starting index now that we've sliced the tokens
             start = index + 1;
+
+            // replace instances of a stone followed by a point with a move
+            auto arguments = std::vector<std::shared_ptr<Token>>();
+
+            for (unsigned i = 0; i < preArguments.size(); i++){
+
+                bool argsCombined = false;
+
+                if (preArguments[i]->getTokenType() == LITERAL and i < preArguments.size() - 1){
+                    if (preArguments[i + 1]->getTokenType() == LITERAL){
+
+                        // cast the arguments
+                        auto* check1 = (Literal*) preArguments[i].get();
+                        auto* check2 = (Literal*) preArguments[i + 1].get();
+
+                        // if we have the arguments that make up a move
+                        if (check1->getLiteralType() == COLOR and check2->getLiteralType() == VERTEX){
+
+                            // skip the next iteration and note that we've combined the arguments
+                            argsCombined = true;
+                            i++;
+
+                            Color* color = (Color*) check1;
+                            Vertex* vertex = (Vertex*) check2;
+
+                            arguments.emplace_back(std::make_shared<Move>(*color, *vertex, masterGame.getSide()));
+                        }
+                    }
+                }
+
+                if (not argsCombined){
+                    arguments.push_back(preArguments[i]);
+                }
+
+            }
 
             // begin interpreting by checking to see if the first element is an integer literal
             std::shared_ptr<Token> candidate;

@@ -19,7 +19,7 @@ namespace sente::GTP {
         this->text = std::move(text);
     }
 
-    std::string Token::getText() {
+    std::string Token::getText() const {
         return text;
     }
 
