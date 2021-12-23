@@ -164,8 +164,6 @@ class TestInvalidRegistration(TestCase):
         engine = InvalidRegistration()
         engine.register_command(engine.non_tuple_response)
 
-        print(engine.interpret("list_commands"))
-
         with self.assertRaises(TypeError):
             engine.interpret("test-non_tuple_response")
 

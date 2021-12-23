@@ -55,6 +55,7 @@ namespace sente::GTP {
         auto* size = (Integer*) arguments[1].get();
         if (size->getValue() == 9 or size->getValue() == 13 or size->getValue() == 19){
             self->masterGame = GoGame(size->getValue(), self->masterGame.getRules(), self->masterGame.getKomi());
+            self->setGTPDisplayFlags();
             return {true, ""};
         }
         else {
@@ -65,6 +66,7 @@ namespace sente::GTP {
         (void) arguments;
         // reset the board
         self->masterGame = GoGame(self->masterGame.getSide(), self->masterGame.getRules(), self->masterGame.getKomi());
+        self->setGTPDisplayFlags();
         return {true, ""};
     }
     Response komi(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
@@ -106,6 +108,7 @@ namespace sente::GTP {
         (void) arguments;
         if (not self->masterGame.isAtRoot()){
             self->masterGame.stepUp(1);
+            self->setGTPDisplayFlags();
             return {true, ""};
         }
         else {
@@ -116,6 +119,7 @@ namespace sente::GTP {
         auto* steps = (Integer*) arguments[1].get();
         if (self->masterGame.getMoveSequence().size() >= steps->getValue()){
             self->masterGame.stepUp(steps->getValue());
+            self->setGTPDisplayFlags();
             return {true, ""};
         }
         else {

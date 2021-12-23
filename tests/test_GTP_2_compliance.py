@@ -152,8 +152,17 @@ class MinimumGTPCommands(TestCase):
         engine = gtp.Engine()
 
         self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
-
-        # TODO check that the size of the new board is actually 9
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
 
     def test_play(self):
         """
