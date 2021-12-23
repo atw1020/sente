@@ -15,9 +15,13 @@ class OctopusGarden(gtp.Engine):
         super().__init__("Ceph")
         print(inspect.getfullargspec(self.echo))
         self.register_command(self.echo)
+        self.register_command(self.fnord)
 
     def echo(self, text: str):
         return True, text
+
+    def fnord(self, fjord: float):
+        return True, str(-fjord)
 
 
 def main():

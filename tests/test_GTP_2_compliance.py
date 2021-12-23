@@ -333,7 +333,7 @@ class OtherCompliance(TestCase):
         engine = gtp.Engine()
 
         self.assertEqual("", engine.interpret("# this is a test"))
-        self.assertEqual("=2\n\n", engine.interpret("protocol_version # this is a test"))
+        self.assertEqual("= 2\n\n", engine.interpret("protocol_version # this is a test"))
 
     def test_multiple_commands_at_once(self):
         """
@@ -347,3 +347,62 @@ class OtherCompliance(TestCase):
 
         self.assertEqual(engine.interpret("boardsize 9") + engine.interpret("showboard"),
                          engine.interpret("boardsize 9\nshowboard"))
+
+    def test_multiple_newlines_ignored(self):
+        """
+
+        checks to see if whitespace is ignored correctly
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        self.assertEqual("= \n\n= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n"
+                         "= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         engine.interpret("boardsize 9\n\nshowboard\n\n\nshowboard"))
+
+    def test_whitespace_ignored(self):
+        """
+
+        makes sure that whitespace between commands is ignored
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        self.assertEqual("= \n\n", engine.interpret("\t\tboardsize\t 9 "))
+        self.assertEqual("=1 \n\n", engine.interpret("\t1 \t play    B D4   \t "))
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  X  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))

@@ -58,8 +58,9 @@ namespace sente::GTP {
         setGTPDisplayFlags();
     }
 
-    std::string Engine::interpret(const std::string& text) {
+    std::string Engine::interpret(std::string text) {
 
+        text = preprocess(text);
         auto tokens = parse(text);
 
         std::stringstream outputStream;
@@ -72,10 +73,15 @@ namespace sente::GTP {
             Response response;
 
             // keep incrementing until we find a seperator
-            while (tokens[index++]->getTokenType() != SEPERATOR and index < tokens.size()) {}
+            while (tokens[index]->getTokenType() != SEPERATOR and index < tokens.size()) {
+                index++;
+            }
 
             // slice the tokens and put them into a list
-            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index - 1);
+            auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
+
+            // update the starting index now that we've sliced the tokens
+            start = index + 1;
 
             // begin interpreting by checking to see if the first element is an integer literal
             std::shared_ptr<Token> candidate;
@@ -202,7 +208,7 @@ namespace sente::GTP {
         // generate the argument pattern
         for (const auto& argument : argumentNames){
             // check to see if we have a type for this argument
-            if (annotations.attr("__contains__")(argument)){
+            if (py::bool_(annotations.attr("__contains__")(argument))){
                 // if we do, add it to the argument pattern
                 argumentPattern.emplace_back(py::str(argument),
                                              argumentTypeMappings[py::str(annotations[argument].attr("__name__"))]);
@@ -328,7 +334,7 @@ namespace sente::GTP {
     }
 
     void Engine::setEngineVersion(std::string version){
-        engineVersion = version;
+        engineVersion = std::move(version);
     }
 
     std::unordered_map<std::string, std::vector<std::pair<CommandMethod,

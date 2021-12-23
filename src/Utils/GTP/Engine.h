@@ -30,7 +30,7 @@ namespace sente::GTP {
         Engine(const std::string& engineName, const std::string& engineVersion);
 
         // GTP interpreter
-        std::string interpret(const std::string& text);
+        std::string interpret(std::string text);
 
         // Custom GTP command Registration
         void pyRegisterCommand(const py::function& function, const py::module_& inspect);

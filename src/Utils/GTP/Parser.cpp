@@ -4,6 +4,7 @@
 
 #include <regex>
 #include <sstream>
+#include <iostream>
 
 #include "Parser.h"
 
@@ -32,13 +33,14 @@ namespace sente::GTP {
                 case '#':
                     inComment = true;
                     break;
-                case '\n':
-                    inComment = false;
                 case '\t':
                     if (not inComment){
                         output << "    ";
                     }
                     break;
+                case '\n':
+                    inComment = false;
+                    inNewLine = true;
                 default:
                     if (not inComment){
                         output << ch;
@@ -66,6 +68,11 @@ namespace sente::GTP {
             auto token = std::string(text.begin() + start_index, text.begin() + end_index);
             if (not token.empty()){
                 tokens.push_back(parseToken(token));
+            }
+
+            // if we hit a newline, add a newline token
+            if (text.find('\n', start_index) < text.find(' ', start_index)){
+                tokens.push_back(std::make_shared<Seperator>("\n"));
             }
 
             start_index = end_index + 1;
