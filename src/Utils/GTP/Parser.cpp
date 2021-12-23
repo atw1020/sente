@@ -105,6 +105,9 @@ namespace sente::GTP {
         // regex for floating point number
         std::regex floatRegex("[-+]?([0-9]*\\.[0-9]+|[0-9]+)");
 
+        std::string lowercase = token;
+        std::transform(lowercase.begin(), lowercase.end(), lowercase.begin(), ::tolower);
+
         if (std::regex_match(token, vertex)){
             return std::make_shared<Vertex>(token);
         }
@@ -119,6 +122,14 @@ namespace sente::GTP {
 
         if (std::regex_match(token, floatRegex)){
             return std::make_shared<Float>(token);
+        }
+
+        if (lowercase == "true"){
+            return std::make_shared<Boolean>(lowercase);
+        }
+
+        if (lowercase == "false"){
+            return std::make_shared<Boolean>(lowercase);
         }
 
         return std::make_shared<String>(token);

@@ -24,7 +24,7 @@ namespace sente::GTP {
             {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
             {"clearboard", {{&clearBoard, {{"operation", STRING}}}}},
             {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
-            {"play", {{&play, {{"operation", STRING}, {"color", COLOR}, {"vertex", VERTEX}}}}},
+            {"play", {{&play, {{"operation", STRING}, {"move", MOVE}}}}},
             {"undo", {{&undoOnce, {{"operation", STRING}}},
                       {&undoMultiple, {{"operation", STRING}, {"moves", INTEGER}}}}},
             {"showboard", {{&showBoard, {{"operation", STRING}}}}},
@@ -79,6 +79,8 @@ namespace sente::GTP {
 
             // slice the tokens and put them into a list
             auto arguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
+
+            // replace instances of a stone followed by a point with a move
 
             // update the starting index now that we've sliced the tokens
             start = index + 1;

@@ -337,6 +337,9 @@ class InvalidRegistration(gtp.Engine):
     def test_tuple_second_item_wrong(self):
         return True, []
 
+    def color_followed_by_intersection(self, color: sente.stone, point: tuple):
+        return True, "this should be compressed to a move object"
+
 
 def my_message(arg: str):
     return True, "this isn't a method, so we can't register it!" + arg
@@ -425,3 +428,16 @@ class TestInvalidRegistration(TestCase):
 
         with self.assertRaises(TypeError):
             engine.interpret("test-test_second_item_not_tuple")
+
+    def test_point_followed_by_color_illegal(self):
+        """
+
+        makes sure that sente detects when we have an intersection followed by a color
+
+        :return:
+        """
+
+        engine = InvalidRegistration()
+
+        with self.assertRaises(ValueError):
+            engine.register_command(engine.color_followed_by_intersection)

@@ -128,7 +128,7 @@ namespace sente::GTP {
     Float::~Float() = default;
 
     Move::Move(Color color, Vertex vertex, unsigned boardSize) : Literal(color.getText() + " " + vertex.getText()){
-        move = sente::Move(boardSize - 1 - vertex.getY(), vertex.getX(), color.getColor());
+        move = sente::Move(vertex.getY(), vertex.getX(), color.getColor());
     }
 
     sente::Move Move::getMove() {
