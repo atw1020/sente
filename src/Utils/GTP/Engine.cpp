@@ -255,6 +255,14 @@ namespace sente::GTP {
             }
         }
 
+        // check to see if the argument pattern contains a color followed by a vertex
+        for (unsigned i = 0; i < argumentPattern.size() - 1; i++){
+            if (argumentPattern[i].second == COLOR and argumentPattern[i + 1].second == VERTEX){
+                throw pybind11::value_error("Custom GTP command \"" + name + "\" contains a Color followed by a Vertex,"
+                                            " use a sente.Move instead.");
+            }
+        }
+
         // define the custom command using a lambda
 
         CommandMethod wrapper = [function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments)

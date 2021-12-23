@@ -413,7 +413,7 @@ class TestInvalidRegistration(TestCase):
         engine.register_command(engine.test_tuple_first_item_wrong)
 
         with self.assertRaises(TypeError):
-            engine.interpret("test-test_first_item_not_tuple")
+            engine.interpret("test-test_tuple_first_item_wrong")
 
     def test_wrong_tuple_second_element(self):
         """
@@ -427,7 +427,7 @@ class TestInvalidRegistration(TestCase):
         engine.register_command(engine.test_tuple_second_item_wrong)
 
         with self.assertRaises(TypeError):
-            engine.interpret("test-test_second_item_not_tuple")
+            engine.interpret("test-test_tuple_second_item_wrong")
 
     def test_point_followed_by_color_illegal(self):
         """
