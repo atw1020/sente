@@ -4,7 +4,6 @@ Author: Arthur Wesley
 
 """
 
-import inspect
 from unittest import TestCase
 
 import sente
@@ -17,9 +16,26 @@ class CustomGTPTester(gtp.Engine):
         super().__init__("test")
 
         # register commands
-        self.register_command(self.echo)
         self.register_command(self.octopus)
         self.register_command(self.greeting)
+
+        # register acceptable input types
+        self.register_command(self.int_arg)
+        self.register_command(self.vertex_arg)
+        self.register_command(self.echo)
+        self.register_command(self.color_arg)
+        self.register_command(self.float_arg)
+        self.register_command(self.move_arg)
+        self.register_command(self.bool_arg)
+
+        # register acceptable return types
+        self.register_command(self.return_integer)
+        self.register_command(self.return_vertex)
+        self.register_command(self.return_raw_string)
+        self.register_command(self.return_color)
+        self.register_command(self.return_float)
+        self.register_command(self.return_move)
+        self.register_command(self.return_bool)
 
     def echo(self, text: str):
         return True, text
@@ -30,13 +46,53 @@ class CustomGTPTester(gtp.Engine):
     def greeting(self):
         return True, "hello, my name is" + self.name
 
+    def int_arg(self, arg: int):
+        return True, str(arg)
+
+    def vertex_arg(self, arg: tuple):
+        return True, str(arg)
+
+    def color_arg(self, arg: sente.stone):
+        return True, str(arg)
+
+    def float_arg(self, arg: float):
+        return True, str(arg)
+
+    def move_arg(self, arg: sente.Move):
+        return True, str(arg)
+
+    def bool_arg(self, arg: bool):
+        return True, str(arg)
+
+    def return_integer(self):
+        return 5
+
+    def return_vertex(self):
+        # TODO: replace with named tuple
+        return 4, 4
+
+    def return_raw_string(self):
+        return "hello hello (Hola!)"
+
+    def return_color(self):
+        return sente.stone.BLACK
+
+    def return_float(self):
+        return 3.14
+
+    def return_move(self):
+        return sente.Move(4, 4, sente.stone.BLACK)
+
+    def return_bool(self):
+        return False
+
 
 class CustomGTPCommands(TestCase):
 
     def test_basic_registration(self):
         """
 
-
+        tests to see if commands can be registered
 
         :return:
         """
@@ -44,18 +100,6 @@ class CustomGTPCommands(TestCase):
         engine = CustomGTPTester()
 
         self.assertEqual("= " + engine.octopus()[1] + "\n\n", engine.interpret("test-octopus"))
-
-    def test_echo(self):
-        """
-
-        tests to see if a custom echo command works correctly
-
-        :return:
-        """
-
-        engine = CustomGTPTester()
-
-        self.assertEqual("= " + engine.echo("silence")[1] + "\n\n", engine.interpret("test-echo silence"))
 
     def test_greeting(self):
         """
@@ -68,6 +112,179 @@ class CustomGTPCommands(TestCase):
         engine = CustomGTPTester()
 
         self.assertEqual("= " + engine.greeting()[1] + "\n\n", engine.interpret("test-greeting"))
+
+    def test_integer_arg(self):
+        """
+
+        tests to see if ingeger arguments cna be passed
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= 8\n\n", engine.interpret("test-int_arg 8"))
+
+    def test_vertex_arg(self):
+        """
+
+        tests to see if ingeger arguments cna be passed
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= (4, 4)\n\n", engine.interpret("test-vertex_arg B4"))
+
+    def test_echo(self):
+        """
+
+        tests to see if a custom echo command works correctly
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= " + engine.echo("silence")[1] + "\n\n",
+                         engine.interpret("test-echo silence"))
+
+    def test_color_arg(self):
+        """
+
+        tests to see if colors can be passed correctly
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= " + engine.color_arg(sente.BLACK)[1] + "\n\n",
+                         engine.interpret("test-color_arg BLACK"))
+
+    def test_float_arg(self):
+        """
+
+        tests to see if floats can be passed correctly
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= 3.140000104904175\n\n",
+                         engine.interpret("test-float_arg 3.14"))
+
+    def test_move_arg(self):
+        """
+
+        tests to see if colors can be passed correctly
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= " + engine.move_arg(sente.Move(4, 4, sente.stone.BLACK))[1] + "\n\n",
+                         engine.interpret("test-move_arg BLACK"))
+
+    def test_bool_arg(self):
+        """
+
+        tests to see if colors can be passed correctly
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= " + engine.bool_arg(True)[1] + "\n\n",
+                         engine.interpret("test-bool_arg true"))
+
+    def test_return_integer(self):
+        """
+
+        checks to see if returning a raw integer is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= 5\n\n", engine.interpret("test-return_integer"))
+
+    def test_return_vertex(self):
+        """
+
+        checks to see if returning a vertex is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= D4\n\n", engine.interpret("test-return_vertex"))
+
+    def test_return_raw_string(self):
+        """
+
+        checks to see if returning a string is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= hello hello (Hola!)\n\n", engine.interpret("test-return_raw_string"))
+
+    def test_return_color(self):
+        """
+
+        checks to see if returning a color is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= B\n\n", engine.interpret("test-return_color"))
+
+    def test_return_float(self):
+        """
+
+        checks to see if returning a float is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= 3.14\n\n", engine.interpret("test-return_float"))
+
+    def test_return_move(self):
+        """
+
+        checks to see if returning a move is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= B D4\n\n", engine.interpret("test-return_move"))
+
+    def test_return_bool(self):
+        """
+
+        checks to see if returning a raw integer is acceptable
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= false\n\n", engine.interpret("test-return_bool"))
 
 
 class InterpreterSyntaxChecking(TestCase):
@@ -109,16 +326,16 @@ class InvalidRegistration(gtp.Engine):
         return True, "you shouldn't be able to use this!" + arg
 
     def non_tuple_response(self):
-        return False
+        return [False, "lists aren't acceptable"]
 
     def wrong_number_responses(self):
         return 1, 2, 3
 
-    def test_first_item_not_tuple(self):
+    def test_tuple_first_item_wrong(self):
         return "false", "not real bool!"
 
-    def test_second_item_not_tuple(self):
-        return True, 42
+    def test_tuple_second_item_wrong(self):
+        return True, []
 
 
 def my_message(arg: str):
@@ -190,7 +407,7 @@ class TestInvalidRegistration(TestCase):
         """
 
         engine = InvalidRegistration()
-        engine.register_command(engine.test_first_item_not_tuple)
+        engine.register_command(engine.test_tuple_first_item_wrong)
 
         with self.assertRaises(TypeError):
             engine.interpret("test-test_first_item_not_tuple")
@@ -204,7 +421,7 @@ class TestInvalidRegistration(TestCase):
         """
 
         engine = InvalidRegistration()
-        engine.register_command(engine.test_second_item_not_tuple)
+        engine.register_command(engine.test_tuple_second_item_wrong)
 
         with self.assertRaises(TypeError):
             engine.interpret("test-test_second_item_not_tuple")

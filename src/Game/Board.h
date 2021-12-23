@@ -212,7 +212,7 @@ namespace sente {
 
                 for (unsigned j = 0; j < side; j++){
 
-                    switch(board[i][j]){
+                    switch(board[rowIndex][j]){
                         case BLACK:
                             if (not useASCII){
                                 accumulator << " ⚫";
@@ -231,7 +231,7 @@ namespace sente {
                             break;
                         case EMPTY:
                             // check if we are on a star point
-                            if (isStar(i, j)){
+                            if (isStar(rowIndex, j)){
                                 accumulator << " *";
                             }
                             else {

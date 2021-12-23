@@ -62,6 +62,8 @@ namespace sente::GTP {
         size_t start_index = 0;
         size_t end_index;
 
+        bool inString;
+
         while ((end_index = std::min(text.find(' ', start_index), text.find('\n', start_index))) !=
                std::string::npos) {
 

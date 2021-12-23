@@ -406,3 +406,26 @@ class OtherCompliance(TestCase):
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+
+    def test_whitespace_followed_by_newline(self):
+        """
+
+        tests to see if whitespace before a newline is ignored
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        self.assertEqual("= \n\n= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         engine.interpret("boardsize 9    \n\nshowboard"))
