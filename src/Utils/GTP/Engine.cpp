@@ -43,59 +43,87 @@ namespace sente::GTP {
     };
 
     bool isGTPType(py::object object){
-        if (py::type::of(object).is(py::type::of(py::int_())) or
-            py::type::of(object).is(py::type::of(py::str())) or
-            py::type::of(object).is(py::type::of(py::float_())) or
-            py::type::of(object).is(py::type::of(py::bool_()))){
+
+        if (py::isinstance<py::int_>(object) or
+            py::isinstance<py::str>(object) or
+            py::isinstance<Stone>(object) or
+            py::isinstance<py::float_>(object) or
+            py::isinstance<sente::Move>(object) or
+            py::isinstance<py::bool_>(object)){
             return true;
         }
-        if (not py::hasattr(object, "__name__")){
+        else if (py::isinstance<py::tuple>(object)){
+            py::tuple tuple = py::tuple(object);
+            if (tuple.size() != 2){
+                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible type, "
+                                           "got tuple with " + std::to_string(tuple.size()) + " elements (expected 2)");
+            }
+
+            if (not py::isinstance<py::int_>(tuple[0])){
+                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible type, "
+                                           "got tuple with " + std::string(py::str(py::type::of(tuple[0]))) +
+                                           " in position 1 (expected int)");
+            }
+            if (not py::isinstance<py::int_>(tuple[1])){
+                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible type, "
+                                           "got tuple with " + std::string(py::str(py::type::of(tuple[1]))) +
+                                           " in position 2 (expected int)");
+            }
+            return true;
+        }
+        else {
             return false;
         }
-
-        std::string name = py::str(object.attr("__name__"));
-
-        return name == "Vertex" or name == "Stone" or name == "Move";
-
     }
 
     std::string gtpTypeToString(py::object object){
+
         if (py::type::of(object).is(py::type::of(py::int_())) or
-            py::type::of(object).is(py::type::of(py::str())) or
-            py::type::of(object).is(py::type::of(py::float_()))){
+            py::isinstance<py::str>(object) or
+            py::isinstance<py::float_>(object)){
 
             // for any of these types, string casting is sufficient
             return py::str(object);
         }
-        if (py::type::of(object).is(py::type::of(py::bool_()))){
+        if (py::isinstance<py::bool_>(object)){
             return py::bool_(object) ? "true" : "false";
         }
+        if (py::isinstance<py::tuple>(object)){
+            // cast to a point
+            py::tuple point = py::tuple(object);
 
-        std::string name = py::str(object.attr("__name__"));
-
-        if (name == "Vertex"){
-
-            char first = 'A' + int(py::int_(object.attr("first")));
-            std::string message = py::str(object.attr("second"));
+            // compute the co-ords
+            char first = 'A' + int(py::int_(point[0])) + 1;
+            std::string message = std::string(py::str(py::int_(point[1]) + py::int_(1)));
             message.insert(message.begin(), first);
 
             return message;
         }
-        if (name == "stone"){
-            return int(py::int_(object)) == 1 ? "B" : "W";
+        if (py::isinstance<Stone>(object)){
+            // cast to a stone
+            auto* stone = object.cast<Stone*>();
+
+            // generate the one character code
+            return *stone == Stone::BLACK ? "B" : "W";
         }
-        if (name == "Move"){
+        if (py::isinstance<sente::Move>(object)){
+
+            // cast to a move
+            auto* move = object.cast<sente::Move*>();
 
             // convert the point to a string
-            char first = 'A' + int(py::int_(object.attr("get_x")()));
-            std::string pointMessage = py::str(object.attr("get_y")());
+            char first = 'A' + move->getX();
+            std::string pointMessage = std::to_string(move->getY() + 1);
             pointMessage.insert(pointMessage.begin(), first);
 
             // convert the stone to a string
-            std::string stoneMessage = int(py::int_(object)) == 1 ? "B" : "W";
+            std::string stoneMessage = move->getStone() == Stone::BLACK ? "B" : "W";
 
             return stoneMessage + " " + pointMessage;
 
+        }
+        else {
+            throw std::runtime_error("called gtpTypeString on non GTP type");
         }
 
     }
@@ -388,21 +416,23 @@ namespace sente::GTP {
             bool status;
             py::object response;
 
-            if (py::type::of(_response).is(py::type::of(py::tuple()))){
+            if (py::isinstance<py::tuple>(_response)){
+
+                py::print("entering tuple code");
 
                 // if we have a tuple we have to validate it
-                py::tuple responseTuple = _response;
+                py::tuple responseTuple = py::tuple(_response);
 
                 // make sure that the tuple is of size two
                 if (responseTuple.size() != 2){
-                    throw pybind11::value_error("Custom GTP command returned invalid response; "
+                    throw py::value_error("Custom GTP command returned invalid response; "
                                                 "expected two items, got " + std::to_string(responseTuple.size()));
                 }
 
                 // make sure the first item is a bool
-                if (not py::type::of(responseTuple[0]).is(py::type::of(py::bool_()))){
-                    throw pybind11::type_error("Custom GTP command returned invalid response in position 1, "
-                                               "expected bool, got" + std::string(py::str(py::type::of(response[0]))));
+                if (not py::isinstance<py::bool_>(responseTuple[0])){
+                    throw py::type_error("Custom GTP command returned invalid response in position 1, "
+                                         "expected bool, got" + std::string(py::str(py::type::of(responseTuple[0]))));
                 }
 
                 status = py::bool_(responseTuple[0]);
@@ -418,8 +448,15 @@ namespace sente::GTP {
             // check if we have a valid type
             if (not isGTPType(response)) {
                 // we have an invalid type
-                throw pybind11::type_error("Custom GTP command returned invalid response in position 2, expected GTP "
-                                           "compatable type, got" + std::string(py::str(py::type::of(response))));
+                if (py::isinstance<py::tuple>(_response)){
+                    throw pybind11::type_error("Custom GTP command returned invalid response in position 2, "
+                                               "expected GTP compatible type, got " +
+                                               std::string(py::str(py::type::of(response))));
+                }
+                else {
+                    throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
+                                               "type, got " + std::string(py::str(py::type::of(response))));
+                }
             }
 
             return {status, gtpTypeToString(response)};

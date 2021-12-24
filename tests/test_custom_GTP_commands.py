@@ -49,7 +49,7 @@ class CustomGTPTester(gtp.Engine):
     def int_arg(self, arg: int):
         return True, str(arg)
 
-    def vertex_arg(self, arg: sente.Vertex):
+    def vertex_arg(self, arg: tuple):
         return True, str(arg)
 
     def color_arg(self, arg: sente.stone):
@@ -68,7 +68,7 @@ class CustomGTPTester(gtp.Engine):
         return 5
 
     def return_vertex(self):
-        return sente.Vertex(4, 4)
+        return 4, 4
 
     def return_raw_string(self):
         return "hello hello (Hola!)"
@@ -185,8 +185,8 @@ class CustomGTPCommands(TestCase):
 
         engine = CustomGTPTester()
 
-        self.assertEqual("= " + engine.move_arg(sente.Move(4, 4, sente.stone.BLACK))[1] + "\n\n",
-                         engine.interpret("test-move_arg BLACK"))
+        self.assertEqual("= " + engine.move_arg(sente.Move(3, 3, sente.stone.BLACK))[1] + "\n\n",
+                         engine.interpret("test-move_arg BLACK D4"))
 
     def test_bool_arg(self):
         """
@@ -271,7 +271,7 @@ class CustomGTPCommands(TestCase):
 
         engine = CustomGTPTester()
 
-        self.assertEqual("= B D4\n\n", engine.interpret("test-return_move"))
+        self.assertEqual("= B E5\n\n", engine.interpret("test-return_move"))
 
     def test_return_bool(self):
         """
@@ -336,11 +336,11 @@ class InvalidRegistration(gtp.Engine):
     def test_tuple_second_item_wrong(self):
         return True, []
 
-    def color_followed_by_intersection(self, color: sente.stone, point: sente.Vertex):
+    def color_followed_by_intersection(self, color: sente.stone, point: tuple):
         return True, "this should be compressed to a move object"
 
-    def tuple_argument(self, arg: tuple):
-        return False, "tuples can't be arguments anymore"
+    def dictionaries_argument(self, arg: dict):
+        return False, "dictionaries are invalid arguments"
 
 
 def my_message(arg: str):
@@ -386,7 +386,7 @@ class TestInvalidRegistration(TestCase):
         engine = InvalidRegistration()
 
         with self.assertRaises(TypeError):
-            engine.register_command(engine.tuple_argument)
+            engine.register_command(engine.dictionaries_argument)
 
     def test_non_tuple_response(self):
         """

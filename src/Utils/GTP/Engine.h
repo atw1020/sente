@@ -25,7 +25,8 @@ namespace sente::GTP {
     class Engine {
     public:
 
-        GoGame masterGame;
+        GoGame masterGame; // the game object that the GTP edits
+        // GoGame scratchGame; // a game that the engine can play on and experiment with variations on
 
         Engine(const std::string& engineName, const std::string& engineVersion);
 
