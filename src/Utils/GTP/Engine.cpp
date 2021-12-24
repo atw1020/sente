@@ -307,9 +307,16 @@ namespace sente::GTP {
         for (const auto& argument : argumentNames){
             // check to see if we have a type for this argument
             if (py::bool_(annotations.attr("__contains__")(argument))){
+
+                std::string type = py::str(annotations[argument].attr("__name__"));
+
+                if (argumentTypeMappings.find(type) == argumentTypeMappings.end()){
+                    throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
+                                        + name + " \"has invalid type \"" + type + "\".");
+                }
+
                 // if we do, add it to the argument pattern
-                argumentPattern.emplace_back(py::str(argument),
-                                             argumentTypeMappings[py::str(annotations[argument].attr("__name__"))]);
+                argumentPattern.emplace_back(py::str(argument), argumentTypeMappings[type]);
             }
             else {
                 throw pybind11::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +

@@ -62,21 +62,39 @@ namespace sente::GTP {
         size_t start_index = 0;
         size_t end_index;
 
-        bool inString;
-
-        while ((end_index = std::min(text.find(' ', start_index), text.find('\n', start_index))) !=
+        while ((end_index = std::min({text.find(' ', start_index),
+                                      text.find('\n', start_index),
+                                      text.find('"', start_index)})) !=
                std::string::npos) {
 
-            auto token = std::string(text.begin() + start_index, text.begin() + end_index);
-            if (not token.empty()){
-                tokens.push_back(parseToken(token));
+            // check if we just hit a string
+            if (text[start_index - 1] == '"'){
+
+                // if we are in a string, the end index is determined only by the position of the closing quote
+                end_index = text.find('"', end_index + 1);
+
+                // push the string
+                tokens.push_back(std::make_shared<String>(std::string(text.begin() + start_index,
+                                                                      text.begin() + end_index)));
+            }
+            else {
+
+                // if we are not in a string, obtain the next token
+                auto token = std::string(text.begin() + start_index, text.begin() + end_index);
+
+                // if the token is not an empty string, push it
+                if (not token.empty()){
+                    tokens.push_back(parseToken(token));
+                }
             }
 
             // if we hit a newline, add a newline token
-            if (text.find('\n', start_index) < text.find(' ', start_index)){
+            if (text.find('\n', start_index) < text.find(' ', start_index) and
+                text.find('\n', start_index) < text.find('"', start_index)){
                 tokens.push_back(std::make_shared<Seperator>("\n"));
             }
 
+            // update the start index
             start_index = end_index + 1;
 
         }

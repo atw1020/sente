@@ -149,6 +149,19 @@ class CustomGTPCommands(TestCase):
         self.assertEqual("= " + engine.echo("silence")[1] + "\n\n",
                          engine.interpret("test-echo silence"))
 
+    def test_multi_line_strings(self):
+        """
+
+        tests to see if echo works with multi line strings
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= this is two lines...\nof a string!\n\n",
+                         engine.interpret("test-echo \"this is two lines...\nof a string!\""))
+
     def test_color_arg(self):
         """
 

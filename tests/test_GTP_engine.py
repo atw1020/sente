@@ -199,4 +199,4 @@ class EngineFunctionality(TestCase):
 
         engine = gtp.Engine()
 
-        self.assertEqual("= \n\n", engine.interpret("loadsgf \"Lee Sedol ladder game.sgf\""))
+        self.assertEqual("= \n\n", engine.interpret("loadsgf \"sgf/Lee Sedol ladder game.sgf\""))
