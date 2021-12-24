@@ -49,7 +49,7 @@ class CustomGTPTester(gtp.Engine):
     def int_arg(self, arg: int):
         return True, str(arg)
 
-    def vertex_arg(self, arg: tuple):
+    def vertex_arg(self, arg: sente.Vertex):
         return True, str(arg)
 
     def color_arg(self, arg: sente.stone):
@@ -68,7 +68,7 @@ class CustomGTPTester(gtp.Engine):
         return 5
 
     def return_vertex(self):
-        return 4, 4
+        return sente.Vertex(4, 4)
 
     def return_raw_string(self):
         return "hello hello (Hola!)"
@@ -134,7 +134,7 @@ class CustomGTPCommands(TestCase):
 
         engine = CustomGTPTester()
 
-        self.assertEqual("= (4, 4)\n\n", engine.interpret("test-vertex_arg B4"))
+        self.assertEqual("= (3, 3)\n\n", engine.interpret("test-vertex_arg D4"))
 
     def test_echo(self):
         """
@@ -223,7 +223,7 @@ class CustomGTPCommands(TestCase):
 
         engine = CustomGTPTester()
 
-        self.assertEqual("= D4\n\n", engine.interpret("test-return_vertex"))
+        self.assertEqual("= E5\n\n", engine.interpret("test-return_vertex"))
 
     def test_return_raw_string(self):
         """
@@ -336,7 +336,7 @@ class InvalidRegistration(gtp.Engine):
     def test_tuple_second_item_wrong(self):
         return True, []
 
-    def color_followed_by_intersection(self, color: sente.stone, point: tuple):
+    def color_followed_by_intersection(self, color: sente.stone, point: sente.Vertex):
         return True, "this should be compressed to a move object"
 
     def dictionaries_argument(self, arg: dict):

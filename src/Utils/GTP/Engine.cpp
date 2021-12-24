@@ -44,36 +44,13 @@ namespace sente::GTP {
 
     bool isGTPType(py::object object){
 
-        if (py::isinstance<py::int_>(object) or
-            py::isinstance<py::str>(object) or
-            py::isinstance<Stone>(object) or
-            py::isinstance<py::float_>(object) or
-            py::isinstance<sente::Move>(object) or
-            py::isinstance<py::bool_>(object)){
-            return true;
-        }
-        else if (py::isinstance<py::tuple>(object)){
-            py::tuple tuple = py::tuple(object);
-            if (tuple.size() != 2){
-                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible type, "
-                                           "got tuple with " + std::to_string(tuple.size()) + " elements (expected 2)");
-            }
-
-            if (not py::isinstance<py::int_>(tuple[0])){
-                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible type, "
-                                           "got tuple with " + std::string(py::str(py::type::of(tuple[0]))) +
-                                           " in position 1 (expected int)");
-            }
-            if (not py::isinstance<py::int_>(tuple[1])){
-                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible type, "
-                                           "got tuple with " + std::string(py::str(py::type::of(tuple[1]))) +
-                                           " in position 2 (expected int)");
-            }
-            return true;
-        }
-        else {
-            return false;
-        }
+        return py::isinstance<py::int_>(object) or
+               py::isinstance<sente::Vertex>(object) or
+               py::isinstance<py::str>(object) or
+               py::isinstance<Stone>(object) or
+               py::isinstance<py::float_>(object) or
+               py::isinstance<sente::Move>(object) or
+               py::isinstance<py::bool_>(object);
     }
 
     std::string gtpTypeToString(py::object object){
@@ -88,13 +65,13 @@ namespace sente::GTP {
         if (py::isinstance<py::bool_>(object)){
             return py::bool_(object) ? "true" : "false";
         }
-        if (py::isinstance<py::tuple>(object)){
+        if (py::isinstance<sente::Vertex>(object)){
             // cast to a point
-            py::tuple point = py::tuple(object);
+            sente::Vertex* vertex = object.cast<sente::Vertex*>();
 
             // compute the co-ords
-            char first = 'A' + int(py::int_(point[0])) + 1;
-            std::string message = std::string(py::str(py::int_(point[1]) + py::int_(1)));
+            char first = 'A' + vertex->first;
+            std::string message = std::to_string(vertex->second + 1);
             message.insert(message.begin(), first);
 
             return message;
@@ -417,8 +394,6 @@ namespace sente::GTP {
             py::object response;
 
             if (py::isinstance<py::tuple>(_response)){
-
-                py::print("entering tuple code");
 
                 // if we have a tuple we have to validate it
                 py::tuple responseTuple = py::tuple(_response);
