@@ -49,7 +49,7 @@ class CustomGTPTester(gtp.Engine):
     def int_arg(self, arg: int):
         return True, str(arg)
 
-    def vertex_arg(self, arg: tuple):
+    def vertex_arg(self, arg: sente.Vertex):
         return True, str(arg)
 
     def color_arg(self, arg: sente.stone):
@@ -68,8 +68,7 @@ class CustomGTPTester(gtp.Engine):
         return 5
 
     def return_vertex(self):
-        # TODO: replace with named tuple
-        return 4, 4
+        return sente.Vertex(4, 4)
 
     def return_raw_string(self):
         return "hello hello (Hola!)"
@@ -337,8 +336,11 @@ class InvalidRegistration(gtp.Engine):
     def test_tuple_second_item_wrong(self):
         return True, []
 
-    def color_followed_by_intersection(self, color: sente.stone, point: tuple):
+    def color_followed_by_intersection(self, color: sente.stone, point: sente.Vertex):
         return True, "this should be compressed to a move object"
+
+    def tuple_argument(self, arg: tuple):
+        return False, "tuples can't be arguments anymore"
 
 
 def my_message(arg: str):
@@ -372,6 +374,19 @@ class TestInvalidRegistration(TestCase):
 
         with self.assertRaises(ValueError):
             engine.register_command(my_message)
+
+    def test_bad_input_type(self):
+        """
+
+
+
+        :return:
+        """
+
+        engine = InvalidRegistration()
+
+        with self.assertRaises(TypeError):
+            engine.register_command(engine.tuple_argument)
 
     def test_non_tuple_response(self):
         """

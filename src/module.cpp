@@ -42,7 +42,6 @@ PYBIND11_MODULE(sente, module){
 
     module.def("opposite_player", &sente::getOpponent, "get the opponent of a particular stone color");
 
-
     py::enum_<sente::Stone>(module, "stone", R"pbdoc(
             An enumeration for a Go stone.
 
@@ -84,6 +83,26 @@ PYBIND11_MODULE(sente, module){
             The `Korean rules <https://senseis.xmp.net/?KoreanRules>`_ for go.
         )pbdoc")
         .export_values();
+
+    py::class_<sente::Point>(module, "Vertex")
+            .def(py::init<unsigned, unsigned>(),
+                    py::arg("x"),
+                    py::arg("y"))
+                    /*
+            .def_property("first", [](sente::Point& point){
+                return point.first;
+            }, [](sente::Point& point, unsigned newValue){
+                point.first = newValue;
+            })
+            .def_property("second", [](sente::Point& point){
+                return point.second;
+            }, [](sente::Point& point, unsigned newValue){
+                point.second = newValue;
+            })
+                     */
+            .def("__repr__", [](const sente::Point& point){
+                return "Vertex(x=" + std::to_string(point.first) + ", y=" + std::to_string(point.second) + ")";
+            });
 
     py::class_<sente::Move>(module, "Move", R"pbdoc(
             A class that represents a move that can be played on a go board, consisting of a position and a stone.

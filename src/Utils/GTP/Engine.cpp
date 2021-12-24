@@ -34,13 +34,71 @@ namespace sente::GTP {
 
     std::unordered_map<std::string, LiteralType> argumentTypeMappings = {
             {"int", INTEGER},
-            {"tuple", VERTEX}, // TODO: use something better than a tuple for this in python
+            {"Vertex", VERTEX},
             {"str", STRING},
             {"stone", COLOR},
             {"float", FLOAT},
             {"Move", MOVE},
             {"bool", BOOLEAN}
     };
+
+    bool isGTPType(py::object object){
+        if (py::type::of(object).is(py::type::of(py::int_())) or
+            py::type::of(object).is(py::type::of(py::str())) or
+            py::type::of(object).is(py::type::of(py::float_())) or
+            py::type::of(object).is(py::type::of(py::bool_()))){
+            return true;
+        }
+        if (not py::hasattr(object, "__name__")){
+            return false;
+        }
+
+        std::string name = py::str(object.attr("__name__"));
+
+        return name == "Vertex" or name == "Stone" or name == "Move";
+
+    }
+
+    std::string gtpTypeToString(py::object object){
+        if (py::type::of(object).is(py::type::of(py::int_())) or
+            py::type::of(object).is(py::type::of(py::str())) or
+            py::type::of(object).is(py::type::of(py::float_()))){
+
+            // for any of these types, string casting is sufficient
+            return py::str(object);
+        }
+        if (py::type::of(object).is(py::type::of(py::bool_()))){
+            return py::bool_(object) ? "true" : "false";
+        }
+
+        std::string name = py::str(object.attr("__name__"));
+
+        if (name == "Vertex"){
+
+            char first = 'A' + int(py::int_(object.attr("first")));
+            std::string message = py::str(object.attr("second"));
+            message.insert(message.begin(), first);
+
+            return message;
+        }
+        if (name == "stone"){
+            return int(py::int_(object)) == 1 ? "B" : "W";
+        }
+        if (name == "Move"){
+
+            // convert the point to a string
+            char first = 'A' + int(py::int_(object.attr("get_x")()));
+            std::string pointMessage = py::str(object.attr("get_y")());
+            pointMessage.insert(pointMessage.begin(), first);
+
+            // convert the stone to a string
+            std::string stoneMessage = int(py::int_(object)) == 1 ? "B" : "W";
+
+            return stoneMessage + " " + pointMessage;
+
+        }
+
+    }
 
     Engine::Engine(const std::string& engineName, const std::string& engineVersion)
         : masterGame(19, CHINESE, determineKomi(CHINESE)){
@@ -322,34 +380,49 @@ namespace sente::GTP {
             auto args = py::tuple(pyArgs);
             py::object _response = function(*args);
 
-            if (py::type::of(_response).is(py::type::of(py::str()))){
-                // if the response is a string, assume that the response is correct
-                return {true, py::str(_response)};
+            // a valid response has two formats
+            //  1) a tuple containing whether the message was an error (bool) and the response variable (must be a GTP
+            //     defined type)
+            //  2) The response variable on its own. The message is assumed to be successful.
+
+            bool status;
+            py::object response;
+
+            if (py::type::of(_response).is(py::type::of(py::tuple()))){
+
+                // if we have a tuple we have to validate it
+                py::tuple responseTuple = _response;
+
+                // make sure that the tuple is of size two
+                if (responseTuple.size() != 2){
+                    throw pybind11::value_error("Custom GTP command returned invalid response; "
+                                                "expected two items, got " + std::to_string(responseTuple.size()));
+                }
+
+                // make sure the first item is a bool
+                if (not py::type::of(responseTuple[0]).is(py::type::of(py::bool_()))){
+                    throw pybind11::type_error("Custom GTP command returned invalid response in position 1, "
+                                               "expected bool, got" + std::string(py::str(py::type::of(response[0]))));
+                }
+
+                status = py::bool_(responseTuple[0]);
+                response = responseTuple[1];
+
+            }
+            else {
+                // otherwise, the message is successful and the response is just what was returned
+                status = true;
+                response = _response;
             }
 
-            if (not py::type::of(_response).is(py::type::of(py::tuple()))){
-                throw pybind11::type_error("Custom GTP command returned invalid response; "
-                                           "expected tuple, got" + std::string(py::str(py::type::of(_response))));
+            // check if we have a valid type
+            if (not isGTPType(response)) {
+                // we have an invalid type
+                throw pybind11::type_error("Custom GTP command returned invalid response in position 2, expected GTP "
+                                           "compatable type, got" + std::string(py::str(py::type::of(response))));
             }
 
-            auto response = py::tuple(_response);
-
-            if (response.size() != 2){
-                throw pybind11::value_error("Custom GTP command returned invalid response; "
-                                            "expected two items, got " + std::to_string(response.size()));
-            }
-
-            // check that the responses are the right type
-            if (not py::type::of(response[0]).is(py::type::of(py::bool_()))){
-                throw pybind11::type_error("Custom GTP command returned invalid response in position 1, "
-                                           "expected bool, got" + std::string(py::str(py::type::of(response[0]))));
-            }
-            if (not py::type::of(response[1]).is(py::type::of(py::str()))){
-                throw pybind11::type_error("Custom GTP command returned invalid response in position 2, "
-                                           "expected string, got" + std::string(py::str(py::type::of(response[0]))));
-            }
-
-            return {py::bool_(response[0]), py::str(response[1])};
+            return {status, gtpTypeToString(response)};
         };
 
         // register the command with the engine
