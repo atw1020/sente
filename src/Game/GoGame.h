@@ -100,7 +100,7 @@ namespace sente {
         void setASCIIMode(bool useASCII);
         void setLowerLeftCornerCoOrdinates(bool useLowerLeftOrigin);
 
-        Stone getSpace(Point point) const;
+        Stone getSpace(Vertex point) const;
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
@@ -111,7 +111,7 @@ namespace sente {
         Results score() const;
         std::vector<Move> getLegalMoves();
 
-        Point getKoPoint() const;
+        Vertex getKoPoint() const;
 
         Rules getRules() const;
         double getKomi() const;

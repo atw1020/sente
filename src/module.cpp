@@ -84,6 +84,24 @@ PYBIND11_MODULE(sente, module){
         )pbdoc")
         .export_values();
 
+    py::class_<sente::Vertex>(module, "Vertex")
+            .def(py::init<unsigned, unsigned>(),
+                 py::arg("first"),
+                 py::arg("second"))
+            .def_property("first", [](sente::Vertex& point){
+                return point.first;
+            }, [](sente::Vertex& point, unsigned newValue){
+                point.first = newValue;
+            })
+            .def_property("second", [](sente::Vertex& point){
+                return point.second;
+            }, [](sente::Vertex& point, unsigned newValue){
+                point.second = newValue;
+            })
+            .def("__repr__", [](const sente::Vertex& point){
+                return "Vertex(x=" + std::to_string(point.first) + ", y=" + std::to_string(point.second) + ")";
+            });
+
     py::class_<sente::Move>(module, "Move", R"pbdoc(
             A class that represents a move that can be played on a go board, consisting of a position and a stone.
 

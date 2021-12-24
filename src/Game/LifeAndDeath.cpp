@@ -47,7 +47,7 @@ namespace sente::utils {
         std::unordered_set<std::shared_ptr<Group>> groups;
 
         for (const Move& move : territory){
-            for (const Point neighbor : move.getAdjacentMoves(board.getSide())){
+            for (const Vertex neighbor : move.getAdjacentMoves(board.getSide())){
                 if (groupMap.find(board.getSpace(neighbor)) != groupMap.end()){
                     groups.insert(groupMap.at(board.getSpace(neighbor)));
                 }

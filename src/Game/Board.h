@@ -43,10 +43,10 @@ namespace sente {
         virtual unsigned getSide() const = 0;
 
         virtual Move getSpace(unsigned x, unsigned y) const = 0;
-        virtual Move getSpace(Point point) const = 0;
+        virtual Move getSpace(Vertex point) const = 0;
 
         virtual Stone getStone(unsigned x, unsigned y) const = 0;
-        virtual Stone getStone(Point point) const = 0;
+        virtual Stone getStone(Vertex point) const = 0;
 
         virtual explicit operator std::string() const = 0;
 
@@ -140,14 +140,14 @@ namespace sente {
             }
             return Move(x, y, board[x][y]);
         }
-        [[nodiscard]] Move getSpace(Point point) const override {
+        [[nodiscard]] Move getSpace(Vertex point) const override {
             return getSpace(point.first, point.second);
         }
 
         [[nodiscard]] Stone getStone(unsigned x, unsigned y) const override {
             return board[x][y];
         }
-        [[nodiscard]] Stone getStone(Point point) const override {
+        [[nodiscard]] Stone getStone(Vertex point) const override {
             return getStone(point.first, point.second);
         }
 

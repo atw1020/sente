@@ -540,7 +540,7 @@ namespace sente {
         }
     }
 
-    Stone GoGame::getSpace(Point point) const {
+    Stone GoGame::getSpace(Vertex point) const {
         return getSpace(point.first, point.second);
     }
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
@@ -558,6 +558,8 @@ namespace sente {
                 return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
             case 9:
                 return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+            default:
+                throw py::value_error("cannot construct board of size" + std::to_string(board->getSide()));
         }
     }
 
@@ -699,7 +701,7 @@ namespace sente {
 
     }
 
-    Point GoGame::getKoPoint() const {
+    Vertex GoGame::getKoPoint() const {
         return {koPoint.getX(), koPoint.getY()};
     }
 

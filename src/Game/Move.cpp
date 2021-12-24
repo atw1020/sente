@@ -12,6 +12,9 @@ namespace py = pybind11;
 
 namespace sente {
 
+    Vertex::Vertex(unsigned int first, unsigned int second) {
+        this->first = first; this->second = second;
+    }
 
     Stone getOpponent(Stone player){
         if (player == BLACK){
@@ -114,9 +117,9 @@ namespace sente {
         return other.x != x or other.y != y or other.stone != stone;
     }
 
-    std::vector<std::pair<int, int>> Move::getAdjacentMoves(unsigned boardSize) const{
+    std::vector<Vertex> Move::getAdjacentMoves(unsigned boardSize) const{
 
-        std::vector<std::pair<int, int>> adjacents;
+        std::vector<Vertex> adjacents;
 
         if (x + 1 < boardSize){
             adjacents.emplace_back(x + 1, y);

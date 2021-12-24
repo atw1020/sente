@@ -28,10 +28,10 @@ namespace sente {
             {"ko_points", KO_POINTS}
         };
 
-        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
-        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
-        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
-        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
+        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck);
+        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex VertextoCheck);
+        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck);
+        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck);
 
         /**
          *
@@ -92,7 +92,7 @@ namespace sente {
          * @param bufferIndex the index to insert the next point at
          * @param toCheck the point to check
          */
-        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
             // get the stone from the board
             auto stone = game.getSpace(toCheck);
@@ -115,7 +115,7 @@ namespace sente {
          * @param bufferIndex the index to insert the next point at
          * @param toCheck the point to check
          */
-        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
             // get the stone from the board
             auto stone = game.getSpace(toCheck);
@@ -137,7 +137,7 @@ namespace sente {
         * @param bufferIndex the index to insert the next point at
         * @param toCheck the point to check
         */
-        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
             // get the stone from the board
             auto stone = game.getSpace(toCheck);
@@ -161,9 +161,9 @@ namespace sente {
          * @param bufferIndex the index to insert the next point at
          * @param toCheck the point to check
          */
-        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
-            Point ko = game.getKoPoint();
+            Vertex ko = game.getKoPoint();
 
             if (ko.first == toCheck.first and ko.second == toCheck.second){
                 buffer_ptr[bufferIndex] = 1;

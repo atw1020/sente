@@ -193,7 +193,7 @@ namespace sente::GTP {
                             Color* color = (Color*) check1;
                             Vertex* vertex = (Vertex*) check2;
 
-                            arguments.emplace_back(std::make_shared<Move>(*color, *vertex, masterGame.getSide()));
+                            arguments.emplace_back(std::make_shared<Move>(*color, *vertex));
                         }
                     }
                 }

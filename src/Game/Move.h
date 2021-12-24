@@ -22,7 +22,13 @@ namespace sente {
         WHITE
     };
 
-    typedef std::pair<unsigned, unsigned> Point;
+    struct Vertex{
+
+        Vertex(unsigned first, unsigned second);
+
+        unsigned first;
+        unsigned second;
+    };
 
     Stone getOpponent(Stone player);
 
@@ -57,7 +63,7 @@ namespace sente {
         bool operator==(const Move& other) const;
         bool operator!=(const Move& other) const;
 
-        std::vector<std::pair<int, int>> getAdjacentMoves(unsigned boardSize) const;
+        std::vector<Vertex> getAdjacentMoves(unsigned boardSize) const;
 
         explicit operator std::string() const;
 
