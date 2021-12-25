@@ -324,8 +324,33 @@ class CustomGTPCommands(TestCase):
 
         engine = CustomGTPTester()
 
-        self.assertEqual("= B E5\n\n", engine.interpret("genmove B"))
+        engine.interpret("boardsize 9")
 
+        self.assertEqual("= B E5\n\n", )
+
+    def test_gen_move_plays_move(self):
+        """
+
+        tests to see if the genmove command plays the move that it generates
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        engine.interpret("boardsize 9")
+        engine.interpret("genmove B")
+
+        self.assertEqual(" 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  X  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
 
 class InterpreterSyntaxChecking(TestCase):
 

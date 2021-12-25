@@ -311,6 +311,7 @@ namespace sente::GTP {
         }
     }
 
+    // TODO: re-implement registration with decorators instead of this
     void Engine::pyRegisterCommand(const py::function& function, const py::module_ &inspect) {
 
         // obtain a reference to the function
