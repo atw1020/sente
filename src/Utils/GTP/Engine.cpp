@@ -22,7 +22,7 @@ namespace sente::GTP {
             {"quit", {{&quit, {{"operation", STRING}}}}},
             {"exit", {{&quit, {{"operation", STRING}}}}},
             {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
-            {"clearboard", {{&clearBoard, {{"operation", STRING}}}}},
+            {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
             {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
             {"play", {{&play, {{"operation", STRING}, {"move", MOVE}}}}},
             {"undo", {{&undoOnce, {{"operation", STRING}}},

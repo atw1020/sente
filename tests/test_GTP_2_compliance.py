@@ -83,7 +83,7 @@ class MinimumGTPCommands(TestCase):
         self.assertEqual("= true\n\n", engine.interpret("known_command list_commands\n"))
         self.assertEqual("= true\n\n", engine.interpret("known_command quit\n"))
         self.assertEqual("= true\n\n", engine.interpret("known_command boardsize\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command clearboard\n"))
+        self.assertEqual("= true\n\n", engine.interpret("known_command clear_board\n"))
         self.assertEqual("= true\n\n", engine.interpret("known_command komi\n"))
         self.assertEqual("= true\n\n", engine.interpret("known_command play\n"))
         self.assertEqual("= true\n\n", engine.interpret("known_command genmove\n"))
@@ -122,7 +122,7 @@ class MinimumGTPCommands(TestCase):
         self.assertIn("list_commands", commands)
         self.assertIn("quit", commands)
         self.assertIn("boardsize", commands)
-        self.assertIn("clearboard", commands)
+        self.assertIn("clear_board", commands)
         self.assertIn("komi", commands)
         self.assertIn("play", commands)
         self.assertIn("genmove", commands)
@@ -211,6 +211,32 @@ class MinimumGTPCommands(TestCase):
 
         with self.assertRaises(RuntimeError):
             engine.interpret("genmove B")
+
+    def test_clear_board(self):
+        """
+
+        checks that the clear board command is working
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        engine.interpret("boardsize 9")
+        engine.interpret("play B D4")
+        engine.interpret("clear_board")
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
 
 
 class ErrorMessages(TestCase):
