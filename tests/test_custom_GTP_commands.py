@@ -40,6 +40,10 @@ class CustomGTPTester(gtp.Engine):
         # register genmove
         self.register_command(self.genmove)
 
+        # other tests
+        self.register_command(self.letter_i_skipped_vertex)
+        self.register_command(self.letter_i_skipped_move)
+
     def echo(self, text: str):
         return True, text
 
@@ -90,6 +94,12 @@ class CustomGTPTester(gtp.Engine):
 
     def genmove(self, stone: sente.stone):
         return sente.Move(4, 4, sente.stone.BLACK)
+
+    def letter_i_skipped_vertex(self):
+        return sente.Vertex(8, 8)
+
+    def letter_i_skipped_move(self):
+        return sente.Move(8, 8, sente.stone.BLACK)
 
 
 class CustomGTPCommands(TestCase):
@@ -345,6 +355,30 @@ class InterpreterSyntaxChecking(TestCase):
 
         self.assertEqual("? invalid number of arguments for command \"test-echo\"; expected 1, got 5\n\n",
                          engine.interpret("test-echo in the world of silence"))
+
+    def test_letter_i_skipped_vertex(self):
+        """
+
+        makes sure that vertex responses can't
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= J9\n\n", engine.interpret("test-letter_i_skipped_vertex"))
+
+    def test_letter_i_skipped_move(self):
+        """
+
+        makes sure that move responses skip the letter i
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= B J9\n\n", engine.interpret("test-letter_i_skipped_move"))
 
 
 class InvalidRegistration(gtp.Engine):

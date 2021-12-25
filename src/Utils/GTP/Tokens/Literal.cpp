@@ -61,8 +61,11 @@ namespace sente::GTP {
         if (vertex[0] < 'I'){
             x = vertex[0] - 'A';
         }
-        else {
+        else if (vertex[0] > 'I'){
             x = vertex[0] - 'B';
+        }
+        else {
+            throw std::runtime_error("GTP co-ordinates cannot use the letter 'I'");
         }
 
         auto temp = std::string(vertex.begin() + 1, vertex.end());

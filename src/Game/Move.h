@@ -22,6 +22,7 @@ namespace sente {
         WHITE
     };
 
+    // TODO add tests for Vertex
     struct Vertex{
 
         Vertex(unsigned first, unsigned second);

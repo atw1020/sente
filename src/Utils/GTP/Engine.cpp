@@ -69,8 +69,17 @@ namespace sente::GTP {
             // cast to a point
             sente::Vertex* vertex = object.cast<sente::Vertex*>();
 
-            // compute the co-ords
-            char first = 'A' + vertex->first;
+            char first;
+
+            // determine the letter
+            if (vertex->first + 'A' < 'I'){
+                first = 'A' + vertex->first;
+            }
+            else {
+                first = 'B' + vertex->first;
+            }
+
+            // add the letter to the second co-ord
             std::string message = std::to_string(vertex->second + 1);
             message.insert(message.begin(), first);
 
@@ -88,8 +97,17 @@ namespace sente::GTP {
             // cast to a move
             auto* move = object.cast<sente::Move*>();
 
-            // convert the point to a string
-            char first = 'A' + move->getX();
+            char first;
+
+            // determine the letter
+            if (move->getX() + 'A' < 'I'){
+                first = 'A' + move->getX();
+            }
+            else {
+                first = 'B' + move->getX();
+            }
+
+            // add the letter to the second co-ord
             std::string pointMessage = std::to_string(move->getY() + 1);
             pointMessage.insert(pointMessage.begin(), first);
 

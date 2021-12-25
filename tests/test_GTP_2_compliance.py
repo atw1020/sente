@@ -349,6 +349,57 @@ class OtherCompliance(TestCase):
                          " 1  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
 
+    def test_I_cutoff(self):
+        """
+
+        makes sure that the offset of one letter is
+
+        :return:
+        """
+
+        engine = gtp.Engine()
+
+        engine.interpret("boardsize 9")
+        engine.interpret("play B H8")
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  X  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+
+        engine.interpret("play W J9")
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  O \n"
+                         " 8  .  .  .  .  .  .  .  X  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  .  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+
+    def test_I_co_ord_invalid(self):
+        """
+
+        makes sure the interpreter fails when it receives a co-ordinate with an I in it
+
+        """
+
+        engine = gtp.Engine()
+
+        with self.assertRaises(RuntimeError):
+            engine.interpret("play B I9")
+
     def test_comments(self):
         """
 
