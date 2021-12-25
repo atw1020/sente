@@ -98,7 +98,7 @@ namespace sente::GTP {
     Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) self;
         (void) arguments;
-        return {false, "cannot generate move; no engine bound to generate move"};
+        throw std::runtime_error("genmove has not been implemented by this engine, please register a valid function");
     }
     Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;

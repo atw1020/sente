@@ -705,6 +705,9 @@ PYBIND11_MODULE(sente, module){
             .def("active", [](const sente::GTP::Engine& engine){
                 return engine.isActive();
             })
+            .def("genmove", [](){
+                return py::none();
+            })
             // .def_readwrite("game", &sente::GTP::Engine::scratchGame)
             .def_property("name", &sente::GTP::Engine::getEngineName, &sente::GTP::Engine::setEngineName);
 

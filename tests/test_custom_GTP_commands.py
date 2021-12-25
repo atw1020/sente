@@ -37,6 +37,9 @@ class CustomGTPTester(gtp.Engine):
         self.register_command(self.return_move)
         self.register_command(self.return_bool)
 
+        # register genmove
+        self.register_command(self.genmove)
+
     def echo(self, text: str):
         return True, text
 
@@ -84,6 +87,9 @@ class CustomGTPTester(gtp.Engine):
 
     def return_bool(self):
         return False
+
+    def genmove(self, stone: sente.stone):
+        return sente.Move(4, 4, sente.stone.BLACK)
 
 
 class CustomGTPCommands(TestCase):
@@ -297,6 +303,18 @@ class CustomGTPCommands(TestCase):
         engine = CustomGTPTester()
 
         self.assertEqual("= false\n\n", engine.interpret("test-return_bool"))
+
+    def test_gen_move_override(self):
+        """
+
+        checks to see if we can override the genmove function
+
+        :return:
+        """
+
+        engine = CustomGTPTester()
+
+        self.assertEqual("= B E5\n\n", engine.interpret("genmove B"))
 
 
 class InterpreterSyntaxChecking(TestCase):

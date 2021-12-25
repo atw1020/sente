@@ -261,12 +261,28 @@ namespace sente::GTP {
             bool found = false;
 
             for (auto& command : commands[commandName]){
-                if (command.second == argumentPattern){
-                    // overwrite the old method
-                    command.first = method;
-                    // say we've found the correct result and break
-                    found = true;
-                    break;
+
+                // only check if the arguments have the same size
+                if (command.second.size() == argumentPattern.size()){
+
+                    // check to see if all the arguments match
+                    bool argumentsMatch = true;
+
+                    for (unsigned i = 0; i < command.second.size(); i++){
+                        if (command.second[i].second != argumentPattern[i].second){
+                            argumentsMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (argumentsMatch){
+                        // set the method
+                        command.first = method;
+
+                        // exit the function
+                        found = true;
+                        break;
+                    }
                 }
             }
 
@@ -444,8 +460,12 @@ namespace sente::GTP {
             return {status, gtpTypeToString(response)};
         };
 
+        if (name != "genmove"){
+            name = engineName + "-" + name;
+        }
+
         // register the command with the engine
-        registerCommand(engineName + "-" + name, wrapper, argumentPattern);
+        registerCommand(name, wrapper, argumentPattern);
     }
 
     std::string Engine::getEngineName() const {

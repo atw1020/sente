@@ -209,7 +209,8 @@ class MinimumGTPCommands(TestCase):
 
         engine = gtp.Engine()
 
-        self.assertEqual("? cannot generate move; no engine bound to generate move\n\n", engine.interpret("genmove B"))
+        with self.assertRaises(RuntimeError):
+            engine.interpret("genmove B")
 
 
 class ErrorMessages(TestCase):
