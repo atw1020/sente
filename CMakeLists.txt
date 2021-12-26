@@ -32,4 +32,4 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Game/Group.h src
                     src/Utils/GTP/Parser.h src/Utils/GTP/Parser.cpp
                     src/Utils/GTP/Operators.h src/Utils/GTP/Operators.cpp
                     src/Utils/GTP/Controller.h src/Utils/GTP/Controller.cpp
-                    src/Utils/GTP/Engine.h src/Utils/GTP/Engine.cpp)
+        src/Utils/GTP/Interpreter.h src/Utils/GTP/Interpreter.cpp)

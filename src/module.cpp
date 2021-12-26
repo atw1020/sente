@@ -13,7 +13,7 @@
 #include "Game/GoGame.h"
 #include "Utils/Numpy.h"
 #include "Utils/SenteExceptions.h"
-#include "Utils/GTP/Engine.h"
+#include "Utils/GTP/Interpreter.h"
 
 namespace py = pybind11;
 
@@ -690,38 +690,39 @@ PYBIND11_MODULE(sente, module){
 
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
 
+    // gtp.def("Engine")
 
-    gtp.def("Command", [inspect, typing](const py::function& function){
+    gtp.def("Command", [inspect, typing](py::function& function){
         py::print("entering decorator");
-        return sente::GTP::Engine::registerCommand(function, inspect, typing);
+        return sente::GTP::commandDecorator(function, inspect, typing);
     });
 
-    py::class_<sente::GTP::Engine>(gtp, "Engine")
+    py::class_<sente::GTP::Interpreter>(gtp, "Interpreter")
             .def(py::init<std::string, std::string>(),
                     py::arg("engine_version") = "unimplemented_engine",
                     py::arg("engine_version") = "0.0.0")
-            .def("interpret", &sente::GTP::Engine::interpret)
-            .def("get_current_sequence", [](sente::GTP::Engine& engine){
+            .def("interpret", &sente::GTP::Interpreter::interpret)
+            .def("get_current_sequence", [](sente::GTP::Interpreter& engine){
                 return engine.masterGame.getMoveSequence();
             })
             /*
-            .def("register_command", [inspect](sente::GTP::Engine& engine, const py::function& function){
+            .def("register_command", [inspect](sente::GTP::Interpreter& engine, const py::function& function){
                 engine.pyRegisterCommand(function, inspect);
             })
              */
             .def("register_commands", [](py::object& self){
                 py::print(self.attr("__class__").attr("__qualname__"));
             })
-            .def("get_sequence", [](sente::GTP::Engine& engine){
+            .def("get_sequence", [](sente::GTP::Interpreter& engine){
                 return engine.masterGame.getMoveSequence();
             })
-            .def("active", [](const sente::GTP::Engine& engine){
+            .def("active", [](const sente::GTP::Interpreter& engine){
                 return engine.isActive();
             })
             .def("genmove", [](){
                 return py::none();
             })
-            // .def_readwrite("game", &sente::GTP::Engine::scratchGame)
-            .def_property("name", &sente::GTP::Engine::getEngineName, &sente::GTP::Engine::setEngineName);
+            // .def_readwrite("game", &sente::GTP::Interpreter::scratchGame)
+            .def_property("name", &sente::GTP::Interpreter::getEngineName, &sente::GTP::Interpreter::setEngineName);
 
 }

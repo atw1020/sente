@@ -2,8 +2,8 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#ifndef SENTE_ENGINE_H
-#define SENTE_ENGINE_H
+#ifndef SENTE_INTERPRETER_H
+#define SENTE_INTERPRETER_H
 
 #include "Parser.h"
 
@@ -16,19 +16,23 @@
 
 namespace sente::GTP {
 
-    class Engine;
+    class Interpreter;
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, LiteralType> ArgumentPattern;
-    typedef std::function<Response (Engine* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
+    typedef std::function<Response (Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
 
-    class Engine {
+    py::object& engineDecorator(py::object& engine);
+    py::function& commandDecorator(py::function& function, const py::module_& inspect,
+                                   const py::module_& typing);
+
+    class Interpreter {
     public:
 
         GoGame masterGame; // the game object that the GTP edits
         // GoGame scratchGame; // a game that the engine can play on and experiment with variations on
 
-        Engine(const std::string& engineName, const std::string& engineVersion);
+        Interpreter(const std::string& engineName, const std::string& engineVersion);
 
         // GTP interpreter
         std::string interpret(std::string text);
@@ -60,14 +64,6 @@ namespace sente::GTP {
         // for resting the game
         void setGTPDisplayFlags();
 
-        ///
-        /// static methods
-        ///
-
-        const static py::function& registerCommand(const py::function& function, const py::module_& inspect,
-                                             const py::module_& typing);
-
-
     private:
 
         bool active = true;
@@ -98,4 +94,4 @@ namespace sente::GTP {
 }
 
 
-#endif //SENTE_ENGINE_H
+#endif //SENTE_INTERPRETER_H

@@ -2,7 +2,7 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#include "Engine.h"
+#include "Interpreter.h"
 
 #include <set>
 #include <utility>
@@ -125,7 +125,107 @@ namespace sente::GTP {
 
     }
 
-    Engine::Engine(const std::string& engineName, const std::string& engineVersion)
+    py::function& commandDecorator(py::function& function, const py::module_& inspect,
+                                           const py::module_& typing) {
+
+        // get some attributes some the function
+        // TODO: replace dunder implementation with non-implementation dependent calls
+        std::string name = py::str(function.attr("__name__"));
+        std::string qualName = py::str(function.attr("__qualname__"));
+        auto annotations = function.attr("__annotations__");
+
+        // obtain the argument names
+        py::list argumentNames = py::list(inspect.attr("getfullargspec")(function).attr("args"));
+
+        // make sure that we are working with a method and not a function
+        if (qualName.find('.') == std::string::npos or std::string(py::str(argumentNames[0])) != "self"){
+            throw py::value_error("Custom GTP command \"" + name + "\" is not a method (i.e. it dose not belong "
+                                                                   "to a class). custom GTP commands must be methods");
+        }
+
+        // make sure the arguments are all have a valid type listed
+        for (const auto& argument : argumentNames) {
+
+            // skip this strict type checking for the self argument
+            if (std::string(py::str(argument)) == "self"){
+                continue;
+            }
+
+            // throw an error if the argument doesn't have a type annotation
+            if (not annotations.contains(argument)){
+                throw py::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +
+                                      std::string(py::str(argument))
+                                      + "\" (custom GTP commands must be strongly typed)");
+            }
+
+            py::print("checking to see if the type was valid");
+            // throw an error if the argument's type is invalid
+            if (not isGTPType(annotations[argument])){
+                throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
+                                     + name + " \"has invalid type \"" + std::string(py::str(annotations[argument]))
+                                     + "\".");
+            }
+        }
+
+        if (not annotations.contains("return")) {
+            throw py::value_error("Custom GTP command \"" + name + "\" has no specified return type "
+                                                                   "(custom GTP commands must be strongly typed)");
+        }
+
+        // check the return type
+        py::object returnType = annotations["return"];
+
+        auto returnTypeOptions = py::list();
+
+        // check if the return type is a union
+        if (typing.attr("get_origin")(returnType).is(typing.attr("Union"))){
+            // if it is, put all the types into the options
+            returnTypeOptions = returnType.attr("__args__");
+        }
+        else {
+            returnTypeOptions = {returnType};
+        }
+
+        // go through all the type options and make sure that they are all satisfactory
+        for (unsigned i = 0; i < returnTypeOptions.size(); i++){
+
+            py::type option = returnTypeOptions[i];
+
+            // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
+            if (typing.attr("get_origin")(option).is(py::type::of(py::tuple()))){
+
+                auto types = py::tuple(typing.attr("get_args")(option));
+
+                // make sure that the tuple contains exactly two elements
+                if (types.size() != 2){
+                    throw py::value_error("Custom GTP command returns invalid response; "
+                                          "expected two items, got " + std::to_string(types.size()));
+                }
+
+                // make sure that the first argument is a bool
+                if (not py::type(types[0]).is(py::type::of(py::bool_()))){
+                    throw py::type_error("Custom GTP command returns invalid response in position 1, "
+                                         "expected bool, got " + std::string(py::str(types[0])));
+                }
+
+                // if it's valid, set the option to be the second elemnt of the tuple
+                option = py::tuple(typing.attr("get_args")(option))[1];
+            }
+
+            // throw an exception if the option is invalid
+            if (not isGTPType(option)){
+                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
+                                           "type, got " + std::string(py::str(py::type::of(returnType))));
+            }
+        }
+
+        // mark the command as a valid gtp command
+        function.attr("_sente_gtp_command") = true;
+
+        return function;
+    }
+
+    Interpreter::Interpreter(const std::string& engineName, const std::string& engineVersion)
         : masterGame(19, CHINESE, determineKomi(CHINESE)){
         setEngineName(engineName);
         setEngineVersion(engineVersion);
@@ -144,9 +244,9 @@ namespace sente::GTP {
         py::object self = py::cast(this);
     }
 
-    auto Engine::globalCommands = std::unordered_map<std::string, std::vector<py::function>>();
+    auto Interpreter::globalCommands = std::unordered_map<std::string, std::vector<py::function>>();
 
-    std::string Engine::interpret(std::string text) {
+    std::string Interpreter::interpret(std::string text) {
 
         text = preprocess(text);
         auto tokens = parse(text);
@@ -269,8 +369,8 @@ namespace sente::GTP {
         return outputStream.str();
     }
 
-    void Engine::registerCommand(const std::string& commandName, CommandMethod method,
-                                 std::vector<ArgumentPattern> argumentPattern){
+    void Interpreter::registerCommand(const std::string& commandName, CommandMethod method,
+                                      std::vector<ArgumentPattern> argumentPattern){
 
         // raise an exception if the command is non-modifiable
         if (builtins.find(commandName) != builtins.end()){
@@ -319,7 +419,7 @@ namespace sente::GTP {
     }
 
     // TODO: re-implement registration with decorators instead of this
-    void Engine::pyRegisterCommand(const py::function& function, const py::module_& inspect) {
+    void Interpreter::pyRegisterCommand(const py::function& function, const py::module_& inspect) {
 
         // obtain a reference to the function
         // function.inc_ref();
@@ -377,7 +477,7 @@ namespace sente::GTP {
 
         // define the custom command using a lambda
 
-        CommandMethod wrapper = [function](Engine* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function](Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
             // the self argument is automatically passed by python
@@ -494,16 +594,11 @@ namespace sente::GTP {
         registerCommand(name, wrapper, argumentPattern);
     }
 
-    void Engine::registerCommands(const std::string &qualName) {
-        // register all the commands associated with this qualName
-        for (const auto& )
-    }
-
-    std::string Engine::getEngineName() const {
+    std::string Interpreter::getEngineName() const {
         return engineName;
     }
 
-    void Engine::setEngineName(std::string name){
+    void Interpreter::setEngineName(std::string name){
         if (name.find(' ') != std::string::npos){
             throw py::value_error("engine name \"" + name + "\"contains invalid character ' ' in position " +
                                   std::to_string(name.find(' ')) + ".");
@@ -515,158 +610,51 @@ namespace sente::GTP {
         engineName = name;
     }
 
-    std::string Engine::getEngineVersion() const {
+    std::string Interpreter::getEngineVersion() const {
         return engineVersion;
     }
 
-    void Engine::setEngineVersion(std::string version){
+    void Interpreter::setEngineVersion(std::string version){
         engineVersion = std::move(version);
     }
 
     std::unordered_map<std::string, std::vector<std::pair<CommandMethod,
-            std::vector<ArgumentPattern>>>> Engine::getCommands() const {
+            std::vector<ArgumentPattern>>>> Interpreter::getCommands() const {
         return commands;
     }
 
-    bool Engine::isActive() const {
+    bool Interpreter::isActive() const {
         return active;
     }
 
-    void Engine::setActive(bool active) {
+    void Interpreter::setActive(bool active) {
         this->active = active;
     }
 
-    void Engine::setGTPDisplayFlags() {
+    void Interpreter::setGTPDisplayFlags() {
         // flip the co-ordinate label for the board
         masterGame.setASCIIMode(true);
         masterGame.setLowerLeftCornerCoOrdinates(true);
     }
 
-    const py::function& Engine::registerCommand(const py::function& function, const py::module_& inspect,
-                                                const py::module_& typing) {
-
-        // get some attributes some the function
-        // TODO: replace dunder implementation with non-implementation dependent calls
-        std::string name = py::str(function.attr("__name__"));
-        std::string qualName = py::str(function.attr("__qualname__"));
-        auto annotations = function.attr("__annotations__");
-
-        // obtain the argument names
-        py::list argumentNames = py::list(inspect.attr("getfullargspec")(function).attr("args"));
-
-        // make sure that we are working with a method and not a function
-        if (qualName.find('.') == std::string::npos or std::string(py::str(argumentNames[0])) != "self"){
-            throw py::value_error("Custom GTP command \"" + name + "\" is not a method (i.e. it dose not belong "
-                                                                   "to a class). custom GTP commands must be methods");
-        }
-
-        // make sure the arguments are all have a valid type listed
-        for (const auto& argument : argumentNames) {
-
-            // skip this strict type checking for the self argument
-            if (std::string(py::str(argument)) == "self"){
-                continue;
-            }
-
-            // throw an error if the argument doesn't have a type annotation
-            if (not annotations.contains(argument)){
-                throw py::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +
-                                      std::string(py::str(argument))
-                                      + "\" (custom GTP commands must be strongly typed)");
-            }
-
-            py::print("checking to see if the type was valid");
-            // throw an error if the argument's type is invalid
-            if (not isGTPType(annotations[argument])){
-                throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
-                                     + name + " \"has invalid type \"" + std::string(py::str(annotations[argument]))
-                                     + "\".");
-            }
-        }
-
-        if (not annotations.contains("return")) {
-            throw py::value_error("Custom GTP command \"" + name + "\" has no specified return type "
-                                  "(custom GTP commands must be strongly typed)");
-        }
-
-        // check the return type
-        py::object returnType = annotations["return"];
-
-        auto returnTypeOptions = py::list();
-
-        // check if the return type is a union
-        if (typing.attr("get_origin")(returnType).is(typing.attr("Union"))){
-            // if it is, put all the types into the options
-            returnTypeOptions = returnType.attr("__args__");
-        }
-        else {
-            returnTypeOptions = {returnType};
-        }
-
-        // go through all the type options and make sure that they are all satisfactory
-        for (unsigned i = 0; i < returnTypeOptions.size(); i++){
-
-            auto option = returnTypeOptions[i];
-
-            // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
-            if (typing.attr("get_origin")(option).is(py::type::of(py::tuple()))){
-
-                auto types = py::tuple(typing.attr("get_args")(option));
-
-                // make sure that the tuple contains exactly two elements
-                if (types.size() != 2){
-                    throw py::value_error("Custom GTP command returns invalid response; "
-                                          "expected two items, got " + std::to_string(types.size()));
-                }
-
-                // make sure that the first argument is a bool
-                if (not py::type(types[0]).is(py::type::of(py::bool_()))){
-                    throw py::type_error("Custom GTP command returns invalid response in position 1, "
-                                         "expected bool, got " + std::string(py::str(types[0])));
-                }
-
-                // if it's valid, set the option to be the second elemnt of the tuple
-                option = py::tuple(typing.attr("get_args")(option))[1];
-            }
-
-            // throw an exception if the option is invalid
-            if (not isGTPType(option)){
-                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
-                                           "type, got " + std::string(py::str(py::type::of(returnType))));
-            }
-        }
-
-        qualName = std::string(qualName.begin(), qualName.begin() + qualName.rfind("."));
-
-        // we've conformed that the function's arguments and return type are valid, so we can register it
-        if (globalCommands.find(qualName) == globalCommands.end()){
-            globalCommands[qualName] = {function};
-        }
-        else {
-            globalCommands[qualName].push_back(function);
-        }
-
-        return function;
-    }
-
-    std::string Engine::errorMessage(const std::string& message) {
+    std::string Interpreter::errorMessage(const std::string& message) {
         return "? " + message + "\n\n";
     }
 
-    std::string Engine::errorMessage(const std::string &message, unsigned id) {
+    std::string Interpreter::errorMessage(const std::string &message, unsigned id) {
         return "?" + std::to_string(id) + " " + message + "\n\n";
     }
 
-    std::string Engine::statusMessage(const std::string &message) {
+    std::string Interpreter::statusMessage(const std::string &message) {
         return "= " + message + "\n\n";
     }
 
-    std::string Engine::statusMessage(const std::string &message, unsigned id) {
+    std::string Interpreter::statusMessage(const std::string &message, unsigned id) {
         return "=" + std::to_string(id) + " " + message + "\n\n";
     }
 
-    bool Engine::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
-                                const std::vector<std::shared_ptr<Token>> &arguments) {
+    bool Interpreter::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
+                                     const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
             return false;
@@ -685,8 +673,8 @@ namespace sente::GTP {
 
     }
 
-    Response Engine::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
-                                                  const std::vector<std::shared_ptr<Token>> &arguments) {
+    Response Interpreter::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
+                                                       const std::vector<std::shared_ptr<Token>> &arguments) {
 
         std::stringstream message;
 
@@ -746,7 +734,7 @@ namespace sente::GTP {
 
     }
 
-    Response Engine::execute(const std::string &command, const std::vector<std::shared_ptr<Token>> &arguments) {
+    Response Interpreter::execute(const std::string &command, const std::vector<std::shared_ptr<Token>> &arguments) {
 
         // generate a list of possible argument patterns
         std::vector<std::vector<ArgumentPattern>> patterns;

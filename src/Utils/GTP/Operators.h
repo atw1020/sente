@@ -5,27 +5,27 @@
 #ifndef SENTE_OPERATORS_H
 #define SENTE_OPERATORS_H
 
-#include "Engine.h"
+#include "Interpreter.h"
 
 namespace sente::GTP {
 
-    Response protocolVersion(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response name(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response version(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response knownCommand(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response listCommands(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response quit(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response boardSize(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response clearBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response komi(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response play(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response genMove(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response showBoard(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response protocolVersion(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response name(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response version(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response knownCommand(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response listCommands(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response quit(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response boardSize(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response clearBoard(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response komi(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response play(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response genMove(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response showBoard(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
-    Response undoOnce(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response undoMultiple(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response loadSGF1(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response loadSGF2(Engine* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response undoOnce(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response undoMultiple(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response loadSGF1(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response loadSGF2(Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
 }
 
