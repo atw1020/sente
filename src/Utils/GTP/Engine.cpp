@@ -44,13 +44,15 @@ namespace sente::GTP {
 
     bool isGTPType(const py::type& type){
 
-        return type.is(py::type::of(py::int_())) or
-               type.is(py::type::of<Vertex>()) or
-               type.is(py::type::of(py::str())) or
-               type.is(py::type::of<Stone>()) or
-               type.is(py::type::of(py::float_())) or
-               type.is(py::type::of<sente::Move>()) or
-               type.is(py::type::of(py::bool_()));
+        bool result = type.is(py::type::of(py::int_())) or
+                      type.is(py::type::of(py::cast(sente::Vertex(0, 0)))) or
+                      type.is(py::type::of(py::str())) or
+                      type.is(py::type::of(py::cast(Stone::BLACK))) or
+                      type.is(py::type::of(py::float_())) or
+                      type.is(py::type::of(py::cast(sente::Move(0, 0, Stone::BLACK)))) or
+                      type.is(py::type::of(py::bool_()));
+
+        return result;
     }
 
     std::string gtpTypeToString(py::object object){
@@ -531,8 +533,10 @@ namespace sente::GTP {
         masterGame.setLowerLeftCornerCoOrdinates(true);
     }
 
-    py::function& Engine::registerCommand(py::function& function, const py::module_& inspect,
+    const py::function& Engine::registerCommand(const py::function& function, const py::module_& inspect,
                                           const py::module_& typing) {
+
+        py::print("entering register command...");
 
         // get some attributes some the function
         // TODO: replace dunder implementation with non-implementation dependent calls
@@ -542,7 +546,6 @@ namespace sente::GTP {
 
         // obtain the argument names
         py::list argumentNames = py::list(inspect.attr("getfullargspec")(function).attr("args"));
-        std::vector<ArgumentPattern> argumentPattern;
 
         // make sure that we are working with a method and not a function
         if (qualName.find('.') == std::string::npos or std::string(py::str(argumentNames[0])) != "self"){
@@ -553,6 +556,11 @@ namespace sente::GTP {
         // make sure the arguments are all have a valid type listed
         for (const auto& argument : argumentNames) {
 
+            // skip this strict type checking for the self argument
+            if (std::string(py::str(argument)) == "self"){
+                continue;
+            }
+
             // throw an error if the argument doesn't have a type annotation
             if (not annotations.contains(argument)){
                 throw py::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +
@@ -560,6 +568,7 @@ namespace sente::GTP {
                                       + "\" (custom GTP commands must be strongly typed)");
             }
 
+            py::print("checking to see if the type was valid");
             // throw an error if the argument's type is invalid
             if (not isGTPType(annotations[argument])){
                 throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
@@ -567,6 +576,8 @@ namespace sente::GTP {
                                      + "\".");
             }
         }
+
+        py::print("checking return type");
 
         if (not annotations.contains("return")) {
             throw py::value_error("Custom GTP command \"" + name + "\" has no specified return type "
@@ -613,6 +624,8 @@ namespace sente::GTP {
         else {
             globalCommands[name].push_back(function);
         }
+
+        py::print("command registered!");
 
         return function;
     }

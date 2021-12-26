@@ -3,7 +3,7 @@
 Author: Arthur Wesley
 
 """
-import inspect
+import typing
 
 import sente
 from sente import gtp
@@ -11,13 +11,8 @@ from sente import gtp
 
 class OctopusGarden(gtp.Engine):
 
-    def __init__(self):
-        super().__init__("Ceph")
-        print(inspect.getfullargspec(self.echo))
-        self.register_command(self.echo)
-        self.register_command(self.fnord)
-
-    def echo(self, text: str):
+    @gtp.Command
+    def echo(self, text: str) -> typing.Tuple[bool, str]:
         return True, text
 
     def fnord(self, fjord: float):
@@ -32,11 +27,13 @@ def main():
     :return:
     """
 
-    ceph = OctopusGarden()
+    print("hello world!")
+
+    """ceph = OctopusGarden()
 
     while ceph.active():
         response = ceph.interpret(input(">> "))
-        print(response, end="")
+        print(response, end="")"""
 
 
 if __name__ == "__main__":

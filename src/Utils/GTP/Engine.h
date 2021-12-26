@@ -63,7 +63,7 @@ namespace sente::GTP {
         /// static methods
         ///
 
-        static py::function& registerCommand(py::function& function, const py::module_& inspect,
+        const static py::function& registerCommand(const py::function& function, const py::module_& inspect,
                                              const py::module_& typing);
 
 

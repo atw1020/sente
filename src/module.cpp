@@ -690,9 +690,10 @@ PYBIND11_MODULE(sente, module){
 
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
 
-    gtp.attr("Response") = typing.attr("namedtuple")("Response", std::vector<std::tuple<std::string, py::type>>{
-            {"status", py::type::of(py::bool_())},
-            {"value", py::type::of(py::object())}
+
+    gtp.def("Command", [inspect, typing](const py::function& function){
+        py::print("entering decorator");
+        return sente::GTP::Engine::registerCommand(function, inspect, typing);
     });
 
     py::class_<sente::GTP::Engine>(gtp, "Engine")
