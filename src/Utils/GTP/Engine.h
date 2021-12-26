@@ -59,6 +59,13 @@ namespace sente::GTP {
         // for resting the game
         void setGTPDisplayFlags();
 
+        ///
+        /// static methods
+        ///
+
+        static py::function& registerCommand(py::function& function, const py::module_& inspect,
+                                             const py::module_& typing);
+
 
     private:
 
@@ -83,6 +90,8 @@ namespace sente::GTP {
                                    const std::vector<std::shared_ptr<Token>>& arguments);
         static Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments);
+
+        static std::unordered_map<std::string, std::vector<py::function>> globalCommands;
 
     };
 }

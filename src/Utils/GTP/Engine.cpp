@@ -42,15 +42,15 @@ namespace sente::GTP {
             {"bool", BOOLEAN}
     };
 
-    bool isGTPType(py::object object){
+    bool isGTPType(const py::type& type){
 
-        return py::isinstance<py::int_>(object) or
-               py::isinstance<sente::Vertex>(object) or
-               py::isinstance<py::str>(object) or
-               py::isinstance<Stone>(object) or
-               py::isinstance<py::float_>(object) or
-               py::isinstance<sente::Move>(object) or
-               py::isinstance<py::bool_>(object);
+        return type.is(py::type::of(py::int_())) or
+               type.is(py::type::of<Vertex>()) or
+               type.is(py::type::of(py::str())) or
+               type.is(py::type::of<Stone>()) or
+               type.is(py::type::of(py::float_())) or
+               type.is(py::type::of<sente::Move>()) or
+               type.is(py::type::of(py::bool_()));
     }
 
     std::string gtpTypeToString(py::object object){
@@ -312,7 +312,7 @@ namespace sente::GTP {
     }
 
     // TODO: re-implement registration with decorators instead of this
-    void Engine::pyRegisterCommand(const py::function& function, const py::module_ &inspect) {
+    void Engine::pyRegisterCommand(const py::function& function, const py::module_& inspect) {
 
         // obtain a reference to the function
         // function.inc_ref();
@@ -399,6 +399,7 @@ namespace sente::GTP {
                         break;
                     case VERTEX:
                         vertex = (Vertex*) literal;
+                        // TODO: fix this
                         pyArgs.append(py::make_tuple(vertex->getX(), vertex->getY()));
                         break;
                     case STRING:
@@ -528,6 +529,92 @@ namespace sente::GTP {
         // flip the co-ordinate label for the board
         masterGame.setASCIIMode(true);
         masterGame.setLowerLeftCornerCoOrdinates(true);
+    }
+
+    py::function& Engine::registerCommand(py::function& function, const py::module_& inspect,
+                                          const py::module_& typing) {
+
+        // get some attributes some the function
+        // TODO: replace dunder implementation with non-implementation dependent calls
+        std::string name = py::str(function.attr("__name__"));
+        std::string qualName = py::str(function.attr("__qualname__"));
+        auto annotations = function.attr("__annotations__");
+
+        // obtain the argument names
+        py::list argumentNames = py::list(inspect.attr("getfullargspec")(function).attr("args"));
+        std::vector<ArgumentPattern> argumentPattern;
+
+        // make sure that we are working with a method and not a function
+        if (qualName.find('.') == std::string::npos or std::string(py::str(argumentNames[0])) != "self"){
+            throw py::value_error("Custom GTP command \"" + name + "\" is not a method (i.e. it dose not belong "
+                                                                   "to a class). custom GTP commands must be methods");
+        }
+
+        // make sure the arguments are all have a valid type listed
+        for (const auto& argument : argumentNames) {
+
+            // throw an error if the argument doesn't have a type annotation
+            if (not annotations.contains(argument)){
+                throw py::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +
+                                      std::string(py::str(argument))
+                                      + "\" (custom GTP commands must be strongly typed)");
+            }
+
+            // throw an error if the argument's type is invalid
+            if (not isGTPType(annotations[argument])){
+                throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
+                                     + name + " \"has invalid type \"" + std::string(py::str(annotations[argument]))
+                                     + "\".");
+            }
+        }
+
+        if (not annotations.contains("return")) {
+            throw py::value_error("Custom GTP command \"" + name + "\" has no specified return type "
+                                  "(custom GTP commands must be strongly typed)");
+        }
+
+        // check the return type
+        py::type returnType = annotations["return"];
+
+        auto returnTypeOptions = py::list();
+
+        // check if the return type is a union
+        if (returnType.is(typing.attr("Union"))){
+            // if it is, put all the types into the options
+            returnTypeOptions = returnType.attr("__args__")();
+        }
+        else {
+            returnTypeOptions = {returnType};
+        }
+
+        auto responseTuple = typing.attr("Tuple")[py::type::of(py::bool_()), py::type::of(py::object())];
+
+        // go through all the type options and make sure that they are all satisfactory
+        for (unsigned i = 0; i < returnTypeOptions.size(); i++){
+
+            py::type option = returnTypeOptions[i];
+
+            // if we do have a tuple, set the "option" to be the type of the second item of the tuple
+            if (py::isinstance(option, responseTuple)){
+                option = py::tuple(typing.attr("get_args")(returnType))[1];
+            }
+
+            // throw an exception if the option is invalid
+            if (not isGTPType(option)){
+                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
+                                           "type, got " + std::string(py::str(py::type::of(returnType))));
+            }
+        }
+
+        // we've conformed that the function's arguments and return type are valid, so we can register it
+        if (globalCommands.find(name) == globalCommands.end()){
+            globalCommands[name] = {function};
+        }
+        else {
+            globalCommands[name].push_back(function);
+        }
+
+        return function;
     }
 
     std::string Engine::errorMessage(const std::string& message) {

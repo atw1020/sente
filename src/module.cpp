@@ -42,6 +42,9 @@ PYBIND11_MODULE(sente, module){
 
     module.def("opposite_player", &sente::getOpponent, "get the opponent of a particular stone color");
 
+    auto typing = py::module_::import("typing");
+    auto inspect = py::module_::import("inspect");
+
     py::enum_<sente::Stone>(module, "stone", R"pbdoc(
             An enumeration for a Go stone.
 
@@ -685,9 +688,13 @@ PYBIND11_MODULE(sente, module){
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
 
-    auto inspect = py::module_::import("inspect");
-
     auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
+
+    gtp.attr("Response") = typing.attr("namedtuple")("Response", std::vector<std::tuple<std::string, py::type>>{
+            {"status", py::type::of(py::bool_())},
+            {"value", py::type::of(py::object())}
+    });
+
     py::class_<sente::GTP::Engine>(gtp, "Engine")
             .def(py::init<std::string, std::string>(),
                     py::arg("engine_version") = "unimplemented_engine",
