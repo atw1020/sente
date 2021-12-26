@@ -16,7 +16,7 @@ def Engine(engine):
     commands = [name for name, value in engine.__dict__.items() if hasattr(value, "_sente_gtp_command")]
     print(commands)
 
-    engine.interpreter = sente.gtp.Engine()
+    engine.interpret = lambda self, x: "= " + str(x)
 
     return engine
 
@@ -49,7 +49,7 @@ def main():
     """
 
     octalpus = OctopusGarden()
-    # print(octalpus.interpret("hi"))
+    print(octalpus.interpret("hi"))
 
 
 if __name__ == "__main__":

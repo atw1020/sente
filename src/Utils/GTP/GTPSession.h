@@ -2,8 +2,8 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#ifndef SENTE_INTERPRETER_H
-#define SENTE_INTERPRETER_H
+#ifndef SENTE_GTPSESSION_H
+#define SENTE_GTPSESSION_H
 
 #include "Parser.h"
 
@@ -11,35 +11,31 @@
 #include <variant>
 
 #include "../../Game/GoGame.h"
+#include "PythonBindings.h"
 
 #include "Tokens/Literal.h"
 
 namespace sente::GTP {
 
-    class Interpreter;
+    class GTPSession;
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, LiteralType> ArgumentPattern;
-    typedef std::function<Response (Interpreter* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
+    typedef std::function<Response (GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
 
-    py::object& engineDecorator(py::object& engine);
-    py::function& commandDecorator(py::function& function, const py::module_& inspect,
-                                   const py::module_& typing);
-
-    class Interpreter {
+    class GTPSession {
     public:
 
         GoGame masterGame; // the game object that the GTP edits
         // GoGame scratchGame; // a game that the engine can play on and experiment with variations on
 
-        Interpreter(const std::string& engineName, const std::string& engineVersion);
+        GTPSession(const std::string& engineName, const std::string& engineVersion);
 
         // GTP interpreter
         std::string interpret(std::string text);
 
         // Custom GTP command Registration
-        void pyRegisterCommand(const py::function& function, const py::module_& inspect);
-        void registerCommands(const std::string& qualName);
+        void registerCommand(const py::function& function, const py::module_& inspect, const py::module_& typing);
 
         ///
         /// Getter and Setter Methods
@@ -94,4 +90,4 @@ namespace sente::GTP {
 }
 
 
-#endif //SENTE_INTERPRETER_H
+#endif //SENTE_GTPSESSION_H
