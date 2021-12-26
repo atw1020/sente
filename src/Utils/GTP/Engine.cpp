@@ -139,7 +139,12 @@ namespace sente::GTP {
 
         // reset the board
         setGTPDisplayFlags();
+
+        // cast the object to a python object to add the names
+        py::object self = py::cast(this);
     }
+
+    auto Engine::globalCommands = std::unordered_map<std::string, std::vector<py::function>>();
 
     std::string Engine::interpret(std::string text) {
 
@@ -489,6 +494,11 @@ namespace sente::GTP {
         registerCommand(name, wrapper, argumentPattern);
     }
 
+    void Engine::registerCommands(const std::string &qualName) {
+        // register all the commands associated with this qualName
+        for (const auto& )
+    }
+
     std::string Engine::getEngineName() const {
         return engineName;
     }
@@ -533,7 +543,7 @@ namespace sente::GTP {
     }
 
     const py::function& Engine::registerCommand(const py::function& function, const py::module_& inspect,
-                                          const py::module_& typing) {
+                                                const py::module_& typing) {
 
         // get some attributes some the function
         // TODO: replace dunder implementation with non-implementation dependent calls
@@ -593,16 +603,10 @@ namespace sente::GTP {
             returnTypeOptions = {returnType};
         }
 
-        py::print("got past the union check");
-        py::print("checking all return type options");
-        py::print(returnTypeOptions.size());
-
         // go through all the type options and make sure that they are all satisfactory
         for (unsigned i = 0; i < returnTypeOptions.size(); i++){
 
             auto option = returnTypeOptions[i];
-            py::print("checking option", option);
-            py::print(typing.attr("get_origin")(option));
 
             // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
             if (typing.attr("get_origin")(option).is(py::type::of(py::tuple()))){
@@ -632,15 +636,15 @@ namespace sente::GTP {
             }
         }
 
+        qualName = std::string(qualName.begin(), qualName.begin() + qualName.rfind("."));
+
         // we've conformed that the function's arguments and return type are valid, so we can register it
-        if (globalCommands.find(name) == globalCommands.end()){
-            globalCommands[name] = {function};
+        if (globalCommands.find(qualName) == globalCommands.end()){
+            globalCommands[qualName] = {function};
         }
         else {
-            globalCommands[name].push_back(function);
+            globalCommands[qualName].push_back(function);
         }
-
-        py::print("command registered!");
 
         return function;
     }

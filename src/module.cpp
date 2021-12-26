@@ -704,8 +704,13 @@ PYBIND11_MODULE(sente, module){
             .def("get_current_sequence", [](sente::GTP::Engine& engine){
                 return engine.masterGame.getMoveSequence();
             })
+            /*
             .def("register_command", [inspect](sente::GTP::Engine& engine, const py::function& function){
                 engine.pyRegisterCommand(function, inspect);
+            })
+             */
+            .def("register_commands", [](py::object& self){
+                py::print(self.attr("__class__").attr("__qualname__"));
             })
             .def("get_sequence", [](sente::GTP::Engine& engine){
                 return engine.masterGame.getMoveSequence();

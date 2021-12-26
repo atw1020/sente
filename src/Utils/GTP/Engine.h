@@ -35,6 +35,7 @@ namespace sente::GTP {
 
         // Custom GTP command Registration
         void pyRegisterCommand(const py::function& function, const py::module_& inspect);
+        void registerCommands(const std::string& qualName);
 
         ///
         /// Getter and Setter Methods

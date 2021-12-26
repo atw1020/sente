@@ -4,29 +4,38 @@ Author: Arthur Wesley
 
 """
 import typing
+import inspect
 
 import sente
 from sente import gtp
 
 
-def my_decorator(function):
+def Engine(engine):
 
-    annotations = function.__annotations__
-    return_type = annotations["return"]
+    # get a list containing all the attributes
+    commands = [name for name, value in engine.__dict__.items() if hasattr(value, "_sente_gtp_command")]
+    print(commands)
 
-    attrs = typing.get_args(return_type)
+    engine.interpreter = sente.gtp.Engine()
 
-    print(attrs[1])
-    print(typing.get_args(attrs[0]))
+    return engine
 
 
-class OctopusGarden(gtp.Engine):
+def Command(function):
 
-    @gtp.Command
-    # @my_decorator
+    # add the attribute and return
+    function._sente_gtp_command = True
+
+    return function
+
+
+@Engine
+class OctopusGarden:
+
     def echo(self, text: str) -> typing.Union[typing.Tuple[bool, str], str]:
         return True, text
 
+    @Command
     def fnord(self, fjord: float):
         return True, str(-fjord)
 
@@ -39,13 +48,8 @@ def main():
     :return:
     """
 
-    print("hello world!")
-
-    """ceph = OctopusGarden()
-
-    while ceph.active():
-        response = ceph.interpret(input(">> "))
-        print(response, end="")"""
+    octalpus = OctopusGarden()
+    # print(octalpus.interpret("hi"))
 
 
 if __name__ == "__main__":
