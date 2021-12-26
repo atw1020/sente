@@ -401,8 +401,7 @@ namespace sente::GTP {
                         break;
                     case VERTEX:
                         vertex = (Vertex*) literal;
-                        // TODO: fix this
-                        pyArgs.append(py::make_tuple(vertex->getX(), vertex->getY()));
+                        pyArgs.append(py::cast(sente::Vertex(vertex->getX(), vertex->getY())));
                         break;
                     case STRING:
                         pyArgs.append(py::str(literal->getText()));
@@ -536,8 +535,6 @@ namespace sente::GTP {
     const py::function& Engine::registerCommand(const py::function& function, const py::module_& inspect,
                                           const py::module_& typing) {
 
-        py::print("entering register command...");
-
         // get some attributes some the function
         // TODO: replace dunder implementation with non-implementation dependent calls
         std::string name = py::str(function.attr("__name__"));
@@ -577,37 +574,55 @@ namespace sente::GTP {
             }
         }
 
-        py::print("checking return type");
-
         if (not annotations.contains("return")) {
             throw py::value_error("Custom GTP command \"" + name + "\" has no specified return type "
                                   "(custom GTP commands must be strongly typed)");
         }
 
         // check the return type
-        py::type returnType = annotations["return"];
+        py::object returnType = annotations["return"];
 
         auto returnTypeOptions = py::list();
 
         // check if the return type is a union
-        if (returnType.is(typing.attr("Union"))){
+        if (typing.attr("get_origin")(returnType).is(typing.attr("Union"))){
             // if it is, put all the types into the options
-            returnTypeOptions = returnType.attr("__args__")();
+            returnTypeOptions = returnType.attr("__args__");
         }
         else {
             returnTypeOptions = {returnType};
         }
 
-        auto responseTuple = typing.attr("Tuple")[py::type::of(py::bool_()), py::type::of(py::object())];
+        py::print("got past the union check");
+        py::print("checking all return type options");
+        py::print(returnTypeOptions.size());
 
         // go through all the type options and make sure that they are all satisfactory
         for (unsigned i = 0; i < returnTypeOptions.size(); i++){
 
-            py::type option = returnTypeOptions[i];
+            auto option = returnTypeOptions[i];
+            py::print("checking option", option);
+            py::print(typing.attr("get_origin")(option));
 
-            // if we do have a tuple, set the "option" to be the type of the second item of the tuple
-            if (py::isinstance(option, responseTuple)){
-                option = py::tuple(typing.attr("get_args")(returnType))[1];
+            // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
+            if (typing.attr("get_origin")(option).is(py::type::of(py::tuple()))){
+
+                auto types = py::tuple(typing.attr("get_args")(option));
+
+                // make sure that the tuple contains exactly two elements
+                if (types.size() != 2){
+                    throw py::value_error("Custom GTP command returns invalid response; "
+                                          "expected two items, got " + std::to_string(types.size()));
+                }
+
+                // make sure that the first argument is a bool
+                if (not py::type(types[0]).is(py::type::of(py::bool_()))){
+                    throw py::type_error("Custom GTP command returns invalid response in position 1, "
+                                         "expected bool, got " + std::string(py::str(types[0])));
+                }
+
+                // if it's valid, set the option to be the second elemnt of the tuple
+                option = py::tuple(typing.attr("get_args")(option))[1];
             }
 
             // throw an exception if the option is invalid
