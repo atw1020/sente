@@ -15,7 +15,8 @@ namespace sente::GTP {
     void checkGTPCommand(py::function& function, const py::module_& inspect,
                          const py::module_& typing);
 
-    py::object& engineDecorator(py::object& engine);
+    py::object& engineDecorator(py::object& engine, const std::string& name, const std::string& version,
+                                const py::module_& inspect, const py::module_& typing);
     py::function& commandDecorator(py::function& function, const py::module_& inspect,
                                    const py::module_& typing);
 
