@@ -132,8 +132,6 @@ namespace sente::GTP {
         py::object self = py::cast(this);
     }
 
-    auto Session::globalCommands = std::unordered_map<std::string, std::vector<py::function>>();
-
     std::string Session::interpret(std::string text) {
 
         text = preprocess(text);
@@ -310,146 +308,38 @@ namespace sente::GTP {
                                   const py::module_& typing) {
 
         // check that the function is valid
-        checkGTPCommand(function, inspect, typing);
+        // checkGTPCommand(function, inspect, typing);
 
-        // get the arguments and name from inspecting the function
-        auto argSpec = inspect.attr("getfullargspec")(function);
+        // get the argument pattern from the function
+        auto argumentPattern = getArgumentPattern(function, inspect);
+
+        // get the name from the function
         std::string name = py::str(function.attr("__name__"));
-        auto annotations = argSpec.attr("annotations");
-
-        // obtain the argument names
-        py::list argumentNames = py::list(argSpec.attr("args"));
-        std::vector<ArgumentPattern> argumentPattern;
-
-        // slice off the first argument now that it has been checked
-        argumentNames = argumentNames[py::slice(1, argumentNames.size(), 1)];
-
-        // add the command to the argument pattern
-        argumentPattern.emplace_back("command", STRING);
-
-        // generate the argument pattern
-        for (const auto& argument : argumentNames){
-            // get the types from the argument names
-            std::string type = py::str(annotations[argument].attr("__name__"));
-
-            // if we do, add it to the argument pattern
-            argumentPattern.emplace_back(py::str(argument), argumentTypeMappings[type]);
-        }
-
-        // check to see if the argument pattern contains a color followed by a vertex
-        for (unsigned i = 0; i < argumentPattern.size() - 1; i++){
-            if (argumentPattern[i].second == COLOR and argumentPattern[i + 1].second == VERTEX){
-                throw pybind11::value_error("Custom GTP command \"" + name + "\" contains a Color followed by a Vertex,"
-                                            " use a sente.Move instead.");
-            }
-        }
 
         // define the custom command using a lambda
 
-        CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function, this](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
             // the self argument is automatically passed by python
             (void) self;
 
-            auto pyArgs = py::list();
-
-            // remove the first argument
-            auto strippedArguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
-
-            Integer* integer;
-            Vertex* vertex;
-            Color* color;
-            Float* float_;
-            Move* move;
-            Boolean* bool_;
-
-            for (const auto& argument : strippedArguments){
-
-                auto* literal = (Literal*) argument.get();
-
-                switch (literal->getLiteralType()){
-                    case INTEGER:
-                        integer = (Integer*) literal;
-                        pyArgs.append(py::int_(integer->getValue()));
-                        break;
-                    case VERTEX:
-                        vertex = (Vertex*) literal;
-                        pyArgs.append(py::cast(sente::Vertex(vertex->getX(), vertex->getY())));
-                        break;
-                    case STRING:
-                        pyArgs.append(py::str(literal->getText()));
-                        break;
-                    case COLOR:
-                        color = (Color*) literal;
-                        pyArgs.append(py::cast(color->getColor()));
-                        break;
-                    case FLOAT:
-                        float_ = (Float*) literal;
-                        pyArgs.append(py::cast(float_->getValue()));
-                        break;
-                    case MOVE:
-                        move = (Move*) literal;
-                        pyArgs.append(py::cast(move->getMove()));
-                        break;
-                    case BOOLEAN:
-                        bool_ = (Boolean*) literal;
-                        pyArgs.append(py::cast(bool_->getValue()));
-                        break;
-                }
-            }
-
             // pack the arguments and call the function
-            auto args = py::tuple(pyArgs);
-            py::object _response = function(*args);
+            auto args = gtpArgsToPyArgs(arguments);
+            py::object response = function(*args);
 
-            // a valid response has two formats
-            //  1) a tuple containing whether the message was an error (bool) and the response variable (must be a GTP
-            //     defined type)
-            //  2) The response variable on its own. The message is assumed to be successful.
-
+            // pack the results into a response tuple
             bool status;
-            py::object response;
 
-            if (py::isinstance<py::tuple>(_response)){
+            if (py::isinstance<py::tuple>(response)){
 
-                // if we have a tuple we have to validate it
-                py::tuple responseTuple = py::tuple(_response);
-
-                // make sure that the tuple is of size two
-                if (responseTuple.size() != 2){
-                    throw py::value_error("Custom GTP command returned invalid response; "
-                                                "expected two items, got " + std::to_string(responseTuple.size()));
-                }
-
-                // make sure the first item is a bool
-                if (not py::isinstance<py::bool_>(responseTuple[0])){
-                    throw py::type_error("Custom GTP command returned invalid response in position 1, "
-                                         "expected bool, got" + std::string(py::str(py::type::of(responseTuple[0]))));
-                }
-
-                status = py::bool_(responseTuple[0]);
-                response = responseTuple[1];
+                status = py::bool_(py::tuple(response)[0]);
+                response = py::tuple(response)[1];
 
             }
             else {
                 // otherwise, the message is successful and the response is just what was returned
                 status = true;
-                response = _response;
-            }
-
-            // check if we have a valid type
-            if (not isGTPType(response)) {
-                // we have an invalid type
-                if (py::isinstance<py::tuple>(_response)){
-                    throw pybind11::type_error("Custom GTP command returned invalid response in position 2, "
-                                               "expected GTP compatible type, got " +
-                                               std::string(py::str(py::type::of(response))));
-                }
-                else {
-                    throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
-                                               "type, got " + std::string(py::str(py::type::of(response))));
-                }
             }
 
             return {status, gtpTypeToString(response)};
@@ -461,6 +351,10 @@ namespace sente::GTP {
 
         // register the command with the engine
         registerCommand(name, wrapper, argumentPattern);
+    }
+
+    void Session::registerGenMove(py::function &function, const py::module_ &inspect, const py::module_ &typing) {
+
     }
 
     std::string Session::getEngineName() const {
@@ -626,6 +520,110 @@ namespace sente::GTP {
             return invalidArgumentsErrorMessage(patterns, arguments);
         }
 
+    }
+
+    /**
+     *
+     * obtains the argument pattern from a python function
+     *
+     * @param function function to get the pattern from
+     * @param inspect python inspect module (used to inspect the function)
+     * @return argument pattern of the function
+     */
+    std::vector<ArgumentPattern> Session::getArgumentPattern(py::function &function, const py::module_ &inspect) {
+
+        // get the arguments and name from inspecting the function
+        auto argSpec = inspect.attr("getfullargspec")(function);
+        std::string name = py::str(function.attr("__name__"));
+        auto annotations = argSpec.attr("annotations");
+
+        // obtain the argument names
+        py::list argumentNames = py::list(argSpec.attr("args"));
+        std::vector<ArgumentPattern> argumentPattern;
+
+        // slice off the first argument now that it has been checked
+        argumentNames = argumentNames[py::slice(1, argumentNames.size(), 1)];
+
+        // add the command to the argument pattern
+        argumentPattern.emplace_back("command", STRING);
+
+        // generate the argument pattern
+        for (const auto& argument : argumentNames){
+            // get the types from the argument names
+            std::string type = py::str(annotations[argument].attr("__name__"));
+
+            // if we do, add it to the argument pattern
+            argumentPattern.emplace_back(py::str(argument), argumentTypeMappings[type]);
+        }
+
+        // check to see if the argument pattern contains a color followed by a vertex
+        for (unsigned i = 0; i < argumentPattern.size() - 1; i++){
+            if (argumentPattern[i].second == COLOR and argumentPattern[i + 1].second == VERTEX){
+                throw pybind11::value_error("Custom GTP command \"" + name + "\" contains a Color followed by a Vertex,"
+                                                                             " use a sente.Move instead.");
+            }
+        }
+
+        return argumentPattern;
+    }
+
+    /**
+     *
+     * converts a vector of GTP Tokens into python arguments that can be passed to a python function
+     *
+     * @param arguments vector containing the arguments to be converted
+     * @return python tuple that can be passed to a python function
+     */
+    py::tuple Session::gtpArgsToPyArgs(const std::vector<std::shared_ptr<Token>>& arguments) {
+
+        auto pyArgs = py::list();
+
+        // remove the first argument
+        auto strippedArguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
+
+        Integer* integer;
+        Vertex* vertex;
+        Color* color;
+        Float* float_;
+        Move* move;
+        Boolean* bool_;
+
+        for (const auto& argument : strippedArguments){
+
+            auto* literal = (Literal*) argument.get();
+
+            switch (literal->getLiteralType()){
+                case INTEGER:
+                    integer = (Integer*) literal;
+                    pyArgs.append(py::int_(integer->getValue()));
+                    break;
+                case VERTEX:
+                    vertex = (Vertex*) literal;
+                    pyArgs.append(py::cast(sente::Vertex(vertex->getX(), vertex->getY())));
+                    break;
+                case STRING:
+                    pyArgs.append(py::str(literal->getText()));
+                    break;
+                case COLOR:
+                    color = (Color*) literal;
+                    pyArgs.append(py::cast(color->getColor()));
+                    break;
+                case FLOAT:
+                    float_ = (Float*) literal;
+                    pyArgs.append(py::cast(float_->getValue()));
+                    break;
+                case MOVE:
+                    move = (Move*) literal;
+                    pyArgs.append(py::cast(move->getMove()));
+                    break;
+                case BOOLEAN:
+                    bool_ = (Boolean*) literal;
+                    pyArgs.append(py::cast(bool_->getValue()));
+                    break;
+            }
+        }
+
+        return py::tuple(pyArgs);
     }
 
 }

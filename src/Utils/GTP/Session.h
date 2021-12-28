@@ -26,9 +26,6 @@ namespace sente::GTP {
     class Session {
     public:
 
-        GoGame masterGame; // the game object that the GTP edits
-        // GoGame scratchGame; // a game that the engine can play on and experiment with variations on
-
         Session(const std::string& engineName, const std::string& engineVersion);
 
         // GTP interpreter
@@ -36,6 +33,7 @@ namespace sente::GTP {
 
         // Custom GTP command Registration
         void registerCommand(py::function& function, const py::module_& inspect, const py::module_& typing);
+        void registerGenMove(py::function& function, const py::module_& inspect, const py::module_& typing);
 
         ///
         /// Getter and Setter Methods
@@ -67,6 +65,8 @@ namespace sente::GTP {
         std::string engineName;
         std::string engineVersion;
 
+        GoGame masterGame; // the game object that the GTP edits
+
         std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 
         void registerCommand(const std::string& commandName, CommandMethod method,
@@ -84,7 +84,8 @@ namespace sente::GTP {
         static Response invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
                                                  const std::vector<std::shared_ptr<Token>>& arguments);
 
-        static std::unordered_map<std::string, std::vector<py::function>> globalCommands;
+        static std::vector<ArgumentPattern> getArgumentPattern(py::function& function, const py::module_& inspect);
+        static py::tuple gtpArgsToPyArgs(const std::vector<std::shared_ptr<Token>>& arguments);
 
     };
 }

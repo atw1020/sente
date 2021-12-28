@@ -93,6 +93,11 @@ namespace sente::GTP {
             // if the return type is a union or named tuple
             py::object returnType = returnTypeOptions[i];
 
+            // a valid response has two formats
+            //  1) a tuple containing whether the message was an error (bool) and the response variable (must be a GTP
+            //     defined type)
+            //  2) The response variable on its own. The message is assumed to be successful.
+
             // check to see if we have a tuple response
             if (typing.attr("get_origin")(returnType).is(py::type::of(py::tuple()))){
 
