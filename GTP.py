@@ -29,14 +29,14 @@ def Command(function):
     return function
 
 
-@Engine
+@gtp.Engine
 class OctopusGarden:
 
     def echo(self, text: str) -> typing.Union[typing.Tuple[bool, str], str]:
         return True, text
 
-    @Command
-    def fnord(self, fjord: float):
+    @gtp.Command
+    def fnord(self, fjord: float) -> typing.Tuple[bool, str]:
         return True, str(-fjord)
 
 
@@ -49,7 +49,7 @@ def main():
     """
 
     octalpus = OctopusGarden()
-    print(octalpus.interpret("hi"))
+    print(octalpus.interpret("echo hi"))
 
 
 if __name__ == "__main__":

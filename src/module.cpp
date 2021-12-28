@@ -698,11 +698,11 @@ PYBIND11_MODULE(sente, module){
 
     gtp.def("Engine", [inspect, typing](py::object& object, const std::string& name,
             const std::string& version){
-        return sente::GTP::engineDecorator(object, name, version);
+        return sente::GTP::engineDecorator(object, name, version, inspect, typing);
     },
             py::arg("engine"),
             py::arg("name") = "unimplemented_engine", // defualt arguments
-            py::arg("version") = "0.0.0")
+            py::arg("version") = "0.0.0");
 
     py::class_<sente::GTP::GTPSession>(gtp, "GTPSession")
             .def(py::init<std::string, std::string>(),

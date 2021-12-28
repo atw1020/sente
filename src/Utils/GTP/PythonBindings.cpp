@@ -60,7 +60,6 @@ namespace sente::GTP {
                                       + "\" (custom GTP commands must be strongly typed)");
             }
 
-            py::print("checking to see if the type was valid");
             // throw an error if the argument's type is invalid
             if (not isGTPType(annotations[argument])){
                 throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
@@ -85,18 +84,21 @@ namespace sente::GTP {
             returnTypeOptions = returnType.attr("__args__");
         }
         else {
-            returnTypeOptions = {returnType};
+            returnTypeOptions.append(returnType);
         }
 
         // go through all the type options and make sure that they are all satisfactory
         for (unsigned i = 0; i < returnTypeOptions.size(); i++){
 
-            py::type option = returnTypeOptions[i];
+            // if the return type is a union or named tuple
+            py::object returnType = returnTypeOptions[i];
+            py::print("checking return type option", returnType);
 
-            // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
-            if (typing.attr("get_origin")(option).is(py::type::of(py::tuple()))){
+            // check to see if we have a tuple response
+            if (typing.attr("get_origin")(returnType).is(py::type::of(py::tuple()))){
 
-                auto types = py::tuple(typing.attr("get_args")(option));
+                // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
+                auto types = py::tuple(typing.attr("get_args")(returnType));
 
                 // make sure that the tuple contains exactly two elements
                 if (types.size() != 2){
@@ -111,11 +113,11 @@ namespace sente::GTP {
                 }
 
                 // if it's valid, set the option to be the second element of the tuple
-                option = py::tuple(typing.attr("get_args")(option))[1];
+                returnType = py::tuple(typing.attr("get_args")(returnType))[1];
             }
 
             // throw an exception if the option is invalid
-            if (not isGTPType(option)){
+            if (not isGTPType(returnType)){
                 throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
                                            "type, got " + std::string(py::str(py::type::of(returnType))));
             }
@@ -134,11 +136,12 @@ namespace sente::GTP {
 
         for (unsigned i = 0; i < attributes.size(); i++){
 
-            py::object attribute = py::function(attributes[i]);
+            py::object attribute = attributes[i];
 
             if (py::hasattr(attribute, "_sente_gtp_command")){
                 // register the command with the interpreter
-                session.registerCommand(py::function(attribute), inspect, typing);
+                auto fn = py::function(attribute);
+                session.registerCommand(fn, inspect, typing);
             }
         }
 

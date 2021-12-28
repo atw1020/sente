@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "Operators.h"
+#include "GTPSession.h"
 
 namespace sente::GTP {
 
@@ -306,7 +307,7 @@ namespace sente::GTP {
     }
 
     // TODO: re-implement registration with decorators instead of this
-    void GTPSession::registerCommand(const py::function& function, const py::module_& inspect,
+    void GTPSession::registerCommand(py::function& function, const py::module_& inspect,
                                      const py::module_& typing) {
 
         // check that the function is valid
