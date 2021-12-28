@@ -128,7 +128,11 @@ namespace sente::GTP {
                                 const py::module_& inspect, const py::module_& typing){
 
         // initialize the session
-        GTPSession session = GTPSession(name, version);
+        engine.attr("session") = GTPSession(name, version);
+        auto* session = py::cast<GTPSession*>(engine.attr("session"));
+
+        // add on the attributes for our user to utilize
+        engine.attr("interpret") = engine.attr("session").attr("interpret");
 
         // get a list of all the methods
         py::list attributes = py::list(engine.attr("__dict__"));
@@ -137,19 +141,17 @@ namespace sente::GTP {
         for (unsigned i = 0; i < attributes.size(); i++){
 
             py::object attribute = attributes[i];
+            py::print("checking attribute", attribute);
 
             if (py::hasattr(attribute, "_sente_gtp_command")){
                 // register the command with the interpreter
+
+                py::print("found the attribute!");
+
                 auto fn = py::function(attribute);
-                session.registerCommand(fn, inspect, typing);
+                session->registerCommand(fn, inspect, typing);
             }
         }
-
-        // add on the attributes for our user to utilize
-        engine.attr("session") = session;
-        engine.attr("interpret") = [&session](const std::string& next){
-            return session.interpret(next);
-        };
 
         return engine;
 

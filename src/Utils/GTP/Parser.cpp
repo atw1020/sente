@@ -118,8 +118,6 @@ namespace sente::GTP {
 
     std::shared_ptr<Token> parseToken(const std::string& token){
 
-        std::cout << "entering parseToken with text \"" << token << "\"" << std::endl;
-
         // regex for a vertex
         std::regex vertex("[A-Z]\\d{1,2}");
         // regex for floating point number

@@ -260,6 +260,8 @@ namespace sente::GTP {
     void GTPSession::registerCommand(const std::string& commandName, CommandMethod method,
                                      std::vector<ArgumentPattern> argumentPattern){
 
+        py::print("registering command", commandName);
+
         // raise an exception if the command is non-modifiable
         if (builtins.find(commandName) != builtins.end()){
             throw std::domain_error("Cannot overwrite standard GTP command \"" + commandName + "\"");
@@ -306,9 +308,10 @@ namespace sente::GTP {
         }
     }
 
-    // TODO: re-implement registration with decorators instead of this
     void GTPSession::registerCommand(py::function& function, const py::module_& inspect,
                                      const py::module_& typing) {
+
+        py::print("entering registerCommand");
 
         // check that the function is valid
         checkGTPCommand(function, inspect, typing);

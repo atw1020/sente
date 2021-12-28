@@ -49,7 +49,7 @@ def main():
     """
 
     octalpus = OctopusGarden()
-    print(octalpus.interpret("echo hi"))
+    print(octalpus.interpret("list_commands"))
 
 
 if __name__ == "__main__":
