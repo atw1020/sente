@@ -2,7 +2,7 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#include "GTPSession.h"
+#include "Session.h"
 
 #include <set>
 #include <utility>
@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "Operators.h"
-#include "GTPSession.h"
+#include "Session.h"
 
 namespace sente::GTP {
 
@@ -113,13 +113,13 @@ namespace sente::GTP {
 
     }
 
-    GTPSession::GTPSession(const std::string& engineName, const std::string& engineVersion)
+    Session::Session(const std::string& engineName, const std::string& engineVersion)
         : masterGame(19, CHINESE, determineKomi(CHINESE)){
         setEngineName(engineName);
         setEngineVersion(engineVersion);
 
         // initialize the builtin commands
-        // TODO: make sure this doesn't make commands global
+        // TODO: make sure this copies rather than moving
         commands = builtins;
 
         // register the genMove command so that it can be overwritten
@@ -132,9 +132,9 @@ namespace sente::GTP {
         py::object self = py::cast(this);
     }
 
-    auto GTPSession::globalCommands = std::unordered_map<std::string, std::vector<py::function>>();
+    auto Session::globalCommands = std::unordered_map<std::string, std::vector<py::function>>();
 
-    std::string GTPSession::interpret(std::string text) {
+    std::string Session::interpret(std::string text) {
 
         text = preprocess(text);
         auto tokens = parse(text);
@@ -257,8 +257,8 @@ namespace sente::GTP {
         return outputStream.str();
     }
 
-    void GTPSession::registerCommand(const std::string& commandName, CommandMethod method,
-                                     std::vector<ArgumentPattern> argumentPattern){
+    void Session::registerCommand(const std::string& commandName, CommandMethod method,
+                                  std::vector<ArgumentPattern> argumentPattern){
 
         // raise an exception if the command is non-modifiable
         if (builtins.find(commandName) != builtins.end()){
@@ -306,8 +306,8 @@ namespace sente::GTP {
         }
     }
 
-    void GTPSession::registerCommand(py::function& function, const py::module_& inspect,
-                                     const py::module_& typing) {
+    void Session::registerCommand(py::function& function, const py::module_& inspect,
+                                  const py::module_& typing) {
 
         // check that the function is valid
         checkGTPCommand(function, inspect, typing);
@@ -346,7 +346,7 @@ namespace sente::GTP {
 
         // define the custom command using a lambda
 
-        CommandMethod wrapper = [function](GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
             // the self argument is automatically passed by python
@@ -463,11 +463,11 @@ namespace sente::GTP {
         registerCommand(name, wrapper, argumentPattern);
     }
 
-    std::string GTPSession::getEngineName() const {
+    std::string Session::getEngineName() const {
         return engineName;
     }
 
-    void GTPSession::setEngineName(std::string name){
+    void Session::setEngineName(std::string name){
         if (name.find(' ') != std::string::npos){
             throw py::value_error("engine name \"" + name + "\"contains invalid character ' ' in position " +
                                   std::to_string(name.find(' ')) + ".");
@@ -479,51 +479,51 @@ namespace sente::GTP {
         engineName = name;
     }
 
-    std::string GTPSession::getEngineVersion() const {
+    std::string Session::getEngineVersion() const {
         return engineVersion;
     }
 
-    void GTPSession::setEngineVersion(std::string version){
+    void Session::setEngineVersion(std::string version){
         engineVersion = std::move(version);
     }
 
     std::unordered_map<std::string, std::vector<std::pair<CommandMethod,
-            std::vector<ArgumentPattern>>>> GTPSession::getCommands() const {
+            std::vector<ArgumentPattern>>>> Session::getCommands() const {
         return commands;
     }
 
-    bool GTPSession::isActive() const {
+    bool Session::isActive() const {
         return active;
     }
 
-    void GTPSession::setActive(bool active) {
+    void Session::setActive(bool active) {
         this->active = active;
     }
 
-    void GTPSession::setGTPDisplayFlags() {
+    void Session::setGTPDisplayFlags() {
         // flip the co-ordinate label for the board
         masterGame.setASCIIMode(true);
         masterGame.setLowerLeftCornerCoOrdinates(true);
     }
 
-    std::string GTPSession::errorMessage(const std::string& message) {
+    std::string Session::errorMessage(const std::string& message) {
         return "? " + message + "\n\n";
     }
 
-    std::string GTPSession::errorMessage(const std::string &message, unsigned id) {
+    std::string Session::errorMessage(const std::string &message, unsigned id) {
         return "?" + std::to_string(id) + " " + message + "\n\n";
     }
 
-    std::string GTPSession::statusMessage(const std::string &message) {
+    std::string Session::statusMessage(const std::string &message) {
         return "= " + message + "\n\n";
     }
 
-    std::string GTPSession::statusMessage(const std::string &message, unsigned id) {
+    std::string Session::statusMessage(const std::string &message, unsigned id) {
         return "=" + std::to_string(id) + " " + message + "\n\n";
     }
 
-    bool GTPSession::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
-                                    const std::vector<std::shared_ptr<Token>> &arguments) {
+    bool Session::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
+                                 const std::vector<std::shared_ptr<Token>> &arguments) {
 
         if (arguments.size() != expectedArguments.size()){
             return false;
@@ -542,8 +542,8 @@ namespace sente::GTP {
 
     }
 
-    Response GTPSession::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
-                                                      const std::vector<std::shared_ptr<Token>> &arguments) {
+    Response Session::invalidArgumentsErrorMessage(const std::vector<std::vector<ArgumentPattern>>& argumentPatterns,
+                                                   const std::vector<std::shared_ptr<Token>> &arguments) {
 
         std::stringstream message;
 
@@ -603,7 +603,7 @@ namespace sente::GTP {
 
     }
 
-    Response GTPSession::execute(const std::string &command, const std::vector<std::shared_ptr<Token>> &arguments) {
+    Response Session::execute(const std::string &command, const std::vector<std::shared_ptr<Token>> &arguments) {
 
         // generate a list of possible argument patterns
         std::vector<std::vector<ArgumentPattern>> patterns;

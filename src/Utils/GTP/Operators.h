@@ -5,27 +5,27 @@
 #ifndef SENTE_OPERATORS_H
 #define SENTE_OPERATORS_H
 
-#include "GTPSession.h"
+#include "Session.h"
 
 namespace sente::GTP {
 
-    Response protocolVersion(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response name(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response version(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response knownCommand(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response listCommands(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response quit(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response boardSize(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response clearBoard(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response komi(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response play(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response genMove(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response showBoard(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response protocolVersion(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response name(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response version(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response knownCommand(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response listCommands(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response quit(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response boardSize(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response clearBoard(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response komi(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response play(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response genMove(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response showBoard(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
-    Response undoOnce(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response undoMultiple(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response loadSGF1(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
-    Response loadSGF2(GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response undoOnce(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response undoMultiple(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response loadSGF1(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+    Response loadSGF2(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
 
 }
 

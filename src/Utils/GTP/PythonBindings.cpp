@@ -127,8 +127,8 @@ namespace sente::GTP {
                                 const py::module_& inspect, const py::module_& typing){
 
         // initialize the session
-        engine.attr("session") = GTPSession(name, version);
-        auto* session = py::cast<GTPSession*>(engine.attr("session"));
+        engine.attr("session") = Session(name, version);
+        auto* session = py::cast<Session*>(engine.attr("session"));
 
         // add on the attributes for our user to utilize
         engine.attr("interpret") = engine.attr("session").attr("interpret");

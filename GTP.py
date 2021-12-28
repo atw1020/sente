@@ -21,7 +21,7 @@ class OctopusGarden:
     def fnord(self, fjord: float) -> typing.Tuple[bool, str]:
         return True, str(-fjord)
 
-    @gtp.command
+    @gtp.Command
     def genmove(self, color: sente.stone) -> sente.Vertex:
         return sente.Vertex(4, 4)
 
@@ -35,8 +35,9 @@ def main():
     """
 
     octalpus = OctopusGarden()
-    print(octalpus.interpret("name"))
-    print(octalpus.interpret("version"))
+
+    while octalpus.session.active():
+        print(octalpus.interpret(input(">> ")))
 
 
 if __name__ == "__main__":

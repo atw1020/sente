@@ -2,8 +2,8 @@
 // Created by arthur wesley on 12/12/21.
 //
 
-#ifndef SENTE_GTPSESSION_H
-#define SENTE_GTPSESSION_H
+#ifndef SENTE_SESSION_H
+#define SENTE_SESSION_H
 
 #include "Parser.h"
 
@@ -17,19 +17,19 @@
 
 namespace sente::GTP {
 
-    class GTPSession;
+    class Session;
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, LiteralType> ArgumentPattern;
-    typedef std::function<Response (GTPSession* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
+    typedef std::function<Response (Session* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
 
-    class GTPSession {
+    class Session {
     public:
 
         GoGame masterGame; // the game object that the GTP edits
         // GoGame scratchGame; // a game that the engine can play on and experiment with variations on
 
-        GTPSession(const std::string& engineName, const std::string& engineVersion);
+        Session(const std::string& engineName, const std::string& engineVersion);
 
         // GTP interpreter
         std::string interpret(std::string text);
@@ -90,4 +90,4 @@ namespace sente::GTP {
 }
 
 
-#endif //SENTE_GTPSESSION_H
+#endif //SENTE_SESSION_H

@@ -32,5 +32,5 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Game/Group.h src
                     src/Utils/GTP/Parser.h src/Utils/GTP/Parser.cpp
                     src/Utils/GTP/Operators.h src/Utils/GTP/Operators.cpp
                     src/Utils/GTP/Controller.h src/Utils/GTP/Controller.cpp
-        src/Utils/GTP/GTPSession.h src/Utils/GTP/GTPSession.cpp
+        src/Utils/GTP/Session.h src/Utils/GTP/Session.cpp
                     src/Utils/GTP/PythonBindings.cpp src/Utils/GTP/PythonBindings.h)

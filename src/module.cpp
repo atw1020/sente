@@ -14,7 +14,7 @@
 #include "Game/GoGame.h"
 #include "Utils/Numpy.h"
 #include "Utils/SenteExceptions.h"
-#include "Utils/GTP/GTPSession.h"
+#include "Utils/GTP/Session.h"
 
 namespace py = pybind11;
 
@@ -706,32 +706,18 @@ PYBIND11_MODULE(sente, module){
             py::arg("name") = "unimplemented_engine", // defualt arguments
             py::arg("version") = "0.0.0");
 
-    py::class_<sente::GTP::GTPSession>(gtp, "GTPSession")
-            .def(py::init<std::string, std::string>(),
-                    py::arg("engine_version") = "unimplemented_engine",
-                    py::arg("engine_version") = "0.0.0")
-            .def("interpret", &sente::GTP::GTPSession::interpret)
-            .def("get_current_sequence", [](sente::GTP::GTPSession& engine){
+    py::class_<sente::GTP::Session>(gtp, "Session")
+            .def("interpret", &sente::GTP::Session::interpret)
+            .def("get_current_sequence", [](sente::GTP::Session& engine){
                 return engine.masterGame.getMoveSequence();
             })
-            /*
-            .def("register_command", [inspect](sente::GTP::GTPSession& engine, const py::function& function){
-                engine.pyRegisterCommand(function, inspect);
-            })
-             */
-            .def("register_commands", [](py::object& self){
-                py::print(self.attr("__class__").attr("__qualname__"));
-            })
-            .def("get_sequence", [](sente::GTP::GTPSession& engine){
+            .def("get_sequence", [](sente::GTP::Session& engine){
                 return engine.masterGame.getMoveSequence();
             })
-            .def("active", [](const sente::GTP::GTPSession& engine){
+            .def("active", [](const sente::GTP::Session& engine){
                 return engine.isActive();
             })
-            .def("genmove", [](){
-                return py::none();
-            })
-            // .def_readwrite("game", &sente::GTP::GTPSession::scratchGame)
-            .def_property("name", &sente::GTP::GTPSession::getEngineName, &sente::GTP::GTPSession::setEngineName);
+            // .def_readwrite("game", &sente::GTP::Session::scratchGame)
+            .def_property("name", &sente::GTP::Session::getEngineName, &sente::GTP::Session::setEngineName);
 
 }
