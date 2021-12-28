@@ -92,7 +92,6 @@ namespace sente::GTP {
 
             // if the return type is a union or named tuple
             py::object returnType = returnTypeOptions[i];
-            py::print("checking return type option", returnType);
 
             // check to see if we have a tuple response
             if (typing.attr("get_origin")(returnType).is(py::type::of(py::tuple()))){
@@ -135,18 +134,15 @@ namespace sente::GTP {
         engine.attr("interpret") = engine.attr("session").attr("interpret");
 
         // get a list of all the methods
-        py::list attributes = py::list(engine.attr("__dict__"));
+        py::list attributes = engine.attr("__dict__").attr("items")();
         std::vector<py::function> commands;
 
         for (unsigned i = 0; i < attributes.size(); i++){
 
-            py::object attribute = attributes[i];
-            py::print("checking attribute", attribute);
+            py::object attribute = py::tuple(attributes[i])[1];
 
             if (py::hasattr(attribute, "_sente_gtp_command")){
                 // register the command with the interpreter
-
-                py::print("found the attribute!");
 
                 auto fn = py::function(attribute);
                 session->registerCommand(fn, inspect, typing);
@@ -157,7 +153,7 @@ namespace sente::GTP {
 
     }
 
-    py::function& commandDecorator(py::function& function, const py::module_& inspect,
+    py::function commandDecorator(py::function function, const py::module_& inspect,
                                    const py::module_& typing) {
 
         // make sure that the GTP command is valid

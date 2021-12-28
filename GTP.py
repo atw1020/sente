@@ -10,34 +10,20 @@ import sente
 from sente import gtp
 
 
-def Engine(engine):
-
-    # get a list containing all the attributes
-    commands = [name for name, value in engine.__dict__.items() if hasattr(value, "_sente_gtp_command")]
-    print(commands)
-
-    engine.interpret = lambda self, x: "= " + str(x)
-
-    return engine
-
-
-def Command(function):
-
-    # add the attribute and return
-    function._sente_gtp_command = True
-
-    return function
-
-
-@gtp.Engine
+@gtp.Engine("octopus", "0.0.1")
 class OctopusGarden:
 
+    @gtp.Command
     def echo(self, text: str) -> typing.Union[typing.Tuple[bool, str], str]:
         return True, text
 
     @gtp.Command
     def fnord(self, fjord: float) -> typing.Tuple[bool, str]:
         return True, str(-fjord)
+
+    @gtp.command
+    def genmove(self, color: sente.stone) -> sente.Vertex:
+        return sente.Vertex(4, 4)
 
 
 def main():
@@ -49,7 +35,8 @@ def main():
     """
 
     octalpus = OctopusGarden()
-    print(octalpus.interpret("list_commands"))
+    print(octalpus.interpret("name"))
+    print(octalpus.interpret("version"))
 
 
 if __name__ == "__main__":

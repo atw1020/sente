@@ -8,6 +8,7 @@
 
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
 
 #include "Utils/SGF/SGF.h"
 #include "Game/GoGame.h"
@@ -692,15 +693,16 @@ PYBIND11_MODULE(sente, module){
 
     // gtp.def("Engine")
 
-    gtp.def("Command", [inspect, typing](py::function& function){
+    gtp.def("Command", [inspect, typing](py::function& function) -> py::function{
         return sente::GTP::commandDecorator(function, inspect, typing);
     });
 
-    gtp.def("Engine", [inspect, typing](py::object& object, const std::string& name,
-            const std::string& version){
-        return sente::GTP::engineDecorator(object, name, version, inspect, typing);
+    gtp.def("Engine", [inspect, typing](const std::string& name, const std::string& version)
+    -> std::function<py::object& (py::object&)> {
+        return [inspect, typing, name, version](py::object& object) -> py::object& {
+            return sente::GTP::engineDecorator(object, name, version, inspect, typing);
+        };
     },
-            py::arg("engine"),
             py::arg("name") = "unimplemented_engine", // defualt arguments
             py::arg("version") = "0.0.0");
 
