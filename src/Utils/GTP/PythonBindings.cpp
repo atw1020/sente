@@ -33,25 +33,13 @@ namespace sente::GTP {
         // get some attributes some the function
         // TODO: replace dunder implementation with non-implementation dependent calls
         std::string name = py::str(function.attr("__name__"));
-        std::string qualName = py::str(function.attr("__qualname__"));
         auto annotations = function.attr("__annotations__");
 
         // obtain the argument names
         py::list argumentNames = py::list(inspect.attr("getfullargspec")(function).attr("args"));
 
-        // make sure that we are working with a method and not a function
-        if (qualName.find('.') == std::string::npos or std::string(py::str(argumentNames[0])) != "self"){
-            throw py::value_error("Custom GTP command \"" + name + "\" is not a method (i.e. it dose not belong "
-                                                                   "to a class). custom GTP commands must be methods");
-        }
-
         // make sure the arguments are all have a valid type listed
         for (const auto& argument : argumentNames) {
-
-            // skip this strict type checking for the self argument
-            if (std::string(py::str(argument)) == "self"){
-                continue;
-            }
 
             // throw an error if the argument doesn't have a type annotation
             if (not annotations.contains(argument)){
@@ -126,48 +114,6 @@ namespace sente::GTP {
                                            "type, got " + std::string(py::str(py::type::of(returnType))));
             }
         }
-    }
-
-    py::object& engineDecorator(py::object& engine, const std::string& name, const std::string& version,
-                                const py::module_& inspect, const py::module_& typing){
-
-        // initialize the session
-        engine.attr("session") = Session(name, version);
-        auto* session = py::cast<Session*>(engine.attr("session"));
-
-        // add on the attributes for our user to utilize
-        engine.attr("interpret") = engine.attr("session").attr("interpret");
-
-        // get a list of all the methods
-        py::list attributes = engine.attr("__dict__").attr("items")();
-        std::vector<py::function> commands;
-
-        for (unsigned i = 0; i < attributes.size(); i++){
-
-            py::object attribute = py::tuple(attributes[i])[1];
-
-            if (py::hasattr(attribute, "_sente_gtp_command")){
-                // register the command with the interpreter
-
-                auto fn = py::function(attribute);
-                session->registerCommand(fn, inspect, typing);
-            }
-        }
-
-        return engine;
-
-    }
-
-    py::function commandDecorator(py::function function, const py::module_& inspect,
-                                   const py::module_& typing) {
-
-        // make sure that the GTP command is valid
-        checkGTPCommand(function, inspect, typing);
-
-        // mark the command as a valid gtp command
-        function.attr("_sente_gtp_command") = true;
-
-        return function;
     }
 
 }

@@ -304,11 +304,11 @@ namespace sente::GTP {
         }
     }
 
-    void Session::registerCommand(py::function& function, const py::module_& inspect,
+    py::function& Session::registerCommand(py::function& function, const py::module_& inspect,
                                   const py::module_& typing) {
 
         // check that the function is valid
-        // checkGTPCommand(function, inspect, typing);
+        checkGTPCommand(function, inspect, typing);
 
         // get the argument pattern from the function
         auto argumentPattern = getArgumentPattern(function, inspect);
@@ -317,8 +317,7 @@ namespace sente::GTP {
         std::string name = py::str(function.attr("__name__"));
 
         // define the custom command using a lambda
-
-        CommandMethod wrapper = [function, this](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
             // the self argument is automatically passed by python
@@ -326,16 +325,17 @@ namespace sente::GTP {
 
             // pack the arguments and call the function
             auto args = gtpArgsToPyArgs(arguments);
+
+            py::print(args.size());
+
             py::object response = function(*args);
 
             // pack the results into a response tuple
             bool status;
 
             if (py::isinstance<py::tuple>(response)){
-
                 status = py::bool_(py::tuple(response)[0]);
                 response = py::tuple(response)[1];
-
             }
             else {
                 // otherwise, the message is successful and the response is just what was returned
@@ -351,10 +351,12 @@ namespace sente::GTP {
 
         // register the command with the engine
         registerCommand(name, wrapper, argumentPattern);
+
+        return function;
     }
 
-    void Session::registerGenMove(py::function &function, const py::module_ &inspect, const py::module_ &typing) {
-
+    py::function& Session::registerGenMove(py::function &function, const py::module_ &inspect, const py::module_ &typing) {
+        return function;
     }
 
     std::string Session::getEngineName() const {
@@ -578,9 +580,6 @@ namespace sente::GTP {
 
         auto pyArgs = py::list();
 
-        // remove the first argument
-        auto strippedArguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
-
         Integer* integer;
         Vertex* vertex;
         Color* color;
@@ -588,7 +587,7 @@ namespace sente::GTP {
         Move* move;
         Boolean* bool_;
 
-        for (const auto& argument : strippedArguments){
+        for (const auto& argument : arguments){
 
             auto* literal = (Literal*) argument.get();
 

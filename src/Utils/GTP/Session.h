@@ -26,14 +26,16 @@ namespace sente::GTP {
     class Session {
     public:
 
+        GoGame masterGame; // the game object that the GTP edits
+
         Session(const std::string& engineName, const std::string& engineVersion);
 
         // GTP interpreter
         std::string interpret(std::string text);
 
         // Custom GTP command Registration
-        void registerCommand(py::function& function, const py::module_& inspect, const py::module_& typing);
-        void registerGenMove(py::function& function, const py::module_& inspect, const py::module_& typing);
+        py::function& registerCommand(py::function& function, const py::module_& inspect, const py::module_& typing);
+        py::function& registerGenMove(py::function& function, const py::module_& inspect, const py::module_& typing);
 
         ///
         /// Getter and Setter Methods
@@ -64,8 +66,6 @@ namespace sente::GTP {
 
         std::string engineName;
         std::string engineVersion;
-
-        GoGame masterGame; // the game object that the GTP edits
 
         std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> commands;
 

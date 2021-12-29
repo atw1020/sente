@@ -693,21 +693,17 @@ PYBIND11_MODULE(sente, module){
 
     // gtp.def("Engine")
 
-    gtp.def("Command", [inspect, typing](py::function& function) -> py::function{
-        return sente::GTP::commandDecorator(function, inspect, typing);
-    });
-
-    gtp.def("Engine", [inspect, typing](const std::string& name, const std::string& version)
-    -> std::function<py::object& (py::object&)> {
-        return [inspect, typing, name, version](py::object& object) -> py::object& {
-            return sente::GTP::engineDecorator(object, name, version, inspect, typing);
-        };
-    },
-            py::arg("name") = "unimplemented_engine", // defualt arguments
-            py::arg("version") = "0.0.0");
-
     py::class_<sente::GTP::Session>(gtp, "Session")
+            .def(py::init<std::string, std::string>(),
+                    py::arg("name") = "unimplemented_engine",
+                    py::arg("version") = "0.0.0")
             .def("interpret", &sente::GTP::Session::interpret)
+            .def("genmove", [inspect, typing](py::function& function){
+
+            })
+            .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
+                return session.registerCommand(function, inspect, typing);
+            })
             .def("get_current_sequence", [](sente::GTP::Session& engine){
                 return engine.masterGame.getMoveSequence();
             })

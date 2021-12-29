@@ -10,22 +10,6 @@ import sente
 from sente import gtp
 
 
-@gtp.Engine("octopus", "0.0.1")
-class OctopusGarden:
-
-    @gtp.Command
-    def echo(self, text: str) -> typing.Union[typing.Tuple[bool, str], str]:
-        return True, text
-
-    @gtp.Command
-    def fnord(self, fjord: float) -> typing.Tuple[bool, str]:
-        return True, str(-fjord)
-
-    @gtp.genmove
-    def genmove(self, color: sente.stone) -> sente.Vertex:
-        return sente.Vertex(4, 4)
-
-
 def main():
     """
 
@@ -34,12 +18,24 @@ def main():
     :return:
     """
 
-    octalpus = OctopusGarden()
+    session = gtp.Session("OctalPus", "0.0.1")
 
-    while octalpus.session.active():
-        print(octalpus.interpret(input(">> ")))
+    @session.Command
+    def echo(text: str) -> typing.Union[typing.Tuple[bool, str], str]:
+        return True, text
 
-    print(octalpus.session.get_sequence())
+    @session.Command
+    def fnord(fjord: float) -> typing.Tuple[bool, str]:
+        return True, str(-fjord)
+
+    """@session.genmove
+    def genmove(color: sente.stone) -> sente.Vertex:
+        return sente.Vertex(4, 4)"""
+
+    while session.active():
+        print(session.interpret(input(">> ")))
+
+    print(session.get_sequence())
 
 
 if __name__ == "__main__":
