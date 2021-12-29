@@ -89,6 +89,12 @@ namespace sente {
         this->stone = stone;
     }
 
+    Move::Move(Vertex vertex, Stone stone) {
+        x = vertex.first;
+        y = vertex.second;
+        this->stone = stone;
+    }
+
     unsigned Move::getX() const{
         return x;
     }

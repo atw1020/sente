@@ -326,8 +326,6 @@ namespace sente::GTP {
             // pack the arguments and call the function
             auto args = gtpArgsToPyArgs(arguments);
 
-            py::print(args.size());
-
             py::object response = function(*args);
 
             // pack the results into a response tuple
@@ -355,7 +353,60 @@ namespace sente::GTP {
         return function;
     }
 
-    py::function& Session::registerGenMove(py::function &function, const py::module_ &inspect, const py::module_ &typing) {
+    py::function& Session::registerGenMove(py::function &function, const py::module_ &inspect,
+                                           const py::module_ &typing) {
+
+        // amke sure that the GTP command is formatted correctly
+        checkGTPCommand(function, inspect, typing);
+
+        auto argumentPattern = getArgumentPattern(function, inspect);
+        // TODO: conform that the argument pattern is valid for a genmove command
+
+        CommandMethod wrapper = [function, this](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
+                -> Response {
+
+            // silence warnings about self being unused
+            (void) self;
+
+            // convert the arguments to python objects
+            auto pyArgs = gtpArgsToPyArgs(arguments);
+
+            // call the function
+            py::object response = function(*pyArgs);
+
+            bool status;
+
+            // extract the response
+            if (py::isinstance<py::tuple>(response)){
+                status = py::bool_(py::tuple(response)[0]);
+                response = py::tuple(response)[1];
+            }
+            else {
+                // otherwise, the message is successful and the response is just what was returned
+                status = true;
+            }
+
+            // obtain the resulting move
+            auto color = (Color*) arguments[1].get();
+            auto* vertex = py::cast<sente::Vertex*>(response);
+
+            // play the move
+            sente::Move move = sente::Move(*vertex, color->getColor());
+            if (self->masterGame.getActivePlayer() == color->getColor()){
+                // if it's our move, do a full on play
+                self->masterGame.playStone(move);
+            }
+            else {
+                // if it's not our move, add a stone.
+                self->masterGame.addStone(move);
+            }
+
+            return {status, gtpTypeToString(response)};
+
+        };
+
+        registerCommand("genmove", wrapper, argumentPattern);
+
         return function;
     }
 
@@ -543,9 +594,6 @@ namespace sente::GTP {
         py::list argumentNames = py::list(argSpec.attr("args"));
         std::vector<ArgumentPattern> argumentPattern;
 
-        // slice off the first argument now that it has been checked
-        argumentNames = argumentNames[py::slice(1, argumentNames.size(), 1)];
-
         // add the command to the argument pattern
         argumentPattern.emplace_back("command", STRING);
 
@@ -580,6 +628,9 @@ namespace sente::GTP {
 
         auto pyArgs = py::list();
 
+        // remove the first argument
+        auto strippedArguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
+
         Integer* integer;
         Vertex* vertex;
         Color* color;
@@ -587,7 +638,7 @@ namespace sente::GTP {
         Move* move;
         Boolean* bool_;
 
-        for (const auto& argument : arguments){
+        for (const auto& argument : strippedArguments){
 
             auto* literal = (Literal*) argument.get();
 
