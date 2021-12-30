@@ -704,9 +704,6 @@ PYBIND11_MODULE(sente, module){
             .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
                 return session.registerCommand(function, inspect, typing);
             })
-            .def("get_current_sequence", [](sente::GTP::Session& engine){
-                return engine.masterGame.getMoveSequence();
-            })
             .def("get_sequence", [](sente::GTP::Session& engine){
                 return engine.masterGame.getMoveSequence();
             })

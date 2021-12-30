@@ -340,6 +340,11 @@ namespace sente::GTP {
                 status = true;
             }
 
+            if (not isGTPType(py::type::of(response))){
+                throw py::type_error("function decorated with \"Command\" returned invalid type; expected GTP "
+                                     "compatible variable, got " + std::string(py::str(py::type::of(response))));
+            }
+
             return {status, gtpTypeToString(response)};
         };
 
@@ -373,6 +378,11 @@ namespace sente::GTP {
 
             // call the function
             py::object response = function(*pyArgs);
+
+            if (not py::type::of(response).is(py::type::of<sente::Vertex>())){
+                throw py::type_error("function decorated with \"GenMove\" returned invalid type; expected sente.Vertex,"
+                                     " got " + std::string(py::str(py::type::of(response))));
+            }
 
             bool status;
 

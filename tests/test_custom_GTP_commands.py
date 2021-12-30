@@ -525,3 +525,37 @@ class TestInvalidRegistration(TestCase):
             @session.Command
             def color_followed_by_intersection(color: sente.stone, point: sente.Vertex) -> Tuple[bool, str]:
                 return True, "this should be compressed to a move object"
+
+    def test_wrong_response_type(self):
+        """
+
+        checks to see if the functions with incorrectly labeled response types are caught
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.0")
+
+        @session.Command
+        def wrong_response_type() -> str:
+            return None
+
+        with self.assertRaises(TypeError):
+            session.interpret("test-wrong_response_type")
+
+    def test_wrong_response_type_genmove(self):
+        """
+
+        checks to see if the genmove commands with incorrectly labeled response types are caught
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.0")
+
+        @session.GenMove
+        def genmove(stone: sente.stone) -> sente.Vertex:
+            return None
+
+        with self.assertRaises(TypeError):
+            print(session.interpret("genmove B"))

@@ -11,7 +11,6 @@ namespace sente::GTP {
 
     bool isGTPType(const py::type& type);
 
-
     void checkGTPCommand(py::function& function, const py::module_& inspect,
                          const py::module_& typing);
 
