@@ -53,9 +53,7 @@ namespace sente {
         void setUseASCII(bool useASCII) {
             this->useASCII = useASCII;
         }
-        void setLowerLeftOrigin(bool lowerLeftOrigin) {
-            this->lowerLeftOrigin = lowerLeftOrigin;
-        }
+        virtual void setLowerLeftOrigin(bool lowerLeftOrigin) = 0;
 
         bool getUseASCII() const{
             return useASCII;
@@ -212,7 +210,7 @@ namespace sente {
 
                 for (unsigned j = 0; j < side; j++){
 
-                    switch(board[rowIndex][j]){
+                    switch(board[j][rowIndex]){
                         case BLACK:
                             if (not useASCII){
                                 accumulator << " ⚫";
@@ -231,7 +229,7 @@ namespace sente {
                             break;
                         case EMPTY:
                             // check if we are on a star point
-                            if (isStar(rowIndex, j)){
+                            if (isStar(j, rowIndex)){
                                 accumulator << " *";
                             }
                             else {
@@ -258,6 +256,32 @@ namespace sente {
 
             return accumulator.str();
 
+        }
+
+        void setLowerLeftOrigin(bool lowerLeftOrigin) final {
+
+            // check to see if we need to flip the board
+            if (this->lowerLeftOrigin xor lowerLeftOrigin){
+
+                // make a temporary copy of the board
+                std::array<std::array<Stone, side>, side> copiedBoard;
+
+                for (unsigned i = 0; i < side; i++){
+                    for (unsigned j = 0; j < side; j++){
+                        copiedBoard[i][j] = board[i][j];
+                    }
+                }
+
+                // flip the board horizontally
+                for (unsigned i = 0; i < side; i++){
+                    for (unsigned j = 0; j < side; j++){
+                        board[i][j] = copiedBoard[side - 1 - i][j];
+                    }
+                }
+            }
+
+            // now, set the flag
+            this->lowerLeftOrigin = lowerLeftOrigin;
         }
 
     private:

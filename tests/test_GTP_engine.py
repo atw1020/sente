@@ -7,6 +7,7 @@ Author: Arthur Wesley
 
 from unittest import TestCase
 
+from sente import sgf
 from sente import GTP
 
 
@@ -19,6 +20,10 @@ class CommandFunctionality(TestCase):
 
         :return:
         """
+
+        game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
+        game.play_default_sequence()
+        print(game)
 
         engine = GTP.Session()
 

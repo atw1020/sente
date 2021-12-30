@@ -320,7 +320,7 @@ class CustomGTPCommands(TestCase):
 
         @session.GenMove
         def genmove(stone: sente.stone) -> sente.Vertex:
-            return sente.Vertex(4, 4)
+            return sente.Vertex(3, 5)
 
         session.interpret("boardsize 9")
         session.interpret("genmove B")
@@ -329,8 +329,8 @@ class CustomGTPCommands(TestCase):
                          " 9  .  .  .  .  .  .  .  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
                          " 7  .  .  *  .  .  .  *  .  .\n"
-                         " 6  .  .  .  .  .  .  .  .  .\n"
-                         " 5  .  .  .  .  X  .  .  .  .\n"
+                         " 6  .  .  .  X  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
                          " 4  .  .  .  .  .  .  .  .  .\n"
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
