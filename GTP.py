@@ -28,9 +28,9 @@ def main():
     def fnord(fjord: float) -> typing.Tuple[bool, str]:
         return True, str(-fjord)
 
-    """@session.genmove
+    @session.GenMove
     def genmove(color: sente.stone) -> sente.Vertex:
-        return sente.Vertex(4, 4)"""
+        return sente.Vertex(4, 4)
 
     while session.active():
         print(session.interpret(input(">> ")))

@@ -5,101 +5,10 @@ Author: Arthur Wesley
 """
 
 from unittest import TestCase
+from typing import Tuple, List
 
 import sente
-from sente import gtp
-
-
-class CustomGTPTester(gtp.Engine):
-
-    def __init__(self):
-        super().__init__("test")
-
-        # register commands
-        self.register_command(self.octopus)
-        self.register_command(self.greeting)
-
-        # register acceptable input types
-        self.register_command(self.int_arg)
-        self.register_command(self.vertex_arg)
-        self.register_command(self.echo)
-        self.register_command(self.color_arg)
-        self.register_command(self.float_arg)
-        self.register_command(self.move_arg)
-        self.register_command(self.bool_arg)
-
-        # register acceptable return types
-        self.register_command(self.return_integer)
-        self.register_command(self.return_vertex)
-        self.register_command(self.return_raw_string)
-        self.register_command(self.return_color)
-        self.register_command(self.return_float)
-        self.register_command(self.return_move)
-        self.register_command(self.return_bool)
-
-        # register genmove
-        self.register_command(self.genmove)
-
-        # other tests
-        self.register_command(self.letter_i_skipped_vertex)
-        self.register_command(self.letter_i_skipped_move)
-
-    def echo(self, text: str):
-        return True, text
-
-    def octopus(self):
-        return True, "https://github.com/atw1020/sente/blob/master/tests/invalid%20sgf/octopus.jpeg"
-
-    def greeting(self):
-        return True, "hello, my name is" + self.name
-
-    def int_arg(self, arg: int):
-        return True, str(arg)
-
-    def vertex_arg(self, arg: sente.Vertex):
-        return True, str(arg)
-
-    def color_arg(self, arg: sente.stone):
-        return True, str(arg)
-
-    def float_arg(self, arg: float):
-        return True, str(arg)
-
-    def move_arg(self, arg: sente.Move):
-        return True, str(arg)
-
-    def bool_arg(self, arg: bool):
-        return True, str(arg)
-
-    def return_integer(self):
-        return 5
-
-    def return_vertex(self):
-        return sente.Vertex(4, 4)
-
-    def return_raw_string(self):
-        return "hello hello (Hola!)"
-
-    def return_color(self):
-        return sente.stone.BLACK
-
-    def return_float(self):
-        return 3.14
-
-    def return_move(self):
-        return sente.Move(4, 4, sente.stone.BLACK)
-
-    def return_bool(self):
-        return False
-
-    def genmove(self, stone: sente.stone):
-        return sente.Move(4, 4, sente.stone.BLACK)
-
-    def letter_i_skipped_vertex(self):
-        return sente.Vertex(8, 8)
-
-    def letter_i_skipped_move(self):
-        return sente.Move(8, 8, sente.stone.BLACK)
+from sente import GTP
 
 
 class CustomGTPCommands(TestCase):
@@ -112,9 +21,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= " + engine.octopus()[1] + "\n\n", engine.interpret("test-octopus"))
+        @session.Command
+        def octopus() -> Tuple[bool, str]:
+            return True, "https://github.com/atw1020/sente/blob/master/tests/invalid%20sgf/octopus.jpeg"
+
+        self.assertEqual("= " + octopus()[1] + "\n\n", session.interpret("test-octopus"))
 
     def test_greeting(self):
         """
@@ -124,9 +37,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= " + engine.greeting()[1] + "\n\n", engine.interpret("test-greeting"))
+        @session.Command
+        def greeting() -> Tuple[bool, str]:
+            return True, "hello, my name is" + session.name
+
+        self.assertEqual("= " + greeting()[1] + "\n\n", session.interpret("test-greeting"))
 
     def test_integer_arg(self):
         """
@@ -136,9 +53,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= 8\n\n", engine.interpret("test-int_arg 8"))
+        @session.Command
+        def int_arg(arg: int) -> Tuple[bool, str]:
+            return True, str(arg)
+
+        self.assertEqual("= 8\n\n", session.interpret("test-int_arg 8"))
 
     def test_vertex_arg(self):
         """
@@ -148,9 +69,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= (3, 3)\n\n", engine.interpret("test-vertex_arg D4"))
+        @session.Command
+        def vertex_arg(arg: sente.Vertex) -> Tuple[bool, str]:
+            return True, str(arg)
+
+        self.assertEqual("= " + vertex_arg(sente.Vertex(3, 3))[1] + "\n\n", session.interpret("test-vertex_arg D4"))
 
     def test_echo(self):
         """
@@ -160,10 +85,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= " + engine.echo("silence")[1] + "\n\n",
-                         engine.interpret("test-echo silence"))
+        @session.Command
+        def echo(text: str) -> Tuple[bool, str]:
+            return True, text
+
+        self.assertEqual("= " + echo("silence")[1] + "\n\n",
+                         session.interpret("test-echo silence"))
 
     def test_multi_line_strings(self):
         """
@@ -173,10 +102,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def echo(text: str) -> Tuple[bool, str]:
+            return True, text
 
         self.assertEqual("= this is two lines...\nof a string!\n\n",
-                         engine.interpret("test-echo \"this is two lines...\nof a string!\""))
+                         session.interpret("test-echo \"this is two lines...\nof a string!\""))
 
     def test_color_arg(self):
         """
@@ -186,10 +119,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= " + engine.color_arg(sente.BLACK)[1] + "\n\n",
-                         engine.interpret("test-color_arg BLACK"))
+        @session.Command
+        def color_arg(arg: sente.stone) -> Tuple[bool, str]:
+            return True, str(arg)
+
+        self.assertEqual("= " + color_arg(sente.BLACK)[1] + "\n\n",
+                         session.interpret("test-color_arg BLACK"))
 
     def test_float_arg(self):
         """
@@ -199,10 +136,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def float_arg(arg: float) -> Tuple[bool, str]:
+            return True, str(arg)
 
         self.assertEqual("= 3.140000104904175\n\n",
-                         engine.interpret("test-float_arg 3.14"))
+                         session.interpret("test-float_arg 3.14"))
 
     def test_move_arg(self):
         """
@@ -212,10 +153,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= " + engine.move_arg(sente.Move(3, 3, sente.stone.BLACK))[1] + "\n\n",
-                         engine.interpret("test-move_arg BLACK D4"))
+        @session.Command
+        def move_arg(arg: sente.Move) -> Tuple[bool, str]:
+            return True, str(arg)
+
+        self.assertEqual("= " + move_arg(sente.Move(3, 3, sente.stone.BLACK))[1] + "\n\n",
+                         session.interpret("test-move_arg BLACK D4"))
 
     def test_bool_arg(self):
         """
@@ -225,10 +170,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= " + engine.bool_arg(True)[1] + "\n\n",
-                         engine.interpret("test-bool_arg true"))
+        @session.Command
+        def bool_arg(arg: bool) -> Tuple[bool, str]:
+            return True, str(arg)
+
+        self.assertEqual("= " + bool_arg(True)[1] + "\n\n",
+                         session.interpret("test-bool_arg true"))
 
     def test_return_integer(self):
         """
@@ -238,9 +187,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= 5\n\n", engine.interpret("test-return_integer"))
+        @session.Command
+        def return_integer() -> int:
+            return 5
+
+        self.assertEqual("= 5\n\n", session.interpret("test-return_integer"))
 
     def test_return_vertex(self):
         """
@@ -250,9 +203,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= E5\n\n", engine.interpret("test-return_vertex"))
+        @session.Command
+        def return_vertex() -> sente.Vertex:
+            return sente.Vertex(4, 4)
+
+        self.assertEqual("= E5\n\n", session.interpret("test-return_vertex"))
 
     def test_return_raw_string(self):
         """
@@ -262,9 +219,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= hello hello (Hola!)\n\n", engine.interpret("test-return_raw_string"))
+        @session.Command
+        def return_raw_string() -> str:
+            return "hello hello (Hola!)"
+
+        self.assertEqual("= hello hello (Hola!)\n\n", session.interpret("test-return_raw_string"))
 
     def test_return_color(self):
         """
@@ -274,9 +235,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= B\n\n", engine.interpret("test-return_color"))
+        @session.Command
+        def return_color() -> sente.stone:
+            return sente.stone.BLACK
+
+        self.assertEqual("= B\n\n", session.interpret("test-return_color"))
 
     def test_return_float(self):
         """
@@ -286,9 +251,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= 3.14\n\n", engine.interpret("test-return_float"))
+        @session.Command
+        def return_float() -> float:
+            return 3.14
+
+        self.assertEqual("= 3.14\n\n", session.interpret("test-return_float"))
 
     def test_return_move(self):
         """
@@ -298,9 +267,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= B E5\n\n", engine.interpret("test-return_move"))
+        @session.Command
+        def return_move() -> sente.Move:
+            return sente.Move(4, 4, sente.stone.BLACK)
+
+        self.assertEqual("= B E5\n\n", session.interpret("test-return_move"))
 
     def test_return_bool(self):
         """
@@ -310,9 +283,13 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= false\n\n", engine.interpret("test-return_bool"))
+        @session.Command
+        def return_bool() -> bool:
+            return False
+
+        self.assertEqual("= false\n\n", session.interpret("test-return_bool"))
 
     def test_gen_move_override(self):
         """
@@ -322,11 +299,14 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        engine.interpret("boardsize 9")
+        @session.GenMove
+        def genmove(stone: sente.stone) -> sente.Vertex:
+            return sente.Vertex(4, 4)
 
-        self.assertEqual("= B E5\n\n", )
+        # check that the move is generated
+        self.assertEqual("= E5\n\n", session.interpret("genmove B"))
 
     def test_gen_move_plays_move(self):
         """
@@ -336,12 +316,17 @@ class CustomGTPCommands(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        engine.interpret("boardsize 9")
-        engine.interpret("genmove B")
+        @session.GenMove
+        def genmove(stone: sente.stone) -> sente.Vertex:
+            return sente.Vertex(4, 4)
 
-        self.assertEqual(" 9  .  .  .  .  .  .  .  .  .\n"
+        session.interpret("boardsize 9")
+        session.interpret("genmove B")
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
                          " 7  .  .  *  .  .  .  *  .  .\n"
                          " 6  .  .  .  .  .  .  .  .  .\n"
@@ -350,7 +335,8 @@ class CustomGTPCommands(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n\n", session.interpret("showboard"))
+
 
 class InterpreterSyntaxChecking(TestCase):
 
@@ -362,11 +348,15 @@ class InterpreterSyntaxChecking(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def echo(text: str) -> Tuple[bool, str]:
+            return True, text
 
         self.assertEqual("? no viable argument pattern for command \"test-echo\"; "
                          "candidate pattern not valid: expected string in position 1, got integer\n\n",
-                         engine.interpret("test-echo 53"))
+                         session.interpret("test-echo 53"))
 
     def test_echo_wrong_number_arguments(self):
         """
@@ -376,10 +366,14 @@ class InterpreterSyntaxChecking(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def echo(text: str) -> Tuple[bool, str]:
+            return True, text
 
         self.assertEqual("? invalid number of arguments for command \"test-echo\"; expected 1, got 5\n\n",
-                         engine.interpret("test-echo in the world of silence"))
+                         session.interpret("test-echo in the world of silence"))
 
     def test_letter_i_skipped_vertex(self):
         """
@@ -389,9 +383,13 @@ class InterpreterSyntaxChecking(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= J9\n\n", engine.interpret("test-letter_i_skipped_vertex"))
+        @session.Command
+        def letter_i_skipped_vertex() -> sente.Vertex:
+            return sente.Vertex(8, 8)
+
+        self.assertEqual("= J9\n\n", session.interpret("test-letter_i_skipped_vertex"))
 
     def test_letter_i_skipped_move(self):
         """
@@ -401,36 +399,13 @@ class InterpreterSyntaxChecking(TestCase):
         :return:
         """
 
-        engine = CustomGTPTester()
+        session = GTP.Session("test", "0.0.1")
 
-        self.assertEqual("= B J9\n\n", engine.interpret("test-letter_i_skipped_move"))
+        @session.Command
+        def letter_i_skipped_move() -> sente.Move:
+            return sente.Move(8, 8, sente.stone.BLACK)
 
-
-class InvalidRegistration(gtp.Engine):
-
-    def __init__(self):
-        super().__init__("test")
-
-    def unlabeled_arguments(self, arg):
-        return True, "you shouldn't be able to use this!" + arg
-
-    def non_tuple_response(self):
-        return [False, "lists aren't acceptable"]
-
-    def wrong_number_responses(self):
-        return 1, 2, 3
-
-    def test_tuple_first_item_wrong(self):
-        return "false", "not real bool!"
-
-    def test_tuple_second_item_wrong(self):
-        return True, []
-
-    def color_followed_by_intersection(self, color: sente.stone, point: sente.Vertex):
-        return True, "this should be compressed to a move object"
-
-    def dictionaries_argument(self, arg: dict):
-        return False, "dictionaries are invalid arguments"
+        self.assertEqual("= B J9\n\n", session.interpret("test-letter_i_skipped_move"))
 
 
 def my_message(arg: str):
@@ -447,23 +422,13 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(ValueError):
-            engine.register_command(engine.unlabeled_arguments)
 
-    def test_non_method(self):
-        """
-
-        makes sure that passing in a function that is not a method causes an error
-
-        :return:
-        """
-
-        engine = InvalidRegistration()
-
-        with self.assertRaises(ValueError):
-            engine.register_command(my_message)
+            @session.Command
+            def unlabeled_arguments(arg) -> Tuple[bool, str]:
+                return True, "you shouldn't be able to use this!" + arg
 
     def test_bad_input_type(self):
         """
@@ -473,10 +438,13 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(TypeError):
-            engine.register_command(engine.dictionaries_argument)
+
+            @session.Command
+            def dictionaries_argument(arg: dict) -> Tuple[bool, str]:
+                return False, "dictionaries are invalid arguments"
 
     def test_non_tuple_response(self):
         """
@@ -486,11 +454,13 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
-        engine.register_command(engine.non_tuple_response)
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(TypeError):
-            engine.interpret("test-non_tuple_response")
+
+            @session.Command
+            def non_tuple_response() -> List[bool, str]:
+                return [False, "lists aren't acceptable"]
 
     def test_bad_tuple_response(self):
         """
@@ -500,11 +470,13 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
-        engine.register_command(engine.wrong_number_responses)
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(ValueError):
-            engine.interpret("test-wrong_number_responses")
+
+            @session.Command
+            def wrong_number_responses() -> Tuple[int, int, int]:
+                return 1, 2, 3
 
     def test_wrong_tuple_first_element(self):
         """
@@ -514,11 +486,13 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
-        engine.register_command(engine.test_tuple_first_item_wrong)
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(TypeError):
-            engine.interpret("test-test_tuple_first_item_wrong")
+
+            @session.Command
+            def test_tuple_first_item_wrong() -> Tuple[str, str]:
+                return "false", "not real bool!"
 
     def test_wrong_tuple_second_element(self):
         """
@@ -528,11 +502,13 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
-        engine.register_command(engine.test_tuple_second_item_wrong)
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(TypeError):
-            engine.interpret("test-test_tuple_second_item_wrong")
+
+            @session.Command
+            def test_tuple_second_item_wrong() -> Tuple[bool, list]:
+                return True, []
 
     def test_point_followed_by_color_illegal(self):
         """
@@ -542,7 +518,10 @@ class TestInvalidRegistration(TestCase):
         :return:
         """
 
-        engine = InvalidRegistration()
+        session = GTP.Session("test", "0.0.1")
 
         with self.assertRaises(ValueError):
-            engine.register_command(engine.color_followed_by_intersection)
+
+            @session.Command
+            def color_followed_by_intersection(color: sente.stone, point: sente.Vertex) -> Tuple[bool, str]:
+                return True, "this should be compressed to a move object"

@@ -356,13 +356,13 @@ namespace sente::GTP {
     py::function& Session::registerGenMove(py::function &function, const py::module_ &inspect,
                                            const py::module_ &typing) {
 
-        // amke sure that the GTP command is formatted correctly
+        // make sure that the GTP command is formatted correctly
         checkGTPCommand(function, inspect, typing);
 
         auto argumentPattern = getArgumentPattern(function, inspect);
         // TODO: conform that the argument pattern is valid for a genmove command
 
-        CommandMethod wrapper = [function, this](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response {
 
             // silence warnings about self being unused

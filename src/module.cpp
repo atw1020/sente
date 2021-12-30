@@ -689,17 +689,17 @@ PYBIND11_MODULE(sente, module){
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
 
-    auto gtp = module.def_submodule("gtp", "utilities for implementing the go text protocol (GTP)");
+    auto GTP = module.def_submodule("GTP", "utilities for implementing the go text protocol (GTP)");
 
     // gtp.def("Engine")
 
-    py::class_<sente::GTP::Session>(gtp, "Session")
+    py::class_<sente::GTP::Session>(GTP, "Session")
             .def(py::init<std::string, std::string>(),
                     py::arg("name") = "unimplemented_engine",
                     py::arg("version") = "0.0.0")
             .def("interpret", &sente::GTP::Session::interpret)
-            .def("genmove", [inspect, typing](py::function& function){
-
+            .def("GenMove", [inspect, typing](sente::GTP::Session& session, py::function& function){
+                return session.registerGenMove(function, inspect, typing);
             })
             .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
                 return session.registerCommand(function, inspect, typing);
