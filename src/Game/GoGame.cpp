@@ -137,7 +137,7 @@ namespace sente {
             return false;
         }
         // std::cout << "passed isOnBoard" << std::endl;
-        bool isEmpty = board->isEmpty(move);
+        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
@@ -199,7 +199,7 @@ namespace sente {
             if (not board->isOnBoard(move)){
                 throw utils::IllegalMoveException(utils::OFF_BOARD, move);
             }
-            if (not board->isEmpty(move)){
+            if (board->getStone(move.getVertex()) != EMPTY){
                 throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
             }
             if (not isCorrectColor(move)){
@@ -237,7 +237,7 @@ namespace sente {
             return false;
         }
         // std::cout << "passed isOnBoard" << std::endl;
-        bool isEmpty = board->isEmpty(move);
+        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
@@ -260,7 +260,7 @@ namespace sente {
             if (not board->isOnBoard(move)){
                 throw utils::IllegalMoveException(utils::OFF_BOARD, move);
             }
-            if (not board->isEmpty(move)){
+            if (board->getStone(move.getVertex()) != EMPTY){
                 throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
             }
             if (not isNotSelfCapture(move)){

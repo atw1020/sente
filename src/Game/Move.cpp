@@ -123,6 +123,10 @@ namespace sente {
         return other.x != x or other.y != y or other.stone != stone;
     }
 
+    Vertex Move::getVertex() const {
+        return {x, y};
+    }
+
     std::vector<Vertex> Move::getAdjacentMoves(unsigned boardSize) const{
 
         std::vector<Vertex> adjacents;

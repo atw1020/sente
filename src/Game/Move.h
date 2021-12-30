@@ -65,6 +65,7 @@ namespace sente {
         bool operator==(const Move& other) const;
         bool operator!=(const Move& other) const;
 
+        Vertex getVertex() const;
         std::vector<Vertex> getAdjacentMoves(unsigned boardSize) const;
 
         explicit operator std::string() const;

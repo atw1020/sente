@@ -35,7 +35,6 @@ namespace sente {
         virtual ~_board() {};
 
         virtual bool isOnBoard(const Move& move) const = 0;
-        virtual bool isEmpty(const Move& move) const = 0;
 
         virtual void captureStone(const Move&) = 0;
         virtual void playStone(const Move& move) = 0;
@@ -53,7 +52,9 @@ namespace sente {
         void setUseASCII(bool useASCII) {
             this->useASCII = useASCII;
         }
-        virtual void setLowerLeftOrigin(bool lowerLeftOrigin) = 0;
+        void setLowerLeftOrigin(bool lowerLeftOrigin) {
+            this->lowerLeftOrigin = lowerLeftOrigin;
+        };
 
         bool getUseASCII() const{
             return useASCII;
@@ -114,16 +115,24 @@ namespace sente {
 
             return xInRange and yInRange;
         }
-        [[nodiscard]] bool isEmpty(const Move& move) const override {
-            return board[move.getX()][move.getY()] == EMPTY;
-        }
 
         void playStone(const Move& move) override{
-            board[move.getX()][move.getY()] = move.getStone();
+            if (not lowerLeftOrigin){
+                // if the origin of this board is defined
+                board[move.getX()][move.getY()] = move.getStone();
+            }
+            else {
+                board[move.getX()][side - 1 - move.getY()] = move.getStone();
+            }
         }
 
         void captureStone(const Move& move) override{
-            board[move.getX()][move.getY()] = EMPTY;
+            if (not lowerLeftOrigin){
+                board[move.getX()][move.getY()] = EMPTY;
+            }
+            else {
+                board[move.getX()][side - 1 - move.getY()] = EMPTY;
+            }
         }
 
         [[nodiscard]] bool isStar(unsigned x, unsigned y) const;
@@ -136,14 +145,24 @@ namespace sente {
             if (not isOnBoard(Move(x, y, BLACK))){
                 throw std::out_of_range("Move not on board");
             }
-            return Move(x, y, board[x][y]);
+            if (not lowerLeftOrigin){
+                return Move(x, y, board[x][y]);
+            }
+            else {
+                return Move(x, side - 1 - y, board[x][y]);
+            }
         }
         [[nodiscard]] Move getSpace(Vertex point) const override {
             return getSpace(point.first, point.second);
         }
 
         [[nodiscard]] Stone getStone(unsigned x, unsigned y) const override {
-            return board[x][y];
+            if (not lowerLeftOrigin){
+                return board[x][y];
+            }
+            else {
+                return board[x][side - 1 - y];
+            }
         }
         [[nodiscard]] Stone getStone(Vertex point) const override {
             return getStone(point.first, point.second);
@@ -210,7 +229,7 @@ namespace sente {
 
                 for (unsigned j = 0; j < side; j++){
 
-                    switch(board[j][rowIndex]){
+                    switch(board[j][i]){
                         case BLACK:
                             if (not useASCII){
                                 accumulator << " ⚫";
@@ -229,7 +248,7 @@ namespace sente {
                             break;
                         case EMPTY:
                             // check if we are on a star point
-                            if (isStar(j, rowIndex)){
+                            if (isStar(j, i)){
                                 accumulator << " *";
                             }
                             else {
@@ -256,32 +275,6 @@ namespace sente {
 
             return accumulator.str();
 
-        }
-
-        void setLowerLeftOrigin(bool lowerLeftOrigin) final {
-
-            // check to see if we need to flip the board
-            if (this->lowerLeftOrigin xor lowerLeftOrigin){
-
-                // make a temporary copy of the board
-                std::array<std::array<Stone, side>, side> copiedBoard;
-
-                for (unsigned i = 0; i < side; i++){
-                    for (unsigned j = 0; j < side; j++){
-                        copiedBoard[i][j] = board[i][j];
-                    }
-                }
-
-                // flip the board horizontally
-                for (unsigned i = 0; i < side; i++){
-                    for (unsigned j = 0; j < side; j++){
-                        board[i][j] = copiedBoard[side - 1 - i][j];
-                    }
-                }
-            }
-
-            // now, set the flag
-            this->lowerLeftOrigin = lowerLeftOrigin;
         }
 
     private:
