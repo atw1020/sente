@@ -7,7 +7,7 @@ Author: Arthur Wesley
 from unittest import TestCase
 
 import sente
-from sente import gtp
+from sente import GTP
 
 
 class MinimumGTPCommands(TestCase):
@@ -20,7 +20,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("=1 2\n\n", engine.interpret("1 protocol_version\n"))
         self.assertEqual("=5 2\n\n", engine.interpret("5 protocol_version\n"))
@@ -35,7 +35,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= 2\n\n", engine.interpret("protocol_version\n"))
 
@@ -47,11 +47,11 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= unimplemented_engine\n\n", engine.interpret("name\n"))
 
-        engine2 = gtp.Engine("Ceph_the_octopus")
+        engine2 = GTP.Session("Ceph_the_octopus")
         self.assertEqual("= Ceph_the_octopus\n\n", engine2.interpret("name\n"))
 
     def test_version(self):
@@ -62,7 +62,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= 0.0.0\n\n", engine.interpret("version\n"))
 
@@ -74,7 +74,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= true\n\n", engine.interpret("known_command protocol_version\n"))
         self.assertEqual("= true\n\n", engine.interpret("known_command name\n"))
@@ -96,7 +96,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= false\n\n", engine.interpret("known_command there's_no_risky_thing\n"))
         self.assertEqual("= false\n\n", engine.interpret("known_command for_a_man_whose_determined_to_fall\n"))
@@ -110,7 +110,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         # TODO: more precise testing
         commands = engine.interpret("list_commands")
@@ -135,7 +135,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertTrue(engine.active())
         self.assertEqual("= \n\n", engine.interpret("quit"))
@@ -149,7 +149,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
         self.assertEqual("= \n"
@@ -172,7 +172,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("play B D4\n")
 
@@ -207,7 +207,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         with self.assertRaises(RuntimeError):
             engine.interpret("genmove B")
@@ -220,7 +220,7 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("boardsize 9")
         engine.interpret("play B D4")
@@ -249,7 +249,7 @@ class ErrorMessages(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("? unknown command\n\n", engine.interpret("please_tell_me_who_I_am"))
         self.assertEqual("? unknown command\n\n", engine.interpret("unknown_command"))
@@ -263,7 +263,7 @@ class ErrorMessages(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("? unacceptable size\n\n", engine.interpret("boardsize 10"))
 
@@ -275,7 +275,7 @@ class ErrorMessages(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("play B D4")
         self.assertEqual("? illegal move\n\n", engine.interpret("play W D4"))
@@ -288,7 +288,7 @@ class ErrorMessages(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= \n\n", engine.interpret("play W D4"))
 
@@ -303,7 +303,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("play B D4")
 
@@ -317,7 +317,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("boardsize 9")
         engine.interpret("play B D4")
@@ -357,7 +357,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("boardsize 9")
         engine.interpret("play B H8")
@@ -395,7 +395,7 @@ class OtherCompliance(TestCase):
 
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         with self.assertRaises(RuntimeError):
             engine.interpret("play B I9")
@@ -408,7 +408,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("", engine.interpret("# this is a test"))
         self.assertEqual("= 2\n\n", engine.interpret("protocol_version # this is a test"))
@@ -421,7 +421,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual(engine.interpret("boardsize 9") + engine.interpret("showboard"),
                          engine.interpret("boardsize 9\nshowboard"))
@@ -434,7 +434,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= \n\n= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
@@ -468,7 +468,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= \n\n", engine.interpret("\t\tboardsize\t 9 "))
         self.assertEqual("=1 \n\n", engine.interpret("\t1 \t play    B D4   \t "))
@@ -493,7 +493,7 @@ class OtherCompliance(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= \n\n= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"

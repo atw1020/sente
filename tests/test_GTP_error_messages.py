@@ -6,7 +6,7 @@ Author: Arthur Wesley
 
 from unittest import TestCase
 
-from sente import gtp
+from sente import GTP
 
 
 class ErrorMessages(TestCase):
@@ -19,7 +19,7 @@ class ErrorMessages(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("? invalid number of arguments for command \"play\"; expected 1, got 3\n\n",
                          engine.interpret("play BLACK 4 4"))
@@ -38,7 +38,7 @@ class ErrorMessages(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("? no viable argument pattern for command \"loadsgf\"; "
                          "candidate pattern not valid: expected integer in position 2, got string\n\n",

@@ -7,7 +7,7 @@ Author: Arthur Wesley
 
 from unittest import TestCase
 
-from sente import gtp
+from sente import GTP
 
 
 class CommandFunctionality(TestCase):
@@ -20,7 +20,7 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("loadsgf sgf/34839594-255-IDW64-noob_bot_3.sgf")
         self.assertEqual("= \n"
@@ -57,7 +57,7 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("loadsgf sgf/CheongSu-hyeon-KimIl-hwan13651.sgf 50")
         self.assertEqual("= \n"
@@ -91,7 +91,7 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("boardsize 9")
         engine.interpret("play B D4")
@@ -117,7 +117,7 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         engine.interpret("boardsize 9")
         engine.interpret("play B D4")
@@ -150,7 +150,7 @@ class EngineFunctionality(TestCase):
         """
 
         with self.assertRaises(ValueError):
-            gtp.Engine("this name has so many spaces in it!")
+            GTP.Session("this name has so many spaces in it!")
 
     def test_no_spaces_in_name(self):
         """
@@ -160,7 +160,7 @@ class EngineFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         with self.assertRaises(ValueError):
             engine.name = "this name has so many spaces in it!"
@@ -174,7 +174,7 @@ class EngineFunctionality(TestCase):
         """
 
         with self.assertRaises(ValueError):
-            gtp.Engine("this-name-has-so-many-dashes-in-it!")
+            GTP.Session("this-name-has-so-many-dashes-in-it!")
 
     def test_no_dashes_in_name_setter(self):
         """
@@ -184,7 +184,7 @@ class EngineFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         with self.assertRaises(ValueError):
             engine.name = "this-name-has-so-many-dashes-in-it!"
@@ -197,6 +197,6 @@ class EngineFunctionality(TestCase):
         :return:
         """
 
-        engine = gtp.Engine()
+        engine = GTP.Session()
 
         self.assertEqual("= \n\n", engine.interpret("loadsgf \"sgf/Lee Sedol ladder game.sgf\""))
