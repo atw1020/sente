@@ -165,7 +165,7 @@ namespace sente {
 
             Vertex ko = game.getKoPoint();
 
-            if (ko.first == toCheck.first and ko.second == toCheck.second){
+            if (ko.getX() == toCheck.getX() and ko.getY() == toCheck.getY()){
                 buffer_ptr[bufferIndex] = 1;
             }
             else {

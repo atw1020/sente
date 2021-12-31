@@ -353,10 +353,12 @@ namespace sente {
     void GoGame::playMoveSequence(const std::vector<Move>& moves) {
 
         auto baseMoveSequence = getMoveSequence();
+        py::print("entering playMoveSequence");
 
         try {
-            // play all of the stones in the sequence
+            // play all the stones in the sequence
             for (const auto& move : moves){
+                py::print(move);
                 playStone(move);
             }
         }
@@ -541,7 +543,7 @@ namespace sente {
     }
 
     Stone GoGame::getSpace(Vertex point) const {
-        return getSpace(point.first, point.second);
+        return getSpace(point.getX(), point.getY());
     }
     Stone GoGame::getSpace(unsigned x, unsigned y) const {
         return board->getSpace(x, y).getStone();

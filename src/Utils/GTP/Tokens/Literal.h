@@ -56,6 +56,8 @@ namespace sente::GTP {
         unsigned getX() const;
         unsigned getY() const;
 
+        sente::Vertex toVertex(unsigned side);
+
         LiteralType getLiteralType() const final;
 
     private:
@@ -107,10 +109,12 @@ namespace sente::GTP {
     public:
         Move(const Color& color, const Vertex& vertex);
 
-        sente::Move getMove();
+        sente::Move getMove(unsigned side);
 
         LiteralType getLiteralType() const final;
     private:
+
+        bool flipped;
 
         sente::Move move;
 

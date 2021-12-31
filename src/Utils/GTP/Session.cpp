@@ -62,15 +62,15 @@ namespace sente::GTP {
             char first;
 
             // determine the letter
-            if (vertex->first + 'A' < 'I'){
-                first = 'A' + vertex->first;
+            if (vertex->getX() + 'A' < 'I'){
+                first = 'A' + vertex->getX();
             }
             else {
-                first = 'B' + vertex->first;
+                first = 'B' + vertex->getX();
             }
 
             // add the letter to the second co-ord
-            std::string message = std::to_string(vertex->second + 1);
+            std::string message = std::to_string(vertex->getY() + 1);
             message.insert(message.begin(), first);
 
             return message;
@@ -320,11 +320,8 @@ namespace sente::GTP {
         CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
-            // the self argument is automatically passed by python
-            (void) self;
-
             // pack the arguments and call the function
-            auto args = gtpArgsToPyArgs(arguments);
+            auto args = gtpArgsToPyArgs(arguments, self->masterGame.getSide());
 
             py::object response = function(*args);
 
@@ -370,11 +367,8 @@ namespace sente::GTP {
         CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response {
 
-            // silence warnings about self being unused
-            (void) self;
-
             // convert the arguments to python objects
-            auto pyArgs = gtpArgsToPyArgs(arguments);
+            auto pyArgs = gtpArgsToPyArgs(arguments, self->masterGame.getSide());
 
             // call the function
             py::object response = function(*pyArgs);
@@ -634,7 +628,7 @@ namespace sente::GTP {
      * @param arguments vector containing the arguments to be converted
      * @return python tuple that can be passed to a python function
      */
-    py::tuple Session::gtpArgsToPyArgs(const std::vector<std::shared_ptr<Token>>& arguments) {
+    py::tuple Session::gtpArgsToPyArgs(const std::vector<std::shared_ptr<Token>>& arguments, unsigned boardSize) {
 
         auto pyArgs = py::list();
 
@@ -659,7 +653,7 @@ namespace sente::GTP {
                     break;
                 case VERTEX:
                     vertex = (Vertex*) literal;
-                    pyArgs.append(py::cast(sente::Vertex(vertex->getX(), vertex->getY())));
+                    pyArgs.append(py::cast(vertex->toVertex(boardSize)));
                     break;
                 case STRING:
                     pyArgs.append(py::str(literal->getText()));
@@ -674,7 +668,7 @@ namespace sente::GTP {
                     break;
                 case MOVE:
                     move = (Move*) literal;
-                    pyArgs.append(py::cast(move->getMove()));
+                    pyArgs.append(py::cast(move->getMove(boardSize)));
                     break;
                 case BOOLEAN:
                     bool_ = (Boolean*) literal;

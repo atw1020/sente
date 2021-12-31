@@ -21,8 +21,8 @@ namespace sente::utils {
         for (const auto& move : group.getMoves()){
 
             for (const auto& adjacentSpace : move.getAdjacentMoves(board.getSide())){
-                if (board.getSpace(adjacentSpace.first, adjacentSpace.second).getStone() == EMPTY){
-                    liberties.insert(Move(adjacentSpace.first, adjacentSpace.second, EMPTY));
+                if (board.getSpace(adjacentSpace.getX(), adjacentSpace.getY()).getStone() == EMPTY){
+                    liberties.insert(Move(adjacentSpace.getX(), adjacentSpace.getY(), EMPTY));
                 }
             }
         }

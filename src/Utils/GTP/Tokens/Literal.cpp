@@ -56,6 +56,10 @@ namespace sente::GTP {
         return y;
     }
 
+    sente::Vertex Vertex::toVertex(unsigned side) {
+        return {x, side - y};
+    }
+
     Vertex::Vertex(const std::string& vertex) : Literal(vertex) {
 
         if (vertex[0] < 'I'){
@@ -132,9 +136,14 @@ namespace sente::GTP {
 
     Move::Move(const Color& color, const Vertex& vertex) : Literal(color.getText() + " " + vertex.getText()){
         move = sente::Move(vertex.getY(), vertex.getX(), color.getColor());
+        flipped = false;
     }
 
-    sente::Move Move::getMove() {
+    sente::Move Move::getMove(unsigned side) {
+        if (not flipped){
+            move.flipOriginY(side);
+            flipped = true;
+        }
         return move;
     }
 

@@ -117,22 +117,11 @@ namespace sente {
         }
 
         void playStone(const Move& move) override{
-            if (not lowerLeftOrigin){
-                // if the origin of this board is defined
-                board[move.getX()][move.getY()] = move.getStone();
-            }
-            else {
-                board[move.getX()][side - 1 - move.getY()] = move.getStone();
-            }
+            board[move.getX()][move.getY()] = move.getStone();
         }
 
         void captureStone(const Move& move) override{
-            if (not lowerLeftOrigin){
-                board[move.getX()][move.getY()] = EMPTY;
-            }
-            else {
-                board[move.getX()][side - 1 - move.getY()] = EMPTY;
-            }
+            board[move.getX()][move.getY()] = EMPTY;
         }
 
         [[nodiscard]] bool isStar(unsigned x, unsigned y) const;
@@ -145,27 +134,17 @@ namespace sente {
             if (not isOnBoard(Move(x, y, BLACK))){
                 throw std::out_of_range("Move not on board");
             }
-            if (not lowerLeftOrigin){
-                return Move(x, y, board[x][y]);
-            }
-            else {
-                return Move(x, side - 1 - y, board[x][y]);
-            }
+            return Move(x, y, board[x][y]);
         }
         [[nodiscard]] Move getSpace(Vertex point) const override {
-            return getSpace(point.first, point.second);
+            return getSpace(point.getX(), point.getY());
         }
 
         [[nodiscard]] Stone getStone(unsigned x, unsigned y) const override {
-            if (not lowerLeftOrigin){
-                return board[x][y];
-            }
-            else {
-                return board[x][side - 1 - y];
-            }
+            return board[x][y];
         }
         [[nodiscard]] Stone getStone(Vertex point) const override {
-            return getStone(point.first, point.second);
+            return getStone(point.getX(), point.getY());
         }
 
         bool operator ==(const Board<side>& other) const {

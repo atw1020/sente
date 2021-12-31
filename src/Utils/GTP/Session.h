@@ -85,7 +85,7 @@ namespace sente::GTP {
                                                  const std::vector<std::shared_ptr<Token>>& arguments);
 
         static std::vector<ArgumentPattern> getArgumentPattern(py::function& function, const py::module_& inspect);
-        static py::tuple gtpArgsToPyArgs(const std::vector<std::shared_ptr<Token>>& arguments);
+        static py::tuple gtpArgsToPyArgs(const std::vector<std::shared_ptr<Token>>& arguments, unsigned boardSize);
 
     };
 }

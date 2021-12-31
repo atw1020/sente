@@ -75,7 +75,7 @@ class CustomGTPCommands(TestCase):
         def vertex_arg(arg: sente.Vertex) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + vertex_arg(sente.Vertex(3, 3))[1] + "\n\n", session.interpret("test-vertex_arg D4"))
+        self.assertEqual("= " + vertex_arg(sente.Vertex(3, 16))[1] + "\n\n", session.interpret("test-vertex_arg D4"))
 
     def test_echo(self):
         """
@@ -159,7 +159,7 @@ class CustomGTPCommands(TestCase):
         def move_arg(arg: sente.Move) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + move_arg(sente.Move(3, 3, sente.stone.BLACK))[1] + "\n\n",
+        self.assertEqual("= " + move_arg(sente.Move(3, 15, sente.stone.BLACK))[1] + "\n\n",
                          session.interpret("test-move_arg BLACK D4"))
 
     def test_bool_arg(self):
@@ -320,7 +320,7 @@ class CustomGTPCommands(TestCase):
 
         @session.GenMove
         def genmove(stone: sente.stone) -> sente.Vertex:
-            return sente.Vertex(3, 5)
+            return sente.Vertex(3, 3)
 
         session.interpret("boardsize 9")
         session.interpret("genmove B")

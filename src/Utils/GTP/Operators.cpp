@@ -79,14 +79,14 @@ namespace sente::GTP {
         // generate a move from the arguments
         Move* move = (Move*) arguments[1].get();
 
-        if (self->masterGame.isAddLegal(move->getMove())){
-            if (self->masterGame.isLegal(move->getMove())){
+        if (self->masterGame.isAddLegal(move->getMove(self->masterGame.getSide()))){
+            if (self->masterGame.isLegal(move->getMove(self->masterGame.getSide()))){
                 // play the stone
-                self->masterGame.playStone(move->getMove());
+                self->masterGame.playStone(move->getMove(self->masterGame.getSide()));
                 return {true, ""};
             }
             else {
-                self->masterGame.addStone(move->getMove());
+                self->masterGame.addStone(move->getMove(self->masterGame.getSide()));
                 return {true, ""};
             }
         }

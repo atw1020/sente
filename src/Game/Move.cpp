@@ -12,8 +12,16 @@ namespace py = pybind11;
 
 namespace sente {
 
-    Vertex::Vertex(unsigned int first, unsigned int second) {
-        this->first = first; this->second = second;
+    Vertex::Vertex(unsigned int x, unsigned int y) {
+        this->x = x; this->y = y;
+    }
+
+    unsigned Vertex::getX() const {
+        return x;
+    }
+
+    unsigned Vertex::getY() const {
+        return y;
     }
 
     Stone getOpponent(Stone player){
@@ -90,8 +98,8 @@ namespace sente {
     }
 
     Move::Move(Vertex vertex, Stone stone) {
-        x = vertex.first;
-        y = vertex.second;
+        x = vertex.getX();
+        y = vertex.getY();
         this->stone = stone;
     }
 
@@ -174,6 +182,10 @@ namespace sente {
 
         return str.str();
 
+    }
+
+    void Move::flipOriginY(unsigned int side) {
+        y = side - 1 - y;
     }
 }
 

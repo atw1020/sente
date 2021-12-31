@@ -92,18 +92,22 @@ PYBIND11_MODULE(sente, module){
             .def(py::init<unsigned, unsigned>(),
                  py::arg("first"),
                  py::arg("second"))
-            .def_property("first", [](sente::Vertex& point){
-                return point.first;
+            .def_property("x", [](const sente::Vertex& point){
+                return point.getX();
             }, [](sente::Vertex& point, unsigned newValue){
-                point.first = newValue;
+                (void) point;
+                (void) newValue;
+                throw std::runtime_error("attribute 'x' is a read-only property and cannot be set");
             })
-            .def_property("second", [](sente::Vertex& point){
-                return point.second;
+            .def_property("x", [](const sente::Vertex& point){
+                return point.getY();
             }, [](sente::Vertex& point, unsigned newValue){
-                point.second = newValue;
+                (void) point;
+                (void) newValue;
+                throw std::runtime_error("attribute 'y' is a read-only property and cannot be set");
             })
             .def("__repr__", [](const sente::Vertex& point){
-                return "Vertex(x=" + std::to_string(point.first) + ", y=" + std::to_string(point.second) + ")";
+                return "Vertex(x=" + std::to_string(point.getX()) + ", y=" + std::to_string(point.getY()) + ")";
             });
 
     py::class_<sente::Move>(module, "Move", R"pbdoc(
