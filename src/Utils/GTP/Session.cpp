@@ -43,7 +43,7 @@ namespace sente::GTP {
             {"bool", BOOLEAN}
     };
 
-    std::string gtpTypeToString(py::object object){
+    std::string gtpTypeToString(py::object object, unsigned side){
 
         if (py::type::of(object).is(py::type::of(py::int_())) or
             py::isinstance<py::str>(object) or
@@ -57,7 +57,7 @@ namespace sente::GTP {
         }
         if (py::isinstance<sente::Vertex>(object)){
             // cast to a point
-            sente::Vertex* vertex = object.cast<sente::Vertex*>();
+            auto* vertex = object.cast<sente::Vertex*>();
 
             char first;
 
@@ -70,7 +70,7 @@ namespace sente::GTP {
             }
 
             // add the letter to the second co-ord
-            std::string message = std::to_string(vertex->getY() + 1);
+            std::string message = std::to_string(side - vertex->getY());
             message.insert(message.begin(), first);
 
             return message;
@@ -98,7 +98,7 @@ namespace sente::GTP {
             }
 
             // add the letter to the second co-ord
-            std::string pointMessage = std::to_string(move->getY() + 1);
+            std::string pointMessage = std::to_string(side - move->getY());
             pointMessage.insert(pointMessage.begin(), first);
 
             // convert the stone to a string
@@ -342,7 +342,7 @@ namespace sente::GTP {
                                      "compatible variable, got " + std::string(py::str(py::type::of(response))));
             }
 
-            return {status, gtpTypeToString(response)};
+            return {status, gtpTypeToString(response, self->masterGame.getSide())};
         };
 
         if (name != "genmove"){
@@ -405,7 +405,7 @@ namespace sente::GTP {
                 self->masterGame.addStone(move);
             }
 
-            return {status, gtpTypeToString(response)};
+            return {status, gtpTypeToString(response, self->masterGame.getSide())};
 
         };
 

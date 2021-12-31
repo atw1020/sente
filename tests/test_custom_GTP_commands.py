@@ -207,9 +207,9 @@ class CustomGTPCommands(TestCase):
 
         @session.Command
         def return_vertex() -> sente.Vertex:
-            return sente.Vertex(4, 4)
+            return sente.Vertex(2, 5)
 
-        self.assertEqual("= E5\n\n", session.interpret("test-return_vertex"))
+        self.assertEqual("= C14\n\n", session.interpret("test-return_vertex"))
 
     def test_return_raw_string(self):
         """
@@ -271,7 +271,7 @@ class CustomGTPCommands(TestCase):
 
         @session.Command
         def return_move() -> sente.Move:
-            return sente.Move(4, 4, sente.stone.BLACK)
+            return sente.Move(4, 14, sente.stone.BLACK)
 
         self.assertEqual("= B E5\n\n", session.interpret("test-return_move"))
 
@@ -303,7 +303,7 @@ class CustomGTPCommands(TestCase):
 
         @session.GenMove
         def genmove(stone: sente.stone) -> sente.Vertex:
-            return sente.Vertex(4, 4)
+            return sente.Vertex(4, 14)
 
         # check that the move is generated
         self.assertEqual("= E5\n\n", session.interpret("genmove B"))
@@ -387,7 +387,7 @@ class InterpreterSyntaxChecking(TestCase):
 
         @session.Command
         def letter_i_skipped_vertex() -> sente.Vertex:
-            return sente.Vertex(8, 8)
+            return sente.Vertex(8, 10)
 
         self.assertEqual("= J9\n\n", session.interpret("test-letter_i_skipped_vertex"))
 
@@ -403,7 +403,7 @@ class InterpreterSyntaxChecking(TestCase):
 
         @session.Command
         def letter_i_skipped_move() -> sente.Move:
-            return sente.Move(8, 8, sente.stone.BLACK)
+            return sente.Move(8, 10, sente.stone.BLACK)
 
         self.assertEqual("= B J9\n\n", session.interpret("test-letter_i_skipped_move"))
 
