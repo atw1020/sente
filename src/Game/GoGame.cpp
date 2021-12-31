@@ -353,12 +353,10 @@ namespace sente {
     void GoGame::playMoveSequence(const std::vector<Move>& moves) {
 
         auto baseMoveSequence = getMoveSequence();
-        py::print("entering playMoveSequence");
 
         try {
             // play all the stones in the sequence
             for (const auto& move : moves){
-                py::print(move);
                 playStone(move);
             }
         }
@@ -801,23 +799,12 @@ namespace sente {
             connectGroups(move, ourAffectedGroups);
         }
 
-#ifdef DEBUG_LOG
-        py::print("checking for captured stones in ", theirAffectedGroups.size(), " groups");
-#endif
-
         // reset the ko point
         resetKoPoint();
 
         // capture stones
         for (const auto& group : theirAffectedGroups){
-#ifdef DEBUG_LOG
-            py::print("group had ", utils::getLiberties(*group, *board), " liberties");
-#endif
             if (utils::getLiberties(*group, *board).empty()){
-
-#ifdef DEBUG_LOG
-                py::print("found a group with zero liberties");
-#endif
 
                 // check for a Ko
                 // if we captured a stone without affecting any of our groups
@@ -843,9 +830,6 @@ namespace sente {
 
                 // capture the stones
                 for (const auto& stone : group->getMoves()){
-#ifdef DEBUG_LOG
-                    py::print("capturing stone ", std::string(stone));
-#endif
                     // erase the item
                     groups.erase(stone);
                     board->captureStone(stone);

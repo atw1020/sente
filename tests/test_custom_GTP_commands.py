@@ -558,4 +558,4 @@ class TestInvalidRegistration(TestCase):
             return None
 
         with self.assertRaises(TypeError):
-            print(session.interpret("genmove B"))
+            session.interpret("genmove B")
