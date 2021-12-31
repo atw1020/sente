@@ -77,16 +77,16 @@ namespace sente::GTP {
     Response play(Session* self, const std::vector<std::shared_ptr<Token>>& arguments){
 
         // generate a move from the arguments
-        Move* move = (Move*) arguments[1].get();
+        sente::Move move = ((Move*) arguments[1].get())->getMove(self->masterGame.getSide());;
 
-        if (self->masterGame.isAddLegal(move->getMove(self->masterGame.getSide()))){
-            if (self->masterGame.isLegal(move->getMove(self->masterGame.getSide()))){
+        if (self->masterGame.isAddLegal(move)){
+            if (self->masterGame.isLegal(move)){
                 // play the stone
-                self->masterGame.playStone(move->getMove(self->masterGame.getSide()));
+                self->masterGame.playStone(move);
                 return {true, ""};
             }
             else {
-                self->masterGame.addStone(move->getMove(self->masterGame.getSide()));
+                self->masterGame.addStone(move);
                 return {true, ""};
             }
         }

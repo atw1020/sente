@@ -174,7 +174,7 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        engine.interpret("play B D4\n")
+        engine.interpret("play B K4\n")
 
         self.assertEqual("= \n"
                          "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
@@ -192,7 +192,7 @@ class MinimumGTPCommands(TestCase):
                          " 7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         " 4  .  .  .  X  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .\n"
+                         " 4  .  .  .  *  .  .  .  .  .  X  .  .  .  .  .  *  .  .  .\n"
                          " 3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
@@ -320,7 +320,7 @@ class OtherCompliance(TestCase):
         engine = GTP.Session()
 
         engine.interpret("boardsize 9")
-        engine.interpret("play B D4")
+        engine.interpret("play B E3")
 
         self.assertEqual("= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
@@ -328,23 +328,8 @@ class OtherCompliance(TestCase):
                          " 7  .  .  *  .  .  .  *  .  .\n"
                          " 6  .  .  .  .  .  .  .  .  .\n"
                          " 5  .  .  .  .  *  .  .  .  .\n"
-                         " 4  .  .  .  X  .  .  .  .  .\n"
-                         " 3  .  .  *  .  .  .  *  .  .\n"
-                         " 2  .  .  .  .  .  .  .  .  .\n"
-                         " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
-
-        engine.interpret("resetboard")
-        engine.interpret("play B D4")
-
-        self.assertEqual("= \n"
-                         " 9  .  .  .  .  .  .  .  .  .\n"
-                         " 8  .  .  .  .  .  .  .  .  .\n"
-                         " 7  .  .  *  .  .  .  *  .  .\n"
-                         " 6  .  .  .  .  .  .  .  .  .\n"
-                         " 5  .  .  .  .  *  .  .  .  .\n"
-                         " 4  .  .  .  X  .  .  .  .  .\n"
-                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  X  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))

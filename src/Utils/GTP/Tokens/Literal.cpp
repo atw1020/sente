@@ -6,6 +6,7 @@
 
 #include <string>
 #include <utility>
+#include <iostream>
 
 namespace sente::GTP {
 
@@ -48,18 +49,6 @@ namespace sente::GTP {
 
     Integer::~Integer() = default;
 
-    unsigned int Vertex::getX() const {
-        return x;
-    }
-
-    unsigned Vertex::getY() const {
-        return y;
-    }
-
-    sente::Vertex Vertex::toVertex(unsigned side) {
-        return {x, side - y};
-    }
-
     Vertex::Vertex(const std::string& vertex) : Literal(vertex) {
 
         if (vertex[0] < 'I'){
@@ -76,6 +65,18 @@ namespace sente::GTP {
 
         y = std::stoi(temp) - 1;
 
+    }
+
+    unsigned int Vertex::getX() const {
+        return x;
+    }
+
+    unsigned Vertex::getY() const {
+        return y;
+    }
+
+    sente::Vertex Vertex::toVertex(unsigned side) {
+        return {x, side - y};
     }
 
     LiteralType Vertex::getLiteralType() const {
@@ -135,7 +136,7 @@ namespace sente::GTP {
     Float::~Float() = default;
 
     Move::Move(const Color& color, const Vertex& vertex) : Literal(color.getText() + " " + vertex.getText()){
-        move = sente::Move(vertex.getY(), vertex.getX(), color.getColor());
+        move = sente::Move(vertex.getX(), vertex.getY(), color.getColor());
         flipped = false;
     }
 

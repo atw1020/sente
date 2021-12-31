@@ -43,7 +43,8 @@ namespace sente::GTP {
             {"bool", BOOLEAN}
     };
 
-    std::string gtpTypeToString(py::object object, unsigned side){
+    // TODO: switch sente to GTP co-ords so that this gets simpler
+    std::string gtpTypeToString(const py::object& object, unsigned side){
 
         if (py::type::of(object).is(py::type::of(py::int_())) or
             py::isinstance<py::str>(object) or
