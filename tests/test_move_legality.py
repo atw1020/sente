@@ -125,10 +125,10 @@ class TestMove(DoesNotRaiseTestCase):
         self.assertEqual(sente.stone.EMPTY, game.get_point(2, 1))
         self.assertEqual(sente.stone.EMPTY, game.get_point(1, 2))
 
-    def test_pass(self):
+    def test_pass_none(self):
         """
 
-        verifies that all methods of passing are accepted as valid
+        verifies that you can pass a move by passing none
 
         :return:
         """
@@ -137,7 +137,41 @@ class TestMove(DoesNotRaiseTestCase):
 
         with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
             game.play(None)
+            game.play(None)
+
+        self.assertTrue(game.is_over())
+
+    def test_pss_method(self):
+        """
+
+        makes sure that the pass method works
+
+        :return: None
+        """
+
+        game = sente.Game()
+
+        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
             game.pss()
+            game.pss()
+
+        self.assertTrue(game.is_over())
+
+    def test_pass_move(self):
+        """
+
+        checks to see if passing a pass move causes a pass
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
+            game.play(sente.moves.Pass(sente.stone.BLACK))
+            game.play(sente.moves.Pass(sente.stone.WHITE))
+
+        self.assertTrue(game.is_over())
 
     def test_self_atari_legal(self):
         """

@@ -337,6 +337,20 @@ class CustomGTPCommands(TestCase):
                          " 1  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J\n\n", session.interpret("showboard"))
 
+    def test_return_pass(self):
+        """
+
+        tests to see if we can return a pass move
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def return_pass() -> sente.Move:
+            return None
+
 
 class InterpreterSyntaxChecking(TestCase):
 

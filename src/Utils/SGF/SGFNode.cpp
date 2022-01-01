@@ -154,7 +154,7 @@ namespace sente::SGF {
                     throw utils::InvalidSGFException("move does not use alphabetical letters");
                 }
                 // get the co-ordinates from the move
-                move = {unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), property == B ? BLACK : WHITE};
+                move = {unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), property == B ? BLACK : WHITE};
             }
         }
         else if (property == AB or property == AW){

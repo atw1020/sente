@@ -67,7 +67,7 @@ class TestBasics(DoesNotRaiseTestCase):
         self.assertIn("SZ[19]", serialized)
         self.assertIn("RU[Chinese]", serialized)
 
-        self.assertEqual(";B[dd];W[dp];B[pd];W[pp])", serialized[-25:])
+        self.assertEqual(";B[dd];W[pd];B[dp];W[pp])", serialized[-25:])
 
     def test_multiple_branches(self):
         """
@@ -88,7 +88,7 @@ class TestBasics(DoesNotRaiseTestCase):
 
         serialized = sgf.dumps(game)
 
-        self.assertEqual("(;FF[4]SZ[19]RU[Chinese]\n;B[dd]\n(;W[dp])\n(;W[pd]))", serialized)
+        self.assertEqual("(;FF[4]SZ[19]RU[Chinese]\n;B[dd]\n(;W[pd])\n(;W[dp]))", serialized)
 
     def test_resigned_game(self):
         """

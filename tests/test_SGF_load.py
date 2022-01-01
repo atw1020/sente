@@ -59,25 +59,27 @@ class BasicSGF(DoesNotRaiseTestCase):
         game = sgf.load("sgf/simple sequence.sgf")
         game.play_default_sequence()
 
+        print(game)
+
         expected_game = sente.Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, B, W, W],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, W]])
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, B, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, B, W, _],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, W],
+                                       [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, W]])
 
         self.assertEqual(expected_game, game.get_board())
 
@@ -89,35 +91,32 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        B = sente.stone.BLACK
-        W = sente.stone.WHITE
-        _ = sente.stone.EMPTY
-
         game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
         game.play_default_sequence()
 
-        expected_game = sente.Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
-                                 [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
-                                 [_, _, W, _, W, W, B, B, B, _, B, B, W, B, B, _, W, _, _],
-                                 [_, _, _, W, _, _, W, B, B, _, B, W, W, W, B, B, W, _, _],
-                                 [W, W, W, B, W, W, W, W, B, W, W, _, W, W, B, _, _, _, _],
-                                 [B, B, B, B, B, W, B, B, W, _, W, _, _, _, W, W, _, _, _],
-                                 [_, _, _, _, B, W, B, B, W, _, W, W, W, W, _, W, _, _, _],
-                                 [W, W, W, W, W, B, B, W, W, _, _, _, W, _, W, W, B, _, _],
-                                 [B, B, B, W, B, B, B, B, W, _, _, W, B, B, _, _, _, _, _],
-                                 [_, _, B, W, W, B, _, B, W, _, _, W, _, _, _, W, W, W, _],
-                                 [_, _, B, B, W, B, _, W, _, _, _, W, _, B, B, W, B, W, W],
-                                 [W, W, B, B, W, B, _, W, _, _, W, B, B, B, W, B, B, B, W],
-                                 [B, W, W, B, W, B, B, B, W, _, _, _, _, B, W, _, B, B, W],
-                                 [B, _, _, W, W, B, B, B, W, _, _, W, W, W, W, _, _, _, B],
-                                 [B, B, B, B, B, W, W, W, _, _, W, W, B, W, _, W, B, B, B],
-                                 [W, W, W, W, W, W, B, B, W, W, B, B, B, B, B, W, W, W, W],
-                                 [B, B, B, W, B, _, _, B, B, B, _, B, _, B, _, W, B, _, _],
-                                 [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
-                                 [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
-
-        self.assertEqual(str(expected_game), str(game.get_board()))
-        self.assertEqual(expected_game, game.get_board())
+        self.assertEqual(" 1  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ .  .  .  .  .\n"
+                         " 2  .  .  .  .  ⚪ ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚫ ⚪ ⚫ .  .  .  .  .\n"
+                         " 3  .  .  ⚪ .  ⚪ ⚪ ⚫ ⚫ ⚫ .  ⚫ ⚫ ⚪ ⚫ ⚫ .  ⚪ .  .\n"
+                         " 4  .  .  .  ⚪ .  .  ⚪ ⚫ ⚫ *  ⚫ ⚪ ⚪ ⚪ ⚫ ⚫ ⚪ .  .\n"
+                         " 5  ⚪ ⚪ ⚪ ⚫ ⚪ ⚪ ⚪ ⚪ ⚫ ⚪ ⚪ .  ⚪ ⚪ ⚫ .  .  .  .\n"
+                         " 6  ⚫ ⚫ ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚪ .  ⚪ .  .  .  ⚪ ⚪ .  .  .\n"
+                         " 7  .  .  .  .  ⚫ ⚪ ⚫ ⚫ ⚪ .  ⚪ ⚪ ⚪ ⚪ .  ⚪ .  .  .\n"
+                         " 8  ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ ⚫ ⚪ ⚪ .  .  .  ⚪ .  ⚪ ⚪ ⚫ .  .\n"
+                         " 9  ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚫ ⚫ ⚪ .  .  ⚪ ⚫ ⚫ .  .  .  .  .\n"
+                         "10  .  .  ⚫ ⚪ ⚪ ⚫ .  ⚫ ⚪ *  .  ⚪ .  .  .  ⚪ ⚪ ⚪ .\n"
+                         "11  .  .  ⚫ ⚫ ⚪ ⚫ .  ⚪ .  .  .  ⚪ .  ⚫ ⚫ ⚪ ⚫ ⚪ ⚪\n"
+                         "12  ⚪ ⚪ ⚫ ⚫ ⚪ ⚫ .  ⚪ .  .  ⚪ ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚫ ⚪\n"
+                         "13  ⚫ ⚪ ⚪ ⚫ ⚪ ⚫ ⚫ ⚫ ⚪ .  .  .  .  ⚫ ⚪ .  ⚫ ⚫ ⚪\n"
+                         "14  ⚫ .  .  ⚪ ⚪ ⚫ ⚫ ⚫ ⚪ .  .  ⚪ ⚪ ⚪ ⚪ .  .  .  ⚫\n"
+                         "15  ⚫ ⚫ ⚫ ⚫ ⚫ ⚪ ⚪ ⚪ .  .  ⚪ ⚪ ⚫ ⚪ .  ⚪ ⚫ ⚫ ⚫\n"
+                         "16  ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ ⚫ ⚪ ⚪ ⚫ ⚫ ⚫ ⚫ ⚫ ⚪ ⚪ ⚪ ⚪\n"
+                         "17  ⚫ ⚫ ⚫ ⚪ ⚫ .  .  ⚫ ⚫ ⚫ .  ⚫ .  ⚫ .  ⚪ ⚫ .  .\n"
+                         "18  ⚫ ⚫ .  ⚪ ⚫ ⚫ ⚫ .  .  .  ⚫ ⚪ ⚫ .  .  ⚪ ⚫ ⚫ ⚫\n"
+                         "19  .  ⚫ .  ⚪ ⚪ ⚫ .  ⚪ ⚪ .  ⚪ ⚪ ⚪ ⚪ .  ⚪ ⚫ ⚫ .\n"
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n"
+                         "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, "
+                         "recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\n"
+                         "noob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n", str(game))
 
     def test_non_standard_komi(self):
         """
@@ -227,7 +226,7 @@ class StringLoad(DoesNotRaiseTestCase):
         expected_game = sente.Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
+                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, B, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -240,9 +239,9 @@ class StringLoad(DoesNotRaiseTestCase):
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                  [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
-                                 [_, _, _, B, _, _, _, _, _, _, _, _, _, _, _, _, B, W, W],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, _],
-                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, W]])
+                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, B, W, _],
+                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, W],
+                                 [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, W, _, W]])
 
         self.assertEqual(expected_game, game.get_board())
 
@@ -262,31 +261,29 @@ class StringLoad(DoesNotRaiseTestCase):
             game = sgf.loads(sgf_file.read())
         game.play_default_sequence()
 
-        expected_game = sente.Board19([[_, _, _, _, _, _, B, W, W, W, W, W, W, B, _, _, _, _, _],
-                                 [_, _, _, _, W, B, B, B, W, B, B, B, W, B, _, _, _, _, _],
-                                 [_, _, W, _, W, W, B, B, B, _, B, B, W, B, B, _, W, _, _],
-                                 [_, _, _, W, _, _, W, B, B, _, B, W, W, W, B, B, W, _, _],
-                                 [W, W, W, B, W, W, W, W, B, W, W, _, W, W, B, _, _, _, _],
-                                 [B, B, B, B, B, W, B, B, W, _, W, _, _, _, W, W, _, _, _],
-                                 [_, _, _, _, B, W, B, B, W, _, W, W, W, W, _, W, _, _, _],
-                                 [W, W, W, W, W, B, B, W, W, _, _, _, W, _, W, W, B, _, _],
-                                 [B, B, B, W, B, B, B, B, W, _, _, W, B, B, _, _, _, _, _],
-                                 [_, _, B, W, W, B, _, B, W, _, _, W, _, _, _, W, W, W, _],
-                                 [_, _, B, B, W, B, _, W, _, _, _, W, _, B, B, W, B, W, W],
-                                 [W, W, B, B, W, B, _, W, _, _, W, B, B, B, W, B, B, B, W],
-                                 [B, W, W, B, W, B, B, B, W, _, _, _, _, B, W, _, B, B, W],
-                                 [B, _, _, W, W, B, B, B, W, _, _, W, W, W, W, _, _, _, B],
-                                 [B, B, B, B, B, W, W, W, _, _, W, W, B, W, _, W, B, B, B],
-                                 [W, W, W, W, W, W, B, B, W, W, B, B, B, B, B, W, W, W, W],
-                                 [B, B, B, W, B, _, _, B, B, B, _, B, _, B, _, W, B, _, _],
-                                 [B, B, _, W, B, B, B, _, _, _, B, W, B, _, _, W, B, B, B],
-                                 [_, B, _, W, W, B, _, W, W, _, W, W, W, W, _, W, B, B, _]])
-
-        self.assertEqual(str(expected_game) + "\nnoob_bot_3: Thanks for playing. If you want a weaker/stronger bot "
-                                              "match with you, recommend try to play with 'ELOtest'. It can calculate "
-                                              "& match your rank after few games.\nnoob_bot_3: Final score: W+368.5 "
-                                              "(upper bound: 368.5, lower: 368.5)\n", str(game))
-        self.assertEqual(expected_game, game.get_board())
+        self.assertEqual(" 1  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ .  .  .  .  .\n"
+                         " 2  .  .  .  .  ⚪ ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚫ ⚪ ⚫ .  .  .  .  .\n"
+                         " 3  .  .  ⚪ .  ⚪ ⚪ ⚫ ⚫ ⚫ .  ⚫ ⚫ ⚪ ⚫ ⚫ .  ⚪ .  .\n"
+                         " 4  .  .  .  ⚪ .  .  ⚪ ⚫ ⚫ *  ⚫ ⚪ ⚪ ⚪ ⚫ ⚫ ⚪ .  .\n"
+                         " 5  ⚪ ⚪ ⚪ ⚫ ⚪ ⚪ ⚪ ⚪ ⚫ ⚪ ⚪ .  ⚪ ⚪ ⚫ .  .  .  .\n"
+                         " 6  ⚫ ⚫ ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚪ .  ⚪ .  .  .  ⚪ ⚪ .  .  .\n"
+                         " 7  .  .  .  .  ⚫ ⚪ ⚫ ⚫ ⚪ .  ⚪ ⚪ ⚪ ⚪ .  ⚪ .  .  .\n"
+                         " 8  ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ ⚫ ⚪ ⚪ .  .  .  ⚪ .  ⚪ ⚪ ⚫ .  .\n"
+                         " 9  ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚫ ⚫ ⚪ .  .  ⚪ ⚫ ⚫ .  .  .  .  .\n"
+                         "10  .  .  ⚫ ⚪ ⚪ ⚫ .  ⚫ ⚪ *  .  ⚪ .  .  .  ⚪ ⚪ ⚪ .\n"
+                         "11  .  .  ⚫ ⚫ ⚪ ⚫ .  ⚪ .  .  .  ⚪ .  ⚫ ⚫ ⚪ ⚫ ⚪ ⚪\n"
+                         "12  ⚪ ⚪ ⚫ ⚫ ⚪ ⚫ .  ⚪ .  .  ⚪ ⚫ ⚫ ⚫ ⚪ ⚫ ⚫ ⚫ ⚪\n"
+                         "13  ⚫ ⚪ ⚪ ⚫ ⚪ ⚫ ⚫ ⚫ ⚪ .  .  .  .  ⚫ ⚪ .  ⚫ ⚫ ⚪\n"
+                         "14  ⚫ .  .  ⚪ ⚪ ⚫ ⚫ ⚫ ⚪ .  .  ⚪ ⚪ ⚪ ⚪ .  .  .  ⚫\n"
+                         "15  ⚫ ⚫ ⚫ ⚫ ⚫ ⚪ ⚪ ⚪ .  .  ⚪ ⚪ ⚫ ⚪ .  ⚪ ⚫ ⚫ ⚫\n"
+                         "16  ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ ⚫ ⚪ ⚪ ⚫ ⚫ ⚫ ⚫ ⚫ ⚪ ⚪ ⚪ ⚪\n"
+                         "17  ⚫ ⚫ ⚫ ⚪ ⚫ .  .  ⚫ ⚫ ⚫ .  ⚫ .  ⚫ .  ⚪ ⚫ .  .\n"
+                         "18  ⚫ ⚫ .  ⚪ ⚫ ⚫ ⚫ .  .  .  ⚫ ⚪ ⚫ .  .  ⚪ ⚫ ⚫ ⚫\n"
+                         "19  .  ⚫ .  ⚪ ⚪ ⚫ .  ⚪ ⚪ .  ⚪ ⚪ ⚪ ⚪ .  ⚪ ⚫ ⚫ .\n"
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n"
+                         "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, "
+                         "recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\n"
+                         "noob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n", str(game))
 
 
 class BranchedSGF(TestCase):
@@ -301,8 +298,8 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("sgf/simple fork.sgf")
 
-        self.assertIn(sente.Move(3, 15, sente.stone.BLACK), game.get_branches())
-        self.assertIn(sente.Move(3, 16, sente.stone.BLACK), game.get_branches())
+        self.assertIn(sente.Move(15, 3, sente.stone.BLACK), game.get_branches())
+        self.assertIn(sente.Move(16, 3, sente.stone.BLACK), game.get_branches())
 
     def test_long_branched_sgf(self):
         """
@@ -314,10 +311,10 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("sgf/two josekis.sgf")
 
-        self.assertEqual([sente.Move(3, 16, sente.stone.BLACK)], game.get_branches())
-        game.play(4, 17)
+        self.assertEqual([sente.Move(16, 3, sente.stone.BLACK)], game.get_branches())
+        game.play(17, 4)
 
-        self.assertEqual([sente.Move(2, 14, sente.stone.WHITE), sente.Move(3, 14, sente.stone.WHITE)], game.get_branches())
+        self.assertEqual([sente.Move(14, 2, sente.stone.WHITE), sente.Move(14, 3, sente.stone.WHITE)], game.get_branches())
 
     def test_complex_branched_sgf(self):
         """
@@ -333,10 +330,11 @@ class BranchedSGF(TestCase):
         game.play_default_sequence()
         game.advance_to_root()
 
-        self.assertEqual([sente.Move(3, 16, sente.stone.BLACK)], game.get_branches())
-        game.play(4, 17)
+        self.assertEqual([sente.Move(16, 3, sente.stone.BLACK)], game.get_branches())
+        game.play(17, 4)
 
-        self.assertEqual([sente.Move(3, 14, sente.stone.WHITE), sente.Move(2, 14, sente.stone.WHITE)], game.get_branches())
+        self.assertEqual([sente.Move(14, 3, sente.stone.WHITE), sente.Move(14, 2, sente.stone.WHITE)],
+                         game.get_branches())
 
     def test_load_comments(self):
         """

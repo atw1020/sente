@@ -110,6 +110,18 @@ PYBIND11_MODULE(sente, module){
                 return "Vertex(x=" + std::to_string(point.getX()) + ", y=" + std::to_string(point.getY()) + ")";
             });
 
+    auto moves = module.def_submodule("moves", "utility options for sente moves");
+
+    moves.def("Pass", [](sente::Stone stone){
+        return sente::Move::pass(stone);
+    },
+              py::arg("color"));
+
+    moves.def("Resign", [](sente::Stone stone){
+        return sente::Move::resign(stone);
+    },
+              py::arg("color"));
+
     py::class_<sente::Move>(module, "Move", R"pbdoc(
             A class that represents a move that can be played on a go board, consisting of a position and a stone.
 

@@ -7,7 +7,7 @@ Author: Arthur Wesley
 
 from unittest import TestCase
 
-from sente import sgf
+import sente
 from sente import GTP
 
 
@@ -25,25 +25,25 @@ class CommandFunctionality(TestCase):
 
         engine.interpret("loadsgf sgf/34839594-255-IDW64-noob_bot_3.sgf")
         self.assertEqual("= \n"
-                         "19  .  .  .  .  O  X  .  O  X  .  .  O  X  X  X  O  X  X  .\n"
-                         "18  .  .  .  .  O  X  .  O  X  .  .  O  O  .  X  O  X  X  X \n"
-                         "17  .  .  O  .  O  X  .  O  X  X  X  X  O  .  X  O  X  .  .\n"
-                         "16  .  .  .  O  X  X  .  O  O  O  X  X  X  O  X  O  O  O  O \n"
-                         "15  .  O  O  .  O  X  X  O  X  O  O  O  O  O  X  O  X  X  O \n"
-                         "14  .  X  O  .  O  O  O  X  X  X  X  X  X  X  O  O  .  X  X \n"
-                         "13  X  X  X  O  O  X  X  X  X  .  .  .  X  X  O  X  .  X  .\n"
-                         "12  O  X  X  X  O  X  X  O  X  X  O  O  X  X  O  X  X  .  O \n"
-                         "11  O  O  X  X  X  O  O  O  O  O  .  .  O  O  .  O  X  .  O \n"
-                         "10  O  X  .  *  O  .  .  .  .  *  .  .  .  .  .  O  X  .  .\n"
-                         " 9  O  X  X  X  O  O  O  .  .  .  .  O  .  .  O  X  .  X  O \n"
-                         " 8  O  X  X  O  .  .  O  .  O  O  O  X  .  O  O  X  X  O  O \n"
-                         " 7  O  O  O  O  O  .  O  O  X  .  .  X  .  O  X  X  .  X  O \n"
-                         " 6  X  X  X  O  O  .  O  .  X  .  X  X  X  O  O  X  X  .  O \n"
-                         " 5  .  .  X  X  X  O  .  O  .  .  X  O  O  O  .  X  .  .  .\n"
-                         " 4  .  .  .  X  .  O  O  O  .  O  O  X  .  .  O  O  O  O  O \n"
-                         " 3  .  .  O  O  .  .  .  X  .  O  X  X  X  .  X  O  X  X  X \n"
-                         " 2  .  .  .  .  .  .  .  .  .  O  O  X  X  .  X  O  .  X  X \n"
-                         " 1  .  .  .  .  .  .  .  .  .  .  O  O  O  X  X  O  .  X  .\n"
+                         "19  .  .  .  .  .  .  X  O  O  O  O  O  O  X  .  .  .  .  .\n"
+                         "18  .  .  .  .  O  X  X  X  O  X  X  X  O  X  .  .  .  .  .\n"
+                         "17  .  .  O  .  O  O  X  X  X  .  X  X  O  X  X  .  O  .  .\n"
+                         "16  .  .  .  O  .  .  O  X  X  *  X  O  O  O  X  X  O  .  .\n"
+                         "15  O  O  O  X  O  O  O  O  X  O  O  .  O  O  X  .  .  .  .\n"
+                         "14  X  X  X  X  X  O  X  X  O  .  O  .  .  .  O  O  .  .  .\n"
+                         "13  .  .  .  .  X  O  X  X  O  .  O  O  O  O  .  O  .  .  .\n"
+                         "12  O  O  O  O  O  X  X  O  O  .  .  .  O  .  O  O  X  .  .\n"
+                         "11  X  X  X  O  X  X  X  X  O  .  .  O  X  X  .  .  .  .  .\n"
+                         "10  .  .  X  O  O  X  .  X  O  *  .  O  .  .  .  O  O  O  .\n"
+                         " 9  .  .  X  X  O  X  .  O  .  .  .  O  .  X  X  O  X  O  O \n"
+                         " 8  O  O  X  X  O  X  .  O  .  .  O  X  X  X  O  X  X  X  O \n"
+                         " 7  X  O  O  X  O  X  X  X  O  .  .  .  .  X  O  .  X  X  O \n"
+                         " 6  X  .  .  O  O  X  X  X  O  .  .  O  O  O  O  .  .  .  X \n"
+                         " 5  X  X  X  X  X  O  O  O  .  .  O  O  X  O  .  O  X  X  X \n"
+                         " 4  O  O  O  O  O  O  X  X  O  O  X  X  X  X  X  O  O  O  O \n"
+                         " 3  X  X  X  O  X  .  .  X  X  X  .  X  .  X  .  O  X  .  .\n"
+                         " 2  X  X  .  O  X  X  X  .  .  .  X  O  X  .  .  O  X  X  X \n"
+                         " 1  .  X  .  O  O  X  .  O  O  .  O  O  O  O  .  O  X  X  .\n"
                          "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n"
                          "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend "
                          "try to play with 'ELOtest'. It can calculate & match your rank after few games.\n"
@@ -58,28 +58,32 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
+        game = sente.sgf.load("sgf/CheongSu-hyeon-KimIl-hwan13651.sgf")
+        game.play_sequence(game.get_default_sequence()[:50])
+        print(game)
+
         engine = GTP.Session()
 
         engine.interpret("loadsgf sgf/CheongSu-hyeon-KimIl-hwan13651.sgf 50")
         self.assertEqual("= \n"
                          "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X  .  .  .  .\n"
-                         "17  .  .  .  .  .  .  .  O  X  O  .  .  .  .  .  O  .  .  .\n"
-                         "16  .  .  .  X  .  .  .  O  X  X  X  .  .  X  X  O  .  .  .\n"
-                         "15  .  .  .  .  .  .  .  .  .  .  .  .  .  X  O  O  .  .  .\n"
-                         "14  .  .  .  .  .  .  .  O  .  .  .  .  O  O  X  O  O  .  .\n"
-                         "13  .  .  .  X  .  .  .  .  .  .  O  .  .  X  X  .  .  .  .\n"
-                         "12  .  .  .  .  .  .  .  .  .  .  .  .  .  O  O  .  .  .  .\n"
-                         "11  .  .  O  .  .  .  .  .  .  .  .  .  .  .  .  .  O  .  .\n"
-                         "10  .  .  .  *  .  .  .  .  .  *  X  .  .  X  X  *  .  .  .\n"
-                         " 9  .  .  .  .  .  .  .  .  .  .  .  .  .  X  O  O  .  .  .\n"
-                         " 8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         " 7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         " 6  .  .  X  O  .  .  .  .  .  .  .  .  .  .  O  .  O  O  .\n"
-                         " 5  .  .  X  .  .  .  .  .  .  .  .  .  .  .  .  .  X  X  .\n"
-                         " 4  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  X  .  .  .\n"
-                         " 3  .  .  .  X  .  .  X  .  O  .  .  O  .  X  .  .  .  .  .\n"
-                         " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "17  .  .  .  .  .  .  .  .  O  .  .  .  .  X  X  .  .  .  .\n"
+                         "16  .  .  .  X  .  .  X  .  .  *  .  .  .  O  .  *  X  .  .\n"
+                         "15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  X  .  .\n"
+                         "12  .  .  O  O  .  O  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         "11  .  .  X  X  .  .  .  .  .  .  .  .  .  .  .  .  O  .  .\n"
+                         "10  .  .  O  X  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .\n"
+                         " 9  .  .  .  X  .  .  O  .  .  X  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  O  .  .\n"
+                         " 7  .  .  .  .  .  O  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
+                         " 6  .  .  .  X  X  O  X  O  .  X  X  .  .  .  .  .  X  .  .\n"
+                         " 5  .  X  .  X  O  X  X  O  .  X  O  .  .  O  .  .  .  .  .\n"
+                         " 4  .  .  O  O  O  O  .  .  .  *  O  .  .  .  .  X  .  .  .\n"
+                         " 3  .  .  .  .  .  O  .  .  O  .  .  .  .  O  X  .  .  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  O  X  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n\n",
                          engine.interpret("showboard"))

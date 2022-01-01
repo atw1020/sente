@@ -177,7 +177,7 @@ namespace sente {
 
         }
         else {
-            str << '[' << char('a' + y) << char('a' + x) << ']';
+            str << '[' << char('a' + x) << char('a' + y) << ']';
         }
 
         return str.str();
