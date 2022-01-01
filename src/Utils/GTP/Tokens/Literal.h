@@ -85,7 +85,7 @@ namespace sente::GTP {
         ~Color() final;
 
         LiteralType getLiteralType() const final;
-        Stone getColor() const;
+        Stone getStone() const;
 
         static bool isColor(std::string text);
 

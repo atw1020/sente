@@ -371,8 +371,25 @@ namespace sente::GTP {
 
         auto argumentPattern = getArgumentPattern(function, inspect);
 
-        // TODO: conform that the argument pattern is valid for a genmove command
-        // acceptable return types: vertex or sente.move
+        auto annotations = function.attr("__annotations__");
+
+        // get the name from the function
+        std::string name = py::str(function.attr("__name__"));
+
+        if (argumentPattern.size() != 2){
+            throw py::value_error(R"(function decorated with "GenMove" must accept only one argument, ")" + name + "\""
+                                  " has " + std::to_string(argumentPattern.size() - 1) + " arguments");
+        }
+
+        if (argumentPattern[1].second != COLOR){
+            throw py::type_error(R"(function decorated with "GenMove" must accept only one argument, ")" + name + "\""
+                                  " has " + std::to_string(argumentPattern.size() - 1) + " arguments");
+        }
+
+        if (argumentTypeMappings[py::str(annotations["return"].attr("__name__"))] != MOVE){
+            throw py::type_error(R"(function decorated with "GenMove" must return Move, ")" + name + "\""
+                                  " returns " + std::string(py::str(annotations["return"].attr("__name__"))));
+        }
 
         CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response {
@@ -383,42 +400,33 @@ namespace sente::GTP {
             // call the function
             py::object response = function(*pyArgs);
 
-            if (not py::type::of(response).is(py::type::of<sente::Vertex>())){
-                throw py::type_error("function decorated with \"GenMove\" returned invalid type; expected sente.Vertex,"
+            // check for a move and cast
+            if (not py::type::of(response).is(py::type::of<sente::Move>())){
+                throw py::type_error("function decorated with \"GenMove\" returned invalid type; expected sente.Move,"
                                      " got " + std::string(py::str(py::type::of(response))));
             }
 
-            bool status;
+            auto* move = py::cast<sente::Move*>(response);
 
-            // extract the response
-            if (py::isinstance<py::tuple>(response)){
-                status = py::bool_(py::tuple(response)[0]);
-                response = py::tuple(response)[1];
+            // make sure that the color is correct
+            auto* color = (Color*) arguments[1].get();
+
+            if (color->getStone() != move->getStone()){
+                throw py::value_error(std::string("GenMove returned a move with the wrong color (command requested a ")
+                                      + (color->getStone() == sente::BLACK ? "black" : "white") + " stone, got a "
+                                      + (move->getStone() == sente::BLACK ? "black" : "white") + " stone");
             }
-            else {
-                // otherwise, the message is successful and the response is just what was returned
-                status = true;
-            }
 
-            // obtain the resulting move
-            auto color = (Color*) arguments[1].get();
-
-            // TODO make moves acceptable return types
-            auto* vertex = py::cast<sente::Vertex*>(response);
-
-            // play the move
-            sente::Move move = sente::Move(*vertex, color->getColor());
-
-            if (self->masterGame.getActivePlayer() == color->getColor()){
+            if (self->masterGame.getActivePlayer() == color->getStone()){
                 // if it's our move, do a full on play
-                self->masterGame.playStone(move);
+                self->masterGame.playStone(*move);
             }
             else {
                 // if it's not our move, add a stone.
-                self->masterGame.addStone(move);
+                self->masterGame.addStone(*move);
             }
 
-            return {status, gtpTypeToString(response, self->masterGame.getSide())};
+            return {true, gtpTypeToString(response.attr("get_vertex")(), self->masterGame.getSide())};
 
         };
 
@@ -673,7 +681,7 @@ namespace sente::GTP {
                     break;
                 case COLOR:
                     color = (Color*) literal;
-                    pyArgs.append(py::cast(color->getColor()));
+                    pyArgs.append(py::cast(color->getStone()));
                     break;
                 case FLOAT:
                     float_ = (Float*) literal;

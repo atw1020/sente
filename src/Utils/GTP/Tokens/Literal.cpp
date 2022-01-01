@@ -112,7 +112,7 @@ namespace sente::GTP {
 
     Color::~Color() = default;
 
-    Stone Color::getColor() const {
+    Stone Color::getStone() const {
         return color == BLACK ? Stone::BLACK : Stone::WHITE;
     }
 
@@ -136,7 +136,7 @@ namespace sente::GTP {
     Float::~Float() = default;
 
     Move::Move(const Color& color, const Vertex& vertex) : Literal(color.getText() + " " + vertex.getText()){
-        move = sente::Move(vertex.getX(), vertex.getY(), color.getColor());
+        move = sente::Move(vertex.getX(), vertex.getY(), color.getStone());
         flipped = false;
     }
 

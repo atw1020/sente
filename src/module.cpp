@@ -146,6 +146,7 @@ PYBIND11_MODULE(sente, module){
 
             :return: :ref:`sente.stone <stone>` object that the move contains
         )pbdoc")
+        .def("get_vertex", &sente::Move::getVertex)
         .def("__eq__", &sente::Move::operator==)
         .def("__ne__", &sente::Move::operator!=)
         .def("__repr__", [](const sente::Move& move){

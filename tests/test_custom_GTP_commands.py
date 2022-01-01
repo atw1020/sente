@@ -302,8 +302,8 @@ class CustomGTPCommands(TestCase):
         session = GTP.Session("test", "0.0.1")
 
         @session.GenMove
-        def genmove(stone: sente.stone) -> sente.Vertex:
-            return sente.Vertex(4, 14)
+        def genmove(stone: sente.stone) -> sente.Move:
+            return sente.Move(4, 14, sente.stone.BLACK)
 
         # check that the move is generated
         self.assertEqual("= E5\n\n", session.interpret("genmove B"))
@@ -319,8 +319,8 @@ class CustomGTPCommands(TestCase):
         session = GTP.Session("test", "0.0.1")
 
         @session.GenMove
-        def genmove(stone: sente.stone) -> sente.Vertex:
-            return sente.Vertex(3, 3)
+        def genmove(stone: sente.stone) -> sente.Move:
+            return sente.Move(3, 3, sente.stone.BLACK)
 
         session.interpret("boardsize 9")
         session.interpret("genmove B")
@@ -438,10 +438,6 @@ class InterpreterSyntaxChecking(TestCase):
             return sente.Move(8, 10, sente.stone.BLACK)
 
         self.assertEqual("= B J9\n\n", session.interpret("test-letter_i_skipped_move"))
-
-
-def my_message(arg: str):
-    return True, "this isn't a method, so we can't register it!" + arg
 
 
 class TestInvalidRegistration(TestCase):
@@ -586,8 +582,53 @@ class TestInvalidRegistration(TestCase):
         session = GTP.Session("test", "0.0.0")
 
         @session.GenMove
-        def genmove(stone: sente.stone) -> sente.Vertex:
+        def genmove(stone: sente.stone) -> sente.Move:
             return None
 
         with self.assertRaises(TypeError):
             session.interpret("genmove B")
+
+    def test_genmove_returning_vertex_throws(self):
+        """
+
+        makes sure that registering a GenMove that doesn't return a Move throws an error
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.0")
+
+        with self.assertRaises(TypeError):
+            @session.GenMove
+            def genmove(stone: sente.stone) -> sente.Vertex:
+                return sente.Vertex(3, 3)
+
+    def test_genmove_wrong_arg_number(self):
+        """
+
+        makes sure that GenMove errors when the function takes in the wrong number of arguments
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.0")
+
+        with self.assertRaises(ValueError):
+            @session.GenMove
+            def genmove() -> sente.Move:
+                return sente.Move(3, 3, sente.stone.BLACK)
+
+    def test_genmove_wrong_arg_type(self):
+        """
+
+        makes sure that GenMove errors when the argument type is wrong
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.0")
+
+        with self.assertRaises(TypeError):
+            @session.GenMove
+            def genmove(stone: int) -> sente.Move:
+                return sente.Move(3, 3, sente.stone.BLACK)
