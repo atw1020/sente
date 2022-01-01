@@ -98,6 +98,13 @@ namespace sente::GTP {
                 first = 'B' + move->getX();
             }
 
+            if (move->isPass()){
+                return "pass";
+            }
+            if (move->isResign()){
+                return "resign";
+            }
+
             // add the letter to the second co-ord
             std::string pointMessage = std::to_string(side - move->getY());
             pointMessage.insert(pointMessage.begin(), first);
@@ -363,7 +370,9 @@ namespace sente::GTP {
         checkGTPCommand(function, inspect, typing);
 
         auto argumentPattern = getArgumentPattern(function, inspect);
+
         // TODO: conform that the argument pattern is valid for a genmove command
+        // acceptable return types: vertex or sente.move
 
         CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response {
@@ -393,10 +402,13 @@ namespace sente::GTP {
 
             // obtain the resulting move
             auto color = (Color*) arguments[1].get();
+
+            // TODO make moves acceptable return types
             auto* vertex = py::cast<sente::Vertex*>(response);
 
             // play the move
             sente::Move move = sente::Move(*vertex, color->getColor());
+
             if (self->masterGame.getActivePlayer() == color->getColor()){
                 // if it's our move, do a full on play
                 self->masterGame.playStone(move);

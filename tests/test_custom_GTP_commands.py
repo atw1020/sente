@@ -349,7 +349,25 @@ class CustomGTPCommands(TestCase):
 
         @session.Command
         def return_pass() -> sente.Move:
-            return None
+            return sente.moves.Pass(sente.stone.BLACK)
+
+        self.assertEqual("= pass\n\n", session.interpret("test-return_pass"))
+
+    def test_return_resign(self):
+        """
+
+        tests to see if we can return a pass move
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def return_resign() -> sente.Move:
+            return sente.moves.Resign(sente.stone.BLACK)
+
+        self.assertEqual("= resign\n\n", session.interpret("test-return_resign"))
 
 
 class InterpreterSyntaxChecking(TestCase):

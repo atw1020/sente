@@ -60,7 +60,6 @@ class CommandFunctionality(TestCase):
 
         game = sente.sgf.load("sgf/CheongSu-hyeon-KimIl-hwan13651.sgf")
         game.play_sequence(game.get_default_sequence()[:50])
-        print(game)
 
         engine = GTP.Session()
 

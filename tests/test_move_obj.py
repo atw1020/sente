@@ -83,7 +83,6 @@ class MoveTest(TestCase):
 
         game = sente.Game()
         game.play(self.move3)
-        print(game)
 
         self.assertEqual("<sente.Move B[ee]>", str(self.move1))
         self.assertEqual("<sente.Move B[de]>", str(self.move3))

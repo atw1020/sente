@@ -695,8 +695,6 @@ namespace sente {
         moves.emplace_back(Move::pass(getActivePlayer()));
         moves.emplace_back(Move::resign(getActivePlayer()));
 
-        // std::cout << "leaving getLegalMoves" << std::endl;
-
         return moves;
 
     }

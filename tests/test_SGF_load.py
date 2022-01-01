@@ -59,8 +59,6 @@ class BasicSGF(DoesNotRaiseTestCase):
         game = sgf.load("sgf/simple sequence.sgf")
         game.play_default_sequence()
 
-        print(game)
-
         expected_game = sente.Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                        [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
                                        [_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
