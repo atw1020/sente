@@ -426,7 +426,31 @@ namespace sente::GTP {
                 self->masterGame.addStone(*move);
             }
 
-            return {true, gtpTypeToString(response.attr("get_vertex")(), self->masterGame.getSide())};
+            std::string message;
+
+            if (move->isPass()){
+                message = "pass";
+            }
+            else if (move->isResign()){
+                message = "resign";
+            }
+            else {
+                char first;
+
+                // determine the letter
+                if (move->getX() + 'A' < 'I'){
+                    first = 'A' + move->getX();
+                }
+                else {
+                    first = 'B' + move->getX();
+                }
+
+                // add the letter to the second co-ord
+                message = std::to_string(self->masterGame.getSide() - move->getY());
+                message.insert(message.begin(), first);
+            }
+
+            return {true, message};
 
         };
 

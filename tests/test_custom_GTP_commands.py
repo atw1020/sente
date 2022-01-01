@@ -347,11 +347,11 @@ class CustomGTPCommands(TestCase):
 
         session = GTP.Session("test", "0.0.1")
 
-        @session.Command
-        def return_pass() -> sente.Move:
-            return sente.moves.Pass(sente.stone.BLACK)
+        @session.GenMove
+        def return_pass(color: sente.stone) -> sente.Move:
+            return sente.moves.Pass(color)
 
-        self.assertEqual("= pass\n\n", session.interpret("test-return_pass"))
+        self.assertEqual("= pass\n\n", session.interpret("genmove B"))
 
     def test_return_resign(self):
         """
@@ -363,11 +363,11 @@ class CustomGTPCommands(TestCase):
 
         session = GTP.Session("test", "0.0.1")
 
-        @session.Command
-        def return_resign() -> sente.Move:
-            return sente.moves.Resign(sente.stone.BLACK)
+        @session.GenMove
+        def return_resign(color: sente.stone) -> sente.Move:
+            return sente.moves.Resign(color)
 
-        self.assertEqual("= resign\n\n", session.interpret("test-return_resign"))
+        self.assertEqual("= resign\n\n", session.interpret("genmove B"))
 
 
 class InterpreterSyntaxChecking(TestCase):
