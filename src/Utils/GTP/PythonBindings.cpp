@@ -56,64 +56,124 @@ namespace sente::GTP {
             }
         }
 
-        if (not annotations.contains("return")) {
-            throw py::value_error("Custom GTP command \"" + name + "\" has no specified return type "
-                                                                   "(custom GTP commands must be strongly typed)");
-        }
+        // if there is a return type, make sure that it has a valid type
+        if (annotations.contains("return")) {
+            // check the return type
+            py::object returnType = annotations["return"];
 
-        // check the return type
-        py::object returnType = annotations["return"];
+            auto returnTypeOptions = py::list();
+
+            // check if the return type is a union
+            if (typing.attr("get_origin")(returnType).is(typing.attr("Union"))){
+                // if it is, put all the types into the options
+                returnTypeOptions = returnType.attr("__args__");
+            }
+            else {
+                returnTypeOptions.append(returnType);
+            }
+
+            // go through all the type options and make sure that they are all satisfactory
+            for (unsigned i = 0; i < returnTypeOptions.size(); i++){
+
+                // if the return type is a union or named tuple
+                py::object returnType = returnTypeOptions[i];
+
+                // a valid response has two formats
+                //  1) a tuple containing whether the message was an error (bool) and the response variable (must be a GTP
+                //     defined type)
+                //  2) The response variable on its own. The message is assumed to be successful.
+
+                // check to see if we have a tuple response
+                if (typing.attr("get_origin")(returnType).is(py::type::of(py::tuple()))){
+
+                    // if we have a strongly typed tuple, make sure it's valid and set the option to be its second element
+                    auto types = py::tuple(typing.attr("get_args")(returnType));
+
+                    // make sure that the tuple contains exactly two elements
+                    if (types.size() != 2){
+                        throw py::value_error("Custom GTP command returns invalid response; "
+                                              "expected two items, got " + std::to_string(types.size()));
+                    }
+
+                    // make sure that the first argument is a bool
+                    if (not py::type(types[0]).is(py::type::of(py::bool_()))){
+                        throw py::type_error("Custom GTP command returns invalid response in position 1, "
+                                             "expected bool, got " + std::string(py::str(types[0])));
+                    }
+
+                    // if it's valid, set the option to be the second element of the tuple
+                    returnType = types[1];
+                }
+
+                // throw an exception if the option is invalid
+                if (not isGTPType(returnType) and not returnType.is(py::type::of(py::none()))){
+                    throw py::type_error("Custom GTP command returned invalid response, expected GTP compatible "
+                                               "type, got " + std::string(py::str(py::type::of(returnType))));
+                }
+            }
+        }
+    }
+
+    bool isUnionInstance(const py::object& response, const py::object& expectedType, const py::module_& typing) {
 
         auto returnTypeOptions = py::list();
 
         // check if the return type is a union
-        if (typing.attr("get_origin")(returnType).is(typing.attr("Union"))){
+        if (typing.attr("get_origin")(expectedType).is(typing.attr("Union"))){
             // if it is, put all the types into the options
-            returnTypeOptions = returnType.attr("__args__");
+            returnTypeOptions = typing.attr("__args__");
         }
         else {
-            returnTypeOptions.append(returnType);
+            returnTypeOptions.append(expectedType);
         }
 
-        // go through all the type options and make sure that they are all satisfactory
-        for (unsigned i = 0; i < returnTypeOptions.size(); i++){
+        // go through all the return type options
+        for (unsigned i = 0; i < returnTypeOptions.size(); i++) {
 
-            // if the return type is a union or named tuple
+            // get this option of the response
             py::object returnType = returnTypeOptions[i];
 
-            // a valid response has two formats
-            //  1) a tuple containing whether the message was an error (bool) and the response variable (must be a GTP
-            //     defined type)
-            //  2) The response variable on its own. The message is assumed to be successful.
+            // check if we have a tuple
+            if (typing.attr("get_origin")(expectedType).is(py::type::of(py::tuple()))){
 
-            // check to see if we have a tuple response
-            if (typing.attr("get_origin")(returnType).is(py::type::of(py::tuple()))){
-
-                // if we have a strongly typed tuple, make sure it's valid and set the option to be it's second element
-                auto types = py::tuple(typing.attr("get_args")(returnType));
-
-                // make sure that the tuple contains exactly two elements
-                if (types.size() != 2){
-                    throw py::value_error("Custom GTP command returns invalid response; "
-                                          "expected two items, got " + std::to_string(types.size()));
+                // skip this comparison if the response is not a tuple as well
+                if (not py::isinstance<py::tuple>(response)){
+                    continue;
                 }
 
-                // make sure that the first argument is a bool
-                if (not py::type(types[0]).is(py::type::of(py::bool_()))){
-                    throw py::type_error("Custom GTP command returns invalid response in position 1, "
-                                         "expected bool, got " + std::string(py::str(types[0])));
+                // generate a tuple containing the expected types
+                py::tuple types = expectedType.attr("__args__");
+
+                // skip this if the tuples are not the same size
+                if (py::len(response) != py::len(types)){
+                    continue;
                 }
 
-                // if it's valid, set the option to be the second element of the tuple
-                returnType = py::tuple(typing.attr("get_args")(returnType))[1];
+                unsigned j;
+
+                // go through all the types
+                for (j = 0; j < types.size(); j++){
+                    if (not py::isinstance(py::tuple(response)[j], types[j])){
+                        break;
+                    }
+                }
+
+                if (j == types.size()){
+                    return true;
+                }
+
+            }
+            else {
+                // if the response type matches, return true
+                if (py::isinstance(response, returnType)){
+                    return true;
+                }
             }
 
-            // throw an exception if the option is invalid
-            if (not isGTPType(returnType)){
-                throw pybind11::type_error("Custom GTP command returned invalid response, expected GTP compatible "
-                                           "type, got " + std::string(py::str(py::type::of(returnType))));
-            }
         }
+
+        // if we never found a match, return false
+        return false;
     }
 
 }

@@ -104,7 +104,7 @@ namespace sente {
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
-        std::shared_ptr<_board> copyBoard() const;
+        std::unique_ptr<_board> copyBoard() const;
         unsigned getSide() const;
 
         Results getResults() const;

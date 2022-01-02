@@ -13,6 +13,7 @@ namespace sente::GTP {
 
     void checkGTPCommand(py::function& function, const py::module_& inspect,
                          const py::module_& typing);
+    bool isUnionInstance(const py::object& response, const py::object& type, const py::module_& typing);
 
 }
 

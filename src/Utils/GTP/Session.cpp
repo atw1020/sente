@@ -115,6 +115,10 @@ namespace sente::GTP {
             return stoneMessage + " " + pointMessage;
 
         }
+        if (py::isinstance<py::none>(object)){
+            // return an empty string
+            return "";
+        }
         else {
             throw std::runtime_error("called gtpTypeString on non GTP type");
         }
@@ -323,15 +327,30 @@ namespace sente::GTP {
 
         // get the name from the function
         std::string name = py::str(function.attr("__name__"));
+        auto annotations = function.attr("__annotations__");
+
+        py::object returnType = py::type::of(py::none());
+
+        if (annotations.contains("return")){
+            returnType = annotations["return"];
+        }
 
         // define the custom command using a lambda
-        CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function, name, returnType, typing](Session* self,
+                const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
             // pack the arguments and call the function
             auto args = gtpArgsToPyArgs(arguments, self->masterGame.getSide());
 
             py::object response = function(*args);
+
+            // throw an error if the returned type does not match the function's type hinting
+            if (not isUnionInstance(response, returnType, typing)){
+                throw py::type_error("custom GTP command \"" + name + "\" returned invalid type, expected " +
+                                     std::string(py::str(returnType)) + " got " +
+                                     std::string(py::str(py::type::of(response))));
+            }
 
             // pack the results into a response tuple
             bool status;
@@ -343,11 +362,6 @@ namespace sente::GTP {
             else {
                 // otherwise, the message is successful and the response is just what was returned
                 status = true;
-            }
-
-            if (not isGTPType(py::type::of(response))){
-                throw py::type_error("function decorated with \"Command\" returned invalid type; expected GTP "
-                                     "compatible variable, got " + std::string(py::str(py::type::of(response))));
             }
 
             return {status, gtpTypeToString(response, self->masterGame.getSide())};

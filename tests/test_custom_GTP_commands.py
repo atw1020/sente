@@ -5,13 +5,15 @@ Author: Arthur Wesley
 """
 
 from unittest import TestCase
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 import sente
 from sente import GTP
 
+from assert_does_not_raise import DoesNotRaiseTestCase
 
-class CustomGTPCommands(TestCase):
+
+class CustomGTPCommands(DoesNotRaiseTestCase):
 
     def test_basic_registration(self):
         """
@@ -368,6 +370,71 @@ class CustomGTPCommands(TestCase):
             return sente.moves.Resign(color)
 
         self.assertEqual("= resign\n\n", session.interpret("genmove B"))
+
+    def test_return_none(self):
+        """
+
+        makes sure that custom commands can return None
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def return_none():
+            return None
+
+        self.assertEqual("= \n\n", session.interpret("test-return_none"))
+
+    def test_none_union(self):
+        """
+
+        checks to see if unions containing None are accepted
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.1")
+
+        @session.Command
+        def none_union(test: bool) -> Union[None, str]:
+            if test:
+                return "this is a string!"
+            else:
+                return None
+
+        self.assertEqual("= this is a string!\n\n", session.interpret("test-none_union true"))
+        self.assertEqual("= \n\n", session.interpret("test-none_union false"))
+
+    def test_updating_session(self):
+        """
+
+        makes sure that custom GTP commands can affect the session object (ie. it's game)
+
+        :return:
+        """
+
+        session = GTP.Session("test", "0.0.1")
+        session.interpret("boardsize 9")
+
+        @session.Command
+        def play_4_4():
+            session.game.play(4, 4)
+
+        session.interpret("test-play_4_4")
+
+        self.assertEqual("= \n"
+                         " 9  .  .  .  .  .  .  .  .  .\n"
+                         " 8  .  .  .  .  .  .  .  .  .\n"
+                         " 7  .  .  *  .  .  .  *  .  .\n"
+                         " 6  .  .  .  X  .  .  .  .  .\n"
+                         " 5  .  .  .  .  *  .  .  .  .\n"
+                         " 4  .  .  .  .  .  .  .  .  .\n"
+                         " 3  .  .  *  .  .  .  *  .  .\n"
+                         " 2  .  .  .  .  .  .  .  .  .\n"
+                         " 1  .  .  .  .  .  .  .  .  .\n"
+                         "    A  B  C  D  E  F  G  H  J\n\n", session.interpret("showboard"))
 
 
 class InterpreterSyntaxChecking(TestCase):

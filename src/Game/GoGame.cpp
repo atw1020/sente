@@ -550,17 +550,25 @@ namespace sente {
         return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
-    std::shared_ptr<_board> GoGame::copyBoard() const {
+    std::unique_ptr<_board> GoGame::copyBoard() const {
+
+        std::unique_ptr<_board> newBoard;
+
         switch (board->getSide()){
             case 19:
-                return std::make_shared<Board<19>>(*((Board<19>*) board.get()));
+                newBoard = std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+                break;
             case 13:
-                return std::make_shared<Board<19>>(*((Board<19>*) board.get()));
+                newBoard =  std::make_unique<Board<13>>(*((Board<13>*) board.get()));
+                break;
             case 9:
-                return std::make_shared<Board<19>>(*((Board<19>*) board.get()));
+                newBoard = std::make_unique<Board<9>>(*((Board<9>*) board.get()));
+                break;
             default:
-                throw py::value_error("cannot construct board of size" + std::to_string(board->getSide()));
+                throw py::value_error("cannot construct board of size " + std::to_string(board->getSide()));
         }
+
+        return newBoard;
     }
 
     unsigned GoGame::getSide() const {
