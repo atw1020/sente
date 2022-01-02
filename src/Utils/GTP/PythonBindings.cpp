@@ -121,7 +121,7 @@ namespace sente::GTP {
         // check if the return type is a union
         if (typing.attr("get_origin")(expectedType).is(typing.attr("Union"))){
             // if it is, put all the types into the options
-            returnTypeOptions = typing.attr("__args__");
+            returnTypeOptions = expectedType.attr("__args__");
         }
         else {
             returnTypeOptions.append(expectedType);
