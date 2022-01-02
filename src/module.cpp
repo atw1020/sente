@@ -662,7 +662,7 @@ PYBIND11_MODULE(sente, module){
                 :param ignore_illegal_properties: whether or not to ignore illegal SGF properties
                 :param fix_file_format: whether or not to fix the file format if it is wrong
                 :return: a ``sente.Game`` object populated with data from the SGF file
-            )pbdoc")
+            )pbdoc", py::return_value_policy::take_ownership)
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
                 output << sente::SGF::dumpSGF(game);
@@ -688,7 +688,7 @@ PYBIND11_MODULE(sente, module){
                 :param ignore_illegal_properties: whether or not to ignore illegal SGF properties
                 :param fix_file_format: whether or not to fix the file format if it is wrong
                 :return: a ``sente.Game`` object populated with data from the SGF file
-            )pbdoc")
+            )pbdoc", py::return_value_policy::take_ownership)
         .def("dumps", [](const sente::GoGame& game){
                 return sente::SGF::dumpSGF(game);
             },
@@ -727,7 +727,7 @@ PYBIND11_MODULE(sente, module){
             .def("active", [](const sente::GTP::Session& engine){
                 return engine.isActive();
             })
-            // .def_readwrite("game", &sente::GTP::Session::scratchGame)
+            .def_readwrite("game", &sente::GTP::Session::masterGame)
             .def_property("name", &sente::GTP::Session::getEngineName, &sente::GTP::Session::setEngineName);
 
 }
