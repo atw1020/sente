@@ -104,7 +104,7 @@ namespace sente {
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
-        std::unique_ptr<_board> copyBoard() const;
+        std::shared_ptr<_board> copyBoard() const;
         unsigned getSide() const;
 
         Results getResults() const;
@@ -129,7 +129,7 @@ namespace sente {
         unsigned passCount = 0;
 
         // todo: look into moving the board onto the stack
-        std::unique_ptr<_board> board;
+        std::shared_ptr<_board> board;
 
         utils::Tree<SGF::SGFNode> gameTree;
 

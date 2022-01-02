@@ -639,6 +639,7 @@ PYBIND11_MODULE(sente, module){
                     std::ifstream filePointer(fileName);
                     std::string SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
                                                       std::istreambuf_iterator<char>());
+                    filePointer.close();
 
                     // generate the move tree
                     auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
@@ -720,9 +721,6 @@ PYBIND11_MODULE(sente, module){
             })
             .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
                 return session.registerCommand(function, inspect, typing);
-            })
-            .def("get_sequence", [](sente::GTP::Session& engine){
-                return engine.masterGame.getMoveSequence();
             })
             .def("active", [](const sente::GTP::Session& engine){
                 return engine.isActive();

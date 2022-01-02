@@ -550,14 +550,14 @@ namespace sente {
         return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
     }
 
-    std::unique_ptr<_board> GoGame::copyBoard() const {
+    std::shared_ptr<_board> GoGame::copyBoard() const {
         switch (board->getSide()){
             case 19:
-                return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+                return std::make_shared<Board<19>>(*((Board<19>*) board.get()));
             case 13:
-                return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+                return std::make_shared<Board<19>>(*((Board<19>*) board.get()));
             case 9:
-                return std::make_unique<Board<19>>(*((Board<19>*) board.get()));
+                return std::make_shared<Board<19>>(*((Board<19>*) board.get()));
             default:
                 throw py::value_error("cannot construct board of size" + std::to_string(board->getSide()));
         }
@@ -728,13 +728,13 @@ namespace sente {
 
         switch (side){
             case 19:
-                board = std::make_unique<Board<19>>(false, false);
+                board = std::make_shared<Board<19>>(false, false);
                 break;
             case 13:
-                board = std::make_unique<Board<13>>(false, false);
+                board = std::make_shared<Board<13>>(false, false);
                 break;
             case 9:
-                board = std::make_unique<Board<9>>(false, false);
+                board = std::make_shared<Board<9>>(false, false);
                 break;
             default:
                 throw std::domain_error("Invalid Board size " +
@@ -745,13 +745,13 @@ namespace sente {
 
         switch (board->getSide()){
             case 19:
-                board = std::make_unique<Board<19>>(board->getUseASCII(), board->getLowerLeftOrigin());
+                board = std::make_shared<Board<19>>(board->getUseASCII(), board->getLowerLeftOrigin());
                 break;
             case 13:
-                board = std::make_unique<Board<13>>(board->getUseASCII(), board->getLowerLeftOrigin());
+                board = std::make_shared<Board<13>>(board->getUseASCII(), board->getLowerLeftOrigin());
                 break;
             case 9:
-                board = std::make_unique<Board<9>>(board->getUseASCII(), board->getLowerLeftOrigin());
+                board = std::make_shared<Board<9>>(board->getUseASCII(), board->getLowerLeftOrigin());
                 break;
             default:
                 throw std::domain_error("Invalid Board size " +
