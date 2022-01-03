@@ -56,7 +56,7 @@ can be seen below:
     * - protocol_version
       - the version of GTP being used
     * - loadsgf [moves: int] (optional)
-      - loads an SGF file and plays `moves` moves
+      - loads an SGF file and plays ``moves`` moves
     * - quit (also exit)
       - quits the session
 
@@ -85,10 +85,10 @@ can be seen below:
     <BLANKLINE>
     <BLANKLINE>
 
-Creating a simple GTP Interpreter
+The `GTP.Session` Object
 ---------------------------------
 
-The Sente GTP Module contains the `GTP.Session` object to
+The Sente GTP Module contains the ``GTP.Session`` object to
 create Engines that can communicate using GTP.
 
 .. code-block:: python
@@ -96,9 +96,9 @@ create Engines that can communicate using GTP.
     >>> from sente import GTP
     >>> session = GTP.Session("my_engine_name", "0.0.1")
 
-The `GTP.Session.interpret` method interprets GTP commands
-that are passed to it. For example, we can call the `name`
-and `version` commands from the table above
+The ``GTP.Session.interpret`` method interprets GTP commands
+that are passed to it. For example, we can call the ``name``
+and ``version`` commands from the table above
 
 .. code-block:: python
 
@@ -131,9 +131,125 @@ standard and should not be removed.*
 
 Let's do some Go!
 
-We can play some moves using the `play` command and
-show the board using the `showboard` command.
+We can play some moves using the ``play`` command and
+show the board using the ``showboard`` command.
+
+.. code-block::
+
+    >>> session.interpret("play B D4")
+    >>> session.interpret("play W D16")
+    >>> print(session.interpret("showboard"))
+    =
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    16  .  .  .  O  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     4  .  .  .  X  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+
+.. doctest:: python
+    :hide:
+
+    >>> from sente import GTP
+    >>> session = GTP.Session("my_engine_name", "0.0.1")
+    >>> session.interpret("play B D4")
+    '= \n\n'
+    >>> session.interpret("play W D16")
+    '= \n\n'
+    >>> print(session.interpret("showboard")[3:])
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    16  .  .  .  O  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     4  .  .  .  X  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+    <BLANKLINE>
+    <BLANKLINE>
+
+.. _GTP-shell-label:
+
+Creating an Interactive GTP Shell
+---------------------------------
+
+In order to communicate with other programs, we need to
+connect the ``GTP.Session`` interpreter to the ``stdout``
+and ``stdin`` files. Luckily Python provides the built in
+commands ``input`` and ``print`` that do all the hard parts
+of this for us
+
+.. code-block:: python
+
+    >>> from sente import GTP
+    >>> session = GTP.Session("my_engine_name", "0.0.1")
+    >>> while session.active(): # True until the session recievs a quit command
+    ...     command = input(">> ") # prompt (">> ") here is optional
+    ...     response = session.interpret(command)
+    ...     print(response)
+
+Running this code creates an interactive GTP Session
+with all of the commands in the above table working.
+
+.. code-block::
+
+    >> play B D4
+    =
 
 
+    >> play W D16
+    =
 
 
+    >> showboard
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    16  .  .  .  O  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     4  .  .  .  X  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+
+Beyond being an interactive shell, the program above is
+capable of interacting with GTP compatible programs such
+as `CGoban <https://www.gokgs.com/download.jsp>`_ or
+`Sabaki <https://sabaki.yichuanshen.de>`_.
