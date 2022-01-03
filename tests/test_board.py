@@ -4,7 +4,6 @@ Author: Arthur Wesley
 
 """
 
-from sys import platform
 from unittest import TestCase
 
 from sente import *

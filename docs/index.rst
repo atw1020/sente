@@ -21,6 +21,13 @@ Docs
 
 .. toctree::
    :maxdepth: 2
+   :caption: Go Text Protocol
+
+   GTP/introduction
+   GTP/simple AI
+
+.. toctree::
+   :maxdepth: 2
    :caption: Library Reference
 
    basic components
