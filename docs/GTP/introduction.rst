@@ -85,7 +85,7 @@ can be seen below:
     <BLANKLINE>
     <BLANKLINE>
 
-The `GTP.Session` Object
+The ``GTP.Session`` Object
 ---------------------------------
 
 The Sente GTP Module contains the ``GTP.Session`` object to

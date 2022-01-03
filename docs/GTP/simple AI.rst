@@ -1,4 +1,4 @@
-Building a Simple AI with the sente GTP module
+Building a Simple AI with the Sente GTP Module
 ==============================================
 
 One of the required GTP commands that all programs that
@@ -17,7 +17,7 @@ Setting Up the Python file
 
 To begin, let's set up a GTP interpreter in a python
 file. We will copy most of the code from the previous
-section :ref:`GTP-shell-label`
+section :ref:`GTP-shell-label`.
 
 .. code-block:: python
     :linenos:
@@ -29,6 +29,7 @@ section :ref:`GTP-shell-label`
     """
 
     from sente import GTP
+
 
     def main():
         """
@@ -52,11 +53,11 @@ section :ref:`GTP-shell-label`
 
 The above is equivalent to the code in the aforementioned
 section, only with proper python formatting. Running the
-file will open a
+file will open a GTP session.
 
 .. code-block::
 
-    $ python random_move.py
+    (venv) $ python random_move.py
     starting up random move...
     >>
 
@@ -64,18 +65,18 @@ file will open a
 However, so far we haven't changed the functionality of
 the ``genmove`` command. Trying to call the genmove command
 with a GTP session where no GenMove has been registered
-will cause an exception
+will cause an exception:
 
 .. code-block::
 
-    $ python random_move.py
+    (venv) $ python random_move.py
     starting up random move...
     >> genmove B
     Traceback (most recent call last):
-      File "random_move.py", line 27, in <module>
+      File "random_move.py", line 28, in <module>
         main()
-      File "random_move.py", line 22, in main
-        print(session.interpret(input(">> "))
+      File "random_move.py", line 23, in main
+        response = session.interpret(input(">> "))
     RuntimeError: genmove has not been implemented by this engine, please register a valid function
 
 Overwriting Genmove
@@ -90,11 +91,11 @@ To begin, we define a function that returns a random legal
 move. The ``sente.game`` object has a handy method that
 generates a list of all legal moves. We can obtain the
 current game object the GTP Engine uses and then use
-the ``random.choice`` function to choose a random move
+the ``random.choice`` function to choose a random move.
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 7, 22-30
+    :emphasize-lines: 7, 23-31
 
     """
 
@@ -105,6 +106,7 @@ the ``random.choice`` function to choose a random move
     import random
 
     from sente import GTP
+
 
     def main():
         """
@@ -151,11 +153,15 @@ requires that the genmove command the following signature:
 :param color: Color of the player to generate a move for
 :return: Move object containing the desired move
 
+.. note:: the color argument is ignored here for
+    the sake of simplicity, but in general it
+    should not be ignored.
+
 Adding the decorators and type hints we get the following code:
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 22, 23, 28
+    :emphasize-lines: 9, 24, 25, 30
 
     """
 
@@ -165,7 +171,9 @@ Adding the decorators and type hints we get the following code:
 
     import random
 
+    import sente
     from sente import GTP
+
 
     def main():
         """
@@ -198,6 +206,16 @@ Adding the decorators and type hints we get the following code:
 
     if __name__ == "__main__":
         main()
+
+We can now run our program and watch our AI generate hillariously
+awful moves
+
+.. code-block::
+
+    (venv) $ python random_move.py
+    starting up random move...
+    >> genmove B
+    = K18
 
 .. note:: you do not need to play the generated move into
     the session's ``sente.Game`` object. Sente does this
