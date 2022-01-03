@@ -1,7 +1,7 @@
 .. currentmodule:: sente
 
-Sente Exceptions
-================
+The ``GTP`` Module
+==================
 
 .. automodule:: sente.GTP
     :members:

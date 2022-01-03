@@ -147,7 +147,7 @@ accepts functions that have
 `typing hints <https://docs.python.org/3/library/typing.html>`_.
 This is because GTP is a strongly typed protocol meaning that
 only predefined data types can be transferred. Additionally,
-the `GTP Specifications <https://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2.pdf#page=20>`_
+the `GTP Specifications, page 19 <https://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2.pdf#page=20>`_
 requires that the genmove command the following signature:
 
 :param color: Color of the player to generate a move for

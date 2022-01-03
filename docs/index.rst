@@ -33,6 +33,7 @@ Docs
 
    basic components
    modules/sgf
+   modules/GTP
    modules/exceptions
 
 Indices and tables

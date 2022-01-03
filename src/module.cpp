@@ -526,6 +526,12 @@ PYBIND11_MODULE(sente, module){
 
                 :return: a python list containing the moves that lead to this position.
              )pbdoc")
+        .def("get_sequence", &sente::GoGame::getMoveSequence,
+                 R"pbdoc(
+                generate the sequence of moves that leads to the current board position
+
+                :return: a python list containing the moves that lead to this position.
+             )pbdoc")
         .def("get_all_sequences", [](sente::GoGame& game){
                 return game.getSequences({});
             },
