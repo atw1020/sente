@@ -40,11 +40,9 @@ section :ref:`GTP-shell-label`.
 
         session = GTP.Session("random_move", "0.0.1")
 
-        print("starting up random move...")
-
         while session.active():
 
-            response = session.interpret(input(">> "))
+            response = session.interpret(input(""))
             print(response)
 
 
@@ -58,8 +56,7 @@ file will open a GTP session.
 .. code-block::
 
     (venv) $ python random_move.py
-    starting up random move...
-    >>
+    # begin executing commands
 
 
 However, so far we haven't changed the functionality of
@@ -70,13 +67,12 @@ will cause an exception:
 .. code-block::
 
     (venv) $ python random_move.py
-    starting up random move...
-    >> genmove B
+    genmove B
     Traceback (most recent call last):
-      File "random_move.py", line 28, in <module>
+      File "random_move.py", line 26, in <module>
         main()
-      File "random_move.py", line 23, in main
-        response = session.interpret(input(">> "))
+      File "random_move.py", line 21, in main
+        response = session.interpret(input(""))
     RuntimeError: genmove has not been implemented by this engine, please register a valid function
 
 Overwriting Genmove
@@ -95,7 +91,7 @@ the ``random.choice`` function to choose a random move.
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 7, 23-31
+    :emphasize-lines: 7, 21-29
 
     """
 
@@ -117,8 +113,6 @@ the ``random.choice`` function to choose a random move.
 
         session = GTP.Session("random_move", "0.0.1")
 
-        print("starting up random move...")
-
         def gen_move():
             """
 
@@ -131,7 +125,7 @@ the ``random.choice`` function to choose a random move.
 
         while session.active():
 
-            response = session.interpret(input(">> "))
+            response = session.interpret(input(""))
             print(response)
 
 
@@ -161,7 +155,7 @@ Adding the decorators and type hints we get the following code:
 
 .. code-block:: python
     :linenos:
-    :emphasize-lines: 9, 24, 25, 30
+    :emphasize-lines: 9, 22, 23, 28
 
     """
 
@@ -184,8 +178,6 @@ Adding the decorators and type hints we get the following code:
 
         session = GTP.Session("random_move", "0.0.1")
 
-        print("starting up random move...")
-
         @session.GenMove
         def gen_move(color: sente.stone) -> sente.Move:
             """
@@ -200,7 +192,7 @@ Adding the decorators and type hints we get the following code:
 
         while session.active():
 
-            response = session.interpret(input(">> "))
+            response = session.interpret(input(""))
             print(response)
 
 
@@ -213,8 +205,7 @@ awful moves
 .. code-block::
 
     (venv) $ python random_move.py
-    starting up random move...
-    >> genmove B
+    genmove B
     = K18
 
 .. note:: you do not need to play the generated move into
