@@ -38,8 +38,15 @@ namespace sente::GTP {
         (void) arguments;
         std::stringstream commands;
 
-        for (const auto& command : self->getCommands()){
-            commands << command.first << std::endl;
+        auto registeredCommands = self->getCommands();
+
+        for (auto command = registeredCommands.begin(); command != registeredCommands.end();){
+            commands << command->first;
+
+            // only add the newline if we need to
+            if (++command != registeredCommands.end()){
+                commands << std::endl;
+            }
         }
 
         return {true, commands.str()};

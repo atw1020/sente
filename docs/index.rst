@@ -25,7 +25,7 @@ Docs
 
    GTP/introduction
    GTP/simple AI
-   GTP/Custom GTP Commands
+   GTP/Private GTP Extensions
 
 .. toctree::
    :maxdepth: 2

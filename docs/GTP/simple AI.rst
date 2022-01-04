@@ -12,12 +12,14 @@ In this tutorial, we will learn how to override ``genmove``
 and use it to create a simple GTP AI that plays random
 moves using sente.
 
+.. _GTP-shell-file-label:
+
 Setting Up the Python file
 --------------------------
 
 To begin, let's set up a GTP interpreter in a python
 file. We will copy most of the code from the previous
-section :ref:`GTP-shell-label`.
+section :ref:`GTP-shell-interactive-label`.
 
 .. code-block:: python
     :linenos:
@@ -141,7 +143,7 @@ accepts functions that have
 `typing hints <https://docs.python.org/3/library/typing.html>`_.
 This is because GTP is a strongly typed protocol meaning that
 only predefined data types can be transferred. Additionally,
-the `GTP Specifications, page 19 <https://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2.pdf#page=20>`_
+`section 6.3.3 of the GTP spec <https://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2.pdf#page=20>`_
 requires that the genmove command the following signature:
 
 :param color: Color of the player to generate a move for
@@ -211,6 +213,8 @@ awful moves
 .. note:: you do not need to play the generated move into
     the session's ``sente.Game`` object. Sente does this
     automatically
+
+.. _Sabaki-tutorial-label:
 
 Connecting the AI to Sabaki
 ---------------------------

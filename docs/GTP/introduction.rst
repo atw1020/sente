@@ -194,7 +194,7 @@ show the board using the ``showboard`` command.
     <BLANKLINE>
     <BLANKLINE>
 
-.. _GTP-shell-label:
+.. _GTP-shell-interactive-label:
 
 Creating an Interactive GTP Shell
 ---------------------------------
@@ -213,6 +213,12 @@ of this for us
     ...     command = input(">> ") # prompt (">> ") here is optional
     ...     response = session.interpret(command)
     ...     print(response)
+
+.. note:: The prompt included here (">> ") *violates*
+    the official GTP spec and should not be used by
+    applications that actually communicate via GTP.
+    (It's purpose here is to make a better interface
+    for debugging)
 
 Running this code creates an interactive GTP Session
 with all of the commands in the above table working.
@@ -252,4 +258,6 @@ with all of the commands in the above table working.
 Beyond being an interactive shell, the program above is
 capable of interacting with GTP compatible programs such
 as `CGoban <https://www.gokgs.com/download.jsp>`_ or
-`Sabaki <https://sabaki.yichuanshen.de>`_.
+`Sabaki <https://sabaki.yichuanshen.de>`_. For a tutorial
+on how to connect sente to Sabaki, see
+:ref:`Sabaki-tutorial-label`
