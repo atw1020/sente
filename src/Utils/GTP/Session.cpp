@@ -347,7 +347,7 @@ namespace sente::GTP {
 
             // throw an error if the returned type does not match the function's type hinting
             if (not isUnionInstance(response, returnType, typing)){
-                throw py::type_error("custom GTP command \"" + name + "\" returned invalid type, expected " +
+                throw py::type_error("Private GTP extension \"" + name + "\" returned invalid type, expected " +
                                      std::string(py::str(returnType)) + " got " +
                                      std::string(py::str(py::type::of(response))));
             }
@@ -672,7 +672,7 @@ namespace sente::GTP {
         // check to see if the argument pattern contains a color followed by a vertex
         for (unsigned i = 0; i < argumentPattern.size() - 1; i++){
             if (argumentPattern[i].second == COLOR and argumentPattern[i + 1].second == VERTEX){
-                throw pybind11::value_error("Custom GTP command \"" + name + "\" contains a Color followed by a Vertex,"
+                throw pybind11::value_error("Private GTP extension \"" + name + "\" contains a Color followed by a Vertex,"
                                                                              " use a sente.Move instead.");
             }
         }

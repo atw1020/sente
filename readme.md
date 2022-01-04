@@ -48,8 +48,8 @@ _note: japanese rules are not reccomended as sente does not currently include au
 moves can be played on the game using the `play()` method, and the board can be printed using the python `print()` function.
 ```python
 >>> game.play(4, 4)
->>> game.play(16, 4)
->>> game.play(4, 17)
+>>> game.play(4, 16)
+>>> game.play(17, 4)
 >>> print(game)
 ```
 ```

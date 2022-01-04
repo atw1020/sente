@@ -43,14 +43,14 @@ namespace sente::GTP {
 
             // throw an error if the argument doesn't have a type annotation
             if (not annotations.contains(argument)){
-                throw py::value_error("Custom GTP command \"" + name + "\" has no type specified for argument \"" +
+                throw py::value_error("Private GTP extension \"" + name + "\" has no type specified for argument \"" +
                                       std::string(py::str(argument))
-                                      + "\" (custom GTP commands must be strongly typed)");
+                                      + "\" (private GTP extensions must be strongly typed)");
             }
 
             // throw an error if the argument's type is invalid
             if (not isGTPType(annotations[argument])){
-                throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for custom GTP command \""
+                throw py::type_error("Argument \"" + std::string(py::str(argument)) + "\" for private GTP extension \""
                                      + name + " \"has invalid type \"" + std::string(py::str(annotations[argument]))
                                      + "\".");
             }
@@ -91,13 +91,13 @@ namespace sente::GTP {
 
                     // make sure that the tuple contains exactly two elements
                     if (types.size() != 2){
-                        throw py::value_error("Custom GTP command returns invalid response; "
+                        throw py::value_error("Private GTP extension returns invalid response; "
                                               "expected two items, got " + std::to_string(types.size()));
                     }
 
                     // make sure that the first argument is a bool
                     if (not py::type(types[0]).is(py::type::of(py::bool_()))){
-                        throw py::type_error("Custom GTP command returns invalid response in position 1, "
+                        throw py::type_error("Private GTP extension returns invalid response in position 1, "
                                              "expected bool, got " + std::string(py::str(types[0])));
                     }
 
@@ -107,8 +107,8 @@ namespace sente::GTP {
 
                 // throw an exception if the option is invalid
                 if (not isGTPType(returnType) and not returnType.is(py::type::of(py::none()))){
-                    throw py::type_error("Custom GTP command returned invalid response, expected GTP compatible "
-                                               "type, got " + std::string(py::str(py::type::of(returnType))));
+                    throw py::type_error("Private GTP extension returned invalid response, expected GTP compatible "
+                                               "type, got " + std::string(py::str(returnType)));
                 }
             }
         }
