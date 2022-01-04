@@ -46,7 +46,7 @@ previous section :ref:`GTP-shell-file-label`
 
         """
 
-        session = GTP.Session("echo_command", "0.0.1")
+        session = GTP.Session("engine", "0.0.1")
 
         while session.active():
 
@@ -87,7 +87,7 @@ and we simply have to return the ``message`` argument
 
         """
 
-        session = GTP.Session("echo_command", "0.0.1")
+        session = GTP.Session("engine", "0.0.1")
 
         @session.Command
         def echo(message: str) -> str:
@@ -129,8 +129,8 @@ include the name of the engine followed by a dash ("-")
 followed by the name of the command. Sente automatically
 adds formats the names of it's commands to match this
 pattern. Therefore, the echo command we have created
-oauth to be "echo_command-echo". We can conform this
-by running the "list_commands" command
+oauth to be "engine-echo". We can conform this
+by running the "list_commands" command:
 
 .. code-block:: bash
 
@@ -142,12 +142,27 @@ by running the "list_commands" command
     >> list_commands
     = play
     [...]
-    echo_command-echo
+    engine-echo
     [...]
     loadsgf
 
 
+    >>
 
-    >> 
+therefore, we can run the echo command by
+using the name "engine-echo"
+
+.. code-block:: bash
+
+    $ python echo_command.py
+    >> engine-echo hello
+    = hello
 
 
+    >> engine-echo
+
+.. note:: Officially, GTP String literals are
+    not allowed to have spaces in them. However
+    the sente interpreter allows strings to with
+    spaces in them so long as the strings are
+    enclosed in quotes

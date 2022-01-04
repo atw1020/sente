@@ -517,7 +517,7 @@ namespace sente::GTP {
     }
 
     std::string Session::errorMessage(const std::string& message) {
-        return "? " + message + "\n\n";
+        return "? " + message + "\n";
     }
 
     std::string Session::errorMessage(const std::string &message, unsigned id) {
@@ -525,11 +525,11 @@ namespace sente::GTP {
     }
 
     std::string Session::statusMessage(const std::string &message) {
-        return "= " + message + "\n\n";
+        return "= " + message + "\n";
     }
 
     std::string Session::statusMessage(const std::string &message, unsigned id) {
-        return "=" + std::to_string(id) + " " + message + "\n\n";
+        return "=" + std::to_string(id) + " " + message + "\n";
     }
 
     bool Session::argumentsMatch(const std::vector<ArgumentPattern> &expectedArguments,
