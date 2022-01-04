@@ -29,7 +29,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def octopus() -> Tuple[bool, str]:
             return True, "https://github.com/atw1020/sente/blob/master/tests/invalid%20sgf/octopus.jpeg"
 
-        self.assertEqual("= " + octopus()[1] + "\n\n", session.interpret("test-octopus"))
+        self.assertEqual("= " + octopus()[1] + "\n", session.interpret("test-octopus"))
 
     def test_greeting(self):
         """
@@ -45,7 +45,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def greeting() -> Tuple[bool, str]:
             return True, "hello, my name is" + session.name
 
-        self.assertEqual("= " + greeting()[1] + "\n\n", session.interpret("test-greeting"))
+        self.assertEqual("= " + greeting()[1] + "\n", session.interpret("test-greeting"))
 
     def test_integer_arg(self):
         """
@@ -61,7 +61,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def int_arg(arg: int) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= 8\n\n", session.interpret("test-int_arg 8"))
+        self.assertEqual("= 8\n", session.interpret("test-int_arg 8"))
 
     def test_vertex_arg(self):
         """
@@ -77,7 +77,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def vertex_arg(arg: sente.Vertex) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + vertex_arg(sente.Vertex(3, 16))[1] + "\n\n", session.interpret("test-vertex_arg D4"))
+        self.assertEqual("= " + vertex_arg(sente.Vertex(3, 16))[1] + "\n", session.interpret("test-vertex_arg D4"))
 
     def test_echo(self):
         """
@@ -93,7 +93,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def echo(text: str) -> Tuple[bool, str]:
             return True, text
 
-        self.assertEqual("= " + echo("silence")[1] + "\n\n",
+        self.assertEqual("= " + echo("silence")[1] + "\n",
                          session.interpret("test-echo silence"))
 
     def test_multi_line_strings(self):
@@ -110,7 +110,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def echo(text: str) -> Tuple[bool, str]:
             return True, text
 
-        self.assertEqual("= this is two lines...\nof a string!\n\n",
+        self.assertEqual("= this is two lines...\nof a string!\n",
                          session.interpret("test-echo \"this is two lines...\nof a string!\""))
 
     def test_color_arg(self):
@@ -127,7 +127,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def color_arg(arg: sente.stone) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + color_arg(sente.BLACK)[1] + "\n\n",
+        self.assertEqual("= " + color_arg(sente.BLACK)[1] + "\n",
                          session.interpret("test-color_arg BLACK"))
 
     def test_float_arg(self):
@@ -144,7 +144,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def float_arg(arg: float) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= 3.140000104904175\n\n",
+        self.assertEqual("= 3.140000104904175\n",
                          session.interpret("test-float_arg 3.14"))
 
     def test_move_arg(self):
@@ -161,7 +161,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def move_arg(arg: sente.Move) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + move_arg(sente.Move(3, 15, sente.stone.BLACK))[1] + "\n\n",
+        self.assertEqual("= " + move_arg(sente.Move(3, 15, sente.stone.BLACK))[1] + "\n",
                          session.interpret("test-move_arg BLACK D4"))
 
     def test_bool_arg(self):
@@ -178,7 +178,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def bool_arg(arg: bool) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + bool_arg(True)[1] + "\n\n",
+        self.assertEqual("= " + bool_arg(True)[1] + "\n",
                          session.interpret("test-bool_arg true"))
 
     def test_return_integer(self):
@@ -195,7 +195,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_integer() -> int:
             return 5
 
-        self.assertEqual("= 5\n\n", session.interpret("test-return_integer"))
+        self.assertEqual("= 5\n", session.interpret("test-return_integer"))
 
     def test_return_vertex(self):
         """
@@ -211,7 +211,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_vertex() -> sente.Vertex:
             return sente.Vertex(2, 5)
 
-        self.assertEqual("= C14\n\n", session.interpret("test-return_vertex"))
+        self.assertEqual("= C14\n", session.interpret("test-return_vertex"))
 
     def test_return_raw_string(self):
         """
@@ -227,7 +227,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_raw_string() -> str:
             return "hello hello (Hola!)"
 
-        self.assertEqual("= hello hello (Hola!)\n\n", session.interpret("test-return_raw_string"))
+        self.assertEqual("= hello hello (Hola!)\n", session.interpret("test-return_raw_string"))
 
     def test_return_color(self):
         """
@@ -243,7 +243,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_color() -> sente.stone:
             return sente.stone.BLACK
 
-        self.assertEqual("= B\n\n", session.interpret("test-return_color"))
+        self.assertEqual("= B\n", session.interpret("test-return_color"))
 
     def test_return_float(self):
         """
@@ -259,7 +259,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_float() -> float:
             return 3.14
 
-        self.assertEqual("= 3.14\n\n", session.interpret("test-return_float"))
+        self.assertEqual("= 3.14\n", session.interpret("test-return_float"))
 
     def test_return_move(self):
         """
@@ -275,7 +275,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_move() -> sente.Move:
             return sente.Move(4, 14, sente.stone.BLACK)
 
-        self.assertEqual("= B E5\n\n", session.interpret("test-return_move"))
+        self.assertEqual("= B E5\n", session.interpret("test-return_move"))
 
     def test_return_bool(self):
         """
@@ -291,7 +291,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_bool() -> bool:
             return False
 
-        self.assertEqual("= false\n\n", session.interpret("test-return_bool"))
+        self.assertEqual("= false\n", session.interpret("test-return_bool"))
 
     def test_gen_move_override(self):
         """
@@ -308,7 +308,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
             return sente.Move(4, 14, sente.stone.BLACK)
 
         # check that the move is generated
-        self.assertEqual("= E5\n\n", session.interpret("genmove B"))
+        self.assertEqual("= E5\n", session.interpret("genmove B"))
 
     def test_gen_move_plays_move(self):
         """
@@ -337,7 +337,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", session.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", session.interpret("showboard"))
 
     def test_return_pass(self):
         """
@@ -353,7 +353,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_pass(color: sente.stone) -> sente.Move:
             return sente.moves.Pass(color)
 
-        self.assertEqual("= pass\n\n", session.interpret("genmove B"))
+        self.assertEqual("= pass\n", session.interpret("genmove B"))
 
     def test_return_resign(self):
         """
@@ -369,7 +369,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_resign(color: sente.stone) -> sente.Move:
             return sente.moves.Resign(color)
 
-        self.assertEqual("= resign\n\n", session.interpret("genmove B"))
+        self.assertEqual("= resign\n", session.interpret("genmove B"))
 
     def test_return_none(self):
         """
@@ -385,7 +385,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
         def return_none():
             return None
 
-        self.assertEqual("= \n\n", session.interpret("test-return_none"))
+        self.assertEqual("= \n", session.interpret("test-return_none"))
 
     def test_none_union(self):
         """
@@ -404,8 +404,8 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
             else:
                 return None
 
-        self.assertEqual("= this is a string!\n\n", session.interpret("test-none_union true"))
-        self.assertEqual("= \n\n", session.interpret("test-none_union false"))
+        self.assertEqual("= this is a string!\n", session.interpret("test-none_union true"))
+        self.assertEqual("= \n", session.interpret("test-none_union false"))
 
     def test_updating_session(self):
         """
@@ -434,7 +434,7 @@ class CustomGTPCommands(DoesNotRaiseTestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", session.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", session.interpret("showboard"))
 
 
 class InterpreterSyntaxChecking(TestCase):
@@ -454,7 +454,7 @@ class InterpreterSyntaxChecking(TestCase):
             return True, text
 
         self.assertEqual("? no viable argument pattern for command \"test-echo\"; "
-                         "candidate pattern not valid: expected string in position 1, got integer\n\n",
+                         "candidate pattern not valid: expected string in position 1, got integer\n",
                          session.interpret("test-echo 53"))
 
     def test_echo_wrong_number_arguments(self):
@@ -471,7 +471,7 @@ class InterpreterSyntaxChecking(TestCase):
         def echo(text: str) -> Tuple[bool, str]:
             return True, text
 
-        self.assertEqual("? invalid number of arguments for command \"test-echo\"; expected 1, got 5\n\n",
+        self.assertEqual("? invalid number of arguments for command \"test-echo\"; expected 1, got 5\n",
                          session.interpret("test-echo in the world of silence"))
 
     def test_letter_i_skipped_vertex(self):
@@ -488,7 +488,7 @@ class InterpreterSyntaxChecking(TestCase):
         def letter_i_skipped_vertex() -> sente.Vertex:
             return sente.Vertex(8, 10)
 
-        self.assertEqual("= J9\n\n", session.interpret("test-letter_i_skipped_vertex"))
+        self.assertEqual("= J9\n", session.interpret("test-letter_i_skipped_vertex"))
 
     def test_letter_i_skipped_move(self):
         """
@@ -504,7 +504,7 @@ class InterpreterSyntaxChecking(TestCase):
         def letter_i_skipped_move() -> sente.Move:
             return sente.Move(8, 10, sente.stone.BLACK)
 
-        self.assertEqual("= B J9\n\n", session.interpret("test-letter_i_skipped_move"))
+        self.assertEqual("= B J9\n", session.interpret("test-letter_i_skipped_move"))
 
 
 class TestInvalidRegistration(TestCase):

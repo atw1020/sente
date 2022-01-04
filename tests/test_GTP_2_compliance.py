@@ -22,10 +22,10 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("=1 2\n\n", engine.interpret("1 protocol_version\n"))
-        self.assertEqual("=5 2\n\n", engine.interpret("5 protocol_version\n"))
-        self.assertEqual("=2 2\n\n", engine.interpret("2 protocol_version\n"))
-        self.assertEqual("=4294967295 2\n\n", engine.interpret("4294967295 protocol_version\n"))
+        self.assertEqual("=1 2\n", engine.interpret("1 protocol_version\n"))
+        self.assertEqual("=5 2\n", engine.interpret("5 protocol_version\n"))
+        self.assertEqual("=2 2\n", engine.interpret("2 protocol_version\n"))
+        self.assertEqual("=4294967295 2\n", engine.interpret("4294967295 protocol_version\n"))
 
     def test_protocol_version(self):
         """
@@ -37,7 +37,7 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= 2\n\n", engine.interpret("protocol_version\n"))
+        self.assertEqual("= 2\n", engine.interpret("protocol_version\n"))
 
     def test_name(self):
         """
@@ -49,10 +49,10 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= unimplemented_engine\n\n", engine.interpret("name\n"))
+        self.assertEqual("= unimplemented_engine\n", engine.interpret("name\n"))
 
         engine2 = GTP.Session("Ceph_the_octopus")
-        self.assertEqual("= Ceph_the_octopus\n\n", engine2.interpret("name\n"))
+        self.assertEqual("= Ceph_the_octopus\n", engine2.interpret("name\n"))
 
     def test_version(self):
         """
@@ -64,7 +64,7 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= 0.0.0\n\n", engine.interpret("version\n"))
+        self.assertEqual("= 0.0.0\n", engine.interpret("version\n"))
 
     def test_known_command(self):
         """
@@ -76,17 +76,17 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= true\n\n", engine.interpret("known_command protocol_version\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command name\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command version\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command known_command\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command list_commands\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command quit\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command boardsize\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command clear_board\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command komi\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command play\n"))
-        self.assertEqual("= true\n\n", engine.interpret("known_command genmove\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command protocol_version\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command name\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command version\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command known_command\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command list_commands\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command quit\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command boardsize\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command clear_board\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command komi\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command play\n"))
+        self.assertEqual("= true\n", engine.interpret("known_command genmove\n"))
 
     def test_known_command_false(self):
         """
@@ -98,9 +98,9 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= false\n\n", engine.interpret("known_command there's_no_risky_thing\n"))
-        self.assertEqual("= false\n\n", engine.interpret("known_command for_a_man_whose_determined_to_fall\n"))
-        self.assertEqual("= false\n\n", engine.interpret("known_command octopus\n"))
+        self.assertEqual("= false\n", engine.interpret("known_command there's_no_risky_thing\n"))
+        self.assertEqual("= false\n", engine.interpret("known_command for_a_man_whose_determined_to_fall\n"))
+        self.assertEqual("= false\n", engine.interpret("known_command octopus\n"))
 
     def test_list_commands(self):
         """
@@ -138,7 +138,7 @@ class MinimumGTPCommands(TestCase):
         engine = GTP.Session()
 
         self.assertTrue(engine.active())
-        self.assertEqual("= \n\n", engine.interpret("quit"))
+        self.assertEqual("= \n", engine.interpret("quit"))
         self.assertFalse(engine.active())
 
     def test_board_size(self):
@@ -151,7 +151,7 @@ class MinimumGTPCommands(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n\n", engine.interpret("boardsize 9"))
+        self.assertEqual("= \n", engine.interpret("boardsize 9"))
         self.assertEqual("= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
@@ -162,7 +162,7 @@ class MinimumGTPCommands(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", engine.interpret("showboard"))
 
     def test_play(self):
         """
@@ -196,7 +196,7 @@ class MinimumGTPCommands(TestCase):
                          " 3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n\n",
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n",
                          engine.interpret("showboard"))
 
     def test_genmove(self):
@@ -236,7 +236,7 @@ class MinimumGTPCommands(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", engine.interpret("showboard"))
 
 
 class ErrorMessages(TestCase):
@@ -251,9 +251,9 @@ class ErrorMessages(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("? unknown command\n\n", engine.interpret("please_tell_me_who_I_am"))
-        self.assertEqual("? unknown command\n\n", engine.interpret("unknown_command"))
-        self.assertEqual("? unknown command\n\n", engine.interpret("awfeawuehk"))
+        self.assertEqual("? unknown command\n", engine.interpret("please_tell_me_who_I_am"))
+        self.assertEqual("? unknown command\n", engine.interpret("unknown_command"))
+        self.assertEqual("? unknown command\n", engine.interpret("awfeawuehk"))
 
     def test_unacceptable_size(self):
         """
@@ -265,7 +265,7 @@ class ErrorMessages(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("? unacceptable size\n\n", engine.interpret("boardsize 10"))
+        self.assertEqual("? unacceptable size\n", engine.interpret("boardsize 10"))
 
     def test_illegal_move(self):
         """
@@ -278,7 +278,7 @@ class ErrorMessages(TestCase):
         engine = GTP.Session()
 
         engine.interpret("play B D4")
-        self.assertEqual("? illegal move\n\n", engine.interpret("play W D4"))
+        self.assertEqual("? illegal move\n", engine.interpret("play W D4"))
 
     def test_wrong_color_not_rejected(self):
         """
@@ -290,7 +290,7 @@ class ErrorMessages(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n\n", engine.interpret("play W D4"))
+        self.assertEqual("= \n", engine.interpret("play W D4"))
 
 
 class OtherCompliance(TestCase):
@@ -332,7 +332,7 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  X  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", engine.interpret("showboard"))
 
     def test_I_cutoff(self):
         """
@@ -357,7 +357,7 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", engine.interpret("showboard"))
 
         engine.interpret("play W J9")
 
@@ -371,7 +371,7 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", engine.interpret("showboard"))
 
     def test_I_co_ord_invalid(self):
         """
@@ -396,7 +396,7 @@ class OtherCompliance(TestCase):
         engine = GTP.Session()
 
         self.assertEqual("", engine.interpret("# this is a test"))
-        self.assertEqual("= 2\n\n", engine.interpret("protocol_version # this is a test"))
+        self.assertEqual("= 2\n", engine.interpret("protocol_version # this is a test"))
 
     def test_multiple_commands_at_once(self):
         """
@@ -421,7 +421,7 @@ class OtherCompliance(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n\n= \n"
+        self.assertEqual("= \n= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
                          " 7  .  .  *  .  .  .  *  .  .\n"
@@ -431,7 +431,7 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n"
+                         "    A  B  C  D  E  F  G  H  J\n"
                          "= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
@@ -442,7 +442,7 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         "    A  B  C  D  E  F  G  H  J\n",
                          engine.interpret("boardsize 9\n\nshowboard\n\n\nshowboard"))
 
     def test_whitespace_ignored(self):
@@ -455,8 +455,8 @@ class OtherCompliance(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n\n", engine.interpret("\t\tboardsize\t 9 "))
-        self.assertEqual("=1 \n\n", engine.interpret("\t1 \t play    B D4   \t "))
+        self.assertEqual("= \n", engine.interpret("\t\tboardsize\t 9 "))
+        self.assertEqual("=1 \n", engine.interpret("\t1 \t play    B D4   \t "))
 
         self.assertEqual("= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
@@ -468,7 +468,7 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n", engine.interpret("showboard"))
+                         "    A  B  C  D  E  F  G  H  J\n", engine.interpret("showboard"))
 
     def test_whitespace_followed_by_newline(self):
         """
@@ -480,7 +480,7 @@ class OtherCompliance(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n\n= \n"
+        self.assertEqual("= \n= \n"
                          " 9  .  .  .  .  .  .  .  .  .\n"
                          " 8  .  .  .  .  .  .  .  .  .\n"
                          " 7  .  .  *  .  .  .  *  .  .\n"
@@ -490,5 +490,5 @@ class OtherCompliance(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         "    A  B  C  D  E  F  G  H  J\n",
                          engine.interpret("boardsize 9    \n\nshowboard"))

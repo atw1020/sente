@@ -47,7 +47,7 @@ class CommandFunctionality(TestCase):
                          "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n"
                          "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend "
                          "try to play with 'ELOtest'. It can calculate & match your rank after few games.\n"
-                         "noob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n\n\n",
+                         "noob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n\n",
                          engine.interpret("showboard"))
 
     def test_partial_load_sgf(self):
@@ -84,7 +84,7 @@ class CommandFunctionality(TestCase):
                          " 3  .  .  .  .  .  O  .  .  O  .  .  .  .  O  X  .  .  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  O  X  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n\n",
+                         "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T\n",
                          engine.interpret("showboard"))
 
     def test_undo(self):
@@ -110,7 +110,7 @@ class CommandFunctionality(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         "    A  B  C  D  E  F  G  H  J\n",
                          engine.interpret("showboard"))
 
     def test_undo_multiple(self):
@@ -139,7 +139,7 @@ class CommandFunctionality(TestCase):
                          " 3  .  .  *  .  .  .  *  .  .\n"
                          " 2  .  .  .  .  .  .  .  .  .\n"
                          " 1  .  .  .  .  .  .  .  .  .\n"
-                         "    A  B  C  D  E  F  G  H  J\n\n",
+                         "    A  B  C  D  E  F  G  H  J\n",
                          engine.interpret("showboard"))
 
 
@@ -203,4 +203,4 @@ class EngineFunctionality(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n\n", engine.interpret("loadsgf \"sgf/Lee Sedol ladder game.sgf\""))
+        self.assertEqual("= \n", engine.interpret("loadsgf \"sgf/Lee Sedol ladder game.sgf\""))
