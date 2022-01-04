@@ -253,4 +253,39 @@ When we run this code however, we get an error
 As noted earlier, the ``error_message`` function is
 labeled as returning a ``tuple``. By default, python
 tuples are weakly typed, which violates the principle
-that every
+that every private GTP extension must be strongly
+strongly typed.
+
+We can work around this by using the ``typing.Tuple``
+class from the builtin python typing library which
+allows strongly typed tuples.
+
+.. code-block:: python
+    :emphasize-lines: 1, 6
+
+    import typing
+
+    session = GTP.Session("engine", "0.0.1")
+
+    @session.Command
+    def error_message(output: bool) -> typing.Tuple[bool, str]:
+        if output:
+            return True, "This is a successful status!"
+        else:
+            return False, "This is an unsuccessful status :("
+
+The command will now be accepted and can be tested in our GTP shell
+
+.. code-block:: bash
+
+    $ python error_message.py
+    >> engine-error_message true
+    = This is a successful status!
+
+    >> engine-error_message false
+    ? This is an unsuccessful status :(
+    
+    >>
+
+Unions in return types
+----------------------
