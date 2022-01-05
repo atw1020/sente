@@ -82,8 +82,6 @@ can be seen below:
     version
     loadsgf
     <BLANKLINE>
-    <BLANKLINE>
-    <BLANKLINE>
 
 The ``GTP.Session`` Object
 ---------------------------------
@@ -163,9 +161,9 @@ show the board using the ``showboard`` command.
     >>> from sente import GTP
     >>> session = GTP.Session("my_engine_name", "0.0.1")
     >>> session.interpret("play B D4")
-    '= \n\n'
+    '= \n'
     >>> session.interpret("play W D16")
-    '= \n\n'
+    '= \n'
     >>> print(session.interpret("showboard")[3:])
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -187,7 +185,6 @@ show the board using the ``showboard`` command.
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-    <BLANKLINE>
     <BLANKLINE>
 
 .. _GTP-shell-interactive-label:
