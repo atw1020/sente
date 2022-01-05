@@ -9,6 +9,7 @@ namespace sente {
 
     double determineKomi(Rules ruleset) {
         switch (ruleset){
+        default:
         case CHINESE:
         case OTHER:
             return 7.5;

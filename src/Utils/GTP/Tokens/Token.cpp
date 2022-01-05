@@ -12,6 +12,8 @@ namespace sente::GTP {
                 return "seperator";
             case LITERAL:
                 return "literal";
+            default:
+                throw std::domain_error("invalid Token Type passed to toString");
         }
     }
 

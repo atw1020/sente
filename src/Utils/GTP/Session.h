@@ -9,6 +9,7 @@
 
 #include <string>
 #include <variant>
+#include <memory>
 
 #include "../../Game/GoGame.h"
 #include "PythonBindings.h"

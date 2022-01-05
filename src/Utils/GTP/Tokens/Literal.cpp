@@ -26,6 +26,8 @@ namespace sente::GTP {
                 return "bool";
             case MOVE:
                 return "move";
+            default:
+                throw std::domain_error("invalid LiteralType passed to toString");
         }
     }
 

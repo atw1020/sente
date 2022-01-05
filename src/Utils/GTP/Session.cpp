@@ -146,125 +146,147 @@ namespace sente::GTP {
 
     std::string Session::interpret(std::string text) {
 
-        text = preprocess(text);
-        auto tokens = parse(text);
+        try {
+            text = preprocess(text);
+            auto tokens = parse(text);
 
-        std::stringstream outputStream;
+            std::stringstream outputStream;
 
-        unsigned start = 0;
+            unsigned start = 0;
 
-        // iterate through the tokens
-        for (unsigned index = 0; index < tokens.size(); index++){
+            // iterate through the tokens
+            for (unsigned index = 0; index < tokens.size(); index++){
 
-            Response response;
+                Response response;
 
-            // keep incrementing until we find a seperator
-            while (tokens[index]->getTokenType() != SEPERATOR and index < tokens.size()) {
-                index++;
-            }
+                // keep incrementing until we find a seperator
+                while (tokens[index]->getTokenType() != SEPERATOR and index < tokens.size()) {
+                    index++;
+                }
 
-            // slice the tokens and put them into a list
-            auto preArguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
+                // slice the tokens and put them into a list
+                auto preArguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
 
-            // update the starting index now that we've sliced the tokens
-            start = index + 1;
+                // update the starting index now that we've sliced the tokens
+                start = index + 1;
 
-            // replace instances of a stone followed by a point with a move
-            auto arguments = std::vector<std::shared_ptr<Token>>();
+                // replace instances of a stone followed by a point with a move
+                auto arguments = std::vector<std::shared_ptr<Token>>();
 
-            for (unsigned i = 0; i < preArguments.size(); i++){
+                for (unsigned i = 0; i < preArguments.size(); i++){
 
-                bool argsCombined = false;
+                    bool argsCombined = false;
 
-                if (preArguments[i]->getTokenType() == LITERAL and i < preArguments.size() - 1){
-                    if (preArguments[i + 1]->getTokenType() == LITERAL){
+                    if (preArguments[i]->getTokenType() == LITERAL and i < preArguments.size() - 1){
+                        if (preArguments[i + 1]->getTokenType() == LITERAL){
 
-                        // cast the arguments
-                        auto* check1 = (Literal*) preArguments[i].get();
-                        auto* check2 = (Literal*) preArguments[i + 1].get();
+                            // cast the arguments
+                            auto* check1 = (Literal*) preArguments[i].get();
+                            auto* check2 = (Literal*) preArguments[i + 1].get();
 
-                        // if we have the arguments that make up a move
-                        if (check1->getLiteralType() == COLOR and check2->getLiteralType() == VERTEX){
+                            // if we have the arguments that make up a move
+                            if (check1->getLiteralType() == COLOR and check2->getLiteralType() == VERTEX){
 
-                            // skip the next iteration and note that we've combined the arguments
-                            argsCombined = true;
-                            i++;
+                                // skip the next iteration and note that we've combined the arguments
+                                argsCombined = true;
+                                i++;
 
-                            Color* color = (Color*) check1;
-                            Vertex* vertex = (Vertex*) check2;
+                                Color* color = (Color*) check1;
+                                Vertex* vertex = (Vertex*) check2;
 
-                            arguments.emplace_back(std::make_shared<Move>(*color, *vertex));
+                                arguments.emplace_back(std::make_shared<Move>(*color, *vertex));
+                            }
                         }
                     }
+
+                    if (not argsCombined){
+                        arguments.push_back(preArguments[i]);
+                    }
+
                 }
 
-                if (not argsCombined){
-                    arguments.push_back(preArguments[i]);
+                // begin interpreting by checking to see if the first element is an integer literal
+                std::shared_ptr<Token> candidate;
+
+                bool precedingID = false;
+                unsigned id;
+
+                if (arguments[0]->getTokenType() == LITERAL){
+                    auto* literal = (Literal*) arguments[0].get();
+                    precedingID = literal->getLiteralType() == INTEGER;
                 }
 
-            }
+                if (precedingID){
+                    id = ((Integer*) arguments[0].get())->getValue();
+                    candidate = arguments[1];
+                    arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
+                }
+                else {
+                    candidate = arguments[0];
+                }
 
-            // begin interpreting by checking to see if the first element is an integer literal
-            std::shared_ptr<Token> candidate;
+                if (candidate->getTokenType() == LITERAL){
+                    // make sure we have a string literal
+                    auto* literal = (Literal*) candidate.get();
 
-            bool precedingID = false;
-            unsigned id;
+                    if (literal->getLiteralType() == STRING){
 
-            if (arguments[0]->getTokenType() == LITERAL){
-                auto* literal = (Literal*) arguments[0].get();
-                precedingID = literal->getLiteralType() == INTEGER;
-            }
+                        // check to see if a command exists
+                        if (commands.find(literal->getText()) != commands.end()){
+                            // check the arguments for the command
+                            response = execute(literal->getText(), arguments);
+                        }
+                        else {
+                            response = {false, "unknown command"};
+                        }
 
-            if (precedingID){
-                id = ((Integer*) arguments[0].get())->getValue();
-                candidate = arguments[1];
-                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
-            }
-            else {
-                candidate = arguments[0];
-            }
+                    }
 
-            if (candidate->getTokenType() == LITERAL){
-                // make sure we have a string literal
-                auto* literal = (Literal*) candidate.get();
+                }
 
-                if (literal->getLiteralType() == STRING){
-
-                    // check to see if a command exists
-                    if (commands.find(literal->getText()) != commands.end()){
-                        // check the arguments for the command
-                        response = execute(literal->getText(), arguments);
+                if (response.first){
+                    // if we successfully execute the command
+                    if (precedingID){
+                        // if there is a preceding ID, include it in the answer
+                        outputStream << statusMessage(response.second, id);
                     }
                     else {
-                        response = {false, "unknown command"};
+                        outputStream << statusMessage(response.second);
                     }
-
-                }
-
-            }
-
-            if (response.first){
-                // if we successfully execute the command
-                if (precedingID){
-                    // if there is a preceding ID, include it in the answer
-                    outputStream << statusMessage(response.second, id);
                 }
                 else {
-                    outputStream << statusMessage(response.second);
+                    if (precedingID){
+                        outputStream << errorMessage(response.second, id);
+                    }
+                    else {
+                        outputStream << errorMessage(response.second);
+                    }
                 }
-            }
-            else {
-                if (precedingID){
-                    outputStream << errorMessage(response.second, id);
-                }
-                else {
-                    outputStream << errorMessage(response.second);
-                }
+
             }
 
+            return outputStream.str();
         }
-
-        return outputStream.str();
+        catch (const std::domain_error& E){
+            std::cout << "got a domain error" << std::endl;
+            throw E;
+        }
+        catch (const std::invalid_argument& E){
+            std::cout << "got an invalid argument error" << std::endl;
+            throw E;
+        }
+        catch (const std::length_error& E){
+            std::cout << "got a length error" << std::endl;
+            throw E;
+        }
+        catch (const std::range_error& E){
+            std::cout << "got a range error" << std::endl;
+            throw E;
+        }
+        catch (const py::value_error& E){
+            std::cout << "got a python value error" << std::endl;
+            throw E;
+        }
     }
 
     void Session::registerCommand(const std::string& commandName, CommandMethod method,
