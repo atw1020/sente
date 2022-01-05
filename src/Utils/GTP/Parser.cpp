@@ -70,6 +70,8 @@ namespace sente::GTP {
                                       text.find('"', start_index)})) !=
                std::string::npos) {
 
+            py::print("hit a new token at index", end_index);
+
             // check if we just hit a string
             if (text[start_index - 1] == '"'){
 
@@ -101,6 +103,8 @@ namespace sente::GTP {
             start_index = end_index + 1;
 
         }
+
+        py::print("adding the last element");
 
         // parse the final token
         auto token = std::string(text.begin() + start_index, text.end());
