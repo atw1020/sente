@@ -152,6 +152,8 @@ namespace sente::GTP {
 
         unsigned start = 0;
 
+        py::print("got", tokens.size(), "tokens");
+
         // iterate through the tokens
         for (unsigned index = 0; index < tokens.size(); index++){
 
