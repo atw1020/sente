@@ -10,7 +10,6 @@
 #include <iostream>
 
 #include "Operators.h"
-#include "Session.h"
 
 namespace sente::GTP {
 
@@ -146,147 +145,135 @@ namespace sente::GTP {
 
     std::string Session::interpret(std::string text) {
 
-        try {
-            text = preprocess(text);
-            auto tokens = parse(text);
+        text = preprocess(text);
+        auto tokens = parse(text);
 
-            std::stringstream outputStream;
+        std::stringstream outputStream;
 
-            unsigned start = 0;
+        unsigned start = 0;
 
-            // iterate through the tokens
-            for (unsigned index = 0; index < tokens.size(); index++){
+        // iterate through the tokens
+        for (unsigned index = 0; index < tokens.size(); index++){
 
-                Response response;
+            py::print("starting a new iteration");
 
-                // keep incrementing until we find a seperator
-                while (tokens[index]->getTokenType() != SEPERATOR and index < tokens.size()) {
-                    index++;
-                }
+            Response response;
 
-                // slice the tokens and put them into a list
-                auto preArguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
+            // keep incrementing until we find a seperator
+            while (tokens[index]->getTokenType() != SEPERATOR and index < tokens.size()) {
+                index++;
+            }
 
-                // update the starting index now that we've sliced the tokens
-                start = index + 1;
+            // slice the tokens and put them into a list
+            auto preArguments = std::vector<std::shared_ptr<Token>>(tokens.begin() + start, tokens.begin() + index);
 
-                // replace instances of a stone followed by a point with a move
-                auto arguments = std::vector<std::shared_ptr<Token>>();
+            // update the starting index now that we've sliced the tokens
+            start = index + 1;
 
-                for (unsigned i = 0; i < preArguments.size(); i++){
+            py::print("creating move objects...");
 
-                    bool argsCombined = false;
+            // replace instances of a stone followed by a point with a move
+            auto arguments = std::vector<std::shared_ptr<Token>>();
 
-                    if (preArguments[i]->getTokenType() == LITERAL and i < preArguments.size() - 1){
-                        if (preArguments[i + 1]->getTokenType() == LITERAL){
+            for (unsigned i = 0; i < preArguments.size(); i++){
 
-                            // cast the arguments
-                            auto* check1 = (Literal*) preArguments[i].get();
-                            auto* check2 = (Literal*) preArguments[i + 1].get();
+                bool argsCombined = false;
 
-                            // if we have the arguments that make up a move
-                            if (check1->getLiteralType() == COLOR and check2->getLiteralType() == VERTEX){
+                if (preArguments[i]->getTokenType() == LITERAL and i < preArguments.size() - 1){
+                    if (preArguments[i + 1]->getTokenType() == LITERAL){
 
-                                // skip the next iteration and note that we've combined the arguments
-                                argsCombined = true;
-                                i++;
+                        // cast the arguments
+                        auto* check1 = (Literal*) preArguments[i].get();
+                        auto* check2 = (Literal*) preArguments[i + 1].get();
 
-                                Color* color = (Color*) check1;
-                                Vertex* vertex = (Vertex*) check2;
+                        // if we have the arguments that make up a move
+                        if (check1->getLiteralType() == COLOR and check2->getLiteralType() == VERTEX){
 
-                                arguments.emplace_back(std::make_shared<Move>(*color, *vertex));
-                            }
+                            // skip the next iteration and note that we've combined the arguments
+                            argsCombined = true;
+                            i++;
+
+                            Color* color = (Color*) check1;
+                            Vertex* vertex = (Vertex*) check2;
+
+                            arguments.emplace_back(std::make_shared<Move>(*color, *vertex));
                         }
                     }
-
-                    if (not argsCombined){
-                        arguments.push_back(preArguments[i]);
-                    }
-
                 }
 
-                // begin interpreting by checking to see if the first element is an integer literal
-                std::shared_ptr<Token> candidate;
-
-                bool precedingID = false;
-                unsigned id;
-
-                if (arguments[0]->getTokenType() == LITERAL){
-                    auto* literal = (Literal*) arguments[0].get();
-                    precedingID = literal->getLiteralType() == INTEGER;
-                }
-
-                if (precedingID){
-                    id = ((Integer*) arguments[0].get())->getValue();
-                    candidate = arguments[1];
-                    arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
-                }
-                else {
-                    candidate = arguments[0];
-                }
-
-                if (candidate->getTokenType() == LITERAL){
-                    // make sure we have a string literal
-                    auto* literal = (Literal*) candidate.get();
-
-                    if (literal->getLiteralType() == STRING){
-
-                        // check to see if a command exists
-                        if (commands.find(literal->getText()) != commands.end()){
-                            // check the arguments for the command
-                            response = execute(literal->getText(), arguments);
-                        }
-                        else {
-                            response = {false, "unknown command"};
-                        }
-
-                    }
-
-                }
-
-                if (response.first){
-                    // if we successfully execute the command
-                    if (precedingID){
-                        // if there is a preceding ID, include it in the answer
-                        outputStream << statusMessage(response.second, id);
-                    }
-                    else {
-                        outputStream << statusMessage(response.second);
-                    }
-                }
-                else {
-                    if (precedingID){
-                        outputStream << errorMessage(response.second, id);
-                    }
-                    else {
-                        outputStream << errorMessage(response.second);
-                    }
+                if (not argsCombined){
+                    arguments.push_back(preArguments[i]);
                 }
 
             }
 
-            return outputStream.str();
+            py::print("checking for a preceding ID...");
+
+            // begin interpreting by checking to see if the first element is an integer literal
+            std::shared_ptr<Token> candidate;
+
+            bool precedingID = false;
+            unsigned id;
+
+            if (arguments[0]->getTokenType() == LITERAL){
+                auto* literal = (Literal*) arguments[0].get();
+                precedingID = literal->getLiteralType() == INTEGER;
+            }
+
+            if (precedingID){
+                id = ((Integer*) arguments[0].get())->getValue();
+                candidate = arguments[1];
+                arguments = std::vector<std::shared_ptr<Token>>(arguments.begin() + 1, arguments.end());
+            }
+            else {
+                candidate = arguments[0];
+            }
+
+            py::print("executing instruction...");
+
+            if (candidate->getTokenType() == LITERAL){
+                // make sure we have a string literal
+                auto* literal = (Literal*) candidate.get();
+
+                if (literal->getLiteralType() == STRING){
+
+                    // check to see if a command exists
+                    if (commands.find(literal->getText()) != commands.end()){
+                        // check the arguments for the command
+                        response = execute(literal->getText(), arguments);
+                    }
+                    else {
+                        response = {false, "unknown command"};
+                    }
+
+                }
+
+            }
+
+            py::print("checking for a successful message");
+
+            if (response.first){
+                // if we successfully execute the command
+                if (precedingID){
+                    // if there is a preceding ID, include it in the answer
+                    outputStream << statusMessage(response.second, id);
+                }
+                else {
+                    outputStream << statusMessage(response.second);
+                }
+            }
+            else {
+                if (precedingID){
+                    outputStream << errorMessage(response.second, id);
+                }
+                else {
+                    outputStream << errorMessage(response.second);
+                }
+            }
+
         }
-        catch (const std::domain_error& E){
-            std::cout << "got a domain error" << std::endl;
-            throw E;
-        }
-        catch (const std::invalid_argument& E){
-            std::cout << "got an invalid argument error" << std::endl;
-            throw E;
-        }
-        catch (const std::length_error& E){
-            std::cout << "got a length error" << std::endl;
-            throw E;
-        }
-        catch (const std::range_error& E){
-            std::cout << "got a range error" << std::endl;
-            throw E;
-        }
-        catch (const py::value_error& E){
-            std::cout << "got a python value error" << std::endl;
-            throw E;
-        }
+
+        return outputStream.str();
     }
 
     void Session::registerCommand(const std::string& commandName, CommandMethod method,

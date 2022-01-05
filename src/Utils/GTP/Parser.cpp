@@ -6,8 +6,6 @@
 #include <sstream>
 #include <iostream>
 
-#include <pybind11/pybind11.h>
-
 #include "Parser.h"
 
 #include "Tokens/Literal.h"
@@ -16,8 +14,6 @@
 namespace sente::GTP {
 
     std::string preprocess(const std::string& text){
-
-        py::print("entering preprocess");
 
         std::stringstream output;
 
@@ -53,8 +49,6 @@ namespace sente::GTP {
                     break;
             }
         }
-
-        py::print("leaving preprocess");
 
         return output.str();
 
