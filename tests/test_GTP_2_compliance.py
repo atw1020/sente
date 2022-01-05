@@ -35,6 +35,8 @@ class MinimumGTPCommands(TestCase):
         :return:
         """
 
+        print("entering test_protocol_version")
+
         engine = GTP.Session()
 
         self.assertEqual("= 2\n", engine.interpret("protocol_version\n"))

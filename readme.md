@@ -18,7 +18,7 @@ In addition to supporting Python 3, Sente is written in C++ which allows AIs tha
 Installation & Requirements
 ---
 
-Sente runs on any operating system with python 3.5, 3.8 and 3.9 and can be installed via pip.
+Sente runs on any operating system with python 3.8-3.10 and can be installed via pip.
 
 ```bash
 $ pip install sente
