@@ -25,7 +25,7 @@ example of how to implement private GTP extensions in
 sente.
 
 To begin, we will use the basic GTP Code from the
-previous section :ref:`GTP-shell-file-label`
+previous section :ref:`GTP-shell-file-label`.
 
 .. code-block:: python
     :linenos:
@@ -91,7 +91,7 @@ sente to create a private GTP extension.
 
 An echo command takes a string argument and returns
 the same string. This is an extremely simple function
-and we simply have to return the ``message`` argument
+and we simply have to return the ``message`` argument.
 
 .. code-block:: python
     :linenos:
@@ -135,13 +135,14 @@ and we simply have to return the ``message`` argument
     if __name__ == "__main__":
         main()
 
-We can now run the program and and test our echo command
+We can now run the program and and test our echo command:
 
 .. code-block:: bash
 
     $ python echo_command.py
     >> echo hello
     ? unknown command
+
     >>
 
 Why wasn't the command echo recognized?
@@ -164,7 +165,6 @@ by running the "list_commands" command:
     >> echo
     ? unknown command
 
-
     >> list_commands
     = play
     [...]
@@ -172,18 +172,16 @@ by running the "list_commands" command:
     [...]
     loadsgf
 
-
     >>
 
 therefore, we can run the echo command by
-using the name "engine-echo"
+using the name "engine-echo":
 
 .. code-block:: bash
 
     $ python echo_command.py
     >> engine-echo hello
     = hello
-
 
     >> engine-echo "hello world"
     = hello world
@@ -194,7 +192,7 @@ using the name "engine-echo"
     not allowed to have spaces in them. However
     the sente interpreter allows strings to with
     spaces in them so long as the strings are
-    enclosed in quotes
+    enclosed in quotes.
 
 Returning Error messages
 ------------------------
@@ -206,7 +204,7 @@ illegal move is requested.
 
 GTP Commands that return custom error messages must
 return a tuple containing two elements: a boolean
-representing the status of the command and a GTP
+representing the status of the command and a GTP.
 
 For Example...
 
@@ -238,7 +236,7 @@ note that the return type is labeled as ``tuple``.
         else:
             return False, "This is an unsuccessful status :("
 
-When we run this code however, we get an error
+When we run this code however, we get an error:
 
 .. code-block:: bash
 
@@ -284,8 +282,41 @@ The command will now be accepted and can be tested in our GTP shell
 
     >> engine-error_message false
     ? This is an unsuccessful status :(
-    
+
     >>
 
 Unions in return types
 ----------------------
+
+In addition to accepting ``typing.Tuple`` return types,
+sente also accepts the ``typing.Union`` type. This allows
+greater flexibility in return types and enables functions
+to either return strings or GTP data types depending on
+whether or not the command was successful.
+
+For example, if we were to create a command that
+calculates 1/x and errors out if x = 0, we could use
+``typing.Union[float, typing.Tuple[bool, str]]`` as
+follows:
+
+.. code-block:: python
+    :emphasize-lines: 2
+
+    @session.Command
+    def one_over_x(x: float) -> typing.Union[float, typing.Tuple[bool, str]]:
+        if x == 0:
+            return False, "cannot divide by zero"
+        else:
+            return 1 / x
+
+...or alternatively with Python 3.10...
+
+.. code-block:: python
+    :emphasize-lines: 2
+
+    @session.Command
+    def one_over_x(x: float) -> float | typing.Tuple[bool, str]:
+        if x == 0:
+            return False, "cannot divide by zero"
+        else:
+            return 1 / x

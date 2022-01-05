@@ -98,17 +98,15 @@ create Engines that can communicate using GTP.
 
 The ``GTP.Session.interpret`` method interprets GTP commands
 that are passed to it. For example, we can call the ``name``
-and ``version`` commands from the table above
+and ``version`` commands from the table above.
 
 .. code-block:: python
 
     >>> print(session.interpret("name"))
     = my_engine_name
 
-
     >>> print(session.interpret("version"))
     = 0.0.1
-
 
     >>>
 
@@ -120,14 +118,12 @@ and ``version`` commands from the table above
     >>> print(session.interpret("name"))
     = my_engine_name
     <BLANKLINE>
-    <BLANKLINE>
     >>> print(session.interpret("version"))
     = 0.0.1
     <BLANKLINE>
-    <BLANKLINE>
 
-*The extra newlines printed are an official part of the GTP
-standard and should not be removed.*
+.. note:: The extra newlines printed are an official part of the GTP
+    standard and should not be removed.*
 
 Let's do some Go!
 
@@ -203,7 +199,7 @@ In order to communicate with other programs, we need to
 connect the ``GTP.Session`` interpreter to the ``stdout``
 and ``stdin`` files. Luckily Python provides the built in
 commands ``input`` and ``print`` that do all the hard parts
-of this for us
+of this for us.
 
 .. code-block:: python
 
@@ -218,7 +214,7 @@ of this for us
     the official GTP spec and should not be used by
     applications that actually communicate via GTP.
     (It's purpose here is to make a better interface
-    for debugging)
+    for debugging).
 
 Running this code creates an interactive GTP Session
 with all of the commands in the above table working.
@@ -228,10 +224,8 @@ with all of the commands in the above table working.
     >> play B D4
     =
 
-
     >> play W D16
     =
-
 
     >> showboard
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
