@@ -152,12 +152,8 @@ namespace sente::GTP {
 
         unsigned start = 0;
 
-        py::print("got", tokens.size(), "tokens");
-
         // iterate through the tokens
         for (unsigned index = 0; index < tokens.size(); index++){
-
-            py::print("starting a new iteration");
 
             Response response;
 
@@ -171,8 +167,6 @@ namespace sente::GTP {
 
             // update the starting index now that we've sliced the tokens
             start = index + 1;
-
-            py::print("creating move objects...");
 
             // replace instances of a stone followed by a point with a move
             auto arguments = std::vector<std::shared_ptr<Token>>();
@@ -209,8 +203,6 @@ namespace sente::GTP {
 
             }
 
-            py::print("checking for a preceding ID...");
-
             // begin interpreting by checking to see if the first element is an integer literal
             std::shared_ptr<Token> candidate;
 
@@ -231,8 +223,6 @@ namespace sente::GTP {
                 candidate = arguments[0];
             }
 
-            py::print("executing instruction...");
-
             if (candidate->getTokenType() == LITERAL){
                 // make sure we have a string literal
                 auto* literal = (Literal*) candidate.get();
@@ -251,8 +241,6 @@ namespace sente::GTP {
                 }
 
             }
-
-            py::print("checking for a successful message");
 
             if (response.first){
                 // if we successfully execute the command

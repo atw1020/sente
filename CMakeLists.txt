@@ -18,6 +18,8 @@ endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
 
+set(CMAKE_OSX_DEPLOYMENT_TARGET "11.15")
+
 add_subdirectory(pybind11)
 # pybind11_add_module(sente src/module.cpp src/include/Move.h src/Move.cpp)
 pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Game/Group.h src/Game/GoGame.h src/Game/GoGame.cpp

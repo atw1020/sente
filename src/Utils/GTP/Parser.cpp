@@ -5,7 +5,6 @@
 #include <regex>
 #include <sstream>
 #include <iostream>
-#include <pybind11/pybind11.h>
 
 #include "Parser.h"
 
@@ -57,23 +56,21 @@ namespace sente::GTP {
 
     std::vector<std::shared_ptr<Token>> parse(const std::string& text){
 
-        py::print("entering parse");
-
         // begin by splitting the text on spaces
         std::vector<std::shared_ptr<Token>> tokens;
 
         size_t start_index = 0;
         size_t end_index;
 
+        bool inString = false;
+
         while ((end_index = std::min({text.find(' ', start_index),
                                       text.find('\n', start_index),
                                       text.find('"', start_index)})) !=
                std::string::npos) {
 
-            py::print("hit a new token at index", end_index);
-
             // check if we just hit a string
-            if (text[start_index - 1] == '"'){
+            if (inString){
 
                 // if we are in a string, the end index is determined only by the position of the closing quote
                 end_index = text.find('"', end_index + 1);
@@ -102,9 +99,9 @@ namespace sente::GTP {
             // update the start index
             start_index = end_index + 1;
 
-        }
+            inString = text[end_index] == '"';
 
-        py::print("adding the last element");
+        }
 
         // parse the final token
         auto token = std::string(text.begin() + start_index, text.end());
@@ -118,8 +115,6 @@ namespace sente::GTP {
                 tokens.push_back(std::make_shared<Seperator>("\n"));
             }
         }
-
-        py::print("leaving parse");
 
         return tokens;
 
