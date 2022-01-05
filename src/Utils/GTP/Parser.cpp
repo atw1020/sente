@@ -5,6 +5,7 @@
 #include <regex>
 #include <sstream>
 #include <iostream>
+#include <pybind11/pybind11.h>
 
 #include "Parser.h"
 
@@ -55,6 +56,8 @@ namespace sente::GTP {
     }
 
     std::vector<std::shared_ptr<Token>> parse(const std::string& text){
+
+        py::print("entering parse");
 
         // begin by splitting the text on spaces
         std::vector<std::shared_ptr<Token>> tokens;
@@ -111,6 +114,8 @@ namespace sente::GTP {
                 tokens.push_back(std::make_shared<Seperator>("\n"));
             }
         }
+
+        py::print("leaving parse");
 
         return tokens;
 
