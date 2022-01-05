@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <pybind11/pybind11.h>
+
 #include "Parser.h"
 
 #include "Tokens/Literal.h"
@@ -49,6 +51,8 @@ namespace sente::GTP {
                     break;
             }
         }
+
+        py::print("leaving preprocess");
 
         return output.str();
 

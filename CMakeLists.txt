@@ -9,8 +9,8 @@ endif()
 
 if(MSVC)
     # MSVC's equivalent of -Wextra is buggy
-    set(CMAKE_CXX_FLAGS "-Wall")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+    set(CMAKE_CXX_FLAGS)
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2")
 else()
     set(CMAKE_CXX_FLAGS "-Wall -Wextra")
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")

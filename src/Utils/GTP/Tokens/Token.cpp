@@ -2,6 +2,8 @@
 // Created by arthur wesley on 12/11/21.
 //
 
+#include <stdexcept>
+
 #include "Token.h"
 
 namespace sente::GTP {
