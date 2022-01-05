@@ -8,6 +8,7 @@
 #include <utility>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 namespace sente::GTP {
 

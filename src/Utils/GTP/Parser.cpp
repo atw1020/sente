@@ -17,6 +17,8 @@ namespace sente::GTP {
 
     std::string preprocess(const std::string& text){
 
+        py::print("entering preprocess");
+
         std::stringstream output;
 
         bool inComment = false;
