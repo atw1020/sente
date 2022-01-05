@@ -250,11 +250,11 @@ engine in Sabaki are as follows.
 
 1. Open the ``Engines Sidebar`` from the ``Engines Menu``.
 
-.. image:: ../_static/sabaki\ screenshots/Open\ "Engines\ Sidebar".png
+.. image:: ../_static/sabaki\ screenshots/Open\ Engines\ Sidebar.png
 
 2. Click on the ``Attach Engine...`` button and select "Manage Engines".
 
-.. image:: ../_static/sabaki\ screenshots/Open\ "Manage\ Engines".png
+.. image:: ../_static/sabaki\ screenshots/Open\ Manage\ Engines.png
 
 3. Click "Add".
 
@@ -266,7 +266,7 @@ engine in Sabaki are as follows.
 
 5. Close the "Manage Engines" Window. "Random Move" should now appear under the options for ``Attach Engine``.
 
-.. image:: ../_static/sabaki\ screenshots/Random\ Move\ Under\ "Attatch\ Engine...".png
+.. image:: ../_static/sabaki\ screenshots/Random\ Move\ Under\ Attatch\ Engine.png
 
 6. Run "Random Move".
 

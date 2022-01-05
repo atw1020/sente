@@ -7,6 +7,7 @@
 #include <string>
 #include <utility>
 #include <iostream>
+#include <stdexcept>
 
 namespace sente::GTP {
 
