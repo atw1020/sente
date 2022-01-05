@@ -48,4 +48,4 @@ jobs:
         run: pip install --verbose .[test]
 
       - name: Test
-        run: cd tests; python -m unittest discover; cd ..
+        run: cd tests; python -m unittest test_GTP_2_compliance.MinimumGTPCommands.test_protocol_version; cd ..
