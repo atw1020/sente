@@ -132,7 +132,7 @@ def read_file(filename):
 
 setup(
     name="sente",
-    python_requires=">=3.5.*, !=3.6.*, !=3.7.*",
+    python_requires=">=3.8.*",
     version=read_file("version.txt"),
     author="Arthur Wesley",
     license="MIT",
@@ -143,9 +143,9 @@ setup(
     install_requires=["numpy>=1.7.0"],
     classifiers=["Programming Language :: Python",
                  "Programming Language :: Python :: 3",
-                 "Programming Language :: Python :: 3.5",
                  "Programming Language :: Python :: 3.8",
                  "Programming Language :: Python :: 3.9",
+                 "Programming Language :: Python :: 3.10",
                  "Operating System :: MacOS :: MacOS X",
                  "Operating System :: POSIX :: Linux",
                  "Operating System :: Microsoft :: Windows :: Windows 10"],

@@ -81,17 +81,11 @@ class MoveTest(TestCase):
         :return:
         """
 
-        self.assertEqual("B[ee]", str(self.move1))
-        self.assertEqual("B[de]", str(self.move3))
-        self.assertEqual("W[de]", str(self.move4))
-        self.assertEqual("[Placeholder Move]", str(self.move5))
+        game = sente.Game()
+        game.play(self.move3)
 
-    def test__repr__(self):
-        """
+        self.assertEqual("<sente.Move B[ee]>", str(self.move1))
+        self.assertEqual("<sente.Move B[de]>", str(self.move3))
+        self.assertEqual("<sente.Move W[de]>", str(self.move4))
+        self.assertEqual("<sente.Move [Placeholder Move]>", str(self.move5))
 
-        tests to see if the representation of the string for prints is correct
-
-        :return:
-        """
-
-        self.assertEqual("<sente.Move B[ee]>", self.move1.__repr__())

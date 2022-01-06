@@ -10,7 +10,7 @@
 #include <ciso646>
 
 #include <pybind11/pybind11.h>
-#include "SGFNode.h"
+#include "SGF/SGFNode.h"
 
 #ifdef __CYGWIN__
 #include <ciso646>

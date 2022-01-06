@@ -4,7 +4,6 @@ Author: Arthur Wesley
 
 """
 
-from sys import platform
 from unittest import TestCase
 
 from sente import *
@@ -73,8 +72,8 @@ class BoardTest19(TestCase):
 
         board = Board19()
 
-        board.play(Move(0, 18, stone.BLACK))
-        board.play(Move(15, 3, stone.WHITE))
+        board.play(Move(18, 0, stone.BLACK))
+        board.play(Move(3, 15, stone.WHITE))
 
         correct = " 1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  ⚫\n" \
                   " 2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n" \
@@ -168,7 +167,7 @@ class BoardTest13(TestCase):
         board = Board13()
 
         board.play(Move(0, 0, stone.BLACK))
-        board.play(Move(8, 3, stone.WHITE))
+        board.play(Move(3, 8, stone.WHITE))
 
         correct = " 1  ⚫ .  .  .  .  .  .  .  .  .  .  .  .\n" \
                   " 2  .  .  .  .  .  .  .  .  .  .  .  .  .\n" \
@@ -256,7 +255,7 @@ class BoardTest9(TestCase):
         board = Board9()
 
         board.play(Move(0, 0, stone.BLACK))
-        board.play(Move(8, 3, stone.WHITE))
+        board.play(Move(3, 8, stone.WHITE))
 
         correct = " 1  ⚫ .  .  .  .  .  .  .  .\n" \
                   " 2  .  .  .  .  .  .  .  .  .\n" \

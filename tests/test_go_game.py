@@ -640,6 +640,20 @@ class TestTreeNavigation(TestCase):
         game.advance_to_root()
         self.assertTrue(game.is_legal(3, 3))
 
+    def test_resign_move(self):
+        """
+
+        checks to see if the resign move object causes resignation
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(sente.moves.Resign(sente.stone.BLACK))
+
+        self.assertTrue(game.is_over())
+
     def test_comment_write(self):
         """
 

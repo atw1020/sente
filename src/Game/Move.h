@@ -22,7 +22,20 @@ namespace sente {
         WHITE
     };
 
-    typedef std::pair<unsigned, unsigned> Point;
+    // TODO add tests for Vertex
+    class Vertex{
+    public:
+
+        Vertex(unsigned first, unsigned second);
+
+        unsigned getX() const;
+        unsigned getY() const;
+
+    private:
+        unsigned x;
+        unsigned y;
+
+    };
 
     Stone getOpponent(Stone player);
 
@@ -32,6 +45,7 @@ namespace sente {
         Move();
         // Move(const Move& move) = delete;
         Move(unsigned x, unsigned y, Stone stone);
+        Move(Vertex vertex, Stone stone);
 
         const static Move passBlack;
         const static Move resignBlack;
@@ -57,9 +71,12 @@ namespace sente {
         bool operator==(const Move& other) const;
         bool operator!=(const Move& other) const;
 
-        std::vector<std::pair<int, int>> getAdjacentMoves(unsigned boardSize) const;
+        Vertex getVertex() const;
+        std::vector<Vertex> getAdjacentMoves(unsigned boardSize) const;
 
         explicit operator std::string() const;
+
+        void flipOriginY(unsigned side);
 
     private:
 

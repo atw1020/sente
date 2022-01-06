@@ -95,7 +95,7 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
-    >>> game.play(7, 4)
+    >>> game.play(4, 7)
     >>> game.step_up(2) # undo two moves
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .
@@ -115,7 +115,7 @@ Repeatedly calling ``step_up()`` can be tedious and slow, so the number of steps
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
-    >>> game.play(7, 4)
+    >>> game.play(4, 7)
     >>> game.step_up(2) # undo two moves
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .
@@ -136,7 +136,7 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
-    >>> game.play(7, 4)
+    >>> game.play(4, 7)
     >>> game.advance_to_root()
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .
@@ -156,7 +156,7 @@ Another alternative to the ``step_up()`` method is the ``advance_to_root()`` met
     >>> game = sente.Game(9)
     >>> game.play(4, 4)
     >>> game.play(7, 7)
-    >>> game.play(7, 4)
+    >>> game.play(4, 7)
     >>> game.advance_to_root()
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .
@@ -286,10 +286,10 @@ To make game tree navigation more straightforward, the ``sente.Game`` Object con
 .. code-block:: python
 
     >>> game.play(4, 4)
-    >>> game.play(15, 4)
+    >>> game.play(4, 15)
     >>> game.play(15, 15)
     >>> print(game.get_sequence())
-    [<sente.Move B[dd]>, <sente.Move W[od]>, <sente.Move B[oo]>]
+    [<sente.Move B[dd]>, <sente.Move W[do]>, <sente.Move B[oo]>]
 
 If the moves in a sequence are undone, the board position can be restored by using the ``play_sequence()`` method.
 
@@ -342,3 +342,57 @@ If the moves in a sequence are undone, the board position can be restored by usi
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
 
 Additionally, because the ``get_sequence`` method returns a python list, python list slicing is supported.
+
+.. doctest::
+
+    >>> game.play(4, 4)
+    >>> game.play(4, 15)
+    >>> game.play(15, 15)
+    >>> print(game.get_sequence())
+    [<sente.Move B[dd]>, <sente.Move W[do]>, <sente.Move B[oo]>]
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
+    16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+    >>> move_sequence = game.get_sequence()
+    >>> game.step_up(3) # alternatively, you could use the advance_to_root() method
+    >>> game.play_sequence(move_sequence)
+    >>> print(game)
+     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     4  .  .  .  ⚫ .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
+    16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
+    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
+

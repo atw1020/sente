@@ -6,12 +6,23 @@
 
 #include "pybind11/pybind11.h"
 
-#include "../Include/Game/Move.h"
+#include "Move.h"
 
 namespace py = pybind11;
 
 namespace sente {
 
+    Vertex::Vertex(unsigned int x, unsigned int y) {
+        this->x = x; this->y = y;
+    }
+
+    unsigned Vertex::getX() const {
+        return x;
+    }
+
+    unsigned Vertex::getY() const {
+        return y;
+    }
 
     Stone getOpponent(Stone player){
         if (player == BLACK){
@@ -59,7 +70,7 @@ namespace sente {
         }
         else {
             // reverse the order of the co-ordinates
-            return {unsigned(sgf[4] - 'a'), unsigned(sgf[3] - 'a'), stone};
+            return {unsigned(sgf[3] - 'a'), unsigned(sgf[4] - 'a'), stone};
         }
 
     }
@@ -83,6 +94,12 @@ namespace sente {
     Move::Move(unsigned int x, unsigned int y, Stone stone) {
         this->x = x;
         this->y = y;
+        this->stone = stone;
+    }
+
+    Move::Move(Vertex vertex, Stone stone) {
+        x = vertex.getX();
+        y = vertex.getY();
         this->stone = stone;
     }
 
@@ -114,9 +131,13 @@ namespace sente {
         return other.x != x or other.y != y or other.stone != stone;
     }
 
-    std::vector<std::pair<int, int>> Move::getAdjacentMoves(unsigned boardSize) const{
+    Vertex Move::getVertex() const {
+        return {x, y};
+    }
 
-        std::vector<std::pair<int, int>> adjacents;
+    std::vector<Vertex> Move::getAdjacentMoves(unsigned boardSize) const{
+
+        std::vector<Vertex> adjacents;
 
         if (x + 1 < boardSize){
             adjacents.emplace_back(x + 1, y);
@@ -156,11 +177,15 @@ namespace sente {
 
         }
         else {
-            str << '[' << char('a' + y) << char('a' + x) << ']';
+            str << '[' << char('a' + x) << char('a' + y) << ']';
         }
 
         return str.str();
 
+    }
+
+    void Move::flipOriginY(unsigned int side) {
+        y = side - 1 - y;
     }
 }
 

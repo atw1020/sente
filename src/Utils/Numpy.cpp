@@ -5,7 +5,7 @@
 #include <map>
 #include <ciso646>
 
-#include "../Include/Utils/Numpy.h"
+#include "Numpy.h"
 
 namespace sente {
     namespace utils {
@@ -28,10 +28,10 @@ namespace sente {
             {"ko_points", KO_POINTS}
         };
 
-        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
-        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
-        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
-        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck);
+        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck);
+        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex VertextoCheck);
+        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck);
+        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck);
 
         /**
          *
@@ -43,7 +43,7 @@ namespace sente {
          */
         py::array_t<uint8_t> getFeatures(const GoGame& game, const std::vector<feature>& features){
 
-            unsigned side = game.getBoard().getSide();
+            unsigned side = game.getSide();
 
             auto result = py::array_t<int8_t>(side * side * features.size());
             auto buffer = result.request(true);
@@ -92,10 +92,10 @@ namespace sente {
          * @param bufferIndex the index to insert the next point at
          * @param toCheck the point to check
          */
-        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextBlackStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
             // get the stone from the board
-            auto stone = game.getBoard().getStone(toCheck);
+            auto stone = game.getSpace(toCheck);
 
             if (stone == BLACK){
                 buffer_ptr[bufferIndex] = 1;
@@ -115,10 +115,10 @@ namespace sente {
          * @param bufferIndex the index to insert the next point at
          * @param toCheck the point to check
          */
-        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextWhiteStone(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
             // get the stone from the board
-            auto stone = game.getBoard().getStone(toCheck);
+            auto stone = game.getSpace(toCheck);
 
             if (stone == WHITE){
                 buffer_ptr[bufferIndex] = 1;
@@ -137,10 +137,10 @@ namespace sente {
         * @param bufferIndex the index to insert the next point at
         * @param toCheck the point to check
         */
-        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextEmptySpace(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
             // get the stone from the board
-            auto stone = game.getBoard().getStone(toCheck);
+            auto stone = game.getSpace(toCheck);
 
             if (stone == EMPTY){
                 buffer_ptr[bufferIndex] = 1;
@@ -161,11 +161,11 @@ namespace sente {
          * @param bufferIndex the index to insert the next point at
          * @param toCheck the point to check
          */
-        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Point toCheck){
+        void getNextKoPoint(const GoGame& game, int8_t* buffer_ptr, unsigned bufferIndex, Vertex toCheck){
 
-            Point ko = game.getKoPoint();
+            Vertex ko = game.getKoPoint();
 
-            if (ko.first == toCheck.first and ko.second == toCheck.second){
+            if (ko.getX() == toCheck.getX() and ko.getY() == toCheck.getY()){
                 buffer_ptr[bufferIndex] = 1;
             }
             else {

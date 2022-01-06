@@ -21,10 +21,19 @@ Docs
 
 .. toctree::
    :maxdepth: 2
+   :caption: Go Text Protocol
+
+   GTP/introduction
+   GTP/simple AI
+   GTP/Private GTP Extensions
+
+.. toctree::
+   :maxdepth: 2
    :caption: Library Reference
 
    basic components
    modules/sgf
+   modules/GTP
    modules/exceptions
 
 Indices and tables

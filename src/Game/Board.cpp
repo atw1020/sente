@@ -4,7 +4,7 @@
 
 #include <array>
 
-#include "../Include/Game/Board.h"
+#include "Board.h"
 
 namespace sente {
 

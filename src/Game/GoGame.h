@@ -17,7 +17,7 @@
 #include "../Utils/Tree.h"
 #include "Group.h"
 #include "GoComponents.h"
-#include "../Utils/SGFNode.h"
+#include "../Utils/SGF/SGFNode.h"
 
 #ifdef __CYGWIN__
 #include <ciso646>
@@ -40,7 +40,7 @@ namespace sente {
     public:
 
         GoGame(unsigned side, Rules rules, double komi);
-        explicit GoGame(utils::Tree<utils::SGFNode>& SGFTree);
+        explicit GoGame(utils::Tree<SGF::SGFNode>& SGFTree);
 
         void resetBoard();
 
@@ -79,7 +79,7 @@ namespace sente {
         std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
 
         unsigned getMoveNumber() const;
-        utils::Tree<utils::SGFNode> getMoveTree() const;
+        utils::Tree<SGF::SGFNode> getMoveTree() const;
 
         ///
         /// Getting and setting properties
@@ -97,16 +97,26 @@ namespace sente {
         /// Getter and Setter methods
         ///
 
+        void setASCIIMode(bool useASCII);
+        void setLowerLeftCornerCoOrdinates(bool useLowerLeftOrigin);
+
+        Stone getSpace(Vertex point) const;
         Stone getSpace(unsigned x, unsigned y) const;
         Stone getActivePlayer() const;
 
-        const _board& getBoard() const;
+        std::unique_ptr<_board> copyBoard() const;
+        unsigned getSide() const;
 
         Results getResults() const;
         Results score() const;
         std::vector<Move> getLegalMoves();
 
-        Point getKoPoint() const;
+        Vertex getKoPoint() const;
+
+        Rules getRules() const;
+        double getKomi() const;
+
+        void setKomi(double newKomi);
 
         explicit operator std::string() const;
 
@@ -119,9 +129,9 @@ namespace sente {
         unsigned passCount = 0;
 
         // todo: look into moving the board onto the stack
-        std::unique_ptr<_board> board;
+        std::shared_ptr<_board> board;
 
-        utils::Tree<utils::SGFNode> gameTree;
+        utils::Tree<SGF::SGFNode> gameTree;
 
         std::unordered_map<Move, std::shared_ptr<Group>> groups;
         std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;
@@ -129,6 +139,7 @@ namespace sente {
         Move koPoint;
 
         void makeBoard(unsigned side);
+        void clearBoard();
         void resetKoPoint();
 
         void updateBoard(const Move& move);

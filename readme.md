@@ -1,8 +1,11 @@
-![](sente_logo.svg)
+[![](sente_logo.svg)](https://discord.gg/RyeFekyrFA)
+
+
+[<img src="https://discord.com/assets/ff41b628a47ef3141164bfedb04fb220.png" alt="drawing" width="200"/>](https://discord.gg/RyeFekyrFA)
 
 [![PyPI version](https://badge.fury.io/py/sente.svg)](https://badge.fury.io/py/sente)
 [![docs](https://readthedocs.org/projects/sente/badge/?version=latest)](https://sente.readthedocs.io/en/latest/)
-![tests](https://github.com/atw1020/sente/actions/workflows/tests.yml/badge.svg)
+[![tests](https://github.com/atw1020/sente/actions/workflows/tests.yml/badge.svg)](https://github.com/atw1020/sente/actions/workflows/tests.yml)
 [![pip](https://github.com/atw1020/sente/actions/workflows/pip.yml/badge.svg)](https://pypi.org/project/sente/)
 
 
@@ -15,7 +18,7 @@ In addition to supporting Python 3, Sente is written in C++ which allows AIs tha
 Installation & Requirements
 ---
 
-Sente runs on any operating system with python 3.5, 3.8 and 3.9 and can be installed via pip.
+Sente runs on any operating system with python 3.8+ and can be installed via pip.
 
 ```bash
 $ pip install sente
@@ -45,8 +48,8 @@ _note: japanese rules are not reccomended as sente does not currently include au
 moves can be played on the game using the `play()` method, and the board can be printed using the python `print()` function.
 ```python
 >>> game.play(4, 4)
->>> game.play(16, 4)
->>> game.play(4, 17)
+>>> game.play(4, 16)
+>>> game.play(17, 4)
 >>> print(game)
 ```
 ```
@@ -125,7 +128,7 @@ OSx
 ```bash
 $ brew install git
 $ brew install cmake
-$ brew install clang++
+$ xcode-select --install  # installs Apple clang++
 ```
 Debian/Ubuntu
 ```bash

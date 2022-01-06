@@ -2,7 +2,7 @@
 // Created by arthur wesley on 6/27/21.
 //
 
-#include "../Include/Game/Group.h"
+#include "Group.h"
 
 #include <iostream>
 

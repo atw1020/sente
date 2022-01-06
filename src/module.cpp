@@ -3,15 +3,18 @@
  * Author: Arthur Wesley
  *
  */
-#include <fstream>
+
+#include <filesystem>
 
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
 
-#include "Include/Utils/SGF.h"
-#include "Include/Game/GoGame.h"
-#include "Include/Utils/Numpy.h"
-#include "Include/Utils/SenteExceptions.h"
+#include "Utils/SGF/SGF.h"
+#include "Game/GoGame.h"
+#include "Utils/Numpy.h"
+#include "Utils/SenteExceptions.h"
+#include "Utils/GTP/Session.h"
 
 namespace py = pybind11;
 
@@ -40,6 +43,8 @@ PYBIND11_MODULE(sente, module){
 
     module.def("opposite_player", &sente::getOpponent, "get the opponent of a particular stone color");
 
+    auto typing = py::module_::import("typing");
+    auto inspect = py::module_::import("inspect");
 
     py::enum_<sente::Stone>(module, "stone", R"pbdoc(
             An enumeration for a Go stone.
@@ -83,6 +88,44 @@ PYBIND11_MODULE(sente, module){
         )pbdoc")
         .export_values();
 
+    py::class_<sente::Vertex>(module, "Vertex", R"pbdoc(
+                a class that represents a Vertex on a go board
+
+                :members:
+            )pbdoc")
+            .def(py::init<unsigned, unsigned>(),
+                 py::arg("first"),
+                 py::arg("second"))
+            .def_property("x", [](const sente::Vertex& point){
+                return point.getX();
+            }, [](sente::Vertex& point, unsigned newValue){
+                (void) point;
+                (void) newValue;
+                throw std::runtime_error("attribute 'x' is a read-only property and cannot be set");
+            })
+            .def_property("x", [](const sente::Vertex& point){
+                return point.getY();
+            }, [](sente::Vertex& point, unsigned newValue){
+                (void) point;
+                (void) newValue;
+                throw std::runtime_error("attribute 'y' is a read-only property and cannot be set");
+            })
+            .def("__repr__", [](const sente::Vertex& point){
+                return "Vertex(x=" + std::to_string(point.getX()) + ", y=" + std::to_string(point.getY()) + ")";
+            });
+
+    auto moves = module.def_submodule("moves", "Utility options for sente moves");
+
+    moves.def("Pass", [](sente::Stone stone){
+        return sente::Move::pass(stone);
+    },
+              py::arg("color"));
+
+    moves.def("Resign", [](sente::Stone stone){
+        return sente::Move::resign(stone);
+    },
+              py::arg("color"));
+
     py::class_<sente::Move>(module, "Move", R"pbdoc(
             A class that represents a move that can be played on a go board, consisting of a position and a stone.
 
@@ -107,6 +150,7 @@ PYBIND11_MODULE(sente, module){
 
             :return: :ref:`sente.stone <stone>` object that the move contains
         )pbdoc")
+        .def("get_vertex", &sente::Move::getVertex)
         .def("__eq__", &sente::Move::operator==)
         .def("__ne__", &sente::Move::operator!=)
         .def("__repr__", [](const sente::Move& move){
@@ -143,7 +187,9 @@ PYBIND11_MODULE(sente, module){
             });
 
     py::class_<sente::Board<19>>(module, "Board19")
-        .def(py::init<>())
+        .def(py::init<bool, bool>(),
+             py::arg("use_ascii") = false,
+             py::arg("lower_left_origin") = false)
         .def(py::init<std::array<std::array<sente::Stone, 19>, 19>>())
         .def("get_side", &sente::Board<19>::getSide,
             R"pbdoc(
@@ -177,7 +223,9 @@ PYBIND11_MODULE(sente, module){
         });
 
     py::class_<sente::Board<13>>(module, "Board13")
-        .def(py::init<>())
+        .def(py::init<bool, bool>(),
+             py::arg("use_ascii") = false,
+             py::arg("lower_left_origin") = false)
         .def(py::init<std::array<std::array<sente::Stone, 13>, 13>>())
         .def("get_side", &sente::Board<13>::getSide,
             R"pbdoc(
@@ -193,7 +241,7 @@ PYBIND11_MODULE(sente, module){
                 :param move: the move object to play
             )pbdoc")
         .def("get_stone", [](const sente::Board<13>& board, unsigned x, unsigned y){
-                return board.getSpace(x - 1, y - 1).getStone();
+                 return board.getSpace(x - 1, y - 1).getStone();
             },
             R"pbdoc(
                 get the stone located on the specified point.
@@ -212,7 +260,9 @@ PYBIND11_MODULE(sente, module){
         });
 
     py::class_<sente::Board<9>>(module, "Board9")
-        .def(py::init<>())
+        .def(py::init<bool, bool>(),
+                py::arg("use_ascii") = false,
+                py::arg("lower_left_origin") = false)
         .def(py::init<std::array<std::array<sente::Stone, 9>, 9>>())
         .def("get_side", &sente::Board<9>::getSide,
             R"pbdoc(
@@ -320,6 +370,7 @@ PYBIND11_MODULE(sente, module){
                 :return: whether or not the move satisfies the above conditions.
             )pbdoc")
         .def("is_legal", [](sente::GoGame& game, const py::object& obj){
+            (void) game;
             return obj.is_none();
         },
             R"pbdoc(
@@ -479,6 +530,12 @@ PYBIND11_MODULE(sente, module){
 
                 :return: a python list containing the moves that lead to this position.
              )pbdoc")
+        .def("get_sequence", &sente::GoGame::getMoveSequence,
+                 R"pbdoc(
+                generate the sequence of moves that leads to the current board position
+
+                :return: a python list containing the moves that lead to this position.
+             )pbdoc")
         .def("get_all_sequences", [](sente::GoGame& game){
                 return game.getSequences({});
             },
@@ -513,10 +570,9 @@ PYBIND11_MODULE(sente, module){
 
                 :return: whether or not the game has ended
             )pbdoc")
-        .def("get_board", &sente::GoGame::getBoard,
-             py::return_value_policy::reference,
+        .def("get_board", &sente::GoGame::copyBoard,
              R"pbdoc(
-                Get the board object that the game is updating internally.
+                Get a copy of the board object that the game is updating internally.
 
                 :return: a ``sente.Board`` object that represents the board to be played.
             )pbdoc")
@@ -585,19 +641,24 @@ PYBIND11_MODULE(sente, module){
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
 
-                std::string SGFText;
+                auto path = std::filesystem::path(fileName);
 
-                // load the text from the file
-                std::ifstream filePointer(fileName);
+                if (std::filesystem::exists(path)){
 
-                if (not filePointer.good()){
-                    throw sente::utils::FileNotFoundException(fileName);
+                    // load the text from the file
+                    std::ifstream filePointer(fileName);
+                    std::string SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
+                                                      std::istreambuf_iterator<char>());
+                    filePointer.close();
+
+                    // generate the move tree
+                    auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+
+                    // set the engine's game to be the move tree
+                    return sente::GoGame(tree);
                 }
                 else {
-                    SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
-                                          std::istreambuf_iterator<char>());
-                    auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
-                    return sente::GoGame(tree);
+                    throw sente::utils::FileNotFoundException(fileName);
                 }
             },
             py::arg("filename"),
@@ -612,10 +673,10 @@ PYBIND11_MODULE(sente, module){
                 :param ignore_illegal_properties: whether or not to ignore illegal SGF properties
                 :param fix_file_format: whether or not to fix the file format if it is wrong
                 :return: a ``sente.Game`` object populated with data from the SGF file
-            )pbdoc")
+            )pbdoc", py::return_value_policy::take_ownership)
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
                 std::ofstream output(fileName);
-                output << sente::utils::dumpSGF(game);
+                output << sente::SGF::dumpSGF(game);
             },
              py::arg("game"),
              py::arg("file_name"),
@@ -623,7 +684,7 @@ PYBIND11_MODULE(sente, module){
         .def("loads", [](const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
-                auto tree = sente::utils::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+                auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
             },
             py::arg("sgf_text"),
@@ -638,9 +699,9 @@ PYBIND11_MODULE(sente, module){
                 :param ignore_illegal_properties: whether or not to ignore illegal SGF properties
                 :param fix_file_format: whether or not to fix the file format if it is wrong
                 :return: a ``sente.Game`` object populated with data from the SGF file
-            )pbdoc")
+            )pbdoc", py::return_value_policy::take_ownership)
         .def("dumps", [](const sente::GoGame& game){
-                return sente::utils::dumpSGF(game);
+                return sente::SGF::dumpSGF(game);
             },
             py::arg("game"),
             "Serialize a string as an SGF");
@@ -655,5 +716,45 @@ PYBIND11_MODULE(sente, module){
 #else
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
+
+    auto GTP = module.def_submodule("GTP", R"pbdoc(
+        Utilities for implementing the go text protocol (GTP)
+    )pbdoc");
+
+    py::class_<sente::GTP::Session>(GTP, "Session")
+            .def(py::init<std::string, std::string>(),
+                    py::arg("name") = "unimplemented_engine",
+                    py::arg("version") = "0.0.0")
+            .def("interpret", &sente::GTP::Session::interpret, R"pbdoc(
+                    runs a string through the sente GTP interpreter
+
+                    :param command: string containing the GTP command to execute
+                    :return response: response from the GTP interpreter, neglecting one newline
+                )pbdoc")
+            .def("GenMove", [inspect, typing](sente::GTP::Session& session, py::function& function){
+                return session.registerGenMove(function, inspect, typing);
+            }, R"pbdoc(
+                Decorator function to implement the ``genmove`` command
+
+                :param function: function to register
+                :return: the original function
+            )pbdoc")
+            .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
+                return session.registerCommand(function, inspect, typing);
+            }, R"pbdoc(
+                Decorator function for a private GTP extension
+
+                :param function: function to register
+                :return: the original function
+            )pbdoc")
+            .def("active", [](const sente::GTP::Session& engine){
+                return engine.isActive();
+            }, R"pbdoc(
+                returns whether or not the GTP Session is active
+
+                :return active: whether or not the GTP Session is active
+            )pbdoc")
+            .def_readwrite("game", &sente::GTP::Session::masterGame)
+            .def_property("name", &sente::GTP::Session::getEngineName, &sente::GTP::Session::setEngineName);
 
 }
