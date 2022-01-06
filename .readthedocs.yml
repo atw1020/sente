@@ -2,7 +2,7 @@ version: 2
 
 python:
   install:
-    requires: requirements.txt
+    - requirements: requirements.txt
 
 build:
   apt_packages:
