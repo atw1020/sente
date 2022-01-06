@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4)
 project(sente)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -17,7 +17,7 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 endif()
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG_LOG")
+message("compiled in ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "11.15")
 
@@ -35,5 +35,5 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Game/Group.h src
                     src/Utils/GTP/Parser.h src/Utils/GTP/Parser.cpp
                     src/Utils/GTP/Operators.h src/Utils/GTP/Operators.cpp
                     src/Utils/GTP/Controller.h src/Utils/GTP/Controller.cpp
-        src/Utils/GTP/Session.h src/Utils/GTP/Session.cpp
+                    src/Utils/GTP/Session.h src/Utils/GTP/Session.cpp
                     src/Utils/GTP/PythonBindings.cpp src/Utils/GTP/PythonBindings.h)
