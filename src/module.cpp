@@ -88,7 +88,11 @@ PYBIND11_MODULE(sente, module){
         )pbdoc")
         .export_values();
 
-    py::class_<sente::Vertex>(module, "Vertex")
+    py::class_<sente::Vertex>(module, "Vertex", R"pbdoc(
+                a class that represents a Vertex on a go board
+
+                :members:
+            )pbdoc")
             .def(py::init<unsigned, unsigned>(),
                  py::arg("first"),
                  py::arg("second"))
@@ -110,7 +114,7 @@ PYBIND11_MODULE(sente, module){
                 return "Vertex(x=" + std::to_string(point.getX()) + ", y=" + std::to_string(point.getY()) + ")";
             });
 
-    auto moves = module.def_submodule("moves", "utility options for sente moves");
+    auto moves = module.def_submodule("moves", "Utility options for sente moves");
 
     moves.def("Pass", [](sente::Stone stone){
         return sente::Move::pass(stone);
@@ -713,24 +717,43 @@ PYBIND11_MODULE(sente, module){
     py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
 #endif
 
-    auto GTP = module.def_submodule("GTP", "utilities for implementing the go text protocol (GTP)");
-
-    // gtp.def("Engine")
+    auto GTP = module.def_submodule("GTP", R"pbdoc(
+        Utilities for implementing the go text protocol (GTP)
+    )pbdoc");
 
     py::class_<sente::GTP::Session>(GTP, "Session")
             .def(py::init<std::string, std::string>(),
                     py::arg("name") = "unimplemented_engine",
                     py::arg("version") = "0.0.0")
-            .def("interpret", &sente::GTP::Session::interpret)
+            .def("interpret", &sente::GTP::Session::interpret, R"pbdoc(
+                    runs a string through the sente GTP interpreter
+
+                    :param command: string containing the GTP command to execute
+                    :return response: response from the GTP interpreter, neglecting one newline
+                )pbdoc")
             .def("GenMove", [inspect, typing](sente::GTP::Session& session, py::function& function){
                 return session.registerGenMove(function, inspect, typing);
-            })
+            }, R"pbdoc(
+                Decorator function to implement the ``genmove`` command
+
+                :param function: function to register
+                :return: the original function
+            )pbdoc")
             .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
                 return session.registerCommand(function, inspect, typing);
-            })
+            }, R"pbdoc(
+                Decorator function for a private GTP extension
+
+                :param function: function to register
+                :return: the original function
+            )pbdoc")
             .def("active", [](const sente::GTP::Session& engine){
                 return engine.isActive();
-            })
+            }, R"pbdoc(
+                returns whether or not the GTP Session is active
+
+                :return active: whether or not the GTP Session is active
+            )pbdoc")
             .def_readwrite("game", &sente::GTP::Session::masterGame)
             .def_property("name", &sente::GTP::Session::getEngineName, &sente::GTP::Session::setEngineName);
 
