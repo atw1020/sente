@@ -27,12 +27,6 @@ std::string strip(const std::string &input)
         end_it--;
     }
 
-    /*
-    py::print("\"", *start_it, *end_it, "\"");
-    py::print("\"" + std::string(start_it, end_it) + "\"");
-    py::print("leaving strip");
-     */
-
     return {start_it, end_it};
 }
 
