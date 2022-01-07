@@ -9,17 +9,8 @@
 #include <memory>
 #include <ciso646>
 
-#include <pybind11/pybind11.h>
-#include "SGFNode.h"
-
-#ifdef __CYGWIN__
-#include <ciso646>
-#endif
-
-namespace py = pybind11;
-
-namespace sente {
-    namespace utils{
+namespace sente{
+    namespace utils {
 
         template<typename Type>
         struct TreeNode{
@@ -33,7 +24,7 @@ namespace sente {
                 parent = nullptr;
             }
 
-            TreeNode(Type payload, const std::shared_ptr<TreeNode>& parent){
+            TreeNode(Type payload, TreeNode* parent){
                 this->payload = payload;
                 this->parent = parent;
             }
@@ -56,7 +47,7 @@ namespace sente {
             }
 
             Type payload;
-            std::shared_ptr<TreeNode> parent; // you do not own your parent
+            TreeNode* parent; // you do not own your parent
             std::vector<std::shared_ptr<TreeNode>> children; // you do own your children
 
         };
@@ -71,7 +62,7 @@ namespace sente {
                 size = 0;
 
                 root = std::make_shared<TreeNode<Type>>(); // create the root
-                cursor = root;
+                cursor = root.get();
             }
 
 
@@ -80,14 +71,14 @@ namespace sente {
                 size = 0;
 
                 root = std::make_shared<TreeNode<Type>>(payload, nullptr); // create the root
-                cursor = root;
+                cursor = root.get();
             }
 
             void insert(Type& payload){
                 if (not cursor->hasChild(payload)){
                     // if the move isn't already a child node, insert it
                     cursor->children.push_back(std::make_shared<TreeNode<Type>>(payload, cursor));
-                    cursor = cursor->children.back();
+                    cursor = cursor->children.back().get();
                     depth++;
                     size++;
                 }
@@ -115,7 +106,7 @@ namespace sente {
             }
             void stepDown(){
                 if (not cursor->isLeaf()){
-                    cursor = cursor->children[0]; // step into the first branch
+                    cursor = cursor->children[0].get(); // step into the first branch
                     depth++;
                 }
                 else{
@@ -124,7 +115,7 @@ namespace sente {
             }
             void stepTo(Type& value){
                 if (cursor->hasChild(value)){
-                    cursor = *cursor->findChild(value);
+                    cursor = cursor->findChild(value)->get();
                     depth++;
                 }
                 else {
@@ -133,7 +124,7 @@ namespace sente {
             }
 
             void advanceToRoot(){
-                cursor = root;
+                cursor = root.get();
                 depth = 0;
             }
 
@@ -210,11 +201,10 @@ namespace sente {
             unsigned depth;
             unsigned size;
 
-            std::shared_ptr<TreeNode<Type>> cursor;
+            TreeNode<Type>* cursor;
             std::shared_ptr<TreeNode<Type>> root;
 
         };
-
     }
 }
 
