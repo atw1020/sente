@@ -1,11 +1,15 @@
 version: 2
 
+submodules:
+  include: all
+
 build:
   apt_packages:
     - gcc-8
     - cmake
 
 python:
+  system_packages: true
   version: "3.8"
   install:
     - requirements: requirements.txt

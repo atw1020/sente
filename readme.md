@@ -113,7 +113,7 @@ Finally, Sente also provides utilities for reading and saving SGF files using th
 * [Game Trees](https://sente.readthedocs.io/en/latest/tutorial/game%20tree%20navigation.html)
 * [SFG file reader](https://sente.readthedocs.io/en/latest/tutorial/sgf.html)
 * [NumPy conversion](https://sente.readthedocs.io/en/latest/tutorial/numpy.html)
-* [GTP (Go Text Protocol)]() (Coming Soon!)
+* [GTP (Go Text Protocol)](https://sente.readthedocs.io/en/0.4.1/GTP/introduction.html)
 * [Automatic Dead Stone removal]() (Coming Soon!)
 
 Building & Contributing
