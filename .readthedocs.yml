@@ -1,15 +1,15 @@
 version: 2
 
-python:
-  install:
-    - requirements: requirements.txt
-    - method: setuptools
-      path: .
-
 build:
   apt_packages:
     - gcc-8
     - cmake
+
+python:
+  install:
+    - requirements: requirements.txt
+    - method: pip
+      path: .
 
 sphinx:
   configuration: docs/conf.py
