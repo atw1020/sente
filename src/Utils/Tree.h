@@ -197,11 +197,11 @@ namespace sente::utils{
 
     private:
 
-        unsigned depth;
-        unsigned size;
+        unsigned depth; // 4 bytes
+        unsigned size; // 4 bytes
 
-        TreeNode<Type>* cursor;
-        std::shared_ptr<TreeNode<Type>> root;
+        TreeNode<Type>* cursor; // 8 bytes
+        std::shared_ptr<TreeNode<Type>> root; // 16 bytes
 
     };
 

@@ -3,6 +3,8 @@ version: 2
 python:
   install:
     - requirements: requirements.txt
+    - method: setuptools
+      path: .
 
 build:
   apt_packages:

@@ -122,19 +122,21 @@ namespace sente {
 
     private:
 
-        Rules rules;
+        // TODO: get more optimal memory placement to minimize padding
 
-        double komi;
-
-        unsigned passCount = 0;
+        Rules rules; // 4 bytes
+        unsigned passCount = 0; // 4 bytes
+        double komi; // 8 bytes
 
         // todo: look into moving the board onto the stack
-        std::shared_ptr<_board> board;
+        std::shared_ptr<_board> board; // 16 bytes
 
-        utils::Tree<SGF::SGFNode> gameTree;
+        utils::Tree<SGF::SGFNode> gameTree; // 32 bytes
 
-        std::unordered_map<Move, std::shared_ptr<Group>> groups;
-        std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones;
+        std::unordered_map<Move, std::shared_ptr<Group>> groups; // 40 bytes
+        std::unordered_map<unsigned, std::unordered_set<Move>> capturedStones; // 40 bytes
+
+        // total size: 64 + 80 = 144 bytes
 
         Move koPoint;
 
