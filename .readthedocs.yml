@@ -5,7 +5,7 @@ submodules:
 
 build:
   apt_packages:
-    - gcc-8
+    - gcc-10
     - cmake
 
 python:
