@@ -6,6 +6,7 @@ build:
     - cmake
 
 python:
+  version: "3.10"
   install:
     - requirements: requirements.txt
     - method: pip
