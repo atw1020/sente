@@ -135,10 +135,10 @@ namespace sente::utils{
             return root->payload;
         }
 
-        unsigned getDepth() const{
+        [[nodiscard]] unsigned getDepth() const{
             return depth;
         }
-        unsigned getSize() const{
+        [[nodiscard]] unsigned getSize() const{
             return size;
         }
 

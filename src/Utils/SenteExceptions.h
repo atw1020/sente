@@ -10,8 +10,7 @@
 
 #include "../Game/Move.h"
 
-namespace sente{
-    namespace utils{
+namespace sente::utils{
 
         enum IllegalMoveType {
             OFF_BOARD,
@@ -46,6 +45,5 @@ namespace sente{
         };
 
     }
-}
 
 #endif //SENTE_SENTEEXCEPTIONS_H
