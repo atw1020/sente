@@ -33,6 +33,8 @@ std::string strip(const std::string &input)
 namespace sente::SGF {
 
     void warn(const std::string& message){
+        // acquire the GIL
+        py::gil_scoped_acquire acquire;
         PyErr_WarnEx(PyExc_Warning, message.c_str(), 1);
     }
 
@@ -93,7 +95,7 @@ namespace sente::SGF {
     }
 
     void handleUnsupportedProperty(utils::Tree<SGFNode>& SGFTree, unsigned& FFVersion, bool disableWarnings,
-                                                                                bool fixFileFormat) {
+                                   bool fixFileFormat) {
 
         unsigned oldFF = FFVersion;
 
@@ -212,10 +214,6 @@ namespace sente::SGF {
                                                       bool ignoreIllegalProperties,
                                                       bool fixFileFormat){
 
-        // py::print("entering SGFText");
-        // py::print(SGFText.size());
-        // py::print("the first character is", *SGFText.begin());
-
         if (SGFText.empty()){
             throw utils::InvalidSGFException("File is Empty or unreadable");
         }
@@ -239,8 +237,6 @@ namespace sente::SGF {
         // go through the rest of the tree
 
         for (; cursor < SGFText.end(); cursor++){
-            // py::print("slice is currently \"" + std::string(previousSlice, cursor) + "\"");
-            // py::print(SGFTree.getDepth());
             switch (*cursor){
                 case '[':
                     // enter brackets

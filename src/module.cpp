@@ -581,6 +581,7 @@ PYBIND11_MODULE(sente, module){
             return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
         })
         .def("get_properties", [](const sente::GoGame& game) -> py::dict{
+
                 py::dict response;
                 std::unordered_map<std::string, std::vector<std::string>> metadata = game.getProperties();
 
@@ -641,6 +642,8 @@ PYBIND11_MODULE(sente, module){
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
 
+                py::gil_scoped_release release;
+
                 auto path = std::filesystem::path(fileName);
 
                 if (std::filesystem::exists(path)){
@@ -675,6 +678,7 @@ PYBIND11_MODULE(sente, module){
                 :return: a ``sente.Game`` object populated with data from the SGF file
             )pbdoc", py::return_value_policy::take_ownership)
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
+                py::gil_scoped_release release;
                 std::ofstream output(fileName);
                 output << sente::SGF::dumpSGF(game);
             },
@@ -684,6 +688,8 @@ PYBIND11_MODULE(sente, module){
         .def("loads", [](const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
+
+                py::gil_scoped_release release;
                 auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
             },
@@ -701,6 +707,7 @@ PYBIND11_MODULE(sente, module){
                 :return: a ``sente.Game`` object populated with data from the SGF file
             )pbdoc", py::return_value_policy::take_ownership)
         .def("dumps", [](const sente::GoGame& game){
+                py::gil_scoped_release release;
                 return sente::SGF::dumpSGF(game);
             },
             py::arg("game"),

@@ -167,6 +167,8 @@ namespace sente {
      */
     void GoGame::playStone(const Move &move) {
 
+        py::gil_scoped_release release;
+
         // create a new SGF node
         SGF::SGFNode node(move);
 
