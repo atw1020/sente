@@ -8,7 +8,6 @@ import os
 import re
 import sys
 import subprocess
-import struct
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext

@@ -23,7 +23,7 @@ namespace sente::utils{
             parent = nullptr;
         }
 
-        TreeNode(Type payload, TreeNode* parent){
+        TreeNode(const Type& payload, TreeNode* parent){
             this->payload = payload;
             this->parent = parent;
         }
@@ -184,10 +184,10 @@ namespace sente::utils{
             return children;
         }
 
-        bool isAtRoot() const {
+        [[nodiscard]] bool isAtRoot() const {
             return cursor->isRoot();
         }
-        bool isAtLeaf() const {
+        [[nodiscard]] bool isAtLeaf() const {
             return cursor->isLeaf();
         }
         bool isChild(const Type& move){

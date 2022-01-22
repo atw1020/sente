@@ -11,12 +11,10 @@
 
 #include "../Game/GoGame.h"
 
-namespace sente {
-    namespace utils {
+namespace sente::utils {
 
-        py::array_t<uint8_t> getFeatures(const GoGame& game, const std::vector<std::string>& features);
+    py::array_t<uint8_t> getFeatures(const GoGame& game, const std::vector<std::string>& features);
 
-    }
 }
 
 #endif //SENTE_NUMPY_H

@@ -174,7 +174,7 @@ namespace sente {
             str << "[]";
         }
         else if (isResign()){
-
+            str << ""; // resignation is not recorded as a move
         }
         else {
             str << '[' << char('a' + x) << char('a' + y) << ']';
