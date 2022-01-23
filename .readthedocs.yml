@@ -5,8 +5,8 @@ submodules:
 
 build:
   apt_packages:
-    - clang-10
-    - clang++-10
+    - clang-11
+    - clang++-11
 
 python:
   system_packages: true
