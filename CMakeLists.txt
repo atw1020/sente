@@ -16,6 +16,10 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 endif()
 
+if(GNU)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++fs")
+endif()
+
 message("compiled in ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "11.15")
