@@ -644,9 +644,9 @@ PYBIND11_MODULE(sente, module){
 
                 py::gil_scoped_release release;
 
-                auto path = std::filesystem::path(fileName);
+                auto path = std::experimental::filesystem::path(fileName);
 
-                if (std::filesystem::exists(path)){
+                if (std::experimental::filesystem::exists(path)){
 
                     // load the text from the file
                     std::ifstream filePointer(fileName);
