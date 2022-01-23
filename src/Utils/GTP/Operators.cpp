@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <filesystem>
 
 
 #include "Operators.h"
@@ -136,27 +135,24 @@ namespace sente::GTP {
 
     Response baseLoadSGF(Session* self, const std::string& filePath){
 
-        auto pathStr = std::filesystem::path(filePath);
+        // load the text from the file
+        std::ifstream filePointer(filePath);
 
-        if (std::filesystem::exists(filePath)){
-
-            // load the text from the file
-            std::ifstream filePointer(filePath);
-            std::string SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
-                                              std::istreambuf_iterator<char>());
-
-            // generate the move tree
-            auto tree = sente::SGF::loadSGF(SGFText, false, true, true);
-
-            // set the engine's game to be the move tree
-            self->masterGame = GoGame(tree);
-            self->setGTPDisplayFlags();
-
-            return {true, ""};
-        }
-        else {
+        if (not filePointer.good()){
             return {false, "cannot load file"};
         }
+
+        std::string SGFText = std::string((std::istreambuf_iterator<char>(filePointer)),
+                                          std::istreambuf_iterator<char>());
+
+        // generate the move tree
+        auto tree = sente::SGF::loadSGF(SGFText, false, true, true);
+
+        // set the engine's game to be the move tree
+        self->masterGame = GoGame(tree);
+        self->setGTPDisplayFlags();
+
+        return {true, ""};
 
     }
 
