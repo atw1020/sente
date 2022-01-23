@@ -16,9 +16,7 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 endif()
 
-if(GNU)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lstdc++fs")
-endif()
+set(GCC_COVERAGE_LINK_FLAGS -lstdc++fs)
 
 message("compiled in ${CMAKE_BUILD_TYPE}")
 
