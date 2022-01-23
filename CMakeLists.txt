@@ -16,8 +16,6 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 endif()
 
-set(GCC_COVERAGE_LINK_FLAGS -lstdc++fs)
-
 message("compiled in ${CMAKE_BUILD_TYPE}")
 
 set(CMAKE_OSX_DEPLOYMENT_TARGET "11.15")
@@ -38,3 +36,7 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Game/Group.h src
                     src/Utils/GTP/Controller.h src/Utils/GTP/Controller.cpp
                     src/Utils/GTP/Session.h src/Utils/GTP/Session.cpp
                     src/Utils/GTP/PythonBindings.cpp src/Utils/GTP/PythonBindings.h)
+
+if(GNU)
+    target_link_libraries(sente PRIVATE stdc++fs)
+endif()
