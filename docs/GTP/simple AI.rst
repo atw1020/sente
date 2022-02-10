@@ -237,7 +237,6 @@ and run the program. a simple way around this is to write
 a short shell script that activates and runs the engine.
 
 .. code-block:: bash
-    :linenos:
 
     #!/bin/bash
 

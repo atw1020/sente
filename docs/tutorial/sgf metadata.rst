@@ -1,4 +1,4 @@
-SGF Metadata
+``sgf`` Metadata
 ============
 
 In addition to containing a record of the sequence of moves in a game, SGF files contain metadata associated with the games.
@@ -61,8 +61,6 @@ Sente divides properties into two categories: Root properties and Node propertie
     - C (puts a comment on the node)
     - CR (marks a point on the board with a circle)
     - AB (adds a white stone to the board, regardless of whose turn it currently is)
-
-To obtain metadata properties from a ``sente.Game`` Object, call the ``get_properties``
 
 Reading metadata
 ----------------

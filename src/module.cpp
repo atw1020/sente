@@ -139,7 +139,7 @@ PYBIND11_MODULE(sente, module){
             :return: x-coordinate of the move
         )pbdoc")
         .def("get_y", &sente::Move::getY, R"pbdoc(
-            get the y-coordinate of the move (internal indices) AFWEIJOIEJFUIF
+            get the y-coordinate of the move (internal indices)
 
             :return: y-coordinate of the move
         )pbdoc")

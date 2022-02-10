@@ -36,7 +36,3 @@ pybind11_add_module(sente src/module.cpp src/Game/Group.cpp src/Game/Group.h src
                     src/Utils/GTP/Controller.h src/Utils/GTP/Controller.cpp
                     src/Utils/GTP/Session.h src/Utils/GTP/Session.cpp
                     src/Utils/GTP/PythonBindings.cpp src/Utils/GTP/PythonBindings.h)
-
-if(GNU)
-    target_link_libraries(sente PRIVATE stdc++fs)
-endif()
