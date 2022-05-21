@@ -183,7 +183,7 @@ PYBIND11_MODULE(sente, module){
 
               :return: the number of points that black scored
             )pbdoc")
-        .def("__str__", [](const sente::results& results){
+        .def("__str__", [](const sente::Results& results){
             return std::string(results);
         })
         .def("__repr__", [](const sente::Results& results){
