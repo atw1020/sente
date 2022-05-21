@@ -153,7 +153,7 @@ PYBIND11_MODULE(sente, module){
         .def("__ne__", &sente::Move::operator!=)
         .def("__str__", [](const sente::Move& move){
             return std::string(move);
-        }
+        })
         .def("__repr__", [](const sente::Move& move){
             return "<sente.Move " + std::string(move) + ">";
         });
@@ -185,7 +185,7 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("__str__", [](const sente::results& results){
             return std::string(results);
-        }
+        })
         .def("__repr__", [](const sente::Results& results){
                 return "<sente.result \"" + std::string(results) + "\">";
             });
