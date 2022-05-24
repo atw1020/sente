@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <fstream>
+#include <variant>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -66,7 +67,6 @@ namespace sente {
         ///
 
         bool isAtRoot() const;
-        void advanceToRoot();
         void stepUp(unsigned steps);
 
         void playDefaultSequence();
@@ -100,15 +100,17 @@ namespace sente {
         void setASCIIMode(bool useASCII);
         void setLowerLeftCornerCoOrdinates(bool useLowerLeftOrigin);
 
-        Stone getSpace(Vertex point) const;
-        Stone getSpace(unsigned x, unsigned y) const;
-        Stone getActivePlayer() const;
+        [[nodiscard]] Stone getSpace(Vertex point) const;
+        [[nodiscard]] Stone getSpace(unsigned x, unsigned y) const;
+        [[nodiscard]] Stone getActivePlayer() const;
 
-        std::unique_ptr<_board> copyBoard() const;
-        unsigned getSide() const;
+        [[nodiscard]] std::unique_ptr<_board> copyBoard() const;
+        [[nodiscard]] unsigned getSide() const;
 
+        void score();
+        std::string getResult() const;
         sente::Stone getWinner() const;
-        void score() const;
+        std::unordered_map<std::variant<Stone, std::string>, std::variant<double, std::string>> getScores() const;
         std::vector<Move> getLegalMoves();
 
         Vertex getKoPoint() const;
@@ -127,6 +129,9 @@ namespace sente {
         Rules rules; // 4 bytes
         unsigned passCount = 0; // 4 bytes
         double komi; // 8 bytes
+
+        double blackPoints = NAN;
+        double whitePoints = NAN;
 
         // Changes.txt: look into moving the board onto the stack
         std::shared_ptr<_board> board; // 16 bytes

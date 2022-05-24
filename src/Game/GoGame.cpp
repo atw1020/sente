@@ -118,6 +118,10 @@ namespace sente {
         groups = std::unordered_map<Move, std::shared_ptr<Group>>();
         capturedStones = std::unordered_map<unsigned, std::unordered_set<Move>>();
 
+        // set the points to be zero
+        blackPoints = NAN;
+        whitePoints = NAN;
+
         // reset the ko point
         resetKoPoint();
         passCount = 0;
@@ -314,10 +318,6 @@ namespace sente {
 
     bool GoGame::isAtRoot() const{
         return gameTree.isAtRoot();
-    }
-
-    void GoGame::advanceToRoot() {
-        resetBoard();
     }
 
     void GoGame::stepUp(unsigned steps) {
@@ -603,7 +603,7 @@ namespace sente {
      * TODO: score using korean and Chinese rules
      *
      */
-    void GoGame::score() const {
+    void GoGame::score() {
 
         if (passCount < 2){
             throw std::domain_error("game did not end from passing; could not score");
@@ -677,15 +677,37 @@ namespace sente {
         }
 
         // compute the black and white raw scores
-        double blackScore = blackTerritory + blackStones;
-        double whiteScore = whiteTerritory + whiteStones + komi;
+        blackPoints = blackTerritory + blackStones;
+        whitePoints = whiteTerritory + whiteStones + komi;
 
         std::stringstream results;
 
-        results << (blackScore > whiteScore ? "B" : "W") << "+" << std::fixed << std::setprecision(1) << std::fabs(blackScore - whiteScore);
+        results << (blackPoints > whitePoints ? "B" : "W") << "+" << std::fixed << std::setprecision(1) << std::fabs(blackPoints - whitePoints);
 
         // convert the result to a string
-        gameTree.getRoot().appendProperty(SGF::RE, {results.str()});
+        gameTree.getRoot().setProperty(SGF::RE, {results.str()});
+    }
+
+    std::string GoGame::getResult() const {
+        if (isOver()){
+            return getProperties().at("RE")[0];
+        }
+        else {
+            throw std::domain_error("game is not yet over, results cannot be obtained");
+        }
+    }
+
+    std::unordered_map<std::variant<Stone, std::string>, std::variant<double, std::string>> GoGame::getScores() const {
+
+        if (not isOver()){
+            throw std::domain_error("game is not yet over, scores cannot be obtained");
+        }
+
+        return {
+                {BLACK, blackPoints},
+                {WHITE, whitePoints},
+                {"result", getResult()}
+        };
     }
 
     std::vector<Move> GoGame::getLegalMoves() {

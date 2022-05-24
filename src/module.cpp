@@ -435,14 +435,16 @@ PYBIND11_MODULE(sente, module){
         R"pbdoc(
             causes the current active player to resign.
         )pbdoc")
-        .def("get_result", [](const sente::GoGame& game){
-                if (game.isOver()){
-                    return game.getProperties().at("RE");
-                }
-                else {
-                    throw std::domain_error("game is not yet over, results cannot be obtained");
-                }
-            },
+        .def("score", &sente::GoGame::getScores,
+            R"pbdoc(
+                returns a dictionary containing the scores of the game
+
+                .. Warning:: Sente's automatic scoring does not remove dead stones
+
+                :return: python dictionary containing the scores and result of the game
+
+            )pbdoc")
+        .def("get_result", &sente::GoGame::getResult,
             R"pbdoc(
                 returns a string representing the results of the game (ie. W+0.5)
 
@@ -468,7 +470,7 @@ PYBIND11_MODULE(sente, module){
 
                 :return: whether or not the board is at the root of the tree.
             )pbdoc")
-        .def("advance_to_root", &sente::GoGame::advanceToRoot,
+        .def("advance_to_root", &sente::GoGame::resetBoard,
             R"pbdoc(
                 Advance the board tree position to the root of the tree (ie. an empty board).
             )pbdoc")
