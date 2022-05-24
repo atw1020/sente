@@ -4,6 +4,8 @@ Author: Arthur Wesley
 
 """
 
+import random
+
 import sente
 from sente import sgf
 from assert_does_not_raise import DoesNotRaiseTestCase
@@ -211,3 +213,28 @@ class TestBasics(DoesNotRaiseTestCase):
         game = sgf.load("sgf/backslash at end of comment.sgf")
 
         self.assertIn("C[backslashes! \\\\]", sgf.dumps(game))
+
+    def test_dump_double_pass(self):
+        """
+
+        makes sure that the dumps can handle games that end with double passes
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.play(15, 4)
+        game.play(4, 15)
+
+        game.pss()
+        game.pss()
+
+        # dump and load the game
+        text = sgf.dumps(game)
+        game = sgf.loads(text)
+
+        last_two_moves = game.get_default_sequence()[-2:]
+
+        print(sgf.dumps(game))

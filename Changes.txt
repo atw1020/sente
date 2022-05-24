@@ -11,3 +11,5 @@ Pass moves not getting played
 - Make sente.Move constructor visible
 - Add functionality to test for pass moves
 - Add functionality to test for resign moves
+
+Remove sente.results objects

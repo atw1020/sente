@@ -24,6 +24,7 @@ namespace sente {
 
     Rules rulesFromStr(std::string ruleString);
 
+    /*
     struct Results{
 
         explicit Results(Stone resigningPlayer);
@@ -45,6 +46,7 @@ namespace sente {
         operator std::string() const;
 
     };
+     */
 
 }
 

@@ -107,8 +107,7 @@ namespace sente {
         std::unique_ptr<_board> copyBoard() const;
         unsigned getSide() const;
 
-        Results getResults() const;
-        Results score() const;
+        void score() const;
         std::vector<Move> getLegalMoves();
 
         Vertex getKoPoint() const;

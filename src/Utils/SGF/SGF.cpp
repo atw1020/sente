@@ -138,7 +138,7 @@ namespace sente::SGF {
     SGFNode nodeFromText(const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties){
 
-        // py::print("entering nodeFromText with text", SGFText);
+        // std::cout << "entering nodeFromText with text " << SGFText << std::endl;
 
         SGFNode node;
         std::string temp;

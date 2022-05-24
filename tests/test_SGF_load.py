@@ -129,7 +129,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         game.pss()
         game.pss()
 
-        self.assertEqual(game.score().get_white_points(), 0.5)
+        self.assertEqual(game.get_result, "W+0.5")
 
     def test_semicolon_inside_brackets(self):
         """
@@ -178,20 +178,6 @@ class BasicSGF(DoesNotRaiseTestCase):
 
         with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
             game = sgf.load("sgf/ff4_ex.sgf")
-
-    def test_double_passes_included_black(self):
-        """
-
-        makes sure that double passes are included in the sequence
-
-        :return:
-        """
-
-        game = sgf.load("sgf/double pass ending black.sgf")
-
-        last_two_moves = game.get_default_sequence()[-2:]
-
-        print(dir(last_two_moves[0]))
 
 
 class StringLoad(DoesNotRaiseTestCase):

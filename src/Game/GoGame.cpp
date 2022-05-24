@@ -2,8 +2,9 @@
 // Created by arthur wesley on 6/28/21.
 //
 
-#include <memory>
 #include <stack>
+#include <memory>
+#include <sstream>
 
 // #Include <pybind11/pybind11.h>
 
@@ -176,7 +177,8 @@ namespace sente {
         if (move.isPass()){
             gameTree.insert(node);
             if (++passCount >= 2){
-                gameTree.getRoot().setProperty(SGF::RE, std::vector<std::string>());
+                // score the game
+                score();
             }
             return;
         }
@@ -577,37 +579,15 @@ namespace sente {
         return board->getSide();
     }
 
-    Results GoGame::getResults() const {
-
-        if (not isOver()){
-            throw std::domain_error("could not get results of game, the game is still ongoing");
-        }
-
-        if (passCount >= 2){
-            return score();
-        }
-        else {
-            std::string results = gameTree.getRoot().getProperty(SGF::RE)[0];
-            switch (results[0]){
-                case 'W':
-                    return Results(BLACK);
-                case 'B':
-                default:
-                    return Results(WHITE);
-            }
-        }
-
-    }
-
 
     /**
      *
-     * Score the game with the specified Komi
+     * Score the game automatically using chinese rules
      *
-     * @param komi
-     * @return
+     * TODO: score using korean and Chinese rules
+     *
      */
-    Results GoGame::score() const {
+    void GoGame::score() const {
 
         if (passCount < 2){
             throw std::domain_error("game did not end from passing; could not score");
@@ -680,7 +660,16 @@ namespace sente {
             }
         }
 
-        return {rules, komi, blackTerritory, whiteTerritory, blackStones, whiteStones};
+        // compute the black and white raw scores
+        double blackScore = blackTerritory + blackStones;
+        double whiteScore = whiteTerritory + whiteStones + komi;
+
+        std::stringstream results;
+
+        results << (blackScore > whiteScore ? "B" : "W") << "+" << std::fixed << std::setprecision(1) << std::fabs(blackScore - whiteScore);
+
+        // convert the result to a string
+        gameTree.getRoot().appendProperty(SGF::RE, {results.str()});
     }
 
     std::vector<Move> GoGame::getLegalMoves() {

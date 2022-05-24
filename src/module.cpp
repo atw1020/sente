@@ -158,38 +158,6 @@ PYBIND11_MODULE(sente, module){
             return "<sente.Move " + std::string(move) + ">";
         });
 
-    py::class_<sente::Results>(module, "results")
-        .def("get_winner", &sente::Results::winner,
-            R"pbdoc(
-                gets the winner of the game
-
-                :return: :ref:`sente.stone <stone>` of the winner of the game
-            )pbdoc")
-        .def("get_black_points", [](const sente::Results& results){
-                return results.blackScore;
-            },
-            R"pbdoc(
-
-                gets the number of points that black scored
-
-                :return: the number of points that black scored
-            )pbdoc")
-        .def("get_white_points", [](const sente::Results& results){
-                return results.whiteScore + results.komi;
-            },
-            R"pbdoc(
-
-              gets the number of points that white scored
-
-              :return: the number of points that black scored
-            )pbdoc")
-        .def("__str__", [](const sente::Results& results){
-            return std::string(results);
-        })
-        .def("__repr__", [](const sente::Results& results){
-                return "<sente.result \"" + std::string(results) + "\">";
-            });
-
     py::class_<sente::Board<19>>(module, "Board19")
         .def(py::init<bool, bool>(),
              py::arg("use_ascii") = false,
@@ -467,26 +435,8 @@ PYBIND11_MODULE(sente, module){
         R"pbdoc(
             causes the current active player to resign.
         )pbdoc")
-        .def("get_results", &sente::GoGame::getResults,
-            R"pbdoc(
-                returns a results object for a game.
-
-                .. Warning:: This method does not remove dead stones
-
-                :return: :ref:`sente.results <results>` object.
-
-            )pbdoc")
-        .def("score", &sente::GoGame::score,
-            R"pbdoc(
-                scores a game and returns the results.
-
-                .. Warning:: This method does not remove dead stones
-
-                :return: :ref:`sente.results <results>` object.
-
-            )pbdoc")
-        .def("get_winner", [](const sente::GoGame& game){
-                return game.getResults().winner();
+        .def("get_results", [](const sente::GoGame& game){
+                return game.getProperties().at("RE");
             },
             R"pbdoc(
                 determines the winner of the game.
