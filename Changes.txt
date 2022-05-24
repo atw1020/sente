@@ -1,0 +1,13 @@
+new board display option
+-
+
+get_results string casting
+- Done
+
+move object string casting
+-
+
+Pass moves not getting played
+- Make sente.Move constructor visible
+- Add functionality to test for pass moves
+- Add functionality to test for resign moves

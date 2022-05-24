@@ -13,75 +13,75 @@ namespace sente::SGF {
         /// data taken from https://www.red-bean.com/sgf/properties.html
         /// Move properties
         B,  // black move
-        KO, // ko point todo: support
-        MN, // Move number todo: support
+        KO, // ko point Changes.txt: support
+        MN, // Move number Changes.txt: support
         W,  // white move
         /// Setup Properties
-        AB, // add black stone todo: support
-        AE, // add empty space todo: support
-        AW, // add white stone todo: support
-        PL, // get player name todo: support
+        AB, // add black stone Changes.txt: support
+        AE, // add empty space Changes.txt: support
+        AW, // add white stone Changes.txt: support
+        PL, // get player name Changes.txt: support
         /// Node Annotations
         C,  // comment
-        DM, // position is even for both players todo: support
-        GB, // good for black to play todo: support
-        GW, // good for white to play todo: support
-        HO, // hot spot todo: support
-        N,  // name of the node todo: support
-        UC, // position is unclear todo: support
-        V,  // value todo: support
+        DM, // position is even for both players Changes.txt: support
+        GB, // good for black to play Changes.txt: support
+        GW, // good for white to play Changes.txt: support
+        HO, // hot spot Changes.txt: support
+        N,  // name of the node Changes.txt: support
+        UC, // position is unclear Changes.txt: support
+        V,  // value Changes.txt: support
         /// Move Annotation
-        BM, // bad move todo: support
-        DO, // doubtful move todo: support
-        IT, // interesting move todo: support
-        TE, // tesuji todo: support
+        BM, // bad move Changes.txt: support
+        DO, // doubtful move Changes.txt: support
+        IT, // interesting move Changes.txt: support
+        TE, // tesuji Changes.txt: support
         /// Markup properties
-        AR, // arrow todo: support
-        CR, // circle todo: support
-        DD, // dim out todo: support
-        LB, // label todo: support
-        LN, // line todo: support
-        MA, // mark with an x todo: support
-        SL, // selected points todo: support
-        SQ, // mark with a square todo: support
-        TR, // mark with a triangle todo: support
+        AR, // arrow Changes.txt: support
+        CR, // circle Changes.txt: support
+        DD, // dim out Changes.txt: support
+        LB, // label Changes.txt: support
+        LN, // line Changes.txt: support
+        MA, // mark with an x Changes.txt: support
+        SL, // selected points Changes.txt: support
+        SQ, // mark with a square Changes.txt: support
+        TR, // mark with a triangle Changes.txt: support
         /// Root Properties
-        AP, // application used to create the file todo: support
-        CA, // charset todo: support
+        AP, // application used to create the file Changes.txt: support
+        CA, // charset Changes.txt: support
         FF, // file format
         GM, // Game mode
-        ST, // how many variations should be shown todo: support
+        ST, // how many variations should be shown Changes.txt: support
         SZ, // size of the board
         /// Game info Properties
-        AN, // name of annotator todo: support
+        AN, // name of annotator Changes.txt: support
         BR, // black rank
-        BT, // black's team todo: support
-        CP, // copyright info todo: support
-        DT, // date the game was played todo: support
-        EV, // event todo: support
+        BT, // black's team Changes.txt: support
+        CP, // copyright info Changes.txt: support
+        DT, // date the game was played Changes.txt: support
+        EV, // event Changes.txt: support
         GN, // game name
-        GC, // extra game info todo: support
-        ON, // opening name todo: support
-        OT, // overtime todo: support
+        GC, // extra game info Changes.txt: support
+        ON, // opening name Changes.txt: support
+        OT, // overtime Changes.txt: support
         PB, // black name
-        PC, // place todo: support
+        PC, // place Changes.txt: support
         PW, // white player's name
         RE, // result of the game
-        RO, // round number & type todo: support
+        RO, // round number & type Changes.txt: support
         RU, // ruleset
-        SO, // source todo: support
-        TM, // time info todo: support
-        US, // creator of the game todo: support
+        SO, // source Changes.txt: support
+        TM, // time info Changes.txt: support
+        US, // creator of the game Changes.txt: support
         WR, // white rank
-        WT, // white team todo: support
+        WT, // white team Changes.txt: support
         /// timing properties
-        BL, // black time left todo: support
-        OB, // number of byo-yomi periods left black todo: support
-        OW, // number of byo-yomi periods left white todo: support
-        WL, // white time left todo: support
+        BL, // black time left Changes.txt: support
+        OB, // number of byo-yomi periods left black Changes.txt: support
+        OW, // number of byo-yomi periods left white Changes.txt: support
+        WL, // white time left Changes.txt: support
         /// misc
-        FG, // figure todo: support
-        PM, // print move count todo: support
+        FG, // figure Changes.txt: support
+        PM, // print move count Changes.txt: support
         VW, // only view part of the board
         /// Go-specific properties
         HA, // handicap
@@ -89,24 +89,24 @@ namespace sente::SGF {
         TB, // territory black
         TW, // territory white
         /// SGF-3 specific properties
-        ID, // unique ID of the game todo: support
-        LT, // enforce losing on time todo: support
-        OM, // number of moves for each overtime todo: support
-        OP, // length of each overtime period todo: support
-        OV, // operator overhead for each move todo: support
-        SE, // moves tried so far todo: support
-        SI, // position marked with sigma todo: support
-        TC, // territory count todo: support
+        ID, // unique ID of the game Changes.txt: support
+        LT, // enforce losing on time Changes.txt: support
+        OM, // number of moves for each overtime Changes.txt: support
+        OP, // length of each overtime period Changes.txt: support
+        OV, // operator overhead for each move Changes.txt: support
+        SE, // moves tried so far Changes.txt: support
+        SI, // position marked with sigma Changes.txt: support
+        TC, // territory count Changes.txt: support
         /// SGF-1 specific properties
-        EL, // human evaluation of a computer's move todo: support
-        EX, // expected next move todo: support
-        L,  // letters on points todo: support
-        M,  // marked points todo: support
-        BS, // black species todo: support
-        CH, // check mark todo: support
-        RG, // region of the board todo: support
-        SC, // secure stones todo: support
-        WS, // white species todo: support
+        EL, // human evaluation of a computer's move Changes.txt: support
+        EX, // expected next move Changes.txt: support
+        L,  // letters on points Changes.txt: support
+        M,  // marked points Changes.txt: support
+        BS, // black species Changes.txt: support
+        CH, // check mark Changes.txt: support
+        RG, // region of the board Changes.txt: support
+        SC, // secure stones Changes.txt: support
+        WS, // white species Changes.txt: support
     };
 
     SGFProperty fromStr(const std::string& sgfProperty);

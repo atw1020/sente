@@ -128,7 +128,7 @@ namespace sente {
         unsigned passCount = 0; // 4 bytes
         double komi; // 8 bytes
 
-        // todo: look into moving the board onto the stack
+        // Changes.txt: look into moving the board onto the stack
         std::shared_ptr<_board> board; // 16 bytes
 
         utils::Tree<SGF::SGFNode> gameTree; // 32 bytes

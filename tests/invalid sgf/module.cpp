@@ -26,7 +26,7 @@ PYBIND11_MAKE_OPAQUE(sente::GoGame)
 
 PYBIND11_MODULE(sente, module){
 
-    // m.doc() = ""; // todo: add a better description
+    // m.doc() = ""; // Changes.txt: add a better description
 
     module.def("add", &add, py::arg("x"), py::arg("y"));
 

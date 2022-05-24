@@ -189,8 +189,8 @@ namespace sente::GTP {
                             argsCombined = true;
                             i++;
 
-                            Color* color = (Color*) check1;
-                            Vertex* vertex = (Vertex*) check2;
+                            auto* color = (Color*) check1;
+                            auto* vertex = (Vertex*) check2;
 
                             arguments.emplace_back(std::make_shared<Move>(*color, *vertex));
                         }
