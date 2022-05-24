@@ -1,9 +1,6 @@
 new board display option
 -
 
-get_results string casting
-- Done
-
 move object string casting
 -
 
@@ -12,4 +9,5 @@ Pass moves not getting played
 - Add functionality to test for pass moves
 - Add functionality to test for resign moves
 
-Remove sente.results objects
+Remove sente.Results objects
+- Results object replaced with results dictionary

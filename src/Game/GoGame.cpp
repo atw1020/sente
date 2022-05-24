@@ -298,7 +298,7 @@ namespace sente {
         if (gameTree.get().hasProperty(property)){
 
             // insert the added move into the game tree
-            std::string positionInfo = std::string(move);
+            std::string positionInfo = move.toSGF();
             positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
 
             // generate the list of all stones added to the property

@@ -150,7 +150,7 @@ PYBIND11_MODULE(sente, module){
         )pbdoc")
         .def("get_vertex", &sente::Move::getVertex)
         .def("__eq__", &sente::Move::operator==)
-        .def("__ne__", &sente::Move::operator!=)
+        .def("__ne__", &sente::Move::operator!=);
         .def("__str__", [](const sente::Move& move){
             return std::string(move);
         })

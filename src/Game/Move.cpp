@@ -155,7 +155,7 @@ namespace sente {
         return adjacents;
     }
 
-    Move::operator std::string() const {
+    std::string Move::toSGF() const {
 
         std::stringstream str;
 

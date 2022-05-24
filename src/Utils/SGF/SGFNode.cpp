@@ -279,7 +279,7 @@ namespace sente::SGF {
         std::stringstream acc;
 
         if (move != Move()){
-            acc << std::string(move);
+            acc << move.toSGF();
         }
 
         std::vector<Move> blackAdds;
@@ -298,8 +298,8 @@ namespace sente::SGF {
             if (property == AB){
                 if (not blackAdds.empty()){
                     acc << toStr(property);
-                    for (const auto& blackStones : blackAdds){
-                        auto temp = std::string(blackStones);
+                    for (const auto& blackStone : blackAdds){
+                        auto temp = blackStone.toSGF();
                         acc << std::string(temp.begin() + 1, temp.end());
                     }
                 }
@@ -307,8 +307,8 @@ namespace sente::SGF {
             if (property == AW){
                 if (not whiteAdds.empty()){
                     acc << toStr(property);
-                    for (const auto& blackStones : whiteAdds){
-                        auto temp = std::string(blackStones);
+                    for (const auto& whiteStones : whiteAdds){
+                        auto temp = whiteStones.toSGF();
                         acc << std::string(temp.begin() + 1, temp.end());
                     }
                 }
