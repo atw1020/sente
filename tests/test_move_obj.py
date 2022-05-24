@@ -84,8 +84,8 @@ class MoveTest(TestCase):
         game = sente.Game()
         game.play(self.move3)
 
-        self.assertEqual("B[ee]", str(self.move1))
-        self.assertEqual("B[de]", str(self.move3))
-        self.assertEqual("W[de]", str(self.move4))
+        self.assertEqual("B E4", str(self.move1))
+        self.assertEqual("B D4", str(self.move3))
+        self.assertEqual("W D4", str(self.move4))
         self.assertEqual("[Placeholder Move]", str(self.move5))
 

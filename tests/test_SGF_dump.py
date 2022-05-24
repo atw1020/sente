@@ -236,5 +236,3 @@ class TestBasics(DoesNotRaiseTestCase):
         game = sgf.loads(text)
 
         last_two_moves = game.get_default_sequence()[-2:]
-
-        print(sgf.dumps(game))

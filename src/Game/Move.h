@@ -74,7 +74,7 @@ namespace sente {
         Vertex getVertex() const;
         std::vector<Vertex> getAdjacentMoves(unsigned boardSize) const;
 
-        // explicit operator std::string() const;
+        explicit operator std::string() const;
         std::string toSGF() const;
 
         void flipOriginY(unsigned side);

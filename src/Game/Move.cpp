@@ -184,6 +184,28 @@ namespace sente {
 
     }
 
+    Move::operator std::string() const {
+        char first;
+
+        if (stone == EMPTY){
+            return "[Placeholder Move]";
+        }
+
+        // determine the letter
+        if (x + 'A' < 'I'){
+            first = 'A' + x;
+        }
+        else {
+            first = 'B' + x;
+        }
+
+        // add the letter to the second co-ord
+        std::string message = (stone == BLACK ? "B " : "W ") + std::to_string(y);
+        message.insert(message.begin() + 2, first);
+
+        return message;
+    }
+
     void Move::flipOriginY(unsigned int side) {
         y = side - 1 - y;
     }
