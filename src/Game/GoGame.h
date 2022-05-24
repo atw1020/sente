@@ -107,6 +107,7 @@ namespace sente {
         std::unique_ptr<_board> copyBoard() const;
         unsigned getSide() const;
 
+        sente::Stone getWinner() const;
         void score() const;
         std::vector<Move> getLegalMoves();
 

@@ -435,15 +435,31 @@ PYBIND11_MODULE(sente, module){
         R"pbdoc(
             causes the current active player to resign.
         )pbdoc")
-        .def("get_results", [](const sente::GoGame& game){
-                return game.getProperties().at("RE");
+        .def("get_result", [](const sente::GoGame& game){
+                if (game.isOver()){
+                    return game.getProperties().at("RE");
+                }
+                else {
+                    throw std::domain_error("game is not yet over, results cannot be obtained");
+                }
             },
             R"pbdoc(
-                determines the winner of the game.
+                returns a string representing the results of the game (ie. W+0.5)
 
-                .. Warning:: This method does not remove dead stones.
+                .. Warning:: Sente's automatic scoring does not remove dead stones
 
                 :return: :ref:`sente.stone <stone>` of the winner of the game.
+
+            )pbdoc")
+        .def("get_winner", &sente::GoGame::getWinner,
+            R"pbdoc(
+
+                determines the winner of the game.
+
+                .. Warning:: Sente's automatic scoring does not remove dead stones
+
+                :return: :ref:`sente.stone <stone>` of the winner of the game. Returns sente.stone.EMPTY if the game is
+                still in progress
 
             )pbdoc")
         .def("is_at_root", &sente::GoGame::isAtRoot,

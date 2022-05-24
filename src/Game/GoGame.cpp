@@ -579,6 +579,22 @@ namespace sente {
         return board->getSide();
     }
 
+    /**
+     *
+     * Obtains the winner of the game
+     *
+     * @return
+     */
+    sente::Stone GoGame::getWinner() const {
+        if (not gameTree.getRoot().hasProperty(SGF::RE)){
+            // return an empty stone
+            return EMPTY;
+        }
+        else {
+            // obtain the winner from the property
+            return gameTree.getRoot().getProperty(SGF::RE).at(0).at(0) == 'B' ? BLACK : WHITE;
+        }
+    }
 
     /**
      *

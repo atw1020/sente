@@ -129,7 +129,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         game.pss()
         game.pss()
 
-        self.assertEqual(game.get_result, "W+0.5")
+        self.assertEqual("W+0.5", game.get_result())
 
     def test_semicolon_inside_brackets(self):
         """

@@ -77,10 +77,9 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         game = sente.Game()
 
         with self.assertRaises(ValueError):
-            game.get_results()
+            game.get_result()
 
-        with self.assertRaises(ValueError):
-            game.get_winner()
+        self.assertEqual(sente.EMPTY, game.get_winner())
 
     def test_score_resigned_game(self):
         """
@@ -92,9 +91,6 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
         game = sente.Game()
         game.resign()
-
-        with self.assertRaises(ValueError):
-            game.get_results()
 
         with self.assertDoesNotRaise(ValueError):
             game.get_winner()
@@ -125,7 +121,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         game.pss()
 
         with self.assertDoesNotRaise(Exception):
-            game.get_results()
+            game.get_result()
 
     def test_get_point(self):
         """
