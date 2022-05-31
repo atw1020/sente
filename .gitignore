@@ -12,7 +12,7 @@ venv/
 dist/
 sente.egg-info/
 build/
-# subprojects
+subprojects
 
 # documentation
 docs/_build/

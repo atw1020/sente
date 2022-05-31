@@ -5,9 +5,6 @@ project('my_module', 'cpp',
 # Python 3
 # ===========================================================
 
-# python 3 dependency
-python_dep = dependency('python3')
-
 # python 3 import for extension_module
 python_module = import('python')
 inst = python_module.find_installation(get_option('python_executable'))
@@ -36,5 +33,5 @@ inst.extension_module('sente', 'src/module.cpp',
                       'src/Utils/GTP/Controller.h', 'src/Utils/GTP/Controller.cpp',
                       'src/Utils/GTP/Session.h', 'src/Utils/GTP/Session.cpp',
                       'src/Utils/GTP/PythonBindings.cpp', 'src/Utils/GTP/PythonBindings.h',
-                      dependencies: [pybind11_dep, python_dep])
+                      dependencies: [pybind11_dep, inst.dependency()])
 
