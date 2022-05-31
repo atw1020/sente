@@ -30,7 +30,7 @@ jobs:
         run: python -m pip install --upgrade meson ninja wheel setuptools; meson wrap install pybind11
 
       - name: Build and install
-          run: pip install --verbose .[test]
+        run: pip install --verbose .[test]
 
       - name: Test
         run: cd tests; python -m unittest discover; cd ..
