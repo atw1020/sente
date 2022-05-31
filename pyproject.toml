@@ -1,2 +1,0 @@
-[tool.cibuildwheel]
-before-build = "pip install meson"
