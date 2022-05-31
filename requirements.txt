@@ -7,3 +7,5 @@ cibuildwheel>=2.0.1
 meson>=0.61.1
 ninja>=1.8.2
 numpy
+pybind11>=2.9.2
+
