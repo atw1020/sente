@@ -2,7 +2,7 @@
 
 # CLion created directories
 /.idea/
-/cmake-build-debug/
+/meson-build-debug/
 
 # python enviroment
 venv/
