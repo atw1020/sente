@@ -1,2 +1,9 @@
-[tool.cibuildwheel]
-before-build = ["pip install meson ninja", "meson wrap install pybind11"]
+[build-system]
+requires = ["mesonpep517", "ninja"]
+build-backend = "mesonpep517.buildapi"
+
+[tool.mesonpep517.metadata]
+author = "Arthur Wesley"
+author-email = "arthur@electricfish.com"
+summary = "Sente: a Python 3 native library for the game of Go."
+home-page = "https://github.com/atw1020/sente"
