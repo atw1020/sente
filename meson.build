@@ -1,5 +1,5 @@
-project('sente', 'cpp',
-        default_options: ['cpp_std=c++17'], version: '0.4.2')
+project('my_module', 'cpp',
+        default_options: ['cpp_std=c++17'])
 
 # ===========================================================
 # Python 3
