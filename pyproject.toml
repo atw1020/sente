@@ -1,2 +1,2 @@
 [tool.cibuildwheel]
-before-build = "pip install meson"
+before-build = "pip install meson pybind11 ninja"
