@@ -11,10 +11,8 @@ from unittest import TestCase
 import sente.exceptions
 from sente import sgf
 
-from assert_does_not_raise import DoesNotRaiseTestCase
 
-
-class BasicSGF(DoesNotRaiseTestCase):
+class BasicSGF(TestCase):
 
     def test_all_sgfs(self):
         """
@@ -24,14 +22,16 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        files = os.listdir("sgf")
+        files = os.listdir("tests/sgf")
 
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
-            with self.assertDoesNotRaise(Exception):
-                game = sgf.load(str(Path("sgf")/file))
+            try:
+                game = sgf.load(str(Path("tests/sgf")/file))
                 game.play_default_sequence()
+            except Exception as E:
+                self.fail(E)
 
     def test_punctuation_ignored_inside_parens(self):
         """
@@ -40,9 +40,11 @@ class BasicSGF(DoesNotRaiseTestCase):
 
         """
 
-        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
-            game = sgf.load("sgf/punctuation ignored inside parentheses.sgf")
+        try:
+            game = sgf.load("tests/sgf/punctuation ignored inside parentheses.sgf")
             game.play_default_sequence()
+        except Exception as E:
+            self.fail(E)
 
     def test_simple_single_branch_file(self):
         """
@@ -56,7 +58,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         W = sente.stone.WHITE
         _ = sente.stone.EMPTY
 
-        game = sgf.load("sgf/simple sequence.sgf")
+        game = sgf.load("tests/sgf/simple sequence.sgf")
         game.play_default_sequence()
 
         expected_game = sente.Board19([[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _],
@@ -89,7 +91,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
+        game = sgf.load("tests/sgf/34839594-255-IDW64-noob_bot_3.sgf")
         game.play_default_sequence()
 
         self.assertEqual(" 1  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ .  .  .  .  .\n"
@@ -124,7 +126,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = sgf.load("sgf/0.5 Komi.sgf")
+        game = sgf.load("tests/sgf/0.5 Komi.sgf")
 
         game.pss()
         game.pss()
@@ -139,9 +141,13 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
-            game = sgf.load("sgf/commented semicolon.sgf")
+        print("the cwd is", os.getcwd())
+
+        try:
+            game = sgf.load("tests/sgf/commented semicolon.sgf")
             game.play_default_sequence()
+        except Exception as E:
+            self.fail(E)
 
     def test_nested_brackets(self):
         """
@@ -151,8 +157,10 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
-            game = sgf.load("sgf/nested brackets.sgf")
+        try:
+            game = sgf.load("tests/sgf/nested brackets.sgf")
+        except Exception as E:
+            self.fail(E)
 
     def test_backslash_close_brackets(self):
         """
@@ -162,7 +170,7 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = sgf.load("sgf/nested brackets.sgf")
+        game = sgf.load("tests/sgf/nested brackets.sgf")
         sequence = game.get_default_sequence()[:2]
 
         game.play_sequence(sequence)
@@ -176,11 +184,13 @@ class BasicSGF(DoesNotRaiseTestCase):
         :return:
         """
 
-        with self.assertDoesNotRaise(sente.exceptions.InvalidSGFException):
-            game = sgf.load("sgf/ff4_ex.sgf")
+        try:
+            game = sgf.load("tests/sgf/ff4_ex.sgf")
+        except Exception as E:
+            self.fail(E)
 
 
-class StringLoad(DoesNotRaiseTestCase):
+class StringLoad(TestCase):
     """
 
     tests to see if SGFs can be loaded from strings and not just from files
@@ -195,15 +205,17 @@ class StringLoad(DoesNotRaiseTestCase):
         :return:
         """
 
-        files = os.listdir("sgf")
+        files = os.listdir("tests/sgf")
 
         # sgf.load(os.path.join("sgf", "extra letter in move.sgf"))
 
         for file in files:
-            with self.assertDoesNotRaise(Exception):
-                with open(str(Path("sgf")/file), encoding="utf-8") as sgf_file:
+            try:
+                with open(str(Path("tests/sgf")/file), encoding="utf-8") as sgf_file:
                     game = sgf.loads(sgf_file.read())
                     game.play_default_sequence()
+            except Exception as E:
+                self.fail(E)
 
     def test_simple_single_branch_file(self):
         """
@@ -217,7 +229,7 @@ class StringLoad(DoesNotRaiseTestCase):
         W = sente.stone.WHITE
         _ = sente.stone.EMPTY
 
-        with open("sgf/simple sequence.sgf") as sgf_file:
+        with open("tests/sgf/simple sequence.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
         game.play_default_sequence()
 
@@ -255,7 +267,7 @@ class StringLoad(DoesNotRaiseTestCase):
         W = sente.stone.WHITE
         _ = sente.stone.EMPTY
 
-        with open("sgf/34839594-255-IDW64-noob_bot_3.sgf") as sgf_file:
+        with open("tests/sgf/34839594-255-IDW64-noob_bot_3.sgf") as sgf_file:
             game = sgf.loads(sgf_file.read())
         game.play_default_sequence()
 
@@ -294,7 +306,7 @@ class BranchedSGF(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/simple fork.sgf")
+        game = sgf.load("tests/sgf/simple fork.sgf")
 
         self.assertIn(sente.Move(15, 3, sente.stone.BLACK), game.get_branches())
         self.assertIn(sente.Move(16, 3, sente.stone.BLACK), game.get_branches())
@@ -307,7 +319,7 @@ class BranchedSGF(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/two josekis.sgf")
+        game = sgf.load("tests/sgf/two josekis.sgf")
 
         self.assertEqual([sente.Move(16, 3, sente.stone.BLACK)], game.get_branches())
         game.play(17, 4)
@@ -322,7 +334,7 @@ class BranchedSGF(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/3-4.sgf")  # a 3-4 joseki refrence with lots of branches
+        game = sgf.load("tests/sgf/3-4.sgf")  # a 3-4 joseki refrence with lots of branches
 
         # play all of the sequences
         game.play_default_sequence()
@@ -342,7 +354,7 @@ class BranchedSGF(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/34839594-255-IDW64-noob_bot_3.sgf")
+        game = sgf.load("tests/sgf/34839594-255-IDW64-noob_bot_3.sgf")
 
         self.assertEqual(game.comment, "noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo will be accepted. You can send undo message if you need.\n")
         self.assertIn("noob_bot_3: Hi! This is bot. Join 'noob_bot' group and have fun! Undo will be accepted. You can send undo message if you need.", str(game))
@@ -362,11 +374,11 @@ class InvalidSGF(TestCase):
         :return:
         """
 
-        files = os.listdir("invalid sgf")
+        files = os.listdir("tests/invalid sgf")
 
         for file in files:
             with self.assertRaises(sente.exceptions.InvalidSGFException):
-                game = sgf.load(str(Path("invalid sgf")/file))
+                game = sgf.load(str(Path("tests/invalid sgf")/file))
 
     def test_invalid_moves(self):
         """
@@ -377,13 +389,13 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/extra letter in move.sgf")
+            sgf.load("tests/invalid sgf/extra letter in move.sgf")
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/extra square bracket.sgf")
+            sgf.load("tests/invalid sgf/extra square bracket.sgf")
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/missing letter in move.sgf")
+            sgf.load("tests/invalid sgf/missing letter in move.sgf")
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/missing square bracket.sgf")
+            sgf.load("tests/invalid sgf/missing square bracket.sgf")
 
 
     def test_incorrect_parentheses(self):
@@ -395,7 +407,7 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/branched missing 2 parens.sgf")
+            sgf.load("tests/invalid sgf/branched missing 2 parens.sgf")
 
     def test_nonexistent_file(self):
         """
@@ -406,7 +418,7 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(FileNotFoundError):
-            sgf.load("invalid sgf/potato.sgf")
+            sgf.load("tests/invalid sgf/potato.sgf")
 
     def test_non_sgf_file(self):
         """
@@ -417,7 +429,7 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/module.cpp")
+            sgf.load("tests/invalid sgf/module.cpp")
 
     def test_binary_file(self):
         """
@@ -429,7 +441,7 @@ class InvalidSGF(TestCase):
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
             # raise sente.exceptions.InvalidSGFException()
-            sgf.load("invalid sgf/octopus.jpeg")
+            sgf.load("tests/invalid sgf/octopus.jpeg")
 
     def test_non_go_file(self):
         """
@@ -440,7 +452,7 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("invalid sgf/backgammon.sgf")
+            sgf.load("tests/invalid sgf/backgammon.sgf")
 
 
 class InvalidSGFWarnings(TestCase):
@@ -453,11 +465,11 @@ class InvalidSGFWarnings(TestCase):
         :return:
         """
 
-        files = os.listdir("warning sgf")
+        files = os.listdir("tests/warning sgf")
 
         for file in files:
             with self.assertWarns(Warning):
-                sgf.load(str(Path("warning sgf")/file))
+                sgf.load(str(Path("tests/warning sgf")/file))
 
     def test_silence_warnings(self):
         """
@@ -467,10 +479,10 @@ class InvalidSGFWarnings(TestCase):
         :return:
         """
 
-        files = os.listdir("warning sgf")
+        files = os.listdir("tests/warning sgf")
 
         for file in files:
-            sgf.load(str(Path("warning sgf")/file), disable_warnings=True)
+            sgf.load(str(Path("tests/warning sgf")/file), disable_warnings=True)
 
     def test_unsupported_file_formats(self):
         """
@@ -481,9 +493,9 @@ class InvalidSGFWarnings(TestCase):
         """
 
         with self.assertWarns(Warning):
-            sgf.load("warning sgf/FF[1] with FF.sgf")
+            sgf.load("tests/warning sgf/FF[1] with FF.sgf")
         with self.assertWarns(Warning):
-            sgf.load("warning sgf/FF[2] with RU.sgf")
+            sgf.load("tests/warning sgf/FF[2] with RU.sgf")
 
     def test_change_ff(self):
         """
@@ -494,7 +506,7 @@ class InvalidSGFWarnings(TestCase):
         """
 
         with self.assertWarns(Warning):
-            sgf.load("warning sgf/LeeSedol-WangYao34615.sgf")
+            sgf.load("tests/warning sgf/LeeSedol-WangYao34615.sgf")
 
     def test_turn_off_fix_file_format(self):
         """
@@ -505,11 +517,11 @@ class InvalidSGFWarnings(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("warning sgf/FF[1] with FF.sgf", fix_file_format=False)
+            sgf.load("tests/warning sgf/FF[1] with FF.sgf", fix_file_format=False)
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("warning sgf/FF[2] with RU.sgf", fix_file_format=False)
+            sgf.load("tests/warning sgf/FF[2] with RU.sgf", fix_file_format=False)
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("warning sgf/LeeSedol-WangYao34615.sgf", fix_file_format=False)
+            sgf.load("tests/warning sgf/LeeSedol-WangYao34615.sgf", fix_file_format=False)
 
     def test_turn_off_ignore_illegal_properties(self):
         """
@@ -520,6 +532,6 @@ class InvalidSGFWarnings(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("warning sgf/Jappanese Date (JD) property.sgf", ignore_illegal_properties=False)
+            sgf.load("tests/warning sgf/Jappanese Date (JD) property.sgf", ignore_illegal_properties=False)
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("warning sgf/ParkJaegeun-LeeJihyun72148.sgf", ignore_illegal_properties=False)
+            sgf.load("tests/warning sgf/ParkJaegeun-LeeJihyun72148.sgf", ignore_illegal_properties=False)

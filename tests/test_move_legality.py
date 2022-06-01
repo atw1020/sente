@@ -6,10 +6,9 @@ Author: Arthur Wesley
 from unittest import TestCase
 
 import sente
-from assert_does_not_raise import DoesNotRaiseTestCase
 
 
-class TestMove(DoesNotRaiseTestCase):
+class TestMove(TestCase):
 
     def test_make_move(self):
         """
@@ -135,9 +134,8 @@ class TestMove(DoesNotRaiseTestCase):
 
         game = sente.Game()
 
-        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
-            game.play(None)
-            game.play(None)
+        game.play(None)
+        game.play(None)
 
         self.assertTrue(game.is_over())
 
@@ -151,9 +149,8 @@ class TestMove(DoesNotRaiseTestCase):
 
         game = sente.Game()
 
-        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
-            game.pss()
-            game.pss()
+        game.pss()
+        game.pss()
 
         self.assertTrue(game.is_over())
 
@@ -167,9 +164,8 @@ class TestMove(DoesNotRaiseTestCase):
 
         game = sente.Game()
 
-        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
-            game.play(sente.moves.Pass(sente.stone.BLACK))
-            game.play(sente.moves.Pass(sente.stone.WHITE))
+        game.play(sente.moves.Pass(sente.stone.BLACK))
+        game.play(sente.moves.Pass(sente.stone.WHITE))
 
         self.assertTrue(game.is_over())
 
@@ -187,8 +183,10 @@ class TestMove(DoesNotRaiseTestCase):
 
         self.assertTrue(game.is_legal(1, 1))
 
-        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
+        try:
             game.play(1, 1)
+        except Exception as E:
+            self.fail(E)
 
 
 class TestLegalMove(TestCase):
@@ -408,7 +406,7 @@ class TestLegalMove(TestCase):
         self.assertFalse(game.is_legal(0, 0))
 
 
-class IllegalMoveThrowsException(DoesNotRaiseTestCase):
+class IllegalMoveThrowsException(TestCase):
     """
 
     makes sure that making illegal moves throws an exception
@@ -589,8 +587,7 @@ class IllegalMoveThrowsException(DoesNotRaiseTestCase):
         game.play(18, 1, sente.stone.WHITE)
 
         # the Ko should no longer be active
-        with self.assertDoesNotRaise(sente.exceptions.IllegalMoveException):
-            game.play(3, 4, sente.stone.BLACK)
+        game.play(3, 4, sente.stone.BLACK)
 
         # it should now be illegal for white to play here
         with self.assertRaises(sente.exceptions.IllegalMoveException):

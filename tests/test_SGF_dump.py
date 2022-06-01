@@ -5,13 +5,13 @@ Author: Arthur Wesley
 """
 
 import random
+from unittest import TestCase
 
 import sente
 from sente import sgf
-from assert_does_not_raise import DoesNotRaiseTestCase
 
 
-class TestBasics(DoesNotRaiseTestCase):
+class TestBasics(TestCase):
 
     def test_single_move(self):
         """
@@ -137,18 +137,6 @@ class TestBasics(DoesNotRaiseTestCase):
         self.assertEqual(sente.BLACK, new_game.get_point(4, 16))
         self.assertEqual(sente.WHITE, new_game.get_point(16, 16))
 
-    def test_dump_complex_game(self):
-        """
-
-        tests to see if we can dump a game with lots and lots of variations
-
-        :return:
-        """
-        game = sgf.load("sgf/3-4.sgf")
-
-        with self.assertDoesNotRaise(ValueError):
-            sgf.dumps(game)
-
     def test_FF1_not_produced(self):
         """
 
@@ -157,7 +145,7 @@ class TestBasics(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = sgf.load("sgf/Lee Sedol ladder game.sgf")
+        game = sgf.load("tests/sgf/Lee Sedol ladder game.sgf")
 
         self.assertNotIn("FF", sgf.dumps(game))
 
@@ -210,7 +198,7 @@ class TestBasics(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = sgf.load("sgf/backslash at end of comment.sgf")
+        game = sgf.load("tests/sgf/backslash at end of comment.sgf")
 
         self.assertIn("C[backslashes! \\\\]", sgf.dumps(game))
 

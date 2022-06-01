@@ -8,10 +8,8 @@ from unittest import TestCase
 import sente
 import numpy as np
 
-from assert_does_not_raise import DoesNotRaiseTestCase
 
-
-class TestBasicMethods(DoesNotRaiseTestCase):
+class TestBasicMethods(TestCase):
 
     def test_constructor(self):
         """
@@ -21,14 +19,13 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         :return:
         """
 
-        with self.assertDoesNotRaise(Exception):
-            sente.Game()
-            sente.Game(13)
-            sente.Game(19)
-            sente.Game(9, sente.rules.CHINESE)
-            sente.Game(rules=sente.rules.CHINESE)
-            sente.Game(rules=sente.rules.JAPANESE)
-            sente.Game(rules=sente.rules.JAPANESE, board_size=13)
+        sente.Game()
+        sente.Game(13)
+        sente.Game(19)
+        sente.Game(9, sente.rules.CHINESE)
+        sente.Game(rules=sente.rules.CHINESE)
+        sente.Game(rules=sente.rules.JAPANESE)
+        sente.Game(rules=sente.rules.JAPANESE, board_size=13)
 
         with self.assertRaises(ValueError):
             sente.Game(15, sente.rules.JAPANESE)
@@ -43,9 +40,8 @@ class TestBasicMethods(DoesNotRaiseTestCase):
 
         game = sente.Game()
 
-        with self.assertDoesNotRaise(Exception):
-            game.play(3, 15, sente.stone.BLACK)
-            game.play(15, 15)
+        game.play(3, 15, sente.stone.BLACK)
+        game.play(15, 15)
 
         with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play(3, 15)
@@ -92,8 +88,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         game = sente.Game()
         game.resign()
 
-        with self.assertDoesNotRaise(ValueError):
-            game.get_winner()
+        self.assertEqual(sente.WHITE, game.get_winner())
 
     def test_get_legal_moves(self):
         """
@@ -120,8 +115,7 @@ class TestBasicMethods(DoesNotRaiseTestCase):
         game.pss()
         game.pss()
 
-        with self.assertDoesNotRaise(Exception):
-            game.get_result()
+        print(game.get_result())
 
     def test_get_point(self):
         """
@@ -736,7 +730,7 @@ class TestTreeNavigation(TestCase):
         self.assertEqual("here is a backslash \\", game.comment)
 
 
-class TestNumpy(DoesNotRaiseTestCase):
+class TestNumpy(TestCase):
 
     def test_9x9_numpy(self):
 
@@ -813,7 +807,7 @@ class TestNumpy(DoesNotRaiseTestCase):
         :return:
         """
 
-        game = sente.sgf.load("sgf/Lee Sedol ladder game.sgf")
+        game = sente.sgf.load("tests/sgf/Lee Sedol ladder game.sgf")
         game.play_default_sequence()
 
         numpy = game.numpy()

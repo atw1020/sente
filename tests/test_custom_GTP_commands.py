@@ -10,10 +10,8 @@ from typing import Tuple, List, Union
 import sente
 from sente import GTP
 
-from assert_does_not_raise import DoesNotRaiseTestCase
 
-
-class CustomGTPCommands(DoesNotRaiseTestCase):
+class CustomGTPCommands(TestCase):
 
     def test_basic_registration(self):
         """

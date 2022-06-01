@@ -23,7 +23,7 @@ class CommandFunctionality(TestCase):
 
         engine = GTP.Session()
 
-        engine.interpret("loadsgf sgf/34839594-255-IDW64-noob_bot_3.sgf")
+        engine.interpret("loadsgf tests/sgf/34839594-255-IDW64-noob_bot_3.sgf")
         self.assertEqual("= \n"
                          "19  .  .  .  .  .  .  X  O  O  O  O  O  O  X  .  .  .  .  .\n"
                          "18  .  .  .  .  O  X  X  X  O  X  X  X  O  X  .  .  .  .  .\n"
@@ -58,12 +58,12 @@ class CommandFunctionality(TestCase):
         :return:
         """
 
-        game = sente.sgf.load("sgf/CheongSu-hyeon-KimIl-hwan13651.sgf")
+        game = sente.sgf.load("tests/sgf/CheongSu-hyeon-KimIl-hwan13651.sgf")
         game.play_sequence(game.get_default_sequence()[:50])
 
         engine = GTP.Session()
 
-        engine.interpret("loadsgf sgf/CheongSu-hyeon-KimIl-hwan13651.sgf 50")
+        engine.interpret("loadsgf tests/sgf/CheongSu-hyeon-KimIl-hwan13651.sgf 50")
         self.assertEqual("= \n"
                          "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
                          "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n"
@@ -203,4 +203,4 @@ class EngineFunctionality(TestCase):
 
         engine = GTP.Session()
 
-        self.assertEqual("= \n", engine.interpret("loadsgf \"sgf/Lee Sedol ladder game.sgf\""))
+        self.assertEqual("= \n", engine.interpret("loadsgf \"tests/sgf/Lee Sedol ladder game.sgf\""))

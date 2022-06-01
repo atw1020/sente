@@ -20,7 +20,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/0.5 Komi.sgf")
+        game = sgf.load("tests/sgf/0.5 Komi.sgf")
 
         correct = {
             "FF": "4",
@@ -53,7 +53,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/3-4.sgf")
+        game = sgf.load("tests/sgf/3-4.sgf")
 
         correct = {
             "FF": "4",
@@ -78,7 +78,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/metadata list.sgf")
+        game = sgf.load("tests/sgf/metadata list.sgf")
         metadata = game.get_properties()
 
         self.assertEqual(["dd", "qd", "dq", "pp"], metadata["TR"])
@@ -91,7 +91,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/multiple stones at once.sgf")
+        game = sgf.load("tests/sgf/multiple stones at once.sgf")
 
         self.assertNotIn("AB", game.get_properties())
         self.assertNotIn("AW", game.get_properties())
@@ -104,7 +104,7 @@ class LoadMetadata(TestCase):
         :return:
         """
 
-        game = sgf.load("sgf/backslash at end of comment.sgf")
+        game = sgf.load("tests/sgf/backslash at end of comment.sgf")
 
         self.assertEqual("backslashes! \\", game.comment)
 
