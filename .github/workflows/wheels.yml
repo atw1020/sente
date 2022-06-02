@@ -32,8 +32,8 @@ jobs:
       - name: Build and install
         run: pip install --verbose .[test]
 
-      - name: List directory
-        run: ls
+      - name: Gain Status info
+        run: pip freeze; python -v -c "import sente"
 
       - name: Test
         run: python -m unittest discover tests -t .
