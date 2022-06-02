@@ -43,7 +43,7 @@ class MesonBuild(build_ext):
 
         # compile the code
         subprocess.check_call(
-            ["CXX=clang++", "meson", "compile", "-C", self.build_temp],
+            ["meson", "compile", "-C", self.build_temp],
         )
 
         if not ext_fullpath.exists():
