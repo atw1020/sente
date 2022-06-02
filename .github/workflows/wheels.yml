@@ -33,7 +33,7 @@ jobs:
         run: python setup.py develop
 
       - name: Gain Status info
-        run: ls; pip freeze; python -v -c "import sente"
+        run: choco install dependencies; dependencies -knowndll; dependencies -imports sente.cp310-win_amd64.pyd; python -v -c "import sente"
 
       - name: Test
         run: python -m unittest discover tests -t .
