@@ -32,5 +32,8 @@ jobs:
       - name: Build and install
         run: pip install --verbose .[test]
 
+      - name: List directory
+        run: ls
+
       - name: Test
-        run: python -v -m unittest discover tests -t .
+        run: python -m unittest discover tests -t .
