@@ -30,7 +30,7 @@ jobs:
         run: python -m pip install --upgrade pip meson ninja wheel setuptools; meson wrap install pybind11
 
       - name: Build and install
-        run: pip install --verbose .[test]
+        run: python setup.py develop
 
       - name: Gain Status info
         run: pip freeze; python -v -c "import sente"
