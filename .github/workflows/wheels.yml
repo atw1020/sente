@@ -26,14 +26,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Add requirements
-        run: python -m pip install --upgrade meson ninja wheel setuptools; meson wrap install pybind11
-
-      - name: Raw Meson Build Setup
-        run: meson setup build
-
-      - name: Raw Meson Build run
-        run: set CXX=clang++ && meson compile -C build
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1.10.0
 
       - name: Build and install
         run: python setup.py develop
