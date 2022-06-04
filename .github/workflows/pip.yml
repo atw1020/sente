@@ -46,7 +46,7 @@ jobs:
 
       - uses: pypa/cibuildwheel@2.6.0
         env:
-          CIBW_BEFORE_ALL: "python -m pip install --upgrade pip meson ninja"
+          CIBW_BEFORE_ALL: "pip install --upgrade pip meson ninja"
           CIBW_BEFORE_BUILD: "meson wrap install pybind11"
           CIBW_ARCHS_MACOS: auto universal2
           CIBW_TEST_SKIP: "*universal2:arm64"
