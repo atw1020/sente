@@ -27,10 +27,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Add requirements
-        run: python -m pip install --upgrade pip meson ninja wheel setuptools; meson wrap install pybind11
+        run: python -m pip install --upgrade meson ninja wheel setuptools; meson wrap install pybind11
 
-      - name: set compiler
-        run: set CC=clang; set CXX=clang++
+      - name: Set Compiler
+        run: set CC=clang; set CXX=clang++; CC -v; CXX -v
 
       - name: Build and install
         run: python setup.py develop
