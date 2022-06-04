@@ -27,14 +27,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Gain Status info
+        run: set; CMAKE_CXX_COMPILER -v
+
       - name: Add requirements
         run: python -m pip install --upgrade pip meson ninja wheel setuptools; meson wrap install pybind11
 
       - name: Build and install
         run: python setup.py develop
-
-      - name: Gain Status info
-        run: choco install dependencies; dependencies -knowndll; dependencies -imports sente.cp310-win_amd64.pyd; python -v -c "import sente"
 
       - name: Test
         run: python -m unittest discover tests -t .
