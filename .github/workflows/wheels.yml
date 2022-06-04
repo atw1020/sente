@@ -26,11 +26,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Check for Clang
-        run: clang++ -v
-
       - name: Add requirements
         run: python -m pip install --upgrade pip meson ninja wheel setuptools; meson wrap install pybind11
+
+      - name: set compiler
+        run: set CC=clang; set CXX=clang++
 
       - name: Build and install
         run: python setup.py develop
