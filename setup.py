@@ -41,8 +41,9 @@ class MesonBuild(build_ext):
                 ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
             )
 
-        if self.compiler == "msvc":
-            subprocess.check_call(["echo", "\"detected msvc!\""])
+        subprocess.check_call(
+            ["call", "\"$(DevEnvDir)..\\tools\\vsdevcmd.bat\""]
+        )
 
         # compile the code
         subprocess.check_call(
