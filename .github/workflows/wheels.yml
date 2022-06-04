@@ -26,9 +26,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Gain Status info
-        run: CMAKE_CXX_COMPILER -v
-
       - name: Add requirements
         run: python -m pip install --upgrade pip meson ninja wheel setuptools; meson wrap install pybind11
 
