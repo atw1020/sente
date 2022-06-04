@@ -14,7 +14,6 @@ jobs:
       matrix:
         platform: [windows-latest] # [windows-latest, macos-latest, ubuntu-latest]
         python-version: ["3.10"] # ["3.8", "3.9", "3.10"]
-        compiler: [clang++]
 
     runs-on: ${{ matrix.platform }}
 
@@ -28,7 +27,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Gain Status info
-        run: set; CMAKE_CXX_COMPILER -v
+        run: CMAKE_CXX_COMPILER -v
 
       - name: Add requirements
         run: python -m pip install --upgrade pip meson ninja wheel setuptools; meson wrap install pybind11
