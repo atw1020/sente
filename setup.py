@@ -41,9 +41,7 @@ class MesonBuild(build_ext):
                 ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
             )
 
-        subprocess.check_call(
-            ["call", "\"$(DevEnvDir)..\\tools\\vsdevcmd.bat\""]
-        )
+        subprocess.check_call(["set", "CC=clang", "CXX=clang++"])
 
         # compile the code
         subprocess.check_call(
