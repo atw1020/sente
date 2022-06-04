@@ -37,9 +37,9 @@ class MesonBuild(build_ext):
             )
 
             # configure meson for the correct python version
-            subprocess.check_call(
+            """subprocess.check_call(
                 ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
-            )
+            )"""
 
         # compile the code
         subprocess.check_call(
