@@ -16,6 +16,15 @@
 
 namespace py = pybind11;
 
+
+#ifdef __clang__
+// FIXME: keep checking github actions to see if latest MacOS finally supports this
+// Strongly undefined behaviour (violates one definition rule)
+const char* std::bad_variant_access::what() const noexcept {
+    return "this is a bug in sente, please report it";
+#endif
+}
+
 PYBIND11_MODULE(sente, module){
 
     module.doc() = R"pbdoc(
