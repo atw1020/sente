@@ -110,7 +110,7 @@ namespace sente {
         void score();
         std::string getResult() const;
         sente::Stone getWinner() const;
-        std::unordered_map<std::variant<Stone, std::string>, std::variant<double, std::string>> getScores() const;
+        py::dict getScores() const;
         std::vector<Move> getLegalMoves();
 
         Vertex getKoPoint() const;

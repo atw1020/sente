@@ -698,17 +698,19 @@ namespace sente {
         }
     }
 
-    std::unordered_map<std::variant<Stone, std::string>, std::variant<double, std::string>> GoGame::getScores() const {
+    py::dict GoGame::getScores() const {
 
         if (not isOver()){
             throw std::domain_error("game is not yet over, scores cannot be obtained");
         }
 
-        return {
-                {BLACK, blackPoints},
-                {WHITE, whitePoints},
-                {"result", getResult()}
-        };
+        py::dict result;
+
+        result["black"] = blackPoints;
+        result["white"] = whitePoints;
+        result["result"] = getResult();
+
+        return result;
     }
 
     std::vector<Move> GoGame::getLegalMoves() {
