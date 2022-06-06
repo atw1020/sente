@@ -4,6 +4,8 @@ Author: Arthur Wesley
 
 """
 
+import os
+
 import shutil
 import subprocess
 from pathlib import Path
@@ -44,6 +46,10 @@ class MesonBuild(build_ext):
 
         if not ext_fullpath.exists():
             ext_fullpath.mkdir(parents=True, exist_ok=True)
+
+        print("the temporary directory contains the following files:")
+        print("the temporary directory is", temp_dir)
+        print("\n".join(os.listdir(temp_dir)))
 
         # copy the executable
         shutil.copy(temp_dir/ext_filename, ext_fullpath/ext_filename)
