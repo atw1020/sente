@@ -25,6 +25,8 @@ class MesonBuild(build_ext):
         ext_filename = Path(self.get_ext_filename(ext.name))
         ext_fullpath = Path(self.get_ext_fullpath(ext.name)).parent
 
+        print("the extension's filepath is", ext_fullpath)
+
         # initialize the extension directory and temporary directory
         temp_dir = Path(self.build_temp)
 
