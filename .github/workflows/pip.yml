@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      # - master
+      - master
   release:
     types:
       - published
@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest] # [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v3

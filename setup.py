@@ -45,7 +45,7 @@ class MesonBuild(build_ext):
         if not ext_fullpath.exists():
             ext_fullpath.mkdir(parents=True, exist_ok=True)
 
-        if not (temp_dir/ext_filename).exists() and "amd64" in ext_filename:
+        if not (temp_dir/ext_filename).exists() and "amd64" in str(ext_filename):
             shutil.copy(next(temp_dir.glob("*.pyd")), temp_dir/ext_filename)
 
         # copy the executable
