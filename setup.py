@@ -45,8 +45,13 @@ class MesonBuild(build_ext):
         if not ext_fullpath.exists():
             ext_fullpath.mkdir(parents=True, exist_ok=True)
 
-        if not (temp_dir/ext_filename).exists() and "amd64" in str(ext_filename):
-            shutil.copy(next(temp_dir.glob("*.pyd")), temp_dir/ext_filename)
+        pyd_files = list(temp_dir.glob("*.pyd"))
+        print(pyd_files)
+
+        if len(pyd_files) != 0:
+            if not (temp_dir/ext_filename).exists() and "amd64" in str(pyd_files[0]):
+                print("meson generated an incorrect filename, correcting")
+                shutil.copy(pyd_files[0], temp_dir/ext_filename)
 
         # copy the executable
         shutil.copy(temp_dir/ext_filename, ext_fullpath/ext_filename)
