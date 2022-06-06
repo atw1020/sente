@@ -4,7 +4,7 @@ Author: Arthur Wesley
 
 """
 
-import os
+import sys
 
 import shutil
 import subprocess
@@ -35,6 +35,11 @@ class MesonBuild(build_ext):
             # create the build directory
             subprocess.check_call(
                 ["meson", "setup", temp_dir, "--buildtype", "debug" if self.debug else "release"]
+            )
+
+            # configure meson for the correct python version
+            subprocess.check_call(
+                ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
             )
 
         # compile the code
