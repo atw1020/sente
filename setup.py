@@ -27,8 +27,6 @@ class MesonBuild(build_ext):
         ext_filename = Path(self.get_ext_filename(ext.name))
         ext_fullpath = Path(self.get_ext_fullpath(ext.name)).parent
 
-        print("the extension's filepath is", ext_fullpath)
-
         # initialize the extension directory and temporary directory
         temp_dir = Path(self.build_temp)
 
@@ -47,9 +45,8 @@ class MesonBuild(build_ext):
         if not ext_fullpath.exists():
             ext_fullpath.mkdir(parents=True, exist_ok=True)
 
-        print("the temporary directory contains the following files:")
-        print("the temporary directory is", temp_dir)
-        print("\n".join(os.listdir(temp_dir)))
+        if not (temp_dir/ext_filename).exists() and "amd64" in ext_filename:
+            shutil.copy(next(temp_dir.glob("*.pyd")), temp_dir/ext_filename)
 
         # copy the executable
         shutil.copy(temp_dir/ext_filename, ext_fullpath/ext_filename)
