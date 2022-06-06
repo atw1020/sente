@@ -706,8 +706,8 @@ namespace sente {
 
         py::dict result;
 
-        result["black"] = blackPoints;
-        result["white"] = whitePoints;
+        result[py::cast(BLACK)] = blackPoints;
+        result[py::cast(WHITE)] = whitePoints;
         result["result"] = getResult();
 
         return result;
