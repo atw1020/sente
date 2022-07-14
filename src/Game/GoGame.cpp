@@ -61,6 +61,9 @@ namespace sente {
             case KOREAN:
                 rootNode.setProperty(SGF::RU, {"Korean"});
                 break;
+            case TROMP_TAYLOR:
+                rootNode.setProperty(SGF::RU, {"Tromp-Taylor"});
+                break;
         }
 
         gameTree = utils::Tree<SGF::SGFNode>(rootNode);
@@ -214,7 +217,7 @@ namespace sente {
             if (not isCorrectColor(move)){
                 throw utils::IllegalMoveException(utils::WRONG_COLOR, move);
             }
-            if (not isNotSelfCapture(move)){
+            if (rules != TROMP_TAYLOR and not isNotSelfCapture(move)){
                 throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
             }
             if (not isNotKoPoint(move)){
