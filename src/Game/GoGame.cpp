@@ -148,7 +148,7 @@ namespace sente {
         // std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
-        bool notSelfCapture = isNotSelfCapture(move);
+        bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
         // std::cout << "passed isNotKoPoint" << std::endl;
@@ -217,7 +217,7 @@ namespace sente {
             if (not isCorrectColor(move)){
                 throw utils::IllegalMoveException(utils::WRONG_COLOR, move);
             }
-            if (rules != TROMP_TAYLOR and not isNotSelfCapture(move)){
+            if (not isNotSelfCapture(move)){
                 throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
             }
             if (not isNotKoPoint(move)){
@@ -251,7 +251,7 @@ namespace sente {
         // std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
-        bool notSelfCapture = isNotSelfCapture(move);
+        bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
 

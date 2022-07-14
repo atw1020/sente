@@ -84,7 +84,7 @@ PYBIND11_MODULE(sente, module){
             .value("KOREAN", sente::Rules::KOREAN, R"pbdoc(
             The `Korean rules <https://senseis.xmp.net/?KoreanRules>`_ for go.
         )pbdoc")
-            .value("TROMP_TAYLOR", sente::Rules::KOREAN, R"pbdoc(
+            .value("TROMP_TAYLOR", sente::Rules::TROMP_TAYLOR, R"pbdoc(
             The `Tromp-Taylor rules <https://senseis.xmp.net/?TrompTaylorRules>`_ for go.
         )pbdoc")
         .export_values();
