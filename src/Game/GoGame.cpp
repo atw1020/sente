@@ -879,6 +879,13 @@ namespace sente {
             }
         }
 
+        // Handle legal self-captures under Tromp-Taylor rules
+        if (rules == TROMP_TAYLOR and not isNotSelfCapture(move)) {
+            // erase the item
+            groups.erase(move);
+            board->captureStone(move);
+            capturedStones[gameTree.getDepth()].insert(move);
+        }
     }
 
     bool GoGame::isCorrectColor(const Move &move) {
