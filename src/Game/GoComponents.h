@@ -17,6 +17,7 @@ namespace sente {
         CHINESE,
         JAPANESE,
         KOREAN,
+        TROMP_TAYLOR,
         OTHER
     };
 

@@ -12,6 +12,7 @@ namespace sente {
         default:
         case CHINESE:
         case OTHER:
+        case TROMP_TAYLOR:
             return 7.5;
         case JAPANESE:
         case KOREAN:
@@ -29,8 +30,9 @@ namespace sente {
         }
         else if (ruleString == "korean" or ruleString == "korea"){
             return KOREAN;
-        }
-        else {
+        } else if (ruleString == "tromp-taylor") {
+            return TROMP_TAYLOR;
+        } else {
             return OTHER;
         }
     }

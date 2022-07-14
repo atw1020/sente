@@ -264,42 +264,54 @@ class TestLegalMove(TestCase):
     def test_self_capture(self):
         """
 
-        checks to see if a self-capture move is illegal
+        checks to see if a self-capture move is illegal unless we're using
+        Tromp-Taylor rules
 
         :return:
         """
 
-        game = sente.Game()
+        for ruleset in (sente.rules.CHINESE, sente.rules.TROMP_TAYLOR):
+            game = sente.Game(19, ruleset)
 
-        game.play(1, 2, sente.stone.BLACK)
-        game.play(19, 19, sente.stone.WHITE)
+            game.play(1, 2, sente.stone.BLACK)
+            game.play(19, 19, sente.stone.WHITE)
 
-        game.play(2, 1, sente.stone.BLACK)
+            game.play(2, 1, sente.stone.BLACK)
 
-        self.assertFalse(game.is_legal(1, 1, sente.stone.WHITE))
+            legal = game.is_legal(1, 1, sente.stone.WHITE)
+            if ruleset == sente.rules.CHINESE:
+                self.assertFalse(legal)
+            else:
+                self.assertTrue(legal)
 
     def test_group_self_capture(self):
         """
 
         checks to see self capture moves are illegal for groups of stones
+        unless we're using Tromp-Taylor rules
 
         :return:
         """
 
-        game = sente.Game()
+        for ruleset in (sente.rules.CHINESE, sente.rules.TROMP_TAYLOR):
+            game = sente.Game(19, ruleset)
 
-        game.play(1, 3, sente.stone.BLACK)
-        game.play(1, 2, sente.stone.WHITE)
+            game.play(1, 3, sente.stone.BLACK)
+            game.play(1, 2, sente.stone.WHITE)
 
-        game.play(2, 3, sente.stone.BLACK)
-        game.play(2, 2, sente.stone.WHITE)
+            game.play(2, 3, sente.stone.BLACK)
+            game.play(2, 2, sente.stone.WHITE)
 
-        game.play(3, 2, sente.stone.BLACK)
-        game.play(2, 1, sente.stone.WHITE)
+            game.play(3, 2, sente.stone.BLACK)
+            game.play(2, 1, sente.stone.WHITE)
 
-        game.play(3, 1, sente.stone.BLACK)
+            game.play(3, 1, sente.stone.BLACK)
 
-        self.assertFalse(game.is_legal(1, 1))
+            legal = game.is_legal(1, 1)
+            if ruleset == sente.rules.CHINESE:
+                self.assertFalse(legal)
+            else:
+                self.assertTrue(legal)
 
     def test_empty_triangle_liberties(self):
         """
@@ -491,15 +503,22 @@ class IllegalMoveThrowsException(TestCase):
         :return:
         """
 
-        game = sente.Game()
+        for ruleset in (sente.rules.CHINESE, sente.rules.TROMP_TAYLOR):
+            game = sente.Game(19, ruleset)
 
-        game.play(1, 2, sente.stone.BLACK)
-        game.play(19, 19, sente.stone.WHITE)
+            game.play(1, 2, sente.stone.BLACK)
+            game.play(19, 19, sente.stone.WHITE)
 
-        game.play(2, 1, sente.stone.BLACK)
+            game.play(2, 1, sente.stone.BLACK)
 
-        with self.assertRaises(sente.exceptions.IllegalMoveException):
-            game.play(1, 1, sente.stone.WHITE)
+            if ruleset == sente.rules.CHINESE:
+                with self.assertRaises(sente.exceptions.IllegalMoveException):
+                    game.play(1, 1, sente.stone.WHITE)
+            else:
+                game.play(1, 1, sente.stone.WHITE)
+
+                # Make sure the self-captured stone is actually captured
+                self.assertTrue(game.get_board().get_stone(1, 1) == sente.stone.EMPTY)
 
     def test_group_self_capture(self):
         """
@@ -509,21 +528,28 @@ class IllegalMoveThrowsException(TestCase):
         :return:
         """
 
-        game = sente.Game()
+        for ruleset in (sente.rules.CHINESE, sente.rules.TROMP_TAYLOR):
+            game = sente.Game(19, ruleset)
 
-        game.play(1, 3, sente.stone.BLACK)
-        game.play(1, 2, sente.stone.WHITE)
+            game.play(1, 3, sente.stone.BLACK)
+            game.play(1, 2, sente.stone.WHITE)
 
-        game.play(2, 3, sente.stone.BLACK)
-        game.play(2, 2, sente.stone.WHITE)
+            game.play(2, 3, sente.stone.BLACK)
+            game.play(2, 2, sente.stone.WHITE)
 
-        game.play(3, 2, sente.stone.BLACK)
-        game.play(2, 1, sente.stone.WHITE)
+            game.play(3, 2, sente.stone.BLACK)
+            game.play(2, 1, sente.stone.WHITE)
 
-        game.play(3, 1, sente.stone.BLACK)
+            game.play(3, 1, sente.stone.BLACK)
 
-        with self.assertRaises(sente.exceptions.IllegalMoveException):
-            game.play(1, 1)
+            if ruleset == sente.rules.CHINESE:
+                with self.assertRaises(sente.exceptions.IllegalMoveException):
+                    game.play(1, 1)
+            else:
+                game.play(1, 1)
+
+                # Make sure the self-captured stone is actually captured
+                self.assertTrue(game.get_board().get_stone(1, 1) == sente.stone.EMPTY)
 
     def test_ko(self):
         """
