@@ -1,5 +1,4 @@
 # Project exclude paths
-__pycache__
 
 # CLion created directories
 /.idea/

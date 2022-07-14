@@ -61,9 +61,6 @@ namespace sente {
             case KOREAN:
                 rootNode.setProperty(SGF::RU, {"Korean"});
                 break;
-            case TROMP_TAYLOR:
-                rootNode.setProperty(SGF::RU, {"Tromp-Taylor"});
-                break;
         }
 
         gameTree = utils::Tree<SGF::SGFNode>(rootNode);
@@ -148,7 +145,7 @@ namespace sente {
         // std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
-        bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
+        bool notSelfCapture = isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
         // std::cout << "passed isNotKoPoint" << std::endl;
@@ -251,7 +248,7 @@ namespace sente {
         // std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
-        bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
+        bool notSelfCapture = isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
 
@@ -879,13 +876,6 @@ namespace sente {
             }
         }
 
-        // Handle legal self-captures under Tromp-Taylor rules
-        if (rules == TROMP_TAYLOR and not isNotSelfCapture(move)) {
-            // erase the item
-            groups.erase(move);
-            board->captureStone(move);
-            capturedStones[gameTree.getDepth()].insert(move);
-        }
     }
 
     bool GoGame::isCorrectColor(const Move &move) {
