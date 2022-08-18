@@ -60,7 +60,8 @@ namespace sente::GTP {
         // reset the board
         auto* size = (Integer*) arguments[1].get();
         if (size->getValue() == 9 or size->getValue() == 13 or size->getValue() == 19){
-            self->masterGame = GoGame(size->getValue(), self->masterGame.getRules(), self->masterGame.getKomi());
+            self->masterGame = GoGame(size->getValue(), self->masterGame.getRules(), self->masterGame.getKomi(),
+                                      {sente::Move::nullMove});
             self->setGTPDisplayFlags();
             return {true, ""};
         }
@@ -71,7 +72,7 @@ namespace sente::GTP {
     Response clearBoard(Session* self, const std::vector<std::shared_ptr<Token>>& arguments){
         (void) arguments;
         // reset the board
-        self->masterGame = GoGame(self->masterGame.getSide(), self->masterGame.getRules(), self->masterGame.getKomi());
+        self->masterGame.resetBoard();
         self->setGTPDisplayFlags();
         return {true, ""};
     }

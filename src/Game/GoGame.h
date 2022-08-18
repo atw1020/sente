@@ -39,7 +39,8 @@ namespace sente {
     class GoGame {
     public:
 
-        GoGame(unsigned side, Rules rules, double komi);
+        GoGame(unsigned side, Rules rules, double komi,
+               std::vector<Move> handicap);
         explicit GoGame(utils::Tree<SGF::SGFNode>& SGFTree);
 
         void resetBoard();
@@ -65,7 +66,7 @@ namespace sente {
         /// movement through the game tree
         ///
 
-        bool isAtRoot() const;
+        [[nodiscard]] bool isAtRoot() const;
         void stepUp(unsigned steps);
 
         void playDefaultSequence();
@@ -77,8 +78,8 @@ namespace sente {
 
         std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
 
-        unsigned getMoveNumber() const;
-        utils::Tree<SGF::SGFNode> getMoveTree() const;
+        [[nodiscard]] unsigned getMoveNumber() const;
+        [[nodiscard]] utils::Tree<SGF::SGFNode> getMoveTree() const;
 
         ///
         /// Getting and setting properties
@@ -89,7 +90,7 @@ namespace sente {
         void setProperty(const std::string& command, const std::string& value);
         void setProperty(const std::string& command, const std::vector<std::string>& values);
 
-        std::string getComment() const;
+        [[nodiscard]] std::string getComment() const;
         void setComment(const std::string& comment) const;
 
         ///
@@ -121,6 +122,8 @@ namespace sente {
 
         explicit operator std::string() const;
 
+        std::unordered_set<Move> getHandicapStones() const;
+
     private:
 
         // TODO: get more optimal memory placement to minimize padding
@@ -148,13 +151,14 @@ namespace sente {
         void clearBoard();
         void resetKoPoint();
 
+        [[nodiscard]] Stone getStartingColor() const;
+
         void updateBoard(const Move& move);
         void connectGroups(const Move& move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);
 
         bool isCorrectColor(const Move& move);
         bool isNotSelfCapture(const Move& move) const;
         bool isNotKoPoint(const Move& move) const;
-
     };
 }
 

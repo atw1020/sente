@@ -22,6 +22,10 @@ namespace sente {
         WHITE
     };
 
+//     Stone operator not(const Stone& stone);
+
+    Stone oppositeColor(const Stone& stone);
+
     // TODO add tests for Vertex
     class Vertex{
     public:

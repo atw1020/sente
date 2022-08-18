@@ -12,6 +12,28 @@ namespace py = pybind11;
 
 namespace sente {
 
+//    Stone operator not(const Stone& stone){
+//        switch(stone){
+//            case EMPTY:
+//                return EMPTY;
+//            case BLACK:
+//                return WHITE;
+//            case WHITE:
+//                return BLACK;
+//        }
+//    }
+
+    Stone oppositeColor(const Stone& stone){
+        switch(stone) {
+            case EMPTY:
+                return EMPTY;
+            case BLACK:
+                return WHITE;
+            case WHITE:
+                return BLACK;
+        }
+    }
+
     Vertex::Vertex(unsigned int x, unsigned int y) {
         this->x = x; this->y = y;
     }

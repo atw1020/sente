@@ -364,6 +364,24 @@ class BranchedSGF(TestCase):
         self.assertEqual(game.comment, "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\nnoob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n")
 
 
+class HandicapSGF(TestCase):
+
+    def test_handy_1(self):
+        """
+
+        tests to see if handicaps can be loaded
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/handy.sgf")
+        moves = game.get_default_sequence()
+
+        for move in moves:
+            print(move)
+            game.play(move)
+
+
 class InvalidSGF(TestCase):
 
     def test_all_invalid_sgf(self):

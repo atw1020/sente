@@ -28,7 +28,7 @@ namespace std {
 
 namespace sente {
 
-    GoGame::GoGame(unsigned side, Rules rules, double komi) {
+    GoGame::GoGame(unsigned side, Rules rules, double komi, std::vector<Move> handicap) {
 
         // default Komi values
         if (komi == INFINITY){
@@ -64,6 +64,19 @@ namespace sente {
             case TROMP_TAYLOR:
                 rootNode.setProperty(SGF::RU, {"Tromp-Taylor"});
                 break;
+        }
+
+        // check to see if we have a handicap.
+        // handicap is prevented by including a null move in the handicap stones
+        if (std::find(handicap.begin(), handicap.end(), Move::nullMove) == handicap.end()){
+
+            // establish that we have a handicap
+            rootNode.setProperty(SGF::HA, {std::to_string(handicap.size())});
+
+            // add all the handicap stones
+            for (const auto& move : handicap){
+                addStone(move);
+            }
         }
 
         gameTree = utils::Tree<SGF::SGFNode>(rootNode);
@@ -104,6 +117,10 @@ namespace sente {
         else {
             komi = determineKomi(rules);
         }
+
+        for (const auto& move: rootNode.getAddedMoves()){
+            addStone(move);
+        }
     }
 
     /**
@@ -130,6 +147,11 @@ namespace sente {
         resetKoPoint();
         passCount = 0;
 
+        // add any stones at the root node
+        for (const auto& move: gameTree.get().getAddedMoves()){
+            addStone(move);
+        }
+
     }
 
     bool GoGame::isLegal(unsigned x, unsigned y) {
@@ -145,17 +167,17 @@ namespace sente {
         if (not board->isOnBoard(move)){
             return false;
         }
-        // std::cout << "passed isOnBoard" << std::endl;
+        std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
-        // std::cout << "passed isEmpty" << std::endl;
+        std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
-        // std::cout << "passed isNotSelfCapture" << std::endl;
+        std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
-        // std::cout << "passed isNotKoPoint" << std::endl;
+        std::cout << "passed isNotKoPoint" << std::endl;
         bool correctColor = isCorrectColor(move);
-        // std::cout << "passed isCorrectColor" << std::endl;
+        std::cout << "passed isCorrectColor" << std::endl;
 
-        // std::cout << "leaving isLegal" << std::endl;
+        std::cout << "leaving isLegal" << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
@@ -555,7 +577,7 @@ namespace sente {
         return board->getSpace(x, y).getStone();
     }
     Stone GoGame::getActivePlayer() const {
-        return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
+        return gameTree.getDepth() % 2 == 0 ? getStartingColor() : oppositeColor(getStartingColor());
     }
 
     std::unique_ptr<_board> GoGame::copyBoard() const {
@@ -804,6 +826,16 @@ namespace sente {
 
     void GoGame::resetKoPoint(){
         koPoint = Move::pass(getActivePlayer());
+    }
+
+    /**
+     *
+     * gets the color of the player that starts the game
+     *
+     * @return
+     */
+    Stone GoGame::getStartingColor() const {
+        return gameTree.getRoot().hasProperty(SGF::HA) ? WHITE : BLACK;
     }
 
     /**

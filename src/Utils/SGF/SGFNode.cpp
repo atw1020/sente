@@ -134,6 +134,10 @@ namespace sente::SGF {
         return move;
     }
 
+    std::vector<Move> SGFNode::getAddedMoves() const {
+        return addedMoves;
+    }
+
     void SGFNode::appendProperty(SGFProperty property, const std::string &value) {
         if (property == B or property == W){
 

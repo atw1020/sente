@@ -279,16 +279,18 @@ PYBIND11_MODULE(sente, module){
             For more on the difference between ``sente.Game`` and ``sente.Board`` see :ref:`Boards vs Games`.
 
         )pbdoc")
-        .def(py::init<unsigned, sente::Rules, double>(),
+        .def(py::init<unsigned, sente::Rules, double, std::vector<sente::Move>>(),
             py::arg("board_size") = 19,
             py::arg("rules") = sente::Rules::CHINESE,
             py::arg("komi") = INFINITY,
+            py::arg("handicap") = std::vector<sente::Move>{sente::Move::nullMove},
             R"pbdoc(
                 initializes a go game with a specified board size and rules
 
-                :param: board_size
-                :param: rules to play the game by
-                :param: komi of the game
+                :param board_size: size of the board to play
+                :param rules: to play the game by
+                :param komi: of the game
+                :param handicap: handicap to give the black player
             )pbdoc")
         .def("get_active_player", &sente::GoGame::getActivePlayer,
             R"pbdoc(
