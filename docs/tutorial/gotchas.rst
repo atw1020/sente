@@ -1,4 +1,4 @@
-Gotchas
+FAQs & Gotchas
 =======
 
 This page contains some easy-to-make mistakes that come up when writing code using sente.

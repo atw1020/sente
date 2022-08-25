@@ -199,7 +199,22 @@ class BasicSGF(TestCase):
         """
 
         game = sgf.load("tests/sgf/add stone test.sgf")
+        game.play_default_sequence()
+
+        # TODO: Add Assertions
+
+    def test_add_empty(self):
+        """
+
+        checks to see if we can add empty stones to a board deletes stones
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/remove stones.sgf")
         print(game)
+        sequence = game.get_default_sequence()
+        game.play(sequence[0])
 
 
 class StringLoad(TestCase):

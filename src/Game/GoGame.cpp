@@ -43,10 +43,10 @@ namespace sente {
         makeBoard(side);
         resetKoPoint();
 
-        // create the rootnode
+        // create the root node
         SGF::SGFNode rootNode;
 
-        // add the defualt metadata
+        // add the default metadata
         rootNode.setProperty(SGF::FF, {"4"});
         rootNode.setProperty(SGF::SZ, {std::to_string(side)});
 
@@ -251,15 +251,15 @@ namespace sente {
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
 
-        // check to see if the child node has added moves
+        // add stones as necessary
         for (const auto& child : gameTree.getChildren()){
             if (child.getMove() == Move::nullMove){
                 // add the stones
-                /*
                 for (const auto& move : child.getAddedMoves()){
-
+                    addStone(move);
                 }
-                 */
+                // stop adding stones
+                break;
             }
         }
 
@@ -280,17 +280,17 @@ namespace sente {
             return false;
         }
         // std::cout << "passed isOnBoard" << std::endl;
-        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
+//        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
-        bool notKoPoint = isNotKoPoint(move);
+//        bool notKoPoint = isNotKoPoint(move);
 
 //        std::cout << "isEmpty:" << std::boolalpha << isEmpty << std::endl;
 //        std::cout << "notSelfCapture:" << std::boolalpha << notSelfCapture << std::endl;
 //        std::cout << "notKoPoint:" << std::boolalpha << notKoPoint << std::endl;
 
-        return isEmpty and notSelfCapture and notKoPoint;
+        return notSelfCapture;
 
     }
 
@@ -302,22 +302,22 @@ namespace sente {
      */
     void GoGame::addStone(const Move& move){
 
-        py::gil_scoped_release release;
+        // py::gil_scoped_release release;
 
         // error handling
         if (not isAddLegal(move)){
             if (not board->isOnBoard(move)){
                 throw utils::IllegalMoveException(utils::OFF_BOARD, move);
             }
-            if (board->getStone(move.getVertex()) != EMPTY){
-                throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
-            }
+//            if (board->getStone(move.getVertex()) != EMPTY){
+//                throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
+//            }
             if (not isNotSelfCapture(move)){
                 throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
             }
-            if (not isNotKoPoint(move)){
-                throw utils::IllegalMoveException(utils::KO_POINT, move);
-            }
+//            if (not isNotKoPoint(move)){
+//                throw utils::IllegalMoveException(utils::KO_POINT, move);
+//            }
         }
 
         // figure out what kind of property we are dealing with
@@ -348,7 +348,7 @@ namespace sente {
         SGF::SGFNode node;
 
         if (gameTree.get().hasProperty(property)){
-            node = gameTree.get().getProperty(property);
+            node = gameTree.get();
             auto addedStones = node.getProperty(property);
             skipped = std::find(addedStones.begin(),  addedStones.end(), positionInfo) != addedStones.end();
         }
@@ -455,10 +455,12 @@ namespace sente {
     std::vector<Move> GoGame::getMoveSequence() {
 
         auto sequence = gameTree.getSequence();
-        std::vector<Move> moveSequence(sequence.size());
+        std::vector<Move> moveSequence;
 
         for (unsigned i = 0; i < sequence.size(); i++){
-            moveSequence[i] = sequence[i].getMove();
+            if (sequence[i].getMove() != Move::nullMove){
+                moveSequence.push_back(sequence[i].getMove());
+            }
         }
 
         return moveSequence;
@@ -473,7 +475,9 @@ namespace sente {
 
         while (not gameTree.isAtLeaf()){
             auto child = gameTree.getChildren()[0];
-            defaultBranch.push_back(child.getMove());
+            if (child.getMove() != Move::nullMove){
+                defaultBranch.push_back(child.getMove());
+            }
             gameTree.stepDown();
         }
 
@@ -806,10 +810,10 @@ namespace sente {
         else {
             return "";
         }
-    };
+    }
     void GoGame::setComment(const std::string& comment) const {
         gameTree.get().setProperty(SGF::C, {comment});
-    };
+    }
 
     GoGame::operator std::string() const {
         if (getComment().empty()){
@@ -895,7 +899,7 @@ namespace sente {
 
         // connect stones
         if (ourAffectedGroups.empty()){
-            // if we not connected to any group, create a new group!
+            // if we are not connected to any group, create a new group!
             groups[move] = std::make_shared<Group>(move);
         }
         else {
@@ -1006,7 +1010,7 @@ namespace sente {
             }
         }
 
-        // create a temporary group object and merge all of the affected groups into it
+        // create a temporary group object and merge all the affected groups into it
         Group affectedGroup;
 
         if (not ourAffectedGroups.empty()){
