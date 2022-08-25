@@ -167,17 +167,12 @@ namespace sente {
         if (not board->isOnBoard(move)){
             return false;
         }
-        std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
-        std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
-        std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
-        std::cout << "passed isNotKoPoint" << std::endl;
         bool correctColor = isCorrectColor(move);
-        std::cout << "passed isCorrectColor" << std::endl;
 
-        std::cout << "leaving isLegal" << std::endl;
+//        std::cout << "correctColor: " << correctColor << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
@@ -247,12 +242,26 @@ namespace sente {
             }
         }
 
+        //        std::cout << "made it past isLegal" << std::endl;
+
         // place the stone on the board and record the move
         board->playStone(move);
         gameTree.insert(node);
 
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
+
+        // check to see if the child node has added moves
+        for (const auto& child : gameTree.getChildren()){
+            if (child.getMove() == Move::nullMove){
+                // add the stones
+                /*
+                for (const auto& move : child.getAddedMoves()){
+
+                }
+                 */
+            }
+        }
 
     }
 
@@ -277,6 +286,10 @@ namespace sente {
         // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
 
+//        std::cout << "isEmpty:" << std::boolalpha << isEmpty << std::endl;
+//        std::cout << "notSelfCapture:" << std::boolalpha << notSelfCapture << std::endl;
+//        std::cout << "notKoPoint:" << std::boolalpha << notKoPoint << std::endl;
+
         return isEmpty and notSelfCapture and notKoPoint;
 
     }
@@ -288,6 +301,8 @@ namespace sente {
      * @param move to add to the board
      */
     void GoGame::addStone(const Move& move){
+
+        py::gil_scoped_release release;
 
         // error handling
         if (not isAddLegal(move)){
@@ -321,25 +336,41 @@ namespace sente {
         }
 
         // if the stone we are adding has not been to the game tree, add it
+        bool skipped = false;
+
+        // obtain a string to insert
+        std::string positionInfo = move.toSGF();
+        positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
+
+        // if we don't already have an add property, check to see the current move is an add move
+
+        // obtain a reference to the node we are operating on
+        SGF::SGFNode node;
+
         if (gameTree.get().hasProperty(property)){
+            node = gameTree.get().getProperty(property);
+            auto addedStones = node.getProperty(property);
+            skipped = std::find(addedStones.begin(),  addedStones.end(), positionInfo) != addedStones.end();
+        }
+        if (gameTree.get().getMove() != Move::nullMove){
+            node = SGF::SGFNode(Move::nullMove);
+        }
+        else {
+            node = gameTree.get();
+        }
 
-            // insert the added move into the game tree
-            std::string positionInfo = move.toSGF();
-            positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
+        if (not skipped){
+            node.appendProperty(property, positionInfo);
+        }
 
-            // generate the list of all stones added to the property
-            auto addedStones = gameTree.get().getProperty(property);
-
-            // if the property has not been added to the SGF tree, add it
-            if (std::find(addedStones.begin(),  addedStones.end(), positionInfo) != addedStones.end()){
-                gameTree.get().appendProperty(property, positionInfo);
-            }
+        // insert the node if we need to
+        if (gameTree.get().getMove() != Move::nullMove){
+            gameTree.insert(node);
         }
 
         // put the stone into the board and update the board
         board->playStone(move);
         updateBoard(move);
-
     }
 
     bool GoGame::isAtRoot() const{
@@ -932,7 +963,7 @@ namespace sente {
         bool result;
 
         if (gameTree.isAtRoot()){
-            result = move.getStone() == BLACK;
+            result = move.getStone() == getStartingColor();
         }
         else {
             result = move.getStone() != gameTree.get().getMove().getStone();

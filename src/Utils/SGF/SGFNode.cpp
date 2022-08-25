@@ -141,11 +141,11 @@ namespace sente::SGF {
     void SGFNode::appendProperty(SGFProperty property, const std::string &value) {
         if (property == B or property == W){
 
-            if (hasProperty(AW) or hasProperty(AB)){
+            if (hasProperty(AW) or hasProperty(AB) or hasProperty(AE)){
                 throw utils::InvalidSGFException("Moves cannot be played in a node that already contains added stones");
             }
 
-            // the move must contain either
+            // if the move doesn't have an argument, it must be a pass move
             if (value.empty()){
                 move = Move::pass(property == B ? BLACK : WHITE);
             }
@@ -161,14 +161,14 @@ namespace sente::SGF {
                 move = {unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), property == B ? BLACK : WHITE};
             }
         }
-        else if (property == AB or property == AW){
+        else if (property == AB or property == AW or property == AE){
 
             if (hasProperty(B) or hasProperty(W)){
                 throw utils::InvalidSGFException("Stones cannot be added to a node which already contains a played move");
             }
 
             if (value.empty()){
-                throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + value + "]\"");
+                throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[]\" has no co-ordinates");
             }
             else if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
                 throw utils::InvalidSGFException("move does not use alphabetical letters");
@@ -177,8 +177,11 @@ namespace sente::SGF {
             if (property == AB){
                 addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), BLACK});
             }
-            else {
+            else if (property == AW) {
                 addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), WHITE});
+            }
+            else {
+                addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), EMPTY});
             }
         }
         else {
@@ -193,7 +196,7 @@ namespace sente::SGF {
     void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &values) {
         if (property == B or property == W){
             // the move must contain either
-            if (hasProperty(AW) or hasProperty(AB)){
+            if (hasProperty(AW) or hasProperty(AB) or hasProperty(AE)){
                 throw utils::InvalidSGFException("Moves cannot be played in a node that already contains added stones");
             }
             if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
@@ -211,23 +214,29 @@ namespace sente::SGF {
                 move = {unsigned(values[0][1] - 'a'), unsigned(values[0][0] - 'a'), property == B ? BLACK : WHITE};
             }
         }
-        else if (property == AB or property == AW){
+        else if (property == AB or property == AW or property == AE){
             if (hasProperty(B) or hasProperty(W)){
                 throw utils::InvalidSGFException("Stones cannot be added to a node which already contains a played move");
             }
 
-            for (const auto& item : values){
-                if (item.empty()){
-                    throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + item + "]\"");
+            // empty the added moves vector
+            addedMoves = std::vector<Move>();
+
+            for (const auto& value : values){
+                if (value.empty()){
+                    throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[]\" has no co-ordinates");
                 }
-                if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
+                if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
                     throw utils::InvalidSGFException("move does not use alphabetical letters");
                 }
                 if (property == AB){
-                    addedMoves.push_back({unsigned(item[1] - 'a'), unsigned(item[0] - 'a'), BLACK});
+                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), BLACK});
+                }
+                else if (property == AW) {
+                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), WHITE});
                 }
                 else {
-                    addedMoves.push_back({unsigned(item[1] - 'a'), unsigned(item[0] - 'a'), WHITE});
+                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), EMPTY});
                 }
             }
         }

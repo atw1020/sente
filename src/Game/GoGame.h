@@ -60,6 +60,7 @@ namespace sente {
 
         bool isAddLegal(const Move& move);
 
+        // void addStones(const std::vector<Move>& move);
         void addStone(const Move& move);
 
         ///
@@ -130,10 +131,11 @@ namespace sente {
 
         Rules rules; // 4 bytes
         unsigned passCount = 0; // 4 bytes
+        // TODO: Switch from doubles to floats
         double komi; // 8 bytes
 
-        double blackPoints = NAN;
-        double whitePoints = NAN;
+        double blackPoints = NAN; // 8 bytes
+        double whitePoints = NAN; // 8 bytes
 
         // Changes.txt: look into moving the board onto the stack
         std::shared_ptr<_board> board; // 16 bytes

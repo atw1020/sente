@@ -78,7 +78,6 @@ def read_file(filename):
 setup(
     name="sente",
     python_requires=">=3.8.*",
-    version=read_file("version.txt").strip(),
     author="Arthur Wesley",
     license="MIT",
     url="https://github.com/atw1020/sente",

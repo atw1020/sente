@@ -31,6 +31,7 @@ class BasicSGF(TestCase):
                 game = sgf.load(str(Path("tests/sgf")/file))
                 game.play_default_sequence()
             except Exception as E:
+                print(file)
                 self.fail(E)
 
     def test_punctuation_ignored_inside_parens(self):
@@ -188,6 +189,17 @@ class BasicSGF(TestCase):
             game = sgf.load("tests/sgf/ff4_ex.sgf")
         except Exception as E:
             self.fail(E)
+
+    def test_add_stones(self):
+        """
+
+        tests to see if games that have added stones can be loaded and played
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/add stone test.sgf")
+        print(game)
 
 
 class StringLoad(TestCase):
@@ -375,11 +387,7 @@ class HandicapSGF(TestCase):
         """
 
         game = sgf.load("tests/sgf/handy.sgf")
-        moves = game.get_default_sequence()
-
-        for move in moves:
-            print(move)
-            game.play(move)
+        game.play_default_sequence()
 
 
 class InvalidSGF(TestCase):
