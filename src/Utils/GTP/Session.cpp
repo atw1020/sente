@@ -9,28 +9,7 @@
 #include <vector>
 #include <iostream>
 
-#include "Operators.h"
-
 namespace sente::GTP {
-
-    std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> builtins = {
-            {"protocol_version", {{&protocolVersion, {{"operation", STRING}}}}},
-            {"name", {{&name, {{"operation", STRING}}}}},
-            {"version", {{&version, {{"operation", STRING}}}}},
-            {"known_command", {{&knownCommand, {{"operation", STRING}, {"command", STRING}}}}},
-            {"list_commands", {{&listCommands, {{"operation", STRING}}}}},
-            {"quit", {{&quit, {{"operation", STRING}}}}},
-            {"exit", {{&quit, {{"operation", STRING}}}}},
-            {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
-            {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
-            {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
-            {"play", {{&play, {{"operation", STRING}, {"move", MOVE}}}}},
-            {"undo", {{&undoOnce, {{"operation", STRING}}},
-                      {&undoMultiple, {{"operation", STRING}, {"moves", INTEGER}}}}},
-            {"showboard", {{&showBoard, {{"operation", STRING}}}}},
-            {"loadsgf", {{&loadSGF1, {{"operation", STRING}, {"file", STRING}}},
-                          {&loadSGF2, {{"operation", STRING}, {"file", STRING}, {"moves", INTEGER}}}}}
-    };
 
     std::unordered_map<std::string, LiteralType> argumentTypeMappings = {
             {"int", INTEGER},
@@ -130,8 +109,7 @@ namespace sente::GTP {
         setEngineVersion(engineVersion);
 
         // initialize the builtin commands
-        // TODO: make sure this copies rather than moving
-        commands = builtins;
+        commands = {};
 
         // register the genMove command so that it can be overwritten
         registerCommand("genmove", &genMove, {{"operation", STRING}, {"color", COLOR}});
@@ -140,6 +118,7 @@ namespace sente::GTP {
         setGTPDisplayFlags();
 
         // cast the object to a python object to add the names
+        // TODO: check if this is really necessary
         py::object self = py::cast(this);
     }
 
@@ -335,12 +314,11 @@ namespace sente::GTP {
         }
 
         // define the custom command using a lambda
-        CommandMethod wrapper = [function, name, returnType, typing](Session* self,
-                const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [this, function, name, returnType, typing](const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response{
 
             // pack the arguments and call the function
-            auto args = gtpArgsToPyArgs(arguments, self->masterGame.getSide());
+            auto args = gtpArgsToPyArgs(arguments, masterGame.getSide());
 
             py::object response = function(*args);
 
@@ -363,7 +341,7 @@ namespace sente::GTP {
                 status = true;
             }
 
-            return {status, gtpTypeToString(response, self->masterGame.getSide())};
+            return {status, gtpTypeToString(response, masterGame.getSide())};
         };
 
         if (name != "genmove"){
@@ -404,11 +382,11 @@ namespace sente::GTP {
                                   " returns " + std::string(py::str(annotations["return"].attr("__name__"))));
         }
 
-        CommandMethod wrapper = [function](Session* self, const std::vector<std::shared_ptr<Token>>& arguments)
+        CommandMethod wrapper = [function, this](const std::vector<std::shared_ptr<Token>>& arguments)
                 -> Response {
 
             // convert the arguments to python objects
-            auto pyArgs = gtpArgsToPyArgs(arguments, self->masterGame.getSide());
+            auto pyArgs = gtpArgsToPyArgs(arguments, masterGame.getSide());
 
             // call the function
             py::object response = function(*pyArgs);
@@ -430,13 +408,13 @@ namespace sente::GTP {
                                       + (move->getStone() == sente::BLACK ? "black" : "white") + " stone");
             }
 
-            if (self->masterGame.getActivePlayer() == color->getStone()){
+            if (masterGame.getActivePlayer() == color->getStone()){
                 // if it's our move, do a full on play
-                self->masterGame.playStone(*move);
+                masterGame.playStone(*move);
             }
             else {
                 // if it's not our move, add a stone.
-                self->masterGame.addStone(*move);
+                masterGame.addStone(*move);
             }
 
             std::string message;
