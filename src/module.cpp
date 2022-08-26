@@ -16,6 +16,54 @@
 
 namespace py = pybind11;
 
+std::vector<sente::Move> getHandicapStones(unsigned handicap){
+
+    switch (handicap){
+        case 1:
+            return {sente::Move(15, 3, sente::BLACK)};
+        case 2:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK)};
+        case 3:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK)};
+        case 4:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK)};
+        case 5:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(9, 9, sente::BLACK)
+            };
+        case 6:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK)
+            };
+        case 7:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK),
+                    sente::Move(9, 9, sente::BLACK)
+            };
+        case 8:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK),
+                    sente::Move(9, 3, sente::BLACK), sente::Move(9, 15, sente::BLACK)
+            };
+        case 9:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK),
+                    sente::Move(9, 3, sente::BLACK), sente::Move(9, 15, sente::BLACK),
+                    sente::Move(9, 9, sente::BLACK)
+            };
+        default:
+            throw std::domain_error("Invalid number of stones (must be between 1 and 9)");
+    }
+
+}
+
 PYBIND11_MODULE(sente, module){
 
     module.doc() = R"pbdoc(
@@ -271,6 +319,15 @@ PYBIND11_MODULE(sente, module){
                 return not (us == other);
             });
 
+    module.def("get_handicap_stones", &getHandicapStones,
+          R"pbdoc(
+
+                generate a list of stones to use as a handicap
+
+                :param stones: number of stones to give the opponent
+                :return: list of stones to use as a handicap
+          )pbdoc");
+
     py::class_<sente::GoGame>(module, "Game", R"pbdoc(
 
             The Sente Game object.
@@ -426,6 +483,30 @@ PYBIND11_MODULE(sente, module){
                 :param move: The Move object to play
                 :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
                 :raises ValueError: If a valid Move object is not passed
+
+            )pbdoc")
+        .def("set_point", [](sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
+                game.addStone(sente::Move(x - 1, y - 1, stone));
+            },
+            R"pbdoc(
+
+                Sets a particularity point on the board to the specified color
+
+                :param x: The x co-ordinate of the move to play.
+                :param y: The y co-ordinate of the move to play:
+                :param stones: The color of the stone to play.
+                :raises IllegalMoveException: If the move is illegal. Most move legality requirements are ignored.
+
+            )pbdoc")
+            .def("set_point", [](sente::GoGame& game, const sente::Move& move){
+                        game.addStone(move);
+                    },
+                    R"pbdoc(
+
+                Sets a particularity point on the board using a move object
+
+                :param move: The Move object to play
+                :raises IllegalMoveException: If the move is illegal. Most move legality requirements are ignored.
 
             )pbdoc")
         .def("pss", [](sente::GoGame& game){

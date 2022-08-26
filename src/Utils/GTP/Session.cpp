@@ -106,8 +106,6 @@ namespace sente::GTP {
     Session::Session(const std::string& engineName, const std::string& engineVersion)
         : masterGame(19, CHINESE, determineKomi(CHINESE), {::sente::Move::nullMove}){
 
-        std::cout << "entering parent session constructor" << std::endl;
-
         setEngineName(engineName);
         setEngineVersion(engineVersion);
 
