@@ -108,12 +108,6 @@ namespace sente::GTP {
         setEngineName(engineName);
         setEngineVersion(engineVersion);
 
-        // initialize the builtin commands
-        commands = {};
-
-        // register the genMove command so that it can be overwritten
-        registerCommand("genmove", &genMove, {{"operation", STRING}, {"color", COLOR}});
-
         // reset the board
         setGTPDisplayFlags();
 
@@ -247,11 +241,6 @@ namespace sente::GTP {
 
     void Session::registerCommand(const std::string& commandName, CommandMethod method,
                                   std::vector<ArgumentPattern> argumentPattern){
-
-        // raise an exception if the command is non-modifiable
-        if (builtins.find(commandName) != builtins.end()){
-            throw std::domain_error("Cannot overwrite standard GTP command \"" + commandName + "\"");
-        }
 
         if (commands.find(commandName) == commands.end()){
             // create a new vector
@@ -437,7 +426,7 @@ namespace sente::GTP {
                 }
 
                 // add the letter to the second co-ord
-                message = std::to_string(self->masterGame.getSide() - move->getY());
+                message = std::to_string(masterGame.getSide() - move->getY());
                 message.insert(message.begin(), first);
             }
 
@@ -607,7 +596,7 @@ namespace sente::GTP {
 
         if (iter != patterns.end()){
             // look up the matching function in the table and evaluate it
-            return commands[command][iter - patterns.begin()].first(this, arguments);
+            return commands[command][iter - patterns.begin()].first(arguments);
         }
         else {
             return invalidArgumentsErrorMessage(patterns, arguments);

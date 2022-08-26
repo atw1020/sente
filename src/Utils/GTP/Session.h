@@ -61,7 +61,7 @@ namespace sente::GTP {
         // for resting the game
         void setGTPDisplayFlags();
 
-    private:
+    protected:
 
         bool active = true;
 

@@ -2,6 +2,7 @@
 // Created by arthur wesley on 12/18/21.
 //
 
+#include <functional>
 #include <iostream>
 
 
@@ -10,29 +11,73 @@
 
 namespace sente::GTP {
 
-    std::unordered_map<std::string, std::vector<std::pair<CommandMethod, std::vector<ArgumentPattern>>>> builtins = {
-            {"protocol_version", {{&protocolVersion, {{"operation", STRING}}}}},
-            {"name", {{&name, {{"operation", STRING}}}}},
-            {"version", {{&version, {{"operation", STRING}}}}},
-            {"known_command", {{&knownCommand, {{"operation", STRING}, {"command", STRING}}}}},
-            {"list_commands", {{&listCommands, {{"operation", STRING}}}}},
-            {"quit", {{&quit, {{"operation", STRING}}}}},
-            {"exit", {{&quit, {{"operation", STRING}}}}},
-            {"boardsize", {{&boardSize, {{"operation", STRING}, {"size", INTEGER}}}}},
-            {"clear_board", {{&clearBoard, {{"operation", STRING}}}}},
-            {"komi", {{&komi, {{"operation", STRING}, {"komi", FLOAT}}}}},
-            {"play", {{&play, {{"operation", STRING}, {"move", MOVE}}}}},
-            {"undo", {{&undoOnce, {{"operation", STRING}}},
-                      {&undoMultiple, {{"operation", STRING}, {"moves", INTEGER}}}}},
-            {"showboard", {{&showBoard, {{"operation", STRING}}}}},
-            {"loadsgf", {{&loadSGF1, {{"operation", STRING}, {"file", STRING}}},
-                         {&loadSGF2, {{"operation", STRING}, {"file", STRING}, {"moves", INTEGER}}}}}
+    std::unordered_set<std::string> DefaultSession::builtins = {
+            "protocol_version",
+            "name",
+            "version",
+            "known_command",
+            "list_commands",
+            "quit",
+            "exit",
+            "boardsize",
+            "clear_board",
+            "komi",
+            "play",
+            "undo",
+            "showboard",
+            "loadsgf"
     };
 
     DefaultSession::DefaultSession(const std::string& engineName,
                                    const std::string& engineVersion): Session(engineName, engineVersion){
         // set the default commands
-        commands = builtins;
+        using namespace std::placeholders;
+
+        commands = {
+            {"protocol_version",
+                 {{std::bind(&DefaultSession::protocolVersion, this, _1), {{"operation", STRING}}}}},
+            {"name",
+                 {{std::bind(&DefaultSession::name, this, _1), {{"operation", STRING}}}}},
+            {"version",
+                 {{std::bind(&DefaultSession::version, this, _1), {{"operation", STRING}}}}},
+            {"known_command",
+                 {{std::bind(&DefaultSession::knownCommand, this, _1), {{"operation", STRING}, {"command", STRING}}}}},
+            {"list_commands",
+                 {{std::bind(&DefaultSession::listCommands, this, _1), {{"operation", STRING}}}}},
+            {"quit",
+                 {{std::bind(&DefaultSession::quit, this, _1), {{"operation", STRING}}}}},
+            {"exit",
+                 {{std::bind(&DefaultSession::quit, this, _1), {{"operation", STRING}}}}},
+            {"boardsize",
+                 {{std::bind(&DefaultSession::boardSize, this, _1), {{"operation", STRING}, {"size", INTEGER}}}}},
+            {"clear_board",
+                 {{std::bind(&DefaultSession::clearBoard, this, _1), {{"operation", STRING}}}}},
+            {"komi",
+                 {{std::bind(&DefaultSession::komi, this, _1), {{"operation", STRING}, {"komi", FLOAT}}}}},
+            {"play",
+                 {{std::bind(&DefaultSession::play, this, _1), {{"operation", STRING}, {"move", MOVE}}}}},
+            {"undo",
+                 {{std::bind(&DefaultSession::undoOnce, this, _1), {{"operation", STRING}}},
+                  {std::bind(&DefaultSession::undoMultiple, this, _1), {{"operation", STRING}, {"moves", INTEGER}}}}},
+            {"showboard",
+                 {{std::bind(&DefaultSession::showBoard, this, _1), {{"operation", STRING}}}}},
+            {"loadsgf",
+                 {{std::bind(&DefaultSession::loadSGF1, this, _1), {{"operation", STRING}, {"file", STRING}}},
+                  {std::bind(&DefaultSession::loadSGF2, this, _1), {{"operation", STRING}, {"file", STRING}, {"moves", INTEGER}}}}}
+        };
+
+        // register the genMove command so that it can be overwritten
+        registerCommand("genmove", std::bind(&DefaultSession::genMove, this, _1), {{"operation", STRING}, {"color", COLOR}});
+    }
+
+    void DefaultSession::registerCommand(const std::string& commandName, CommandMethod method,
+                                  std::vector<ArgumentPattern> argumentPattern){
+        // raise an exception if the command is non-modifiable
+        if (builtins.find(commandName) != builtins.end()){
+            throw std::domain_error("Cannot overwrite standard GTP command \"" + commandName + "\"");
+        }
+        // call the parent method
+        Session::registerCommand(commandName, method, argumentPattern);
     }
 
     Response DefaultSession::protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments){
@@ -144,7 +189,7 @@ namespace sente::GTP {
             return {false, "cannot undo"};
         }
     }
-    Response DefaultSession:undoMultiple(const std::vector<std::shared_ptr<Token>>& arguments){
+    Response DefaultSession::undoMultiple(const std::vector<std::shared_ptr<Token>>& arguments){
         auto* steps = (Integer*) arguments[1].get();
         if (masterGame.getMoveSequence().size() >= steps->getValue()){
             masterGame.stepUp(steps->getValue());

@@ -6,6 +6,7 @@
 #define SENTE_SGFPROPERTY_H
 
 #include <string>
+#include <unordered_set>
 
 namespace sente::SGF {
     enum SGFProperty {
@@ -116,7 +117,6 @@ namespace sente::SGF {
     bool isFileWide(SGFProperty property);
     bool isSGFLegal(SGFProperty property, unsigned version);
     std::vector<unsigned> getPossibleSGFVersions(const std::unordered_set<SGFProperty>& properties);
-
 
 }
 

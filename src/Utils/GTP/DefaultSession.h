@@ -9,12 +9,19 @@
 
 namespace sente::GTP {
 
+    class DefaultSession;
+
+    typedef std::function<Response (DefaultSession&, const std::vector<std::shared_ptr<Token>>&)> LocalCommandMethod;
+
     class DefaultSession: public Session {
     public:
 
         DefaultSession(const std::string& engineName, const std::string& engineVersion);
 
     private:
+
+        void registerCommand(const std::string& commandName, CommandMethod method,
+                             std::vector<ArgumentPattern> argumentPattern);
 
         Response protocolVersion(const std::vector<std::shared_ptr<Token>>& arguments);
         Response name(const std::vector<std::shared_ptr<Token>>& arguments);
@@ -29,10 +36,14 @@ namespace sente::GTP {
         Response genMove(const std::vector<std::shared_ptr<Token>>& arguments);
         Response showBoard(const std::vector<std::shared_ptr<Token>>& arguments);
 
-        Response undoOnce(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
-        Response undoMultiple(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
-        Response loadSGF1(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
-        Response loadSGF2(Session* self, const std::vector<std::shared_ptr<Token>>& arguments);
+        Response undoOnce(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response undoMultiple(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response loadSGF1(const std::vector<std::shared_ptr<Token>>& arguments);
+        Response loadSGF2(const std::vector<std::shared_ptr<Token>>& arguments);
+
+        Response baseLoadSGF(const std::string& filePath);
+
+        static std::unordered_set<std::string> builtins;
 
     };
 
