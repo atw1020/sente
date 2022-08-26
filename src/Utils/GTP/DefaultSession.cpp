@@ -30,8 +30,19 @@ namespace sente::GTP {
 
     DefaultSession::DefaultSession(const std::string& engineName,
                                    const std::string& engineVersion): Session(engineName, engineVersion){
+
+        std::cout << "entering child session constructor" << std::endl;
+
+        setEngineName(engineName);
+        setEngineVersion(engineVersion);
+
+        // reset the board
+        setGTPDisplayFlags();
+
         // set the default commands
         using namespace std::placeholders;
+
+        std::cout << "got to setting commands" << std::endl;
 
         commands = {
             {"protocol_version",
@@ -68,6 +79,12 @@ namespace sente::GTP {
 
         // register the genMove command so that it can be overwritten
         registerCommand("genmove", std::bind(&DefaultSession::genMove, this, _1), {{"operation", STRING}, {"color", COLOR}});
+
+        std::cout << "got to end of constructor" << std::endl;
+
+        // cast the object to a python object to add the names
+        // TODO: check if this is really necessary
+//        py::object self = py::cast(this);
     }
 
     void DefaultSession::registerCommand(const std::string& commandName, CommandMethod method,

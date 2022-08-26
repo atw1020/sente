@@ -722,7 +722,7 @@ PYBIND11_MODULE(sente, module){
                 :return: the original function
             )pbdoc")
             .def("Command", [inspect, typing](sente::GTP::DefaultSession& session, py::function& function) -> py::function& {
-                return session.registerCommand(function, inspect, typing);
+                return session.Session::registerCommand(function, inspect, typing);
             }, R"pbdoc(
                 Decorator function for a private GTP extension
 

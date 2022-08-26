@@ -105,15 +105,14 @@ namespace sente::GTP {
 
     Session::Session(const std::string& engineName, const std::string& engineVersion)
         : masterGame(19, CHINESE, determineKomi(CHINESE), {::sente::Move::nullMove}){
+
+        std::cout << "entering parent session constructor" << std::endl;
+
         setEngineName(engineName);
         setEngineVersion(engineVersion);
 
         // reset the board
         setGTPDisplayFlags();
-
-        // cast the object to a python object to add the names
-        // TODO: check if this is really necessary
-        py::object self = py::cast(this);
     }
 
     std::string Session::interpret(std::string text) {
