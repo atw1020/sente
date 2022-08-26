@@ -190,6 +190,9 @@ class BasicSGF(TestCase):
         except Exception as E:
             self.fail(E)
 
+
+class AddStones(TestCase):
+
     def test_add_stones(self):
         """
 
@@ -199,7 +202,12 @@ class BasicSGF(TestCase):
         """
 
         game = sgf.load("tests/sgf/add stone test.sgf")
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.WHITE)
+        self.assertEqual(game.get_point(16, 10), sente.stone.WHITE)
         game.play_default_sequence()
+        self.assertEqual(game.get_point(10, 10), sente.stone.WHITE)
 
         # TODO: Add Assertions
 
@@ -212,9 +220,12 @@ class BasicSGF(TestCase):
         """
 
         game = sgf.load("tests/sgf/remove stones.sgf")
-        print(game)
-        sequence = game.get_default_sequence()
-        game.play(sequence[0])
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.WHITE)
+
+        game.play_default_sequence()
+        self.assertEqual(game.get_point(4, 16), sente.stone.EMPTY)
+        self.assertEqual(game.get_point(16, 4), sente.stone.EMPTY)
 
 
 class StringLoad(TestCase):

@@ -125,7 +125,7 @@ namespace sente::GTP {
     }
 
     Session::Session(const std::string& engineName, const std::string& engineVersion)
-        : masterGame(19, CHINESE, determineKomi(CHINESE), {}){
+        : masterGame(19, CHINESE, determineKomi(CHINESE), {::sente::Move::nullMove}){
         setEngineName(engineName);
         setEngineVersion(engineVersion);
 

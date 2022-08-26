@@ -177,6 +177,25 @@ namespace sente {
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
 
+    /**
+     *
+     * GTP considers move to be valid even if they belong to the wrong color
+     *
+     * @param move move to check if legal
+     * @return whether the move is legal according to GTP rules
+     */
+    bool GoGame::isGTPLegal(const sente::Move &move) {
+        if (not board->isOnBoard(move)){
+            return false;
+        }
+
+        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
+        bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
+        bool notKoPoint = isNotKoPoint(move);
+
+        return isEmpty and notSelfCapture and notKoPoint;
+    }
+
     void GoGame::playStone(unsigned x, unsigned y){
         playStone(Move(x, y, gameTree.getDepth() % 2 == 0 ? BLACK : WHITE));
     }

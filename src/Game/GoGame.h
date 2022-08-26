@@ -52,6 +52,7 @@ namespace sente {
         bool isLegal(const Move& move);
         bool isLegal(unsigned x, unsigned y);
         bool isLegal(unsigned x, unsigned y, Stone stone);
+        bool isGTPLegal(const Move& move);
         bool isOver() const;
 
         void playStone(const Move& move);
