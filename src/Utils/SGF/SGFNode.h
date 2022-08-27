@@ -22,6 +22,7 @@ namespace sente::SGF {
 
         void setProperty(SGFProperty property, const std::vector<std::string>& value);
         void appendProperty(SGFProperty property, const std::string& value);
+        void removeItem(SGFProperty property, const std::string& del);
 
         bool hasProperty(SGFProperty property) const;
         bool isEmpty() const;

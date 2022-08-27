@@ -209,8 +209,6 @@ class AddStones(TestCase):
         game.play_default_sequence()
         self.assertEqual(game.get_point(10, 10), sente.stone.WHITE)
 
-        # TODO: Add Assertions
-
     def test_add_empty(self):
         """
 

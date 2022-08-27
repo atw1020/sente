@@ -354,33 +354,50 @@ namespace sente {
                 break;
         }
 
-        // if the stone we are adding has not been to the game tree, add it
-        bool skipped = false;
-
         // obtain a string to insert
         std::string positionInfo = move.toSGF();
         positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
 
-        // if we don't already have an add property, check to see the current move is an add move
-
-        // obtain a reference to the node we are operating on
         SGF::SGFNode node;
 
-        if (gameTree.get().hasProperty(property)){
+        // check to see if we are on a normal node or an add stone node
+
+        if (gameTree.get().getMove() == Move::nullMove){
             node = gameTree.get();
-            auto addedStones = node.getProperty(property);
-            skipped = std::find(addedStones.begin(),  addedStones.end(), positionInfo) != addedStones.end();
+
+            if (node.hasProperty(SGF::AB)){
+                // get a list of all the added black moves
+                auto addedBlack = node.getProperty(SGF::AB);
+
+                // if an existing entry exists, remove it
+                if (std::find(addedBlack.begin(), addedBlack.end(), positionInfo) != addedBlack.end()){
+                    node.removeItem(SGF::AB, positionInfo);
+                }
+            }
+            if (node.hasProperty(SGF::AW)){
+                // get a list of all the added white moves
+                auto addedWhite = node.getProperty(SGF::AW);
+
+                // if an existing entry exists, remove it
+                if (std::find(addedWhite.begin(), addedWhite.end(), positionInfo) != addedWhite.end()){
+                    node.removeItem(SGF::AW, positionInfo);
+                }
+            }
+            if (node.hasProperty(SGF::AE)){
+                // get a list of all the added empty moves
+                auto addedEmpty = node.getProperty(SGF::AE);
+
+                // if an existing entry exists, remove it
+                if (std::find(addedEmpty.begin(), addedEmpty.end(), positionInfo) != addedEmpty.end()){
+                    node.removeItem(SGF::AE, positionInfo);
+                }
+            }
         }
         if (gameTree.get().getMove() != Move::nullMove){
             node = SGF::SGFNode(Move::nullMove);
         }
-        else {
-            node = gameTree.get();
-        }
 
-        if (not skipped){
-            node.appendProperty(property, positionInfo);
-        }
+        node.appendProperty(property, positionInfo);
 
         // insert the node if we need to
         if (gameTree.get().getMove() != Move::nullMove){

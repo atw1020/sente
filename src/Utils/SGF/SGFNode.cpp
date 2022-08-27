@@ -192,6 +192,37 @@ namespace sente::SGF {
             properties[property].push_back(value);
         }
     }
+    void SGFNode::removeItem(SGFProperty property, const std::string& del){
+
+        Stone color;
+        Move temp{unsigned(del[1] - 'a'), unsigned(del[0] - 'a'), color};
+        auto addedMove = std::find(addedMoves.begin(), addedMoves.end(), temp);
+
+        switch (property){
+            case B:
+            case W:
+                throw std::domain_error("Cannot remove the play stone properties from a node");
+            case AB:
+                color = BLACK;
+                goto removeMoves;
+            case AW:
+                color = WHITE;
+                goto removeMoves;
+            case AE:
+                color = EMPTY;
+            removeMoves:
+
+                if (addedMove == addedMoves.end()){
+                    std::string message = "could not remove move \"" + del + "\"";
+                    throw std::domain_error(message);
+                }
+                else {
+                    addedMoves.erase(addedMove);
+                }
+            default:
+                properties[property].erase(std::find(properties[property].begin(), properties[property].end(), del));
+        }
+    }
 
     void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &values) {
         if (property == B or property == W){
