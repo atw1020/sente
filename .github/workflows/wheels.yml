@@ -27,7 +27,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1.10.0
+        uses: ilammy/msvc-dev-cmd@v1.11.0
 
       - name: Add requirements
         run: pip install --upgrade meson ninja wheel setuptools; meson wrap install pybind11
