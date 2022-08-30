@@ -485,8 +485,8 @@ PYBIND11_MODULE(sente, module){
                 :raises ValueError: If a valid Move object is not passed
 
             )pbdoc")
-        .def("set_point", [](sente::GoGame& game, unsigned x, unsigned y, sente::Stone stone){
-                game.addStone(sente::Move(x - 1, y - 1, stone));
+        .def("play", [](sente::GoGame& game, const std::vector<Move>& moves){
+                game.addStones(moves);
             },
             R"pbdoc(
 
@@ -495,17 +495,6 @@ PYBIND11_MODULE(sente, module){
                 :param x: The x co-ordinate of the move to play.
                 :param y: The y co-ordinate of the move to play:
                 :param stones: The color of the stone to play.
-                :raises IllegalMoveException: If the move is illegal. Most move legality requirements are ignored.
-
-            )pbdoc")
-            .def("set_point", [](sente::GoGame& game, const sente::Move& move){
-                        game.addStone(move);
-                    },
-                    R"pbdoc(
-
-                Sets a particularity point on the board using a move object
-
-                :param move: The Move object to play
                 :raises IllegalMoveException: If the move is illegal. Most move legality requirements are ignored.
 
             )pbdoc")

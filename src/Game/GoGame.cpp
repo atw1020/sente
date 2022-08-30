@@ -74,12 +74,11 @@ namespace sente {
             rootNode.setProperty(SGF::HA, {std::to_string(handicap.size())});
 
             // add all the handicap stones
-            for (const auto& move : handicap){
-                addStone(move);
-            }
+            addStones(handicap);
         }
 
         gameTree = utils::Tree<SGF::SGFNode>(rootNode);
+        activeColor = getStartingColor();
 
     }
 
@@ -118,9 +117,10 @@ namespace sente {
             komi = determineKomi(rules);
         }
 
-        for (const auto& move: rootNode.getAddedMoves()){
-            addStone(move);
-        }
+        addStones(rootNode.getAddedMoves());
+
+        activeColor = getStartingColor();
+
     }
 
     /**
@@ -144,13 +144,14 @@ namespace sente {
         whitePoints = NAN;
 
         // reset the ko point
+        // reset the ko point
         resetKoPoint();
         passCount = 0;
 
         // add any stones at the root node
-        for (const auto& move: gameTree.get().getAddedMoves()){
-            addStone(move);
-        }
+        addStones(gameTree.get().getAddedMoves());
+
+        activeColor = getStartingColor();
 
     }
 
@@ -171,8 +172,6 @@ namespace sente {
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
         bool notKoPoint = isNotKoPoint(move);
         bool correctColor = isCorrectColor(move);
-
-//        std::cout << "correctColor: " << correctColor << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
@@ -217,6 +216,8 @@ namespace sente {
         // create a new SGF node
         SGF::SGFNode node(move);
 
+        std::cout << "playing stone " << std::string(move) << std::endl;
+
         // check for pass/resign
         if (move.isPass()){
             gameTree.insert(node);
@@ -224,6 +225,7 @@ namespace sente {
                 // score the game
                 score();
             }
+            activeColor = getOpponent(activeColor);
             return;
         }
         else {
@@ -274,13 +276,13 @@ namespace sente {
         for (const auto& child : gameTree.getChildren()){
             if (child.getMove() == Move::nullMove){
                 // add the stones
-                for (const auto& move : child.getAddedMoves()){
-                    addStone(move);
-                }
+                addStones(child.getAddedMoves());
                 // stop adding stones
                 break;
             }
         }
+
+        activeColor = getOpponent(activeColor);
 
     }
 
@@ -315,61 +317,57 @@ namespace sente {
 
     /**
      *
-     * adds a stone to the board
+     * adds a vector of stones to the board
      *
      * @param move to add to the board
      */
-    void GoGame::addStone(const Move& move){
+    void GoGame::addStones(const std::vector<Move>& move){
 
-        // py::gil_scoped_release release;
+//        py::gil_scoped_release release;
+//        std::cout << "entering addStone" << std::endl;
 
-        // error handling
-        if (not isAddLegal(move)){
-            if (not board->isOnBoard(move)){
-                throw utils::IllegalMoveException(utils::OFF_BOARD, move);
+        // handle errors before moving forward
+        for (const auto & move : moves){
+            // error handling
+            if (not isAddLegal(move)){
+                if (not board->isOnBoard(move)){
+                    throw utils::IllegalMoveException(utils::OFF_BOARD, move);
+                }
             }
-//            if (board->getStone(move.getVertex()) != EMPTY){
-//                throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
-//            }
-            if (not isNotSelfCapture(move)){
-                throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
-            }
-//            if (not isNotKoPoint(move)){
-//                throw utils::IllegalMoveException(utils::KO_POINT, move);
-//            }
         }
 
-        // figure out what kind of property we are dealing with
-        SGF::SGFProperty property;
-
-        switch (move.getStone()){
-            case BLACK:
-                property = SGF::AB;
-                break;
-            case WHITE:
-                property = SGF::AW;
-                break;
-            case EMPTY:
-                property = SGF::AE;
-                break;
-        }
-
-        // obtain a string to insert
-        std::string positionInfo = move.toSGF();
-        positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
-
+        // get a reference to the node we will be working with
         SGF::SGFNode& node = gameTree.get();
+        auto moves = node.getAddedMoves();
 
-        bool skipAddingMove = false;
+        if (node.getMove() != Move::nullMove){
+            // create a new node
+            node = SGF::SGFNode(Move::nullMove);
+        }
 
-        // check to see if we are on a normal node or an add stone node
+        // add all the moves
+        for (const auto& move : moves){
 
-        if (gameTree.get().getMove() == Move::nullMove){
+            // figure out what kind of property we are dealing with
+            SGF::SGFProperty property;
 
-            // remove any move that has as been added to the same position
-            auto moves = node.getAddedMoves();
-//            std::cout << "before removal we move's size is " << moves.size() << std::endl;
+            switch (move.getStone()){
+                case BLACK:
+                    property = SGF::AB;
+                    break;
+                case WHITE:
+                    property = SGF::AW;
+                    break;
+                case EMPTY:
+                    property = SGF::AE;
+                    break;
+            }
 
+            auto currentMoves = node.getAddedMoves();
+
+            bool skipAddingMove = false;
+
+            // check to see if there is a move of any color that has been added and remove it if it exists
             Move blackMove = Move(move.getX(), move.getY(), BLACK);
             Move whiteMove = Move(move.getX(), move.getY(), WHITE);
             Move emptyMove = Move(move.getX(), move.getY(), EMPTY);
@@ -392,26 +390,22 @@ namespace sente {
             skipAddingMove = skipAddingMove or (board->getSpace(move.getX(), move.getY()).getStone() == EMPTY and
                                                 property == SGF::AE);
 
-//            std::cout << "after removal we move's size is " << node.getAddedMoves().size() << std::endl;
+            // check to see if we are on a normal node or an add stone node
 
-        }
-        if (gameTree.get().getMove() != Move::nullMove){
-            node = SGF::SGFNode(Move::nullMove);
-        }
+            if (not skipAddingMove){
+                // obtain a string to insert
+                std::string positionInfo = move.toSGF();
+                positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
+                //            std::cout << "adding move " << std::string(move) << std::endl;
+                node.appendProperty(property, positionInfo);
+            }
 
-        if (not skipAddingMove){
-            std::cout << "adding move " << std::string(move) << std::endl;
-            node.appendProperty(property, positionInfo);
-        }
-
-        // insert the node if we need to
-        if (gameTree.get().getMove() != Move::nullMove){
-            gameTree.insert(node);
+            // put the stone into the board and update the board
+            board->playStone(move);
+            updateBoard(move);
         }
 
-        // put the stone into the board and update the board
-        board->playStone(move);
-        updateBoard(move);
+        gameTree.stepTo(node);
     }
 
     bool GoGame::isAtRoot() const{
@@ -997,29 +991,7 @@ namespace sente {
     }
 
     bool GoGame::isCorrectColor(const Move &move) {
-        // go through the tree until we get our parents
-        std::stack<SGF::SGFNode> previousMoves;
-
-        while (gameTree.get().getMove() == Move::nullMove and not gameTree.isAtRoot()){
-            previousMoves.push(gameTree.get());
-            gameTree.stepUp();
-        }
-
-        bool result;
-
-        if (gameTree.isAtRoot()){
-            result = move.getStone() == getStartingColor();
-        }
-        else {
-            result = move.getStone() != gameTree.get().getMove().getStone();
-        }
-
-        while (not previousMoves.empty()){
-            gameTree.stepTo(previousMoves.top());
-            previousMoves.pop();
-        }
-
-        return result;
+        return activeColor == move.getStone();
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{

@@ -61,8 +61,7 @@ namespace sente {
 
         bool isAddLegal(const Move& move);
 
-        // void addStones(const std::vector<Move>& move);
-        void addStone(const Move& move);
+        void addStones(const std::vector<Move>& move);
 
         ///
         /// movement through the game tree
@@ -137,6 +136,8 @@ namespace sente {
 
         double blackPoints = NAN; // 8 bytes
         double whitePoints = NAN; // 8 bytes
+
+        Stone activeColor;
 
         // Changes.txt: look into moving the board onto the stack
         std::shared_ptr<_board> board; // 16 bytes

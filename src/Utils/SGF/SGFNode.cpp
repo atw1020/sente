@@ -2,6 +2,7 @@
 // Created by arthur wesley on 8/27/21.
 //
 
+#include <iostream>
 #include <sstream>
 #include <pybind11/pybind11.h>
 
@@ -212,11 +213,13 @@ namespace sente::SGF {
                 color = EMPTY;
             removeMoves:
 
-                temp = {unsigned(del[1] - 'a'), unsigned(del[0] - 'a'), color};
+                temp = {unsigned(del[0] - 'a'), unsigned(del[1] - 'a'), color};
                 addedMove = std::find(addedMoves.begin(), addedMoves.end(), temp);
 
+//                std::cout << std::string(temp) << std::endl;
+
                 if (addedMove == addedMoves.end()){
-                    std::string message = "could not remove move \"" + del + "\"";
+                    std::string message = "could not remove move \"" + std::string(temp) + "\"";
                     throw std::domain_error(message);
                 }
                 else {
@@ -246,7 +249,7 @@ namespace sente::SGF {
                     throw utils::InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + values[0] + "]\"");
                 }
                 // get the co-ordinates from the move
-                move = {unsigned(values[0][1] - 'a'), unsigned(values[0][0] - 'a'), property == B ? BLACK : WHITE};
+                move = {unsigned(values[0][0] - 'a'), unsigned(values[0][1] - 'a'), property == B ? BLACK : WHITE};
             }
         }
         else if (property == AB or property == AW or property == AE){
@@ -373,7 +376,17 @@ namespace sente::SGF {
     }
 
     bool SGFNode::operator==(const SGFNode &other) const {
-        return move == other.move;
+
+        bool sameMoves = true;
+
+        for (const auto& move : addedMoves){
+            if (std::find(other.addedMoves.begin(), other.addedMoves.end(), move) != other.addedMoves.end()){
+                sameMoves = false;
+                break;
+            }
+        }
+
+        return move == other.move and sameMoves;
     }
 
 }
