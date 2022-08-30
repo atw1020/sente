@@ -130,10 +130,14 @@ namespace sente {
      */
     void GoGame::resetBoard(){
 
+//        std::cout << "entering resetBoard" << std::endl;
+
         // create a new board
         clearBoard();
         // reset the tree to the root
         gameTree.advanceToRoot();
+
+//        std::cout << "got past advanceToRoot" << std::endl;
 
         // set the groups and captures to be empty
         groups = std::unordered_map<Move, std::shared_ptr<Group>>();
@@ -148,8 +152,12 @@ namespace sente {
         resetKoPoint();
         passCount = 0;
 
+//        std::cout << "adding moves" << std::endl;
+
         // add any stones at the root node
         addStones(gameTree.get().getAddedMoves());
+
+//        std::cout << "added moves" << std::endl;
 
         activeColor = getStartingColor();
 
@@ -338,11 +346,12 @@ namespace sente {
 
         // get a reference to the node we will be working with
         SGF::SGFNode& node = gameTree.get();
-        auto existingMoves = node.getAddedMoves();
+        bool insert = false;
 
         if (node.getMove() != Move::nullMove){
             // create a new node
             node = SGF::SGFNode(Move::nullMove);
+            insert = true;
         }
 
         // add all the moves
@@ -406,7 +415,9 @@ namespace sente {
             updateBoard(move);
         }
 
-        gameTree.stepTo(node);
+        if (insert){
+            gameTree.insert(node);
+        }
     }
 
     bool GoGame::isAtRoot() const{

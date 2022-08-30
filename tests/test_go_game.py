@@ -1003,19 +1003,19 @@ class TestSetPoints(TestCase):
 
         game = sente.Game()
 
-        game.set_point(2, 1, sente.stone.BLACK)
-        game.set_point(2, 2, sente.stone.BLACK)
-        game.set_point(2, 3, sente.stone.BLACK)
-        game.set_point(2, 4, sente.stone.BLACK)
-        game.set_point(1, 4, sente.stone.BLACK)
+        game.set_points([sente.Move(1, 0, sente.stone.BLACK),
+                         sente.Move(1, 1, sente.stone.BLACK),
+                         sente.Move(1, 2, sente.stone.BLACK),
+                         sente.Move(1, 3, sente.stone.BLACK),
+                         sente.Move(0, 3, sente.stone.BLACK)])
 
-        game.set_point(3, 1, sente.stone.WHITE)
-        game.set_point(3, 2, sente.stone.WHITE)
-        game.set_point(3, 3, sente.stone.WHITE)
-        game.set_point(3, 4, sente.stone.WHITE)
-        game.set_point(3, 5, sente.stone.WHITE)
-        game.set_point(2, 5, sente.stone.WHITE)
-        game.set_point(1, 5, sente.stone.WHITE)
+        game.set_points([sente.Move(2, 0, sente.stone.WHITE),
+                         sente.Move(2, 1, sente.stone.WHITE),
+                         sente.Move(2, 2, sente.stone.WHITE),
+                         sente.Move(2, 3, sente.stone.WHITE),
+                         sente.Move(2, 4, sente.stone.WHITE),
+                         sente.Move(1, 4, sente.stone.WHITE),
+                         sente.Move(0, 4, sente.stone.WHITE)])
 
         self.assertEqual(game.get_point(2, 1), sente.stone.BLACK)
         self.assertEqual(game.get_point(2, 2), sente.stone.BLACK)
@@ -1043,7 +1043,7 @@ class TestSetPoints(TestCase):
 
         game = sente.Game()
 
-        game.set_point(4, 4, sente.stone.BLACK)
-        game.set_point(4, 4, sente.stone.EMPTY)
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
 
         self.assertEqual(sente.stone.EMPTY, game.get_point(4, 4))

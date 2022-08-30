@@ -377,6 +377,8 @@ namespace sente::SGF {
 
     bool SGFNode::operator==(const SGFNode &other) const {
 
+//        std::cout << "checking for equality" << std::endl;
+
         bool sameMoves = true;
 
         for (const auto& move : addedMoves){
@@ -386,7 +388,9 @@ namespace sente::SGF {
             }
         }
 
-        return move == other.move and sameMoves;
+//        std::cout << "sameMoves evaluated to " << std::boolalpha << sameMoves << std::endl;
+
+        return (move == other.move) and sameMoves;
     }
 
 }

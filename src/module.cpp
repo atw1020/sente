@@ -485,7 +485,7 @@ PYBIND11_MODULE(sente, module){
                 :raises ValueError: If a valid Move object is not passed
 
             )pbdoc")
-        .def("play", &sente::GoGame::addStones,
+        .def("set_points", &sente::GoGame::addStones,
             R"pbdoc(
 
                 Sets a vector of particularity points on the board to the specified color
