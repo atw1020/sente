@@ -169,7 +169,7 @@ namespace sente::GTP {
         }
         else if (masterGame.isGTPLegal(move)){
             // play the stone
-            masterGame.addStone(move);
+            masterGame.addStones({move});
             return {true, ""};
         }
         else {

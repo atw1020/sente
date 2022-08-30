@@ -61,7 +61,7 @@ namespace sente {
 
         bool isAddLegal(const Move& move);
 
-        void addStones(const std::vector<Move>& move);
+        void addStones(const std::vector<Move>& moves);
 
         ///
         /// movement through the game tree

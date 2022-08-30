@@ -321,7 +321,7 @@ namespace sente {
      *
      * @param move to add to the board
      */
-    void GoGame::addStones(const std::vector<Move>& move){
+    void GoGame::addStones(const std::vector<Move>& moves){
 
 //        py::gil_scoped_release release;
 //        std::cout << "entering addStone" << std::endl;
@@ -338,7 +338,7 @@ namespace sente {
 
         // get a reference to the node we will be working with
         SGF::SGFNode& node = gameTree.get();
-        auto moves = node.getAddedMoves();
+        auto existingMoves = node.getAddedMoves();
 
         if (node.getMove() != Move::nullMove){
             // create a new node
@@ -363,7 +363,7 @@ namespace sente {
                     break;
             }
 
-            auto currentMoves = node.getAddedMoves();
+            auto existingMoves = node.getAddedMoves();
 
             bool skipAddingMove = false;
 
@@ -372,17 +372,21 @@ namespace sente {
             Move whiteMove = Move(move.getX(), move.getY(), WHITE);
             Move emptyMove = Move(move.getX(), move.getY(), EMPTY);
 
-            if (std::find(moves.begin(), moves.end(), blackMove) != moves.end()){
+            // obtain a string to insert
+            std::string positionInfo = move.toSGF();
+            positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
+
+            if (std::find(existingMoves.begin(), existingMoves.end(), blackMove) != existingMoves.end()){
                 node.removeItem(SGF::AB, positionInfo);
                 // we are skipping if the type of the move is empty
                 skipAddingMove = property == SGF::AE;
             }
-            if (std::find(moves.begin(), moves.end(), whiteMove) != moves.end()){
+            if (std::find(existingMoves.begin(), existingMoves.end(), whiteMove) != existingMoves.end()){
                 node.removeItem(SGF::AW, positionInfo);
                 // we are skipping if the type of the move is empty
                 skipAddingMove = property == SGF::AE;
             }
-            if (std::find(moves.begin(), moves.end(), emptyMove) != moves.end()){
+            if (std::find(existingMoves.begin(), existingMoves.end(), emptyMove) != existingMoves.end()){
                 node.removeItem(SGF::AE, positionInfo);
             }
 
@@ -393,9 +397,6 @@ namespace sente {
             // check to see if we are on a normal node or an add stone node
 
             if (not skipAddingMove){
-                // obtain a string to insert
-                std::string positionInfo = move.toSGF();
-                positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
                 //            std::cout << "adding move " << std::string(move) << std::endl;
                 node.appendProperty(property, positionInfo);
             }

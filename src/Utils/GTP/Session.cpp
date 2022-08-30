@@ -400,7 +400,7 @@ namespace sente::GTP {
             }
             else {
                 // if it's not our move, add a stone.
-                masterGame.addStone(*move);
+                masterGame.addStones({*move});
             }
 
             std::string message;

@@ -485,12 +485,10 @@ PYBIND11_MODULE(sente, module){
                 :raises ValueError: If a valid Move object is not passed
 
             )pbdoc")
-        .def("play", [](sente::GoGame& game, const std::vector<Move>& moves){
-                game.addStones(moves);
-            },
+        .def("play", &sente::GoGame::addStones,
             R"pbdoc(
 
-                Sets a particularity point on the board to the specified color
+                Sets a vector of particularity points on the board to the specified color
 
                 :param x: The x co-ordinate of the move to play.
                 :param y: The y co-ordinate of the move to play:
