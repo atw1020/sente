@@ -224,7 +224,7 @@ namespace sente {
         // create a new SGF node
         SGF::SGFNode node(move);
 
-        std::cout << "playing stone " << std::string(move) << std::endl;
+//        std::cout << "playing stone " << std::string(move) << std::endl;
 
         // check for pass/resign
         if (move.isPass()){
@@ -280,6 +280,7 @@ namespace sente {
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
 
+        // TODO: remove automatic stone adding
         // add stones as necessary
         for (const auto& child : gameTree.getChildren()){
             if (child.getMove() == Move::nullMove){
@@ -290,7 +291,22 @@ namespace sente {
             }
         }
 
-        activeColor = getOpponent(activeColor);
+        // update the active color
+        if (gameTree.get().hasProperty(SGF::PL)){
+            // if we just set the player in this node, set the player
+            switch (gameTree.get().getProperty(SGF::PL)[0][0]){
+                case 'B':
+                    activeColor = BLACK;
+                    break;
+                case 'W':
+                    activeColor = WHITE;
+                    break;
+            }
+        }
+        else {
+            // otherwise, set the player to be the opposite as what we just had
+            activeColor = getOpponent(activeColor);
+        }
 
     }
 
@@ -418,6 +434,31 @@ namespace sente {
         if (insert){
             gameTree.insert(node);
         }
+
+        // update the player if necessary
+        if (gameTree.get().hasProperty(SGF::PL)){
+            // if we just set the player in this node, set the player
+            switch (gameTree.get().getProperty(SGF::PL)[0][0]){
+                case 'B':
+                    activeColor = BLACK;
+                    break;
+                case 'W':
+                    activeColor = WHITE;
+                    break;
+            }
+        }
+    }
+
+    void GoGame::setPlayer(Stone player) {
+        if (player == EMPTY){
+            throw std::domain_error("Cannot set the current player to be an empty player");
+        }
+
+        // set the active player
+        activeColor = player;
+
+        // set the player in the game tree
+        gameTree.get().setProperty(SGF::PL, {activeColor == BLACK ? "B" : "W"});
     }
 
     bool GoGame::isAtRoot() const{

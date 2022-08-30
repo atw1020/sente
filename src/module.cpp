@@ -496,6 +496,15 @@ PYBIND11_MODULE(sente, module){
                 :raises IllegalMoveException: If the move is illegal. Most move legality requirements are ignored.
 
             )pbdoc")
+        .def("set_active_player", &sente::GoGame::setPlayer,
+             R"pbdoc(
+
+                Sets the active player
+
+                :param player: the color of the player to set to be active
+                :raises ValueError: If the color is set the EMPTY
+
+            )pbdoc")
         .def("pss", [](sente::GoGame& game){
             game.playStone(sente::Move::pass(game.getActivePlayer()));
         },

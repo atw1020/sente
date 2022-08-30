@@ -63,6 +63,8 @@ namespace sente {
 
         void addStones(const std::vector<Move>& moves);
 
+        void setPlayer(Stone player);
+
         ///
         /// movement through the game tree
         ///
