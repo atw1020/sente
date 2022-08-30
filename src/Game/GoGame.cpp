@@ -280,17 +280,6 @@ namespace sente {
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
 
-        // TODO: remove automatic stone adding
-        // add stones as necessary
-        for (const auto& child : gameTree.getChildren()){
-            if (child.getMove() == Move::nullMove){
-                // add the stones
-                addStones(child.getAddedMoves());
-                // stop adding stones
-                break;
-            }
-        }
-
         // update the active color
         if (gameTree.get().hasProperty(SGF::PL)){
             // if we just set the player in this node, set the player
@@ -555,9 +544,9 @@ namespace sente {
     }
 
 
-    std::vector<Move> GoGame::getDefaultSequence() {
+    std::vector<Playable> GoGame::getDefaultSequence() {
 
-        std::vector<Move> defaultBranch;
+        std::vector<Playable> defaultBranch;
 
         auto bookmark = gameTree.getSequence();
 
@@ -565,6 +554,9 @@ namespace sente {
             auto child = gameTree.getChildren()[0];
             if (child.getMove() != Move::nullMove){
                 defaultBranch.push_back(child.getMove());
+            }
+            else {
+                defaultBranch.push_back(child.getAddedMoves());
             }
             gameTree.stepDown();
         }

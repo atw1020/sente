@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <fstream>
+#include <variant>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -35,6 +36,8 @@ namespace std {
 }
 
 namespace sente {
+
+    typedef std::variant<Move, std::vector<Move>> Playable;
 
     class GoGame {
     public:
@@ -77,7 +80,7 @@ namespace sente {
 
         std::vector<Move> getBranches();
         std::vector<Move> getMoveSequence();
-        std::vector<Move> getDefaultSequence();
+        std::vector<Playable> getDefaultSequence();
 
         std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
 

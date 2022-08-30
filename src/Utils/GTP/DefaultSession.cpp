@@ -252,7 +252,7 @@ namespace sente::GTP {
 
         unsigned movesAdvanced = std::min(moves->getValue(), unsigned(moveSequence.size()));
 
-        moveSequence = std::vector<sente::Move>(moveSequence.begin(), moveSequence.begin() + movesAdvanced);
+        moveSequence = std::vector<Playable>(moveSequence.begin(), moveSequence.begin() + movesAdvanced);
 
         masterGame.playMoveSequence(moveSequence);
 
