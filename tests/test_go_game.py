@@ -377,7 +377,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(2, 2, sente.stone.BLACK), sente.Move(4, 4, sente.stone.WHITE), sente.Move(6, 6, sente.stone.BLACK)]
+        moves = [sente.Move(2, 2, sente.stone.BLACK),
+                 sente.Move(4, 4, sente.stone.WHITE), sente.Move(6, 6, sente.stone.BLACK)]
 
         game.play_sequence(moves)
 
@@ -395,7 +396,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE), sente.Move(7, 7, sente.stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE),
+                 sente.Move(7, 7, sente.stone.BLACK)]
 
         game.play_sequence(moves)
 
@@ -411,7 +413,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE),
+                 sente.Move(3, 3, sente.stone.BLACK)]
 
         with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play_sequence(moves)
@@ -435,7 +438,8 @@ class TestTreeNavigation(TestCase):
 
         default_branch = game.get_default_sequence()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE), sente.Move(3, 15, sente.stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE),
+                 sente.Move(3, 15, sente.stone.BLACK)]
 
         self.assertEqual(moves, default_branch)
 
@@ -827,6 +831,7 @@ class TestNumpy(TestCase):
 
 
 class TestSetPoints(TestCase):
+
     def test_handicap_1(self):
         """
 
@@ -847,7 +852,10 @@ class TestSetPoints(TestCase):
         :return:
         """
 
+        print(sente.get_handicap_stones(2))
+
         game = sente.Game(handicap=sente.get_handicap_stones(2))
+
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
         self.assertEqual(game.get_active_player(), sente.stone.WHITE)
@@ -861,6 +869,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(3))
+
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
@@ -875,6 +884,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(4))
+
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
@@ -890,6 +900,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(5))
+
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(10, 10), sente.stone.BLACK)
@@ -906,6 +917,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(6))
+
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
@@ -923,6 +935,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(7))
+
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
@@ -941,6 +954,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(8))
+
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
@@ -960,6 +974,7 @@ class TestSetPoints(TestCase):
         """
 
         game = sente.Game(handicap=sente.get_handicap_stones(9))
+
         self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)

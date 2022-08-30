@@ -175,13 +175,13 @@ namespace sente::SGF {
             }
 
             if (property == AB){
-                addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), BLACK});
+                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
             }
             else if (property == AW) {
-                addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), WHITE});
+                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
             }
             else {
-                addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), EMPTY});
+                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
             }
         }
         else {
@@ -195,8 +195,8 @@ namespace sente::SGF {
     void SGFNode::removeItem(SGFProperty property, const std::string& del){
 
         Stone color;
-        Move temp{unsigned(del[1] - 'a'), unsigned(del[0] - 'a'), color};
-        auto addedMove = std::find(addedMoves.begin(), addedMoves.end(), temp);
+        Move temp;
+        auto addedMove = addedMoves.begin();
 
         switch (property){
             case B:
@@ -212,6 +212,9 @@ namespace sente::SGF {
                 color = EMPTY;
             removeMoves:
 
+                temp = {unsigned(del[1] - 'a'), unsigned(del[0] - 'a'), color};
+                addedMove = std::find(addedMoves.begin(), addedMoves.end(), temp);
+
                 if (addedMove == addedMoves.end()){
                     std::string message = "could not remove move \"" + del + "\"";
                     throw std::domain_error(message);
@@ -219,6 +222,7 @@ namespace sente::SGF {
                 else {
                     addedMoves.erase(addedMove);
                 }
+                break;
             default:
                 properties[property].erase(std::find(properties[property].begin(), properties[property].end(), del));
         }
@@ -261,13 +265,13 @@ namespace sente::SGF {
                     throw utils::InvalidSGFException("move does not use alphabetical letters");
                 }
                 if (property == AB){
-                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), BLACK});
+                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
                 }
                 else if (property == AW) {
-                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), WHITE});
+                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
                 }
                 else {
-                    addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), EMPTY});
+                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
                 }
             }
         }

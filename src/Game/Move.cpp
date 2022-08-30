@@ -189,7 +189,7 @@ namespace sente {
                 str << "W";
                 break;
             default:
-                return "[Placeholder Move]";
+                str << "E";
         }
 
         if (isPass()){
@@ -208,10 +208,6 @@ namespace sente {
 
     Move::operator std::string() const {
         char first;
-
-        if (stone == EMPTY){
-            return "[Placeholder Move]";
-        }
 
         // determine the letter
         if (x + 'A' < 'I'){

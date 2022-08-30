@@ -358,46 +358,51 @@ namespace sente {
         std::string positionInfo = move.toSGF();
         positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
 
-        SGF::SGFNode node;
+        SGF::SGFNode& node = gameTree.get();
+
+        bool skipAddingMove = false;
 
         // check to see if we are on a normal node or an add stone node
 
         if (gameTree.get().getMove() == Move::nullMove){
-            node = gameTree.get();
 
-            if (node.hasProperty(SGF::AB)){
-                // get a list of all the added black moves
-                auto addedBlack = node.getProperty(SGF::AB);
+            // remove any move that has as been added to the same position
+            auto moves = node.getAddedMoves();
+//            std::cout << "before removal we move's size is " << moves.size() << std::endl;
 
-                // if an existing entry exists, remove it
-                if (std::find(addedBlack.begin(), addedBlack.end(), positionInfo) != addedBlack.end()){
-                    node.removeItem(SGF::AB, positionInfo);
-                }
+            Move blackMove = Move(move.getX(), move.getY(), BLACK);
+            Move whiteMove = Move(move.getX(), move.getY(), WHITE);
+            Move emptyMove = Move(move.getX(), move.getY(), EMPTY);
+
+            if (std::find(moves.begin(), moves.end(), blackMove) != moves.end()){
+                node.removeItem(SGF::AB, positionInfo);
+                // we are skipping if the type of the move is empty
+                skipAddingMove = property == SGF::AE;
             }
-            if (node.hasProperty(SGF::AW)){
-                // get a list of all the added white moves
-                auto addedWhite = node.getProperty(SGF::AW);
-
-                // if an existing entry exists, remove it
-                if (std::find(addedWhite.begin(), addedWhite.end(), positionInfo) != addedWhite.end()){
-                    node.removeItem(SGF::AW, positionInfo);
-                }
+            if (std::find(moves.begin(), moves.end(), whiteMove) != moves.end()){
+                node.removeItem(SGF::AW, positionInfo);
+                // we are skipping if the type of the move is empty
+                skipAddingMove = property == SGF::AE;
             }
-            if (node.hasProperty(SGF::AE)){
-                // get a list of all the added empty moves
-                auto addedEmpty = node.getProperty(SGF::AE);
-
-                // if an existing entry exists, remove it
-                if (std::find(addedEmpty.begin(), addedEmpty.end(), positionInfo) != addedEmpty.end()){
-                    node.removeItem(SGF::AE, positionInfo);
-                }
+            if (std::find(moves.begin(), moves.end(), emptyMove) != moves.end()){
+                node.removeItem(SGF::AE, positionInfo);
             }
+
+            // also skip if we are adding an empty move
+            skipAddingMove = skipAddingMove or (board->getSpace(move.getX(), move.getY()).getStone() == EMPTY and
+                                                property == SGF::AE);
+
+//            std::cout << "after removal we move's size is " << node.getAddedMoves().size() << std::endl;
+
         }
         if (gameTree.get().getMove() != Move::nullMove){
             node = SGF::SGFNode(Move::nullMove);
         }
 
-        node.appendProperty(property, positionInfo);
+        if (not skipAddingMove){
+            std::cout << "adding move " << std::string(move) << std::endl;
+            node.appendProperty(property, positionInfo);
+        }
 
         // insert the node if we need to
         if (gameTree.get().getMove() != Move::nullMove){
