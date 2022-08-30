@@ -76,7 +76,7 @@ namespace sente {
         void stepUp(unsigned steps);
 
         void playDefaultSequence();
-        void playMoveSequence(const std::vector<Move>& moves);
+        void playMoveSequence(const std::vector<Playable>& moves);
 
         std::vector<Move> getBranches();
         std::vector<Move> getMoveSequence();

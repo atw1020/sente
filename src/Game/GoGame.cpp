@@ -472,7 +472,7 @@ namespace sente {
         resetBoard();
 
         // play out the move sequence without the last few moves
-        playMoveSequence(std::vector<Move>(sequence.begin(), sequence.end() - steps));
+        playMoveSequence(std::vector<Playable>(sequence.begin(), sequence.end() - steps));
 
     }
 
@@ -488,25 +488,17 @@ namespace sente {
         }
     }
 
-    void GoGame::playMoveSequence(const std::vector<Move>& moves) {
+    void GoGame::playMoveSequence(const std::vector<Playable>& moves) {
 
-        auto baseMoveSequence = getMoveSequence();
+        auto moveSequence = getMoveSequence();
 
-        try {
-            // play all the stones in the sequence
-            for (const auto& move : moves){
-                playStone(move);
+        for (const Playable& move : moveSequence){
+            if (std::holds_alternative<Move>(move)){
+                playStone(std::get<Move>(move));
             }
-        }
-        catch (const utils::IllegalMoveException& except){
-            // reset to the original position
-            resetBoard();
-            for (const auto& move : baseMoveSequence){
-                playStone(move);
+            else {
+                addStones(std::get<std::vector<Move>>(move));
             }
-
-            // throw the exception again
-            throw except;
         }
     }
 
