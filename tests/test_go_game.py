@@ -536,6 +536,8 @@ class TestTreeNavigation(TestCase):
         game.play(3, 3)
         game.step_up()
 
+        print(game)
+
         self.assertFalse(game.is_at_root())
 
         game.step_up()

@@ -78,11 +78,11 @@ namespace sente {
         void playDefaultSequence();
         void playMoveSequence(const std::vector<Playable>& moves);
 
-        std::vector<Move> getBranches();
-        std::vector<Move> getMoveSequence();
+        std::vector<Playable> getBranches();
+        std::vector<Playable> getMoveSequence();
         std::vector<Playable> getDefaultSequence();
 
-        std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
+        std::vector<std::vector<Playable>> getSequences(const std::vector<Playable>& currentSequence);
 
         [[nodiscard]] unsigned getMoveNumber() const;
         [[nodiscard]] utils::Tree<SGF::SGFNode> getMoveTree() const;

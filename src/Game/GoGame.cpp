@@ -466,13 +466,16 @@ namespace sente {
         }
 
         // get the moves that lead to this sequence
-        auto sequence = getMoveSequence();
+        std::vector<Playable> sequence = getMoveSequence();
+        sequence = std::vector<Playable>(sequence.begin(), sequence.end() - steps);
+
+//        std::cout << "there are " << sequence.size() << " moves in the sequence" << std::endl;
 
         // reset the board
         resetBoard();
 
         // play out the move sequence without the last few moves
-        playMoveSequence(std::vector<Playable>(sequence.begin(), sequence.end() - steps));
+        playMoveSequence(sequence);
 
     }
 
@@ -489,10 +492,7 @@ namespace sente {
     }
 
     void GoGame::playMoveSequence(const std::vector<Playable>& moves) {
-
-        auto moveSequence = getMoveSequence();
-
-        for (const Playable& move : moveSequence){
+        for (const Playable& move : moves){
             if (std::holds_alternative<Move>(move)){
                 playStone(std::get<Move>(move));
             }
@@ -509,26 +509,36 @@ namespace sente {
         board->setLowerLeftOrigin(useLowerLeftOrigin);
     }
 
-    std::vector<Move> GoGame::getBranches() {
+    std::vector<Playable> GoGame::getBranches() {
 
         auto children = gameTree.getChildren();
-        std::vector<Move> branches(children.size());
+        std::vector<Playable> branches(children.size());
 
         for (unsigned i = 0; i < children.size(); i++){
-            branches[i] = children[i].getMove();
+            if (children[i].getMove() != Move::nullMove) {
+                branches[i] = children[i].getMove();
+            }
+            else {
+                branches[i] = children[i].getAddedMoves();
+            }
         }
 
         return branches;
     }
 
-    std::vector<Move> GoGame::getMoveSequence() {
+    std::vector<Playable> GoGame::getMoveSequence() {
 
         auto sequence = gameTree.getSequence();
-        std::vector<Move> moveSequence;
+        std::vector<Playable> moveSequence;
 
         for (unsigned i = 0; i < sequence.size(); i++){
             if (sequence[i].getMove() != Move::nullMove){
+                // if the node has a single move add that move
                 moveSequence.push_back(sequence[i].getMove());
+            }
+            else {
+                // if the node has multiple moves, add all of them
+                moveSequence.push_back(sequence[i].getAddedMoves());
             }
         }
 
@@ -564,9 +574,9 @@ namespace sente {
 
     }
 
-    std::vector<std::vector<Move>> GoGame::getSequences(const std::vector<Move>& currentSequence) {
+    std::vector<std::vector<Playable>> GoGame::getSequences(const std::vector<Playable>& currentSequence) {
 
-        std::vector<std::vector<Move>> sequences;
+        std::vector<std::vector<Playable>> sequences;
 
         if (gameTree.isAtLeaf()){
             // if we are at a leaf, set the vector to just be the current Sequence
@@ -576,10 +586,15 @@ namespace sente {
             // otherwise, add all the children
             for (auto& child : gameTree.getChildren()){
                 // copy the current sequence
-                std::vector<Move> temp(currentSequence.begin(), currentSequence.end());
+                std::vector<Playable> temp(currentSequence.begin(), currentSequence.end());
 
                 // add the current move
-                temp.push_back(child.getMove());
+                if (child.getMove() != Move::nullMove){
+                    temp.push_back(child.getMove());
+                }
+                else {
+                    temp.push_back(child.getAddedMoves());
+                }
 
                 // step into the child and get its sequences
                 gameTree.stepTo(child);
