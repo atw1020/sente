@@ -142,8 +142,6 @@ class BasicSGF(TestCase):
         :return:
         """
 
-        print("the cwd is", os.getcwd())
-
         try:
             game = sgf.load("tests/sgf/commented semicolon.sgf")
             game.play_default_sequence()
@@ -202,19 +200,15 @@ class AddStones(TestCase):
         """
 
         game = sgf.load("tests/sgf/add stone test.sgf")
-        print(game)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(10, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(16, 16), sente.stone.WHITE)
         self.assertEqual(game.get_point(10, 16), sente.stone.WHITE)
 
-        moves = game.get_default_sequence()
-        game.play(moves[0])
         try:
-            game.play(moves[1])
+            game.play_default_sequence()
         except Exception as E:
             self.fail(E)
-        # print(game)
         # self.assertEqual(game.get_point(10, 10), sente.stone.WHITE)
 
     def test_add_empty(self):
@@ -226,10 +220,8 @@ class AddStones(TestCase):
         """
 
         game = sgf.load("tests/sgf/remove stones.sgf")
-        print(game)
         self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
         self.assertEqual(game.get_point(4, 16), sente.stone.WHITE)
-        print(game.get_default_sequence())
         game.play_default_sequence()
         # self.assertEqual(game.get_point(16, 4), sente.stone.EMPTY)
         # self.assertEqual(game.get_point(4, 16), sente.stone.EMPTY)

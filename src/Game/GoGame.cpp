@@ -485,9 +485,17 @@ namespace sente {
 
         while(not gameTree.isAtLeaf()){
             gameTree.stepDown(); // step into the next move
-            auto move = gameTree.get().getMove(); // get the move at this index
-            gameTree.stepUp(); // step up to the previous node and play the move from that node
-            playStone(move);
+
+            if (gameTree.get().getMove() != Move::nullMove){
+                auto move = gameTree.get().getMove(); // get the move at this index
+                gameTree.stepUp(); // step up to the previous node and play the move from that node
+                playStone(move);
+            }
+            else {
+                auto moves = gameTree.get().getAddedMoves();
+                gameTree.stepUp();
+                addStones(moves);
+            }
         }
     }
 

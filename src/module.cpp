@@ -485,16 +485,21 @@ PYBIND11_MODULE(sente, module){
                 :raises ValueError: If a valid Move object is not passed
 
             )pbdoc")
+        .def("play", &sente::GoGame::addStones,
+                 R"pbdoc(
+
+                Sets a list of particular points on the board to the specified color
+
+                :param moves: moves to play on the board
+                :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
+            )pbdoc")
         .def("set_points", &sente::GoGame::addStones,
             R"pbdoc(
 
-                Sets a vector of particularity points on the board to the specified color
+                Sets a list of particular points on the board to the specified color
 
-                :param x: The x co-ordinate of the move to play.
-                :param y: The y co-ordinate of the move to play:
-                :param stones: The color of the stone to play.
-                :raises IllegalMoveException: If the move is illegal. Most move legality requirements are ignored.
-
+                :param moves: moves to play on the board
+                :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
             )pbdoc")
         .def("set_active_player", &sente::GoGame::setPlayer,
              R"pbdoc(

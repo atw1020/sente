@@ -239,7 +239,6 @@ class SettingStones(TestCase):
         game = sente.Game()
         game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
         self.assertIn("AB", sgf.dumps(game))
-        print(sgf.dumps(game))
         game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
 
         self.assertNotIn("AE", sgf.dumps(game))
@@ -310,8 +309,6 @@ class SettingStones(TestCase):
         self.assertNotIn("AE", sgf.dumps(game))
         self.assertNotIn("AB", sgf.dumps(game))
         self.assertIn("AW", sgf.dumps(game))
-
-        print(sgf.dumps(game))
 
     def test_set_white_empty(self):
         """

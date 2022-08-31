@@ -115,7 +115,7 @@ class TestBasicMethods(TestCase):
         game.pss()
         game.pss()
 
-        print(game.get_result())
+        self.assertEqual("W+7.5", str(game.get_result()))
 
     def test_get_point(self):
         """
@@ -536,8 +536,6 @@ class TestTreeNavigation(TestCase):
         game.play(3, 3)
         game.step_up()
 
-        print(game)
-
         self.assertFalse(game.is_at_root())
 
         game.step_up()
@@ -853,8 +851,6 @@ class TestSetPoints(TestCase):
 
         :return:
         """
-
-        print(sente.get_handicap_stones(2))
 
         game = sente.Game(handicap=sente.get_handicap_stones(2))
 
