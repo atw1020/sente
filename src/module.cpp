@@ -501,7 +501,7 @@ PYBIND11_MODULE(sente, module){
                 :param moves: moves to play on the board
                 :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
             )pbdoc")
-        .def("set_active_player", &sente::GoGame::setPlayer,
+        .def("set_active_player", &sente::GoGame::setActivePlayer,
              R"pbdoc(
 
                 Sets the active player

@@ -438,7 +438,7 @@ namespace sente {
         }
     }
 
-    void GoGame::setPlayer(Stone player) {
+    void GoGame::setActivePlayer(Stone player) {
         if (player == EMPTY){
             throw std::domain_error("Cannot set the current player to be an empty player");
         }
@@ -707,7 +707,7 @@ namespace sente {
         return board->getSpace(x, y).getStone();
     }
     Stone GoGame::getActivePlayer() const {
-        return gameTree.getDepth() % 2 == 0 ? getStartingColor() : oppositeColor(getStartingColor());
+        return activeColor;
     }
 
     std::unique_ptr<_board> GoGame::copyBoard() const {

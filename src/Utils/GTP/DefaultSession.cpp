@@ -162,19 +162,27 @@ namespace sente::GTP {
         // generate a move from the arguments
         sente::Move move = ((Move*) arguments[1].get())->getMove(masterGame.getSide());
 
+
         if (masterGame.isLegal(move)){
             // play the stone
             masterGame.playStone(move);
             return {true, ""};
         }
-        else if (masterGame.isGTPLegal(move)){
-            // play the stone
-            masterGame.addStones({move});
-            return {true, ""};
-        }
-        else {
-            // if the move is illegal, report it
-            return {false, "illegal move"};
+        else{
+
+            // try switching the active color
+            masterGame.setActivePlayer(oppositeColor(masterGame.getActivePlayer()));
+
+            if (masterGame.isLegal(move)){
+                masterGame.playStone(move);
+                return {true, ""};
+            }
+            else {
+                // switch back to the original color
+                masterGame.setActivePlayer(oppositeColor(masterGame.getActivePlayer()));
+                // if the move is illegal, report it
+                return {false, "illegal move"};
+            }
         }
     }
     Response DefaultSession::genMove(const std::vector<std::shared_ptr<Token>>& arguments){

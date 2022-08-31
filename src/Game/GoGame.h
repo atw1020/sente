@@ -66,8 +66,6 @@ namespace sente {
 
         void addStones(const std::vector<Move>& moves);
 
-        void setPlayer(Stone player);
-
         ///
         /// movement through the game tree
         ///
@@ -125,6 +123,7 @@ namespace sente {
         double getKomi() const;
 
         void setKomi(double newKomi);
+        void setActivePlayer(Stone player);
 
         explicit operator std::string() const;
 

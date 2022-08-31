@@ -733,6 +733,24 @@ class TestTreeNavigation(TestCase):
 
         self.assertEqual("here is a backslash \\", game.comment)
 
+    def test_set_player(self):
+        """
+
+        makes sure that we can change the active player
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.set_active_player(sente.stone.WHITE)
+        self.assertEqual(sente.stone.WHITE, game.get_active_player())
+        self.assertTrue(game.is_legal(4, 4, sente.stone.WHITE))
+
+        game.set_active_player(sente.stone.BLACK)
+        self.assertEqual(sente.stone.BLACK, game.get_active_player())
+        self.assertTrue(game.is_legal(4, 4, sente.stone.BLACK))
+
 
 class TestNumpy(TestCase):
 
