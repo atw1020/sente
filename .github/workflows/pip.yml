@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: pypa/cibuildwheel@v2.10.1
+      - uses: pypa/cibuildwheel@v2.10.2
         env:
           CIBW_BEFORE_ALL: "pip3 install meson ninja && meson wrap install pybind11"
           CIBW_BEFORE_BUILD_LINUX: "pip3 install meson ninja"
