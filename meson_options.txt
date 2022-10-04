@@ -1,1 +1,0 @@
-option('python_executable', type: 'string', value: 'python3')
