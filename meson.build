@@ -7,19 +7,14 @@ project('sente', 'cpp',
 
 # python 3 import for extension_module
 python_module = import('python')
-inst = python_module.find_installation()
+inst = python_module.find_installation(get_option('python_executable'))
 
 # ===========================================================
 # PyBind11
 # ===========================================================
 
 # pybind11 dependency
-pybind11_dep = dependency('pybind11', required: false)
-
-if not pybind11_dep.found()
-    libpybind11 = subproject('pybind11')
-    pybind11_dep = libpybind11.get_variable('pybind11_dep')
-endif
+pybind11_dep = dependency('pybind11')
 
 #
 if host_machine.system() == 'darwin'
