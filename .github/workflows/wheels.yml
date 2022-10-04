@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - master
-      # - meson-build
+      - meson-build
 
 jobs:
   build:

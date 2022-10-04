@@ -16,7 +16,7 @@ inst = python_module.find_installation(get_option('python_executable'))
 # pybind11 dependency
 pybind11_dep = dependency('pybind11')
 
-#
+# disable throwing std::bad_access on darwin
 if host_machine.system() == 'darwin'
     # fixme: find a better way to enable std::variant usage on darwin
     args = ['-D_LIBCPP_DISABLE_AVAILABILITY']
