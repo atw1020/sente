@@ -34,7 +34,10 @@ class MesonBuild(build_ext):
         if not temp_dir.exists():
             # create the build directory
             subprocess.check_call(
-                [sys.executable, "-m", "meson", "setup", temp_dir, "--buildtype", "debug" if self.debug else "release"]
+                ["meson", "setup", temp_dir, "--buildtype", "debug" if self.debug else "release"]
+            )
+            subprocess.check_call(
+                ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
             )
 
         # compile the code
