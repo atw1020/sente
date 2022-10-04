@@ -42,12 +42,12 @@ class MesonBuild(build_ext):
             ["meson", "compile", "-C", self.build_temp],
         )
 
-        print("finished subprocess")
-        print("build temp is", self.build_temp)
-        print("files in self.build_temp", [item.name for item in Path(self.build_temp).iterdir()])
+        # print("finished subprocess")
+        # print("build temp is", self.build_temp)
+        # print("files in self.build_temp", [item.name for item in Path(self.build_temp).iterdir()])
 
         pyd_files = list(temp_dir.glob("*.pyd"))
-        print(pyd_files)
+        # print(pyd_files)
 
         if not ext_fullpath.exists():
             ext_fullpath.mkdir(parents=True, exist_ok=True)
