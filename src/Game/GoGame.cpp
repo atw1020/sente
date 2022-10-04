@@ -513,11 +513,11 @@ namespace sente {
     void GoGame::playMoveSequence(const std::vector<Playable>& moves) {
         for (const Playable& move : moves){
             if (std::holds_alternative<Move>(move)){
-                std::cout << "playing a move" << std::endl;
+//                std::cout << "playing a move" << std::endl;
                 playStone(std::get<Move>(move));
             }
             else {
-                std::cout << "adding stones" << std::endl;
+//                std::cout << "adding stones" << std::endl;
                 addStones(std::get<std::vector<Move>>(move));
             }
         }
