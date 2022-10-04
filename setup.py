@@ -42,6 +42,8 @@ class MesonBuild(build_ext):
             ["meson", "compile", "-C", self.build_temp],
         )
 
+        print("finished subprocess")
+
         if not ext_fullpath.exists():
             ext_fullpath.mkdir(parents=True, exist_ok=True)
 
