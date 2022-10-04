@@ -467,6 +467,14 @@ PYBIND11_MODULE(sente, module){
                 :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
 
             )pbdoc")
+        .def("play", &sente::GoGame::addStones,
+                 R"pbdoc(
+
+                Sets a list of particular points on the board to the specified color
+
+                :param moves: moves to play on the board
+                :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
+            )pbdoc")
         .def("play", [](sente::GoGame& game, const py::object& obj){
                 if (obj.is_none()){
                     // pass if the object is none
@@ -484,14 +492,6 @@ PYBIND11_MODULE(sente, module){
                 :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
                 :raises ValueError: If a valid Move object is not passed
 
-            )pbdoc")
-        .def("play", &sente::GoGame::addStones,
-                 R"pbdoc(
-
-                Sets a list of particular points on the board to the specified color
-
-                :param moves: moves to play on the board
-                :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
             )pbdoc")
         .def("set_points", &sente::GoGame::addStones,
             R"pbdoc(

@@ -337,7 +337,6 @@ namespace sente {
     void GoGame::addStones(const std::vector<Move>& moves){
 
 //        py::gil_scoped_release release;
-//        std::cout << "entering addStone" << std::endl;
 
         // handle errors before moving forward
         for (const auto & move : moves){
@@ -353,11 +352,17 @@ namespace sente {
         SGF::SGFNode& node = gameTree.get();
         bool insert = false;
 
+//        std::cout << "first move is "
+//                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
+
         if (node.getMove() != Move::nullMove){
             // create a new node
             node = SGF::SGFNode(Move::nullMove);
             insert = true;
         }
+
+//        std::cout << "first move is "
+//                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
 
         // add all the moves
         for (const auto& move : moves){
@@ -420,6 +425,8 @@ namespace sente {
             updateBoard(move);
         }
 
+//        std::cout << "appending a node with " << node.getAddedMoves().size() << " added moves" << std::endl;
+
         if (insert){
             gameTree.insert(node);
         }
@@ -467,9 +474,13 @@ namespace sente {
 
         // get the moves that lead to this sequence
         std::vector<Playable> sequence = getMoveSequence();
+
+        // determine if the first two items hold particular alternates
+        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(sequence[1]) << std::endl;
+
         sequence = std::vector<Playable>(sequence.begin(), sequence.end() - steps);
 
-//        std::cout << "there are " << sequence.size() << " moves in the sequence" << std::endl;
+        std::cout << "playing a sequence of " << sequence.size() << " moves" << std::endl;
 
         // reset the board
         resetBoard();
@@ -502,9 +513,11 @@ namespace sente {
     void GoGame::playMoveSequence(const std::vector<Playable>& moves) {
         for (const Playable& move : moves){
             if (std::holds_alternative<Move>(move)){
+                std::cout << "playing a move" << std::endl;
                 playStone(std::get<Move>(move));
             }
             else {
+                std::cout << "adding stones" << std::endl;
                 addStones(std::get<std::vector<Move>>(move));
             }
         }
@@ -543,12 +556,17 @@ namespace sente {
             if (sequence[i].getMove() != Move::nullMove){
                 // if the node has a single move add that move
                 moveSequence.push_back(sequence[i].getMove());
+                std::cout << "appending a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence.back()) << std::endl;
             }
             else {
                 // if the node has multiple moves, add all of them
                 moveSequence.push_back(sequence[i].getAddedMoves());
+                std::cout << "appending moves: " << std::boolalpha << std::holds_alternative<std::vector<Move>>(moveSequence.back()) << std::endl;
             }
         }
+
+        std::cout << "first element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[0]) << std::endl;
+        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[1]) << std::endl;
 
         return moveSequence;
     }

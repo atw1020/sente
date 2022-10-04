@@ -1063,3 +1063,50 @@ class TestSetPoints(TestCase):
         game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
 
         self.assertEqual(sente.stone.EMPTY, game.get_point(4, 4))
+
+    def test_undo_adds(self):
+        """
+
+        tests to see if undoing add moves works properly
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+
+        game.play([sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)])
+        game.step_up()
+
+        self.assertEqual((sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)),
+                         tuple(game.get_branches()[0]))
+
+    def test_play_branches(self):
+        """
+
+        tests to see if undoing add moves works properly
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 10)
+        print("*****************adding first stones*****************")
+        game.play([sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)])
+        print("*****************first step up*****************")
+        game.step_up()
+        print("*****************adding second stones*****************")
+        game.play([sente.Move(15, 15, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)])
+        print("*****************second step up*****************")
+        game.step_up()
+        print("*****************printing branches*****************")
+        print(game.get_branches())
+
+        self.assertEqual((sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)),
+                         tuple(game.get_branches()[0]))
+        self.assertEqual((sente.Move(15, 15, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)),
+                         tuple(game.get_branches()[1]))
+
+

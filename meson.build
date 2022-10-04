@@ -14,7 +14,12 @@ inst = python_module.find_installation(get_option('python_executable'))
 # ===========================================================
 
 # pybind11 dependency
-pybind11_dep = dependency('pybind11')
+pybind11_dep = dependency('pybind11', required: false)
+
+if not pybind11_dep.found()
+    libpybind11 = subproject('pybind11')
+    pybind11_dep = libpybind11.get_variable('pybind11_dep')
+endif
 
 inst.extension_module('sente', 'src/module.cpp',
                       'src/Game/Group.cpp', 'src/Game/Group.h', 'src/Game/GoGame.h', 'src/Game/GoGame.cpp',
