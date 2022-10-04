@@ -31,6 +31,7 @@ class BasicSGF(TestCase):
                 game = sgf.load(str(Path("tests/sgf")/file))
                 game.play_default_sequence()
             except Exception as E:
+                print(file)
                 self.fail(E)
 
     def test_punctuation_ignored_inside_parens(self):
@@ -141,8 +142,6 @@ class BasicSGF(TestCase):
         :return:
         """
 
-        print("the cwd is", os.getcwd())
-
         try:
             game = sgf.load("tests/sgf/commented semicolon.sgf")
             game.play_default_sequence()
@@ -188,6 +187,44 @@ class BasicSGF(TestCase):
             game = sgf.load("tests/sgf/ff4_ex.sgf")
         except Exception as E:
             self.fail(E)
+
+
+class AddStones(TestCase):
+
+    def test_add_stones(self):
+        """
+
+        tests to see if games that have added stones can be loaded and played
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/add stone test.sgf")
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.WHITE)
+        self.assertEqual(game.get_point(10, 16), sente.stone.WHITE)
+
+        try:
+            game.play_default_sequence()
+        except Exception as E:
+            self.fail(E)
+        # self.assertEqual(game.get_point(10, 10), sente.stone.WHITE)
+
+    def test_add_empty(self):
+        """
+
+        checks to see if we can add empty stones to a board deletes stones
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/remove stones.sgf")
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.WHITE)
+        game.play_default_sequence()
+        # self.assertEqual(game.get_point(16, 4), sente.stone.EMPTY)
+        # self.assertEqual(game.get_point(4, 16), sente.stone.EMPTY)
 
 
 class StringLoad(TestCase):
@@ -362,6 +399,20 @@ class BranchedSGF(TestCase):
         game.play_default_sequence()
 
         self.assertEqual(game.comment, "noob_bot_3: Thanks for playing. If you want a weaker/stronger bot match with you, recommend try to play with 'ELOtest'. It can calculate & match your rank after few games.\nnoob_bot_3: Final score: W+368.5 (upper bound: 368.5, lower: 368.5)\n")
+
+
+class HandicapSGF(TestCase):
+
+    def test_handy_1(self):
+        """
+
+        tests to see if handicaps can be loaded
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/handy.sgf")
+        game.play_default_sequence()
 
 
 class InvalidSGF(TestCase):

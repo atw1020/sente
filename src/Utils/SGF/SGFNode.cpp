@@ -2,6 +2,7 @@
 // Created by arthur wesley on 8/27/21.
 //
 
+#include <iostream>
 #include <sstream>
 #include <pybind11/pybind11.h>
 
@@ -134,14 +135,18 @@ namespace sente::SGF {
         return move;
     }
 
+    std::vector<Move> SGFNode::getAddedMoves() const {
+        return addedMoves;
+    }
+
     void SGFNode::appendProperty(SGFProperty property, const std::string &value) {
         if (property == B or property == W){
 
-            if (hasProperty(AW) or hasProperty(AB)){
+            if (hasProperty(AW) or hasProperty(AB) or hasProperty(AE)){
                 throw utils::InvalidSGFException("Moves cannot be played in a node that already contains added stones");
             }
 
-            // the move must contain either
+            // if the move doesn't have an argument, it must be a pass move
             if (value.empty()){
                 move = Move::pass(property == B ? BLACK : WHITE);
             }
@@ -157,24 +162,27 @@ namespace sente::SGF {
                 move = {unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), property == B ? BLACK : WHITE};
             }
         }
-        else if (property == AB or property == AW){
+        else if (property == AB or property == AW or property == AE){
 
             if (hasProperty(B) or hasProperty(W)){
                 throw utils::InvalidSGFException("Stones cannot be added to a node which already contains a played move");
             }
 
             if (value.empty()){
-                throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + value + "]\"");
+                throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[]\" has no co-ordinates");
             }
             else if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
                 throw utils::InvalidSGFException("move does not use alphabetical letters");
             }
 
             if (property == AB){
-                addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), BLACK});
+                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
+            }
+            else if (property == AW) {
+                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
             }
             else {
-                addedMoves.push_back({unsigned(value[1] - 'a'), unsigned(value[0] - 'a'), WHITE});
+                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
             }
         }
         else {
@@ -185,11 +193,48 @@ namespace sente::SGF {
             properties[property].push_back(value);
         }
     }
+    void SGFNode::removeItem(SGFProperty property, const std::string& del){
+
+        Stone color;
+        Move temp;
+        auto addedMove = addedMoves.begin();
+
+        switch (property){
+            case B:
+            case W:
+                throw std::domain_error("Cannot remove the play stone properties from a node");
+            case AB:
+                color = BLACK;
+                goto removeMoves;
+            case AW:
+                color = WHITE;
+                goto removeMoves;
+            case AE:
+                color = EMPTY;
+            removeMoves:
+
+                temp = {unsigned(del[0] - 'a'), unsigned(del[1] - 'a'), color};
+                addedMove = std::find(addedMoves.begin(), addedMoves.end(), temp);
+
+//                std::cout << std::string(temp) << std::endl;
+
+                if (addedMove == addedMoves.end()){
+                    std::string message = "could not remove move \"" + std::string(temp) + "\"";
+                    throw std::domain_error(message);
+                }
+                else {
+                    addedMoves.erase(addedMove);
+                }
+                break;
+            default:
+                properties[property].erase(std::find(properties[property].begin(), properties[property].end(), del));
+        }
+    }
 
     void SGFNode::setProperty(SGFProperty property, const std::vector<std::string> &values) {
         if (property == B or property == W){
             // the move must contain either
-            if (hasProperty(AW) or hasProperty(AB)){
+            if (hasProperty(AW) or hasProperty(AB) or hasProperty(AE)){
                 throw utils::InvalidSGFException("Moves cannot be played in a node that already contains added stones");
             }
             if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
@@ -204,26 +249,32 @@ namespace sente::SGF {
                     throw utils::InvalidSGFException(std::string("invalid move \"") + (property == B ? "B" : "W") + "[" + values[0] + "]\"");
                 }
                 // get the co-ordinates from the move
-                move = {unsigned(values[0][1] - 'a'), unsigned(values[0][0] - 'a'), property == B ? BLACK : WHITE};
+                move = {unsigned(values[0][0] - 'a'), unsigned(values[0][1] - 'a'), property == B ? BLACK : WHITE};
             }
         }
-        else if (property == AB or property == AW){
+        else if (property == AB or property == AW or property == AE){
             if (hasProperty(B) or hasProperty(W)){
                 throw utils::InvalidSGFException("Stones cannot be added to a node which already contains a played move");
             }
 
-            for (const auto& item : values){
-                if (item.empty()){
-                    throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[" + item + "]\"");
+            // empty the added moves vector
+            addedMoves = std::vector<Move>();
+
+            for (const auto& value : values){
+                if (value.empty()){
+                    throw utils::InvalidSGFException(std::string("added move \"") + (property == AB ? "B" : "W") + "[]\" has no co-ordinates");
                 }
-                if (not std::isalpha(values[0][0]) or not std::isalpha(values[0][1])){
+                if (not std::isalpha(value[0]) or not std::isalpha(value[1])){
                     throw utils::InvalidSGFException("move does not use alphabetical letters");
                 }
                 if (property == AB){
-                    addedMoves.push_back({unsigned(item[1] - 'a'), unsigned(item[0] - 'a'), BLACK});
+                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
+                }
+                else if (property == AW) {
+                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
                 }
                 else {
-                    addedMoves.push_back({unsigned(item[1] - 'a'), unsigned(item[0] - 'a'), WHITE});
+                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
                 }
             }
         }
@@ -325,7 +376,21 @@ namespace sente::SGF {
     }
 
     bool SGFNode::operator==(const SGFNode &other) const {
-        return move == other.move;
+
+//        std::cout << "checking for equality" << std::endl;
+
+        bool sameMoves = true;
+
+        for (const auto& move : addedMoves){
+            if (std::find(other.addedMoves.begin(), other.addedMoves.end(), move) != other.addedMoves.end()){
+                sameMoves = false;
+                break;
+            }
+        }
+
+//        std::cout << "sameMoves evaluated to " << std::boolalpha << sameMoves << std::endl;
+
+        return (move == other.move) and sameMoves;
     }
 
 }

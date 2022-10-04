@@ -28,7 +28,7 @@ namespace std {
 
 namespace sente {
 
-    GoGame::GoGame(unsigned side, Rules rules, double komi) {
+    GoGame::GoGame(unsigned side, Rules rules, double komi, std::vector<Move> handicap) {
 
         // default Komi values
         if (komi == INFINITY){
@@ -43,10 +43,10 @@ namespace sente {
         makeBoard(side);
         resetKoPoint();
 
-        // create the rootnode
+        // create the root node
         SGF::SGFNode rootNode;
 
-        // add the defualt metadata
+        // add the default metadata
         rootNode.setProperty(SGF::FF, {"4"});
         rootNode.setProperty(SGF::SZ, {std::to_string(side)});
 
@@ -66,7 +66,19 @@ namespace sente {
                 break;
         }
 
+        // check to see if we have a handicap.
+        // handicap is prevented by including a null move in the handicap stones
+        if (std::find(handicap.begin(), handicap.end(), Move::nullMove) == handicap.end()){
+
+            // establish that we have a handicap
+            rootNode.setProperty(SGF::HA, {std::to_string(handicap.size())});
+
+            // add all the handicap stones
+            addStones(handicap);
+        }
+
         gameTree = utils::Tree<SGF::SGFNode>(rootNode);
+        activeColor = getStartingColor();
 
     }
 
@@ -104,6 +116,11 @@ namespace sente {
         else {
             komi = determineKomi(rules);
         }
+
+        addStones(rootNode.getAddedMoves());
+
+        activeColor = getStartingColor();
+
     }
 
     /**
@@ -113,10 +130,14 @@ namespace sente {
      */
     void GoGame::resetBoard(){
 
+//        std::cout << "entering resetBoard" << std::endl;
+
         // create a new board
         clearBoard();
         // reset the tree to the root
         gameTree.advanceToRoot();
+
+//        std::cout << "got past advanceToRoot" << std::endl;
 
         // set the groups and captures to be empty
         groups = std::unordered_map<Move, std::shared_ptr<Group>>();
@@ -127,8 +148,18 @@ namespace sente {
         whitePoints = NAN;
 
         // reset the ko point
+        // reset the ko point
         resetKoPoint();
         passCount = 0;
+
+//        std::cout << "adding moves" << std::endl;
+
+        // add any stones at the root node
+        addStones(gameTree.get().getAddedMoves());
+
+//        std::cout << "added moves" << std::endl;
+
+        activeColor = getStartingColor();
 
     }
 
@@ -145,19 +176,31 @@ namespace sente {
         if (not board->isOnBoard(move)){
             return false;
         }
-        // std::cout << "passed isOnBoard" << std::endl;
         bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
-        // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
-        // std::cout << "passed isNotSelfCapture" << std::endl;
         bool notKoPoint = isNotKoPoint(move);
-        // std::cout << "passed isNotKoPoint" << std::endl;
         bool correctColor = isCorrectColor(move);
-        // std::cout << "passed isCorrectColor" << std::endl;
-
-        // std::cout << "leaving isLegal" << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
+    }
+
+    /**
+     *
+     * GTP considers move to be valid even if they belong to the wrong color
+     *
+     * @param move move to check if legal
+     * @return whether the move is legal according to GTP rules
+     */
+    bool GoGame::isGTPLegal(const sente::Move &move) {
+        if (not board->isOnBoard(move)){
+            return false;
+        }
+
+        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
+        bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
+        bool notKoPoint = isNotKoPoint(move);
+
+        return isEmpty and notSelfCapture and notKoPoint;
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
@@ -181,6 +224,8 @@ namespace sente {
         // create a new SGF node
         SGF::SGFNode node(move);
 
+//        std::cout << "playing stone " << std::string(move) << std::endl;
+
         // check for pass/resign
         if (move.isPass()){
             gameTree.insert(node);
@@ -188,6 +233,7 @@ namespace sente {
                 // score the game
                 score();
             }
+            activeColor = getOpponent(activeColor);
             return;
         }
         else {
@@ -225,12 +271,31 @@ namespace sente {
             }
         }
 
+        //        std::cout << "made it past isLegal" << std::endl;
+
         // place the stone on the board and record the move
         board->playStone(move);
         gameTree.insert(node);
 
         // with the new stone placed on the board, update the internal board state
         updateBoard(move);
+
+        // update the active color
+        if (gameTree.get().hasProperty(SGF::PL)){
+            // if we just set the player in this node, set the player
+            switch (gameTree.get().getProperty(SGF::PL)[0][0]){
+                case 'B':
+                    activeColor = BLACK;
+                    break;
+                case 'W':
+                    activeColor = WHITE;
+                    break;
+            }
+        }
+        else {
+            // otherwise, set the player to be the opposite as what we just had
+            activeColor = getOpponent(activeColor);
+        }
 
     }
 
@@ -249,75 +314,147 @@ namespace sente {
             return false;
         }
         // std::cout << "passed isOnBoard" << std::endl;
-        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
+//        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
         // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
         // std::cout << "passed isNotSelfCapture" << std::endl;
-        bool notKoPoint = isNotKoPoint(move);
+//        bool notKoPoint = isNotKoPoint(move);
 
-        return isEmpty and notSelfCapture and notKoPoint;
+//        std::cout << "isEmpty:" << std::boolalpha << isEmpty << std::endl;
+//        std::cout << "notSelfCapture:" << std::boolalpha << notSelfCapture << std::endl;
+//        std::cout << "notKoPoint:" << std::boolalpha << notKoPoint << std::endl;
+
+        return notSelfCapture;
 
     }
 
     /**
      *
-     * adds a stone to the board
+     * adds a vector of stones to the board
      *
      * @param move to add to the board
      */
-    void GoGame::addStone(const Move& move){
+    void GoGame::addStones(const std::vector<Move>& moves){
 
-        // error handling
-        if (not isAddLegal(move)){
-            if (not board->isOnBoard(move)){
-                throw utils::IllegalMoveException(utils::OFF_BOARD, move);
-            }
-            if (board->getStone(move.getVertex()) != EMPTY){
-                throw utils::IllegalMoveException(utils::OCCUPIED_POINT, move);
-            }
-            if (not isNotSelfCapture(move)){
-                throw utils::IllegalMoveException(utils::SELF_CAPTURE, move);
-            }
-            if (not isNotKoPoint(move)){
-                throw utils::IllegalMoveException(utils::KO_POINT, move);
+//        py::gil_scoped_release release;
+
+        // handle errors before moving forward
+        for (const auto & move : moves){
+            // error handling
+            if (not isAddLegal(move)){
+                if (not board->isOnBoard(move)){
+                    throw utils::IllegalMoveException(utils::OFF_BOARD, move);
+                }
             }
         }
 
-        // figure out what kind of property we are dealing with
-        SGF::SGFProperty property;
+        // get a reference to the node we will be working with
+        SGF::SGFNode& node = gameTree.get();
+        bool insert = false;
 
-        switch (move.getStone()){
-            case BLACK:
-                property = SGF::AB;
-                break;
-            case WHITE:
-                property = SGF::AW;
-                break;
-            case EMPTY:
-                property = SGF::AE;
-                break;
+//        std::cout << "first move is "
+//                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
+
+        if (node.getMove() != Move::nullMove){
+            // create a new node
+            node = SGF::SGFNode(Move::nullMove);
+            insert = true;
         }
 
-        // if the stone we are adding has not been to the game tree, add it
-        if (gameTree.get().hasProperty(property)){
+//        std::cout << "first move is "
+//                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
 
-            // insert the added move into the game tree
+        // add all the moves
+        for (const auto& move : moves){
+
+            // figure out what kind of property we are dealing with
+            SGF::SGFProperty property;
+
+            switch (move.getStone()){
+                case BLACK:
+                    property = SGF::AB;
+                    break;
+                case WHITE:
+                    property = SGF::AW;
+                    break;
+                case EMPTY:
+                    property = SGF::AE;
+                    break;
+            }
+
+            auto existingMoves = node.getAddedMoves();
+
+            bool skipAddingMove = false;
+
+            // check to see if there is a move of any color that has been added and remove it if it exists
+            Move blackMove = Move(move.getX(), move.getY(), BLACK);
+            Move whiteMove = Move(move.getX(), move.getY(), WHITE);
+            Move emptyMove = Move(move.getX(), move.getY(), EMPTY);
+
+            // obtain a string to insert
             std::string positionInfo = move.toSGF();
             positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
 
-            // generate the list of all stones added to the property
-            auto addedStones = gameTree.get().getProperty(property);
-
-            // if the property has not been added to the SGF tree, add it
-            if (std::find(addedStones.begin(),  addedStones.end(), positionInfo) != addedStones.end()){
-                gameTree.get().appendProperty(property, positionInfo);
+            if (std::find(existingMoves.begin(), existingMoves.end(), blackMove) != existingMoves.end()){
+                node.removeItem(SGF::AB, positionInfo);
+                // we are skipping if the type of the move is empty
+                skipAddingMove = property == SGF::AE;
             }
+            if (std::find(existingMoves.begin(), existingMoves.end(), whiteMove) != existingMoves.end()){
+                node.removeItem(SGF::AW, positionInfo);
+                // we are skipping if the type of the move is empty
+                skipAddingMove = property == SGF::AE;
+            }
+            if (std::find(existingMoves.begin(), existingMoves.end(), emptyMove) != existingMoves.end()){
+                node.removeItem(SGF::AE, positionInfo);
+            }
+
+            // also skip if we are adding an empty move
+            skipAddingMove = skipAddingMove or (board->getSpace(move.getX(), move.getY()).getStone() == EMPTY and
+                                                property == SGF::AE);
+
+            // check to see if we are on a normal node or an add stone node
+
+            if (not skipAddingMove){
+                //            std::cout << "adding move " << std::string(move) << std::endl;
+                node.appendProperty(property, positionInfo);
+            }
+
+            // put the stone into the board and update the board
+            board->playStone(move);
+            updateBoard(move);
         }
 
-        // put the stone into the board and update the board
-        board->playStone(move);
-        updateBoard(move);
+//        std::cout << "appending a node with " << node.getAddedMoves().size() << " added moves" << std::endl;
 
+        if (insert){
+            gameTree.insert(node);
+        }
+
+        // update the player if necessary
+        if (gameTree.get().hasProperty(SGF::PL)){
+            // if we just set the player in this node, set the player
+            switch (gameTree.get().getProperty(SGF::PL)[0][0]){
+                case 'B':
+                    activeColor = BLACK;
+                    break;
+                case 'W':
+                    activeColor = WHITE;
+                    break;
+            }
+        }
+    }
+
+    void GoGame::setActivePlayer(Stone player) {
+        if (player == EMPTY){
+            throw std::domain_error("Cannot set the current player to be an empty player");
+        }
+
+        // set the active player
+        activeColor = player;
+
+        // set the player in the game tree
+        gameTree.get().setProperty(SGF::PL, {activeColor == BLACK ? "B" : "W"});
     }
 
     bool GoGame::isAtRoot() const{
@@ -336,13 +473,20 @@ namespace sente {
         }
 
         // get the moves that lead to this sequence
-        auto sequence = getMoveSequence();
+        std::vector<Playable> sequence = getMoveSequence();
+
+        // determine if the first two items hold particular alternates
+        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(sequence[1]) << std::endl;
+
+        sequence = std::vector<Playable>(sequence.begin(), sequence.end() - steps);
+
+        std::cout << "playing a sequence of " << sequence.size() << " moves" << std::endl;
 
         // reset the board
         resetBoard();
 
         // play out the move sequence without the last few moves
-        playMoveSequence(std::vector<Move>(sequence.begin(), sequence.end() - steps));
+        playMoveSequence(sequence);
 
     }
 
@@ -352,31 +496,30 @@ namespace sente {
 
         while(not gameTree.isAtLeaf()){
             gameTree.stepDown(); // step into the next move
-            auto move = gameTree.get().getMove(); // get the move at this index
-            gameTree.stepUp(); // step up to the previous node and play the move from that node
-            playStone(move);
+
+            if (gameTree.get().getMove() != Move::nullMove){
+                auto move = gameTree.get().getMove(); // get the move at this index
+                gameTree.stepUp(); // step up to the previous node and play the move from that node
+                playStone(move);
+            }
+            else {
+                auto moves = gameTree.get().getAddedMoves();
+                gameTree.stepUp();
+                addStones(moves);
+            }
         }
     }
 
-    void GoGame::playMoveSequence(const std::vector<Move>& moves) {
-
-        auto baseMoveSequence = getMoveSequence();
-
-        try {
-            // play all the stones in the sequence
-            for (const auto& move : moves){
-                playStone(move);
+    void GoGame::playMoveSequence(const std::vector<Playable>& moves) {
+        for (const Playable& move : moves){
+            if (std::holds_alternative<Move>(move)){
+                std::cout << "playing a move" << std::endl;
+                playStone(std::get<Move>(move));
             }
-        }
-        catch (const utils::IllegalMoveException& except){
-            // reset to the original position
-            resetBoard();
-            for (const auto& move : baseMoveSequence){
-                playStone(move);
+            else {
+                std::cout << "adding stones" << std::endl;
+                addStones(std::get<std::vector<Move>>(move));
             }
-
-            // throw the exception again
-            throw except;
         }
     }
 
@@ -387,40 +530,62 @@ namespace sente {
         board->setLowerLeftOrigin(useLowerLeftOrigin);
     }
 
-    std::vector<Move> GoGame::getBranches() {
+    std::vector<Playable> GoGame::getBranches() {
 
         auto children = gameTree.getChildren();
-        std::vector<Move> branches(children.size());
+        std::vector<Playable> branches(children.size());
 
         for (unsigned i = 0; i < children.size(); i++){
-            branches[i] = children[i].getMove();
+            if (children[i].getMove() != Move::nullMove) {
+                branches[i] = children[i].getMove();
+            }
+            else {
+                branches[i] = children[i].getAddedMoves();
+            }
         }
 
         return branches;
     }
 
-    std::vector<Move> GoGame::getMoveSequence() {
+    std::vector<Playable> GoGame::getMoveSequence() {
 
         auto sequence = gameTree.getSequence();
-        std::vector<Move> moveSequence(sequence.size());
+        std::vector<Playable> moveSequence;
 
         for (unsigned i = 0; i < sequence.size(); i++){
-            moveSequence[i] = sequence[i].getMove();
+            if (sequence[i].getMove() != Move::nullMove){
+                // if the node has a single move add that move
+                moveSequence.push_back(sequence[i].getMove());
+                std::cout << "appending a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence.back()) << std::endl;
+            }
+            else {
+                // if the node has multiple moves, add all of them
+                moveSequence.push_back(sequence[i].getAddedMoves());
+                std::cout << "appending moves: " << std::boolalpha << std::holds_alternative<std::vector<Move>>(moveSequence.back()) << std::endl;
+            }
         }
+
+        std::cout << "first element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[0]) << std::endl;
+        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[1]) << std::endl;
 
         return moveSequence;
     }
 
 
-    std::vector<Move> GoGame::getDefaultSequence() {
+    std::vector<Playable> GoGame::getDefaultSequence() {
 
-        std::vector<Move> defaultBranch;
+        std::vector<Playable> defaultBranch;
 
         auto bookmark = gameTree.getSequence();
 
         while (not gameTree.isAtLeaf()){
             auto child = gameTree.getChildren()[0];
-            defaultBranch.push_back(child.getMove());
+            if (child.getMove() != Move::nullMove){
+                defaultBranch.push_back(child.getMove());
+            }
+            else {
+                defaultBranch.push_back(child.getAddedMoves());
+            }
             gameTree.stepDown();
         }
 
@@ -435,9 +600,9 @@ namespace sente {
 
     }
 
-    std::vector<std::vector<Move>> GoGame::getSequences(const std::vector<Move>& currentSequence) {
+    std::vector<std::vector<Playable>> GoGame::getSequences(const std::vector<Playable>& currentSequence) {
 
-        std::vector<std::vector<Move>> sequences;
+        std::vector<std::vector<Playable>> sequences;
 
         if (gameTree.isAtLeaf()){
             // if we are at a leaf, set the vector to just be the current Sequence
@@ -447,10 +612,15 @@ namespace sente {
             // otherwise, add all the children
             for (auto& child : gameTree.getChildren()){
                 // copy the current sequence
-                std::vector<Move> temp(currentSequence.begin(), currentSequence.end());
+                std::vector<Playable> temp(currentSequence.begin(), currentSequence.end());
 
                 // add the current move
-                temp.push_back(child.getMove());
+                if (child.getMove() != Move::nullMove){
+                    temp.push_back(child.getMove());
+                }
+                else {
+                    temp.push_back(child.getAddedMoves());
+                }
 
                 // step into the child and get its sequences
                 gameTree.stepTo(child);
@@ -555,7 +725,7 @@ namespace sente {
         return board->getSpace(x, y).getStone();
     }
     Stone GoGame::getActivePlayer() const {
-        return gameTree.getDepth() % 2 == 0 ? BLACK : WHITE;
+        return activeColor;
     }
 
     std::unique_ptr<_board> GoGame::copyBoard() const {
@@ -753,10 +923,10 @@ namespace sente {
         else {
             return "";
         }
-    };
+    }
     void GoGame::setComment(const std::string& comment) const {
         gameTree.get().setProperty(SGF::C, {comment});
-    };
+    }
 
     GoGame::operator std::string() const {
         if (getComment().empty()){
@@ -808,6 +978,16 @@ namespace sente {
 
     /**
      *
+     * gets the color of the player that starts the game
+     *
+     * @return
+     */
+    Stone GoGame::getStartingColor() const {
+        return gameTree.getRoot().hasProperty(SGF::HA) ? WHITE : BLACK;
+    }
+
+    /**
+     *
      * Updates the board with the specified move
      *
      * @param move
@@ -832,7 +1012,7 @@ namespace sente {
 
         // connect stones
         if (ourAffectedGroups.empty()){
-            // if we not connected to any group, create a new group!
+            // if we are not connected to any group, create a new group!
             groups[move] = std::make_shared<Group>(move);
         }
         else {
@@ -889,29 +1069,7 @@ namespace sente {
     }
 
     bool GoGame::isCorrectColor(const Move &move) {
-        // go through the tree until we get our parents
-        std::stack<SGF::SGFNode> previousMoves;
-
-        while (gameTree.get().getMove() == Move::nullMove and not gameTree.isAtRoot()){
-            previousMoves.push(gameTree.get());
-            gameTree.stepUp();
-        }
-
-        bool result;
-
-        if (gameTree.isAtRoot()){
-            result = move.getStone() == BLACK;
-        }
-        else {
-            result = move.getStone() != gameTree.get().getMove().getStone();
-        }
-
-        while (not previousMoves.empty()){
-            gameTree.stepTo(previousMoves.top());
-            previousMoves.pop();
-        }
-
-        return result;
+        return activeColor == move.getStone();
     }
 
     bool GoGame::isNotSelfCapture(const Move &move) const{
@@ -943,7 +1101,7 @@ namespace sente {
             }
         }
 
-        // create a temporary group object and merge all of the affected groups into it
+        // create a temporary group object and merge all the affected groups into it
         Group affectedGroup;
 
         if (not ourAffectedGroups.empty()){

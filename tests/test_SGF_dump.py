@@ -224,3 +224,154 @@ class TestBasics(TestCase):
         game = sgf.loads(text)
 
         last_two_moves = game.get_default_sequence()[-2:]
+
+
+class SettingStones(TestCase):
+
+    def test_set_black_black(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+        self.assertIn("AB", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AW", sgf.dumps(game))
+        self.assertIn("AB", sgf.dumps(game))
+
+    def test_set_black_white(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+        self.assertIn("AB", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.WHITE)])
+
+        self.assertNotIn("AE", sgf.dumps(game))
+
+    def test_set_black_empty(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+        self.assertIn("AB", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+
+        self.assertNotIn("AB", sgf.dumps(game))
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AW", sgf.dumps(game))
+
+    def test_set_white_black(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.WHITE)])
+        self.assertIn("AW", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AW", sgf.dumps(game))
+
+    def test_set_white_white(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.WHITE)])
+        self.assertIn("AW", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.WHITE)])
+
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AB", sgf.dumps(game))
+        self.assertIn("AW", sgf.dumps(game))
+
+    def test_set_white_empty(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.WHITE)])
+        self.assertIn("AW", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+
+        self.assertNotIn("AB", sgf.dumps(game))
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AW", sgf.dumps(game))
+
+    def test_set_empty_black(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+        self.assertNotIn("AE", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AW", sgf.dumps(game))
+
+    def test_set_empty_white(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+        self.assertNotIn("AE", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.WHITE)])
+
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AB", sgf.dumps(game))
+
+    def test_set_empty_empty(self):
+        """
+
+        makes sure that adding a stone and then removing it leaves no record
+
+        :return:
+        """
+
+        game = sente.Game()
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+        self.assertNotIn("AE", sgf.dumps(game))
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+
+        self.assertNotIn("AB", sgf.dumps(game))
+        self.assertNotIn("AE", sgf.dumps(game))
+        self.assertNotIn("AW", sgf.dumps(game))

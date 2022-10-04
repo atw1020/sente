@@ -22,7 +22,7 @@ namespace sente::GTP {
 
     typedef std::pair<bool, std::string> Response;
     typedef std::pair<std::string, LiteralType> ArgumentPattern;
-    typedef std::function<Response (Session* self, const std::vector<std::shared_ptr<Token>>& arguments)> CommandMethod;
+    typedef std::function<Response (const std::vector<std::shared_ptr<Token>>&)> CommandMethod;
 
     class Session {
     public:
@@ -61,7 +61,7 @@ namespace sente::GTP {
         // for resting the game
         void setGTPDisplayFlags();
 
-    private:
+    protected:
 
         bool active = true;
 

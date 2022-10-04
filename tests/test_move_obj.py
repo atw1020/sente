@@ -44,7 +44,6 @@ class MoveTest(TestCase):
     move2 = sente.Move(4, 4, sente.stone.BLACK)
     move3 = sente.Move(3, 4, sente.stone.BLACK)
     move4 = sente.Move(3, 4, sente.stone.WHITE)
-    move5 = sente.Move(0, 0, sente.stone.EMPTY)
 
     def test_equals(self):
         """
@@ -87,5 +86,4 @@ class MoveTest(TestCase):
         self.assertEqual("B E4", str(self.move1))
         self.assertEqual("B D4", str(self.move3))
         self.assertEqual("W D4", str(self.move4))
-        self.assertEqual("[Placeholder Move]", str(self.move5))
 

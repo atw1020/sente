@@ -17,7 +17,7 @@ from setuptools.command.build_ext import build_ext
 class MesonExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name=name, sources=[])
-        self.sourcedir = Path(sourcedir).absolute()
+        self.source_dir = Path(sourcedir).absolute()
 
 
 class MesonBuild(build_ext):
@@ -39,7 +39,7 @@ class MesonBuild(build_ext):
 
             # configure meson for the correct python version
             subprocess.check_call(
-                ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
+                ["meson", "configure", temp_dir]
             )
 
         # compile the code
@@ -78,7 +78,7 @@ def read_file(filename):
 setup(
     name="sente",
     python_requires=">=3.8.*",
-    version=read_file("version.txt").strip(),
+    version="0.4.3",
     author="Arthur Wesley",
     license="MIT",
     url="https://github.com/atw1020/sente",

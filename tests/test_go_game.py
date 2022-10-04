@@ -115,7 +115,7 @@ class TestBasicMethods(TestCase):
         game.pss()
         game.pss()
 
-        print(game.get_result())
+        self.assertEqual("W+7.5", str(game.get_result()))
 
     def test_get_point(self):
         """
@@ -377,7 +377,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(2, 2, sente.stone.BLACK), sente.Move(4, 4, sente.stone.WHITE), sente.Move(6, 6, sente.stone.BLACK)]
+        moves = [sente.Move(2, 2, sente.stone.BLACK),
+                 sente.Move(4, 4, sente.stone.WHITE), sente.Move(6, 6, sente.stone.BLACK)]
 
         game.play_sequence(moves)
 
@@ -395,7 +396,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE), sente.Move(7, 7, sente.stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE),
+                 sente.Move(7, 7, sente.stone.BLACK)]
 
         game.play_sequence(moves)
 
@@ -411,7 +413,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE),
+                 sente.Move(3, 3, sente.stone.BLACK)]
 
         with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play_sequence(moves)
@@ -435,7 +438,8 @@ class TestTreeNavigation(TestCase):
 
         default_branch = game.get_default_sequence()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE), sente.Move(3, 15, sente.stone.BLACK)]
+        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE),
+                 sente.Move(3, 15, sente.stone.BLACK)]
 
         self.assertEqual(moves, default_branch)
 
@@ -729,6 +733,24 @@ class TestTreeNavigation(TestCase):
 
         self.assertEqual("here is a backslash \\", game.comment)
 
+    def test_set_player(self):
+        """
+
+        makes sure that we can change the active player
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.set_active_player(sente.stone.WHITE)
+        self.assertEqual(sente.stone.WHITE, game.get_active_player())
+        self.assertTrue(game.is_legal(4, 4, sente.stone.WHITE))
+
+        game.set_active_player(sente.stone.BLACK)
+        self.assertEqual(sente.stone.BLACK, game.get_active_player())
+        self.assertTrue(game.is_legal(4, 4, sente.stone.BLACK))
+
 
 class TestNumpy(TestCase):
 
@@ -824,4 +846,267 @@ class TestNumpy(TestCase):
                     correct_board[i][j][2] = 1
 
         self.assertTrue(np.array_equal(correct_board, numpy))
+
+
+class TestSetPoints(TestCase):
+
+    def test_handicap_1(self):
+        """
+
+        checks to see if a handicap with 1 stone works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(1))
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_2(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(2))
+
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_3(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(3))
+
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_4(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(4))
+
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_5(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(5))
+
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_6(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(6))
+
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_7(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(7))
+
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_8(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(8))
+
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_handicap_9(self):
+        """
+
+        checks to see if a handicap with 2 stones works
+
+        :return:
+        """
+
+        game = sente.Game(handicap=sente.get_handicap_stones(9))
+
+        self.assertEqual(game.get_point(4, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 16), sente.stone.BLACK)
+        self.assertEqual(game.get_point(16, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(4, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(10, 10), sente.stone.BLACK)
+        self.assertEqual(game.get_active_player(), sente.stone.WHITE)
+
+    def test_play_after_set(self):
+        """
+
+        checks to see if we can continue normal play after we set some points
+
+        :return:
+        """
+
+    def test_setup_problem(self):
+        """
+
+        tests to see if we can add many moves
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.set_points([sente.Move(1, 0, sente.stone.BLACK),
+                         sente.Move(1, 1, sente.stone.BLACK),
+                         sente.Move(1, 2, sente.stone.BLACK),
+                         sente.Move(1, 3, sente.stone.BLACK),
+                         sente.Move(0, 3, sente.stone.BLACK)])
+
+        game.set_points([sente.Move(2, 0, sente.stone.WHITE),
+                         sente.Move(2, 1, sente.stone.WHITE),
+                         sente.Move(2, 2, sente.stone.WHITE),
+                         sente.Move(2, 3, sente.stone.WHITE),
+                         sente.Move(2, 4, sente.stone.WHITE),
+                         sente.Move(1, 4, sente.stone.WHITE),
+                         sente.Move(0, 4, sente.stone.WHITE)])
+
+        self.assertEqual(game.get_point(2, 1), sente.stone.BLACK)
+        self.assertEqual(game.get_point(2, 2), sente.stone.BLACK)
+        self.assertEqual(game.get_point(2, 3), sente.stone.BLACK)
+        self.assertEqual(game.get_point(2, 4), sente.stone.BLACK)
+        self.assertEqual(game.get_point(1, 4), sente.stone.BLACK)
+
+        self.assertEqual(game.get_point(3, 1), sente.stone.WHITE)
+        self.assertEqual(game.get_point(3, 2), sente.stone.WHITE)
+        self.assertEqual(game.get_point(3, 3), sente.stone.WHITE)
+        self.assertEqual(game.get_point(3, 4), sente.stone.WHITE)
+        self.assertEqual(game.get_point(3, 5), sente.stone.WHITE)
+        self.assertEqual(game.get_point(2, 5), sente.stone.WHITE)
+        self.assertEqual(game.get_point(1, 5), sente.stone.WHITE)
+
+        self.assertEqual(game.get_active_player(), sente.stone.BLACK)
+
+    def test_reset_points(self):
+        """
+
+        makes sure we can set points to be empty
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.set_points([sente.Move(4, 4, sente.stone.BLACK)])
+        game.set_points([sente.Move(4, 4, sente.stone.EMPTY)])
+
+        self.assertEqual(sente.stone.EMPTY, game.get_point(4, 4))
+
+    def test_undo_adds(self):
+        """
+
+        tests to see if undoing add moves works properly
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+
+        game.play([sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)])
+        game.step_up()
+
+        self.assertEqual((sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)),
+                         tuple(game.get_branches()[0]))
+
+    def test_play_branches(self):
+        """
+
+        tests to see if undoing add moves works properly
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 10)
+        print("*****************adding first stones*****************")
+        game.play([sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)])
+        print("*****************first step up*****************")
+        game.step_up()
+        print("*****************adding second stones*****************")
+        game.play([sente.Move(15, 15, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)])
+        print("*****************second step up*****************")
+        game.step_up()
+        print("*****************printing branches*****************")
+        print(game.get_branches())
+
+        self.assertEqual((sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)),
+                         tuple(game.get_branches()[0]))
+        self.assertEqual((sente.Move(15, 15, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)),
+                         tuple(game.get_branches()[1]))
+
 

@@ -18,9 +18,11 @@ namespace sente::SGF {
         explicit SGFNode(const std::vector<std::string>& addedMoves);
 
         Move getMove() const;
+        std::vector<Move> getAddedMoves() const;
 
         void setProperty(SGFProperty property, const std::vector<std::string>& value);
         void appendProperty(SGFProperty property, const std::string& value);
+        void removeItem(SGFProperty property, const std::string& del);
 
         bool hasProperty(SGFProperty property) const;
         bool isEmpty() const;

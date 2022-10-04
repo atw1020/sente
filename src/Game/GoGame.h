@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <fstream>
+#include <variant>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -36,10 +37,13 @@ namespace std {
 
 namespace sente {
 
+    typedef std::variant<Move, std::vector<Move>> Playable;
+
     class GoGame {
     public:
 
-        GoGame(unsigned side, Rules rules, double komi);
+        GoGame(unsigned side, Rules rules, double komi,
+               std::vector<Move> handicap);
         explicit GoGame(utils::Tree<SGF::SGFNode>& SGFTree);
 
         void resetBoard();
@@ -51,6 +55,7 @@ namespace sente {
         bool isLegal(const Move& move);
         bool isLegal(unsigned x, unsigned y);
         bool isLegal(unsigned x, unsigned y, Stone stone);
+        bool isGTPLegal(const Move& move);
         bool isOver() const;
 
         void playStone(const Move& move);
@@ -59,26 +64,26 @@ namespace sente {
 
         bool isAddLegal(const Move& move);
 
-        void addStone(const Move& move);
+        void addStones(const std::vector<Move>& moves);
 
         ///
         /// movement through the game tree
         ///
 
-        bool isAtRoot() const;
+        [[nodiscard]] bool isAtRoot() const;
         void stepUp(unsigned steps);
 
         void playDefaultSequence();
-        void playMoveSequence(const std::vector<Move>& moves);
+        void playMoveSequence(const std::vector<Playable>& moves);
 
-        std::vector<Move> getBranches();
-        std::vector<Move> getMoveSequence();
-        std::vector<Move> getDefaultSequence();
+        std::vector<Playable> getBranches();
+        std::vector<Playable> getMoveSequence();
+        std::vector<Playable> getDefaultSequence();
 
-        std::vector<std::vector<Move>> getSequences(const std::vector<Move>& currentSequence);
+        std::vector<std::vector<Playable>> getSequences(const std::vector<Playable>& currentSequence);
 
-        unsigned getMoveNumber() const;
-        utils::Tree<SGF::SGFNode> getMoveTree() const;
+        [[nodiscard]] unsigned getMoveNumber() const;
+        [[nodiscard]] utils::Tree<SGF::SGFNode> getMoveTree() const;
 
         ///
         /// Getting and setting properties
@@ -89,7 +94,7 @@ namespace sente {
         void setProperty(const std::string& command, const std::string& value);
         void setProperty(const std::string& command, const std::vector<std::string>& values);
 
-        std::string getComment() const;
+        [[nodiscard]] std::string getComment() const;
         void setComment(const std::string& comment) const;
 
         ///
@@ -118,8 +123,11 @@ namespace sente {
         double getKomi() const;
 
         void setKomi(double newKomi);
+        void setActivePlayer(Stone player);
 
         explicit operator std::string() const;
+
+        std::unordered_set<Move> getHandicapStones() const;
 
     private:
 
@@ -127,10 +135,13 @@ namespace sente {
 
         Rules rules; // 4 bytes
         unsigned passCount = 0; // 4 bytes
+        // TODO: Switch from doubles to floats
         double komi; // 8 bytes
 
-        double blackPoints = NAN;
-        double whitePoints = NAN;
+        double blackPoints = NAN; // 8 bytes
+        double whitePoints = NAN; // 8 bytes
+
+        Stone activeColor;
 
         // Changes.txt: look into moving the board onto the stack
         std::shared_ptr<_board> board; // 16 bytes
@@ -148,13 +159,14 @@ namespace sente {
         void clearBoard();
         void resetKoPoint();
 
+        [[nodiscard]] Stone getStartingColor() const;
+
         void updateBoard(const Move& move);
         void connectGroups(const Move& move, const std::unordered_set<std::shared_ptr<Group>>& toConnect);
 
         bool isCorrectColor(const Move& move);
         bool isNotSelfCapture(const Move& move) const;
         bool isNotKoPoint(const Move& move) const;
-
     };
 }
 

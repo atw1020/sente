@@ -12,9 +12,57 @@
 #include "Game/GoGame.h"
 #include "Utils/Numpy.h"
 #include "Utils/SenteExceptions.h"
-#include "Utils/GTP/Session.h"
+#include "Utils/GTP/DefaultSession.h"
 
 namespace py = pybind11;
+
+std::vector<sente::Move> getHandicapStones(unsigned handicap){
+
+    switch (handicap){
+        case 1:
+            return {sente::Move(15, 3, sente::BLACK)};
+        case 2:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK)};
+        case 3:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK)};
+        case 4:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK)};
+        case 5:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(9, 9, sente::BLACK)
+            };
+        case 6:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK)
+            };
+        case 7:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK),
+                    sente::Move(9, 9, sente::BLACK)
+            };
+        case 8:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK),
+                    sente::Move(9, 3, sente::BLACK), sente::Move(9, 15, sente::BLACK)
+            };
+        case 9:
+            return {sente::Move(15, 3, sente::BLACK), sente::Move(3, 15, sente::BLACK),
+                    sente::Move(15, 15, sente::BLACK), sente::Move(3, 3, sente::BLACK),
+                    sente::Move(3, 9, sente::BLACK), sente::Move(15, 9, sente::BLACK),
+                    sente::Move(9, 3, sente::BLACK), sente::Move(9, 15, sente::BLACK),
+                    sente::Move(9, 9, sente::BLACK)
+            };
+        default:
+            throw std::domain_error("Invalid number of stones (must be between 1 and 9)");
+    }
+
+}
 
 PYBIND11_MODULE(sente, module){
 
@@ -271,6 +319,15 @@ PYBIND11_MODULE(sente, module){
                 return not (us == other);
             });
 
+    module.def("get_handicap_stones", &getHandicapStones,
+          R"pbdoc(
+
+                generate a list of stones to use as a handicap
+
+                :param stones: number of stones to give the opponent
+                :return: list of stones to use as a handicap
+          )pbdoc");
+
     py::class_<sente::GoGame>(module, "Game", R"pbdoc(
 
             The Sente Game object.
@@ -279,16 +336,18 @@ PYBIND11_MODULE(sente, module){
             For more on the difference between ``sente.Game`` and ``sente.Board`` see :ref:`Boards vs Games`.
 
         )pbdoc")
-        .def(py::init<unsigned, sente::Rules, double>(),
+        .def(py::init<unsigned, sente::Rules, double, std::vector<sente::Move>>(),
             py::arg("board_size") = 19,
             py::arg("rules") = sente::Rules::CHINESE,
             py::arg("komi") = INFINITY,
+            py::arg("handicap") = std::vector<sente::Move>{sente::Move::nullMove},
             R"pbdoc(
                 initializes a go game with a specified board size and rules
 
-                :param: board_size
-                :param: rules to play the game by
-                :param: komi of the game
+                :param board_size: size of the board to play
+                :param rules: to play the game by
+                :param komi: of the game
+                :param handicap: handicap to give the black player
             )pbdoc")
         .def("get_active_player", &sente::GoGame::getActivePlayer,
             R"pbdoc(
@@ -408,6 +467,14 @@ PYBIND11_MODULE(sente, module){
                 :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
 
             )pbdoc")
+        .def("play", &sente::GoGame::addStones,
+                 R"pbdoc(
+
+                Sets a list of particular points on the board to the specified color
+
+                :param moves: moves to play on the board
+                :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
+            )pbdoc")
         .def("play", [](sente::GoGame& game, const py::object& obj){
                 if (obj.is_none()){
                     // pass if the object is none
@@ -424,6 +491,23 @@ PYBIND11_MODULE(sente, module){
                 :param move: The Move object to play
                 :raises IllegalMoveException: If the move is illegal. (see ``Game.is_legal``)
                 :raises ValueError: If a valid Move object is not passed
+
+            )pbdoc")
+        .def("set_points", &sente::GoGame::addStones,
+            R"pbdoc(
+
+                Sets a list of particular points on the board to the specified color
+
+                :param moves: moves to play on the board
+                :raises IllegalMoveException: If any stone cannot be added. Most move legality requirements are ignored.
+            )pbdoc")
+        .def("set_active_player", &sente::GoGame::setActivePlayer,
+             R"pbdoc(
+
+                Sets the active player
+
+                :param player: the color of the player to set to be active
+                :raises ValueError: If the color is set the EMPTY
 
             )pbdoc")
         .def("pss", [](sente::GoGame& game){
@@ -701,17 +785,17 @@ PYBIND11_MODULE(sente, module){
         Utilities for implementing the go text protocol (GTP)
     )pbdoc");
 
-    py::class_<sente::GTP::Session>(GTP, "Session")
+    py::class_<sente::GTP::DefaultSession>(GTP, "Session")
             .def(py::init<std::string, std::string>(),
                     py::arg("name") = "unimplemented_engine",
                     py::arg("version") = "0.0.0")
-            .def("interpret", &sente::GTP::Session::interpret, R"pbdoc(
+            .def("interpret", &sente::GTP::DefaultSession::interpret, R"pbdoc(
                     runs a string through the sente GTP interpreter
 
                     :param command: string containing the GTP command to execute
                     :return response: response from the GTP interpreter, neglecting one newline
                 )pbdoc")
-            .def("GenMove", [inspect, typing](sente::GTP::Session& session, py::function& function){
+            .def("GenMove", [inspect, typing](sente::GTP::DefaultSession& session, py::function& function){
                 return session.registerGenMove(function, inspect, typing);
             }, R"pbdoc(
                 Decorator function to implement the ``genmove`` command
@@ -719,22 +803,23 @@ PYBIND11_MODULE(sente, module){
                 :param function: function to register
                 :return: the original function
             )pbdoc")
-            .def("Command", [inspect, typing](sente::GTP::Session& session, py::function& function) -> py::function& {
-                return session.registerCommand(function, inspect, typing);
+            .def("Command", [inspect, typing](sente::GTP::DefaultSession& session, py::function& function) -> py::function& {
+                return session.Session::registerCommand(function, inspect, typing);
             }, R"pbdoc(
                 Decorator function for a private GTP extension
 
                 :param function: function to register
                 :return: the original function
             )pbdoc")
-            .def("active", [](const sente::GTP::Session& engine){
+            .def("active", [](const sente::GTP::DefaultSession& engine){
                 return engine.isActive();
             }, R"pbdoc(
                 returns whether or not the GTP Session is active
 
                 :return active: whether or not the GTP Session is active
             )pbdoc")
-            .def_readwrite("game", &sente::GTP::Session::masterGame)
-            .def_property("name", &sente::GTP::Session::getEngineName, &sente::GTP::Session::setEngineName);
+            .def_readwrite("game", &sente::GTP::DefaultSession::masterGame)
+            .def_property("name", &sente::GTP::DefaultSession::getEngineName,
+                          &sente::GTP::DefaultSession::setEngineName);
 
 }

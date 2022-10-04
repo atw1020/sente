@@ -12,6 +12,28 @@ namespace py = pybind11;
 
 namespace sente {
 
+//    Stone operator not(const Stone& stone){
+//        switch(stone){
+//            case EMPTY:
+//                return EMPTY;
+//            case BLACK:
+//                return WHITE;
+//            case WHITE:
+//                return BLACK;
+//        }
+//    }
+
+    Stone oppositeColor(const Stone& stone){
+        switch(stone) {
+            case EMPTY:
+                return EMPTY;
+            case BLACK:
+                return WHITE;
+            case WHITE:
+                return BLACK;
+        }
+    }
+
     Vertex::Vertex(unsigned int x, unsigned int y) {
         this->x = x; this->y = y;
     }
@@ -167,7 +189,7 @@ namespace sente {
                 str << "W";
                 break;
             default:
-                return "[Placeholder Move]";
+                str << "E";
         }
 
         if (isPass()){
@@ -186,10 +208,6 @@ namespace sente {
 
     Move::operator std::string() const {
         char first;
-
-        if (stone == EMPTY){
-            return "[Placeholder Move]";
-        }
 
         // determine the letter
         if (x + 'A' < 'I'){
