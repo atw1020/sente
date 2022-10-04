@@ -37,11 +37,6 @@ class MesonBuild(build_ext):
                 ["meson", "setup", temp_dir, "--buildtype", "debug" if self.debug else "release"]
             )
 
-            # configure meson for the correct python version
-            subprocess.check_call(
-                ["meson", "configure", temp_dir]
-            )
-
         # compile the code
         subprocess.check_call(
             ["meson", "compile", "-C", self.build_temp],
