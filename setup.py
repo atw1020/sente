@@ -44,7 +44,7 @@ class MesonBuild(build_ext):
 
         print("finished subprocess")
         print("build temp is", self.build_temp)
-        print("")
+        print("files in self.build_temp", [item.name for item in Path(self.build_temp).iterdir()])
 
         pyd_files = list(temp_dir.glob("*.pyd"))
         print(pyd_files)

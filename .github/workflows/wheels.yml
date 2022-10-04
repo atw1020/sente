@@ -5,8 +5,8 @@ on:
   pull_request:
   push:
     branches:
-      # - master
-      - meson-build
+      - master
+      # - meson-build
 
 jobs:
   build:
