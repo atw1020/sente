@@ -43,12 +43,14 @@ class MesonBuild(build_ext):
         )
 
         print("finished subprocess")
-
-        if not ext_fullpath.exists():
-            ext_fullpath.mkdir(parents=True, exist_ok=True)
+        print("build temp is", self.build_temp)
+        print("")
 
         pyd_files = list(temp_dir.glob("*.pyd"))
         print(pyd_files)
+
+        if not ext_fullpath.exists():
+            ext_fullpath.mkdir(parents=True, exist_ok=True)
 
         if len(pyd_files) != 0:
             if not (temp_dir/ext_filename).exists() and "amd64" in str(pyd_files[0]):
