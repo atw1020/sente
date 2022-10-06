@@ -15,7 +15,7 @@ message('using installation', inst.path())
 # ===========================================================
 
 # pybind11 dependency
-pybind11_dep = dependency('pybind11')
+pybind11_dep = dependency('pybind11', install: true)
 
 # disable throwing std::bad_access on darwin
 if host_machine.system() == 'darwin'
