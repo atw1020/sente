@@ -8,7 +8,6 @@ project('sente', 'cpp',
 # python 3 import for extension_module
 python_module = import('python')
 inst = python_module.find_installation()
-message('using installation', inst.path())
 
 # ===========================================================
 # PyBind11
