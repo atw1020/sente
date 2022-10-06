@@ -48,6 +48,7 @@ jobs:
           CIBW_BEFORE_ALL: "pip3 install meson && meson wrap install pybind11 && echo y | pip3 uninstall meson"
           CIBW_BEFORE_BUILD: "pip install meson ninja"
           CIBW_ARCHS_MACOS: auto universal2
+          CIBW_SKIP: "cp38-win32 cp39-win32 cp310-win32 cp311-win32 pp38-win_amd64"
           CIBW_TEST_SKIP: "*universal2:arm64"
 
       - name: Verify clean directory
