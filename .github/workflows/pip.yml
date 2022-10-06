@@ -45,7 +45,12 @@ jobs:
 
       - uses: pypa/cibuildwheel@v2.9.0
         env:
-          CIBW_BEFORE_BUILD: "pip3 install meson ninja && python3 -m meson wrap install pybind11"
+          CIBW_BEFORE_BUILD_MACOS: "python -m venv venv && source venv/bin/activate && 
+                                    pip install meson ninja && wrap install pybind11"
+          CIBW_BEFORE_BUILD_LINUX: "python -m venv venv && source venv/bin/activate && 
+                                    pip install meson ninja && wrap install pybind11"
+          CIBW_BEFORE_BUILD_WINDOWS: "python -m venv venv && venv\Scripts\activate.bat && 
+                                    pip install meson ninja && wrap install pybind11"
           CIBW_ARCHS_MACOS: auto universal2
           CIBW_TEST_SKIP: "*universal2:arm64"
 
