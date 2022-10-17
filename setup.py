@@ -36,9 +36,6 @@ class MesonBuild(build_ext):
             subprocess.check_call(
                 ["meson", "setup", temp_dir, "--buildtype", "debug" if self.debug else "release"]
             )
-            subprocess.check_call(
-                ["meson", "configure", temp_dir, "-Dpython_executable=" + sys.executable]
-            )
 
         # compile the code
         subprocess.check_call(
