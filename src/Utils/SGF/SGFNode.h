@@ -18,7 +18,7 @@ namespace sente::SGF {
         explicit SGFNode(const std::vector<std::string>& addedMoves);
 
         Move getMove() const;
-        std::vector<Move> getAddedMoves() const;
+        std::unordered_set<Move> getAddedMoves() const;
 
         void setProperty(SGFProperty property, const std::vector<std::string>& value);
         void appendProperty(SGFProperty property, const std::string& value);
@@ -38,7 +38,7 @@ namespace sente::SGF {
     private:
 
         Move move;
-        std::vector<Move> addedMoves;
+        std::unordered_set<Move> addedMoves;
         std::unordered_map<SGFProperty, std::vector<std::string>> properties;
 
     };

@@ -28,7 +28,7 @@ namespace std {
 
 namespace sente {
 
-    GoGame::GoGame(unsigned side, Rules rules, double komi, std::vector<Move> handicap) {
+    GoGame::GoGame(unsigned side, Rules rules, double komi, std::unordered_set<Move> handicap) {
 
         // default Komi values
         if (komi == INFINITY){
@@ -334,7 +334,7 @@ namespace sente {
      *
      * @param move to add to the board
      */
-    void GoGame::addStones(const std::vector<Move>& moves){
+    void GoGame::addStones(const std::unordered_set<Move>& moves){
 
 //        py::gil_scoped_release release;
 
@@ -358,7 +358,7 @@ namespace sente {
 
         if (node->getMove() != Move::nullMove){
             // create a new node
-            std::cout << "not on a null move, creating a new node" << std::endl;
+//            std::cout << "not on a null move, creating a new node" << std::endl;
             node = &temp;
             insert = true;
         }
@@ -430,7 +430,7 @@ namespace sente {
 //        std::cout << "appending a node with " << node->getAddedMoves().size() << " added moves" << std::endl;
 
         if (insert){
-            std::cout << "inserting the node at depth " << gameTree.getDepth() << std::endl;
+//            std::cout << "inserting the node at depth " << gameTree.getDepth() << std::endl;
             gameTree.insert(*node);
         }
 
@@ -525,7 +525,7 @@ namespace sente {
             }
             else {
 //                std::cout << "adding stones" << std::endl;
-                addStones(std::get<std::vector<Move>>(move));
+                addStones(std::get<std::unordered_set<Move>>(move));
             }
         }
     }

@@ -37,13 +37,13 @@ namespace std {
 
 namespace sente {
 
-    typedef std::variant<Move, std::vector<Move>> Playable;
+    typedef std::variant<Move, std::unordered_set<Move>> Playable;
 
     class GoGame {
     public:
 
         GoGame(unsigned side, Rules rules, double komi,
-               std::vector<Move> handicap);
+               std::unordered_set<Move> handicap);
         explicit GoGame(utils::Tree<SGF::SGFNode>& SGFTree);
 
         void resetBoard();
@@ -64,7 +64,7 @@ namespace sente {
 
         bool isAddLegal(const Move& move);
 
-        void addStones(const std::vector<Move>& moves);
+        void addStones(const std::unordered_set<Move>& moves);
 
         ///
         /// movement through the game tree

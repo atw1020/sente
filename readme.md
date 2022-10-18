@@ -5,7 +5,7 @@
 
 [![PyPI version](https://badge.fury.io/py/sente.svg)](https://badge.fury.io/py/sente)
 [![docs](https://readthedocs.org/projects/sente/badge/?version=latest)](https://sente.readthedocs.io/en/latest/)
-[![tests](https://github.com/atw1020/sente/actions/workflows/tests.yml/badge.svg)](https://github.com/atw1020/sente/actions/workflows/tests.yml)
+[![tests](https://github.com/atw1020/sente/actions/workflows/wheels.yml/badge.svg)](https://github.com/atw1020/sente/actions/workflows/tests.yml)
 [![pip](https://github.com/atw1020/sente/actions/workflows/pip.yml/badge.svg)](https://pypi.org/project/sente/)
 
 

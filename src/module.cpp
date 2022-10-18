@@ -16,7 +16,7 @@
 
 namespace py = pybind11;
 
-std::vector<sente::Move> getHandicapStones(unsigned handicap){
+std::unordered_set<sente::Move> getHandicapStones(unsigned handicap){
 
     switch (handicap){
         case 1:
@@ -205,6 +205,9 @@ PYBIND11_MODULE(sente, module){
         .def("__str__", [](const sente::Move& move){
             return std::string(move);
         })
+        .def("__hash__", [](const sente::Move& move){
+            return std::hash<sente::Move>{}(move);
+        })
         .def("__repr__", [](const sente::Move& move){
             return "<sente.Move " + std::string(move) + ">";
         });
@@ -336,11 +339,11 @@ PYBIND11_MODULE(sente, module){
             For more on the difference between ``sente.Game`` and ``sente.Board`` see :ref:`Boards vs Games`.
 
         )pbdoc")
-        .def(py::init<unsigned, sente::Rules, double, std::vector<sente::Move>>(),
+        .def(py::init<unsigned, sente::Rules, double, std::unordered_set<sente::Move>>(),
             py::arg("board_size") = 19,
             py::arg("rules") = sente::Rules::CHINESE,
             py::arg("komi") = INFINITY,
-            py::arg("handicap") = std::vector<sente::Move>{sente::Move::nullMove},
+            py::arg("handicap") = std::unordered_set<sente::Move>{sente::Move::nullMove},
             R"pbdoc(
                 initializes a go game with a specified board size and rules
 

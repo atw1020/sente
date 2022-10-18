@@ -2,8 +2,8 @@
 // Created by arthur wesley on 8/27/21.
 //
 
-#include <iostream>
 #include <sstream>
+#include <iostream>
 #include <pybind11/pybind11.h>
 
 #include "SGFNode.h"
@@ -135,7 +135,7 @@ namespace sente::SGF {
         return move;
     }
 
-    std::vector<Move> SGFNode::getAddedMoves() const {
+    std::unordered_set<Move> SGFNode::getAddedMoves() const {
         return addedMoves;
     }
 
@@ -176,13 +176,13 @@ namespace sente::SGF {
             }
 
             if (property == AB){
-                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
+                addedMoves.insert({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
             }
             else if (property == AW) {
-                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
+                addedMoves.insert({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
             }
             else {
-                addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
+                addedMoves.insert({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
             }
         }
         else {
@@ -258,7 +258,7 @@ namespace sente::SGF {
             }
 
             // empty the added moves vector
-            addedMoves = std::vector<Move>();
+            addedMoves = std::unordered_set<Move>();
 
             for (const auto& value : values){
                 if (value.empty()){
@@ -268,13 +268,13 @@ namespace sente::SGF {
                     throw utils::InvalidSGFException("move does not use alphabetical letters");
                 }
                 if (property == AB){
-                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
+                    addedMoves.insert({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), BLACK});
                 }
                 else if (property == AW) {
-                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
+                    addedMoves.insert({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), WHITE});
                 }
                 else {
-                    addedMoves.push_back({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
+                    addedMoves.insert({unsigned(value[0] - 'a'), unsigned(value[1] - 'a'), EMPTY});
                 }
             }
         }
@@ -377,17 +377,7 @@ namespace sente::SGF {
 
     bool SGFNode::operator==(const SGFNode &other) const {
 
-        bool sameMoves = true;
-
-        for (const auto& move : addedMoves){
-            // if the move isn't in the other node's moves
-            if (std::find(other.addedMoves.begin(), other.addedMoves.end(), move) == other.addedMoves.end()){
-                sameMoves = false;
-                break;
-            }
-        }
-
-        return (move == other.move) and sameMoves;
+        return (move == other.move) and addedMoves == other.addedMoves;
     }
 
 }
