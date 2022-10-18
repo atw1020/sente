@@ -14,11 +14,14 @@ inst = python_module.find_installation()
 # ===========================================================
 
 # pybind11 dependency
-pybind11_dep = dependency('pybind11', required: false)
+pybind11_dep = dependency('pybind11', required: true)
 
-if not pybind11_dep.found()
-    libpybind11 = subproject('pybind11')
-    pybind11_dep = libpybind11.get_variable('pybind11_dep')
+# disable throwing std::bad_access on darwin
+if host_machine.system() == 'darwin'
+    # fixme: find a better way to enable std::variant usage on darwin
+    args = ['-D_LIBCPP_DISABLE_AVAILABILITY']
+else
+    args = []
 endif
 
 inst.extension_module('sente', 'src/module.cpp',
@@ -38,5 +41,6 @@ inst.extension_module('sente', 'src/module.cpp',
                       'src/Utils/GTP/Controller.h', 'src/Utils/GTP/Controller.cpp',
                       'src/Utils/GTP/Session.h', 'src/Utils/GTP/Session.cpp',
                       'src/Utils/GTP/PythonBindings.cpp', 'src/Utils/GTP/PythonBindings.h',
-                      dependencies: [pybind11_dep, inst.dependency()])
+                      dependencies: [pybind11_dep, inst.dependency()],
+                      cpp_args: args)
 

@@ -37,21 +37,20 @@ class MesonBuild(build_ext):
                 ["meson", "setup", temp_dir, "--buildtype", "debug" if self.debug else "release"]
             )
 
-            # configure meson for the correct python version
-            subprocess.check_call(
-                ["meson", "configure", temp_dir]
-            )
-
         # compile the code
         subprocess.check_call(
             ["meson", "compile", "-C", self.build_temp],
         )
 
-        if not ext_fullpath.exists():
-            ext_fullpath.mkdir(parents=True, exist_ok=True)
+        # print("finished subprocess")
+        # print("build temp is", self.build_temp)
+        # print("files in self.build_temp", [item.name for item in Path(self.build_temp).iterdir()])
 
         pyd_files = list(temp_dir.glob("*.pyd"))
-        print(pyd_files)
+        # print(pyd_files)
+
+        if not ext_fullpath.exists():
+            ext_fullpath.mkdir(parents=True, exist_ok=True)
 
         if len(pyd_files) != 0:
             if not (temp_dir/ext_filename).exists() and "amd64" in str(pyd_files[0]):

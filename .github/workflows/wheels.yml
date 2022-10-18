@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      # - master
+      - master
       - meson-build
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.11.0
 
       - name: Add requirements
-        run: pip install --upgrade meson ninja wheel setuptools; meson wrap install pybind11
+        run: pip install --upgrade meson ninja wheel setuptools
 
       - name: Build and install
         run: pip install -e .
