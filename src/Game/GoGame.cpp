@@ -7,7 +7,7 @@
 #include <sstream>
 #include <iomanip>
 
-// #Include <pybind11/pybind11.h>
+// #include <pybind11/pybind11.h>
 
 #include "GoGame.h"
 #include "LifeAndDeath.h"
@@ -349,15 +349,17 @@ namespace sente {
         }
 
         // get a reference to the node we will be working with
-        SGF::SGFNode& node = gameTree.get();
+        SGF::SGFNode* node = &gameTree.get();
+        auto temp = SGF::SGFNode(Move::nullMove);
         bool insert = false;
 
 //        std::cout << "first move is "
 //                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
 
-        if (node.getMove() != Move::nullMove){
+        if (node->getMove() != Move::nullMove){
             // create a new node
-            node = SGF::SGFNode(Move::nullMove);
+            std::cout << "not on a null move, creating a new node" << std::endl;
+            node = &temp;
             insert = true;
         }
 
@@ -382,7 +384,7 @@ namespace sente {
                     break;
             }
 
-            auto existingMoves = node.getAddedMoves();
+            auto existingMoves = node->getAddedMoves();
 
             bool skipAddingMove = false;
 
@@ -396,17 +398,17 @@ namespace sente {
             positionInfo = std::string(positionInfo.begin() + 2, positionInfo.end() - 1);
 
             if (std::find(existingMoves.begin(), existingMoves.end(), blackMove) != existingMoves.end()){
-                node.removeItem(SGF::AB, positionInfo);
+                node->removeItem(SGF::AB, positionInfo);
                 // we are skipping if the type of the move is empty
                 skipAddingMove = property == SGF::AE;
             }
             if (std::find(existingMoves.begin(), existingMoves.end(), whiteMove) != existingMoves.end()){
-                node.removeItem(SGF::AW, positionInfo);
+                node->removeItem(SGF::AW, positionInfo);
                 // we are skipping if the type of the move is empty
                 skipAddingMove = property == SGF::AE;
             }
             if (std::find(existingMoves.begin(), existingMoves.end(), emptyMove) != existingMoves.end()){
-                node.removeItem(SGF::AE, positionInfo);
+                node->removeItem(SGF::AE, positionInfo);
             }
 
             // also skip if we are adding an empty move
@@ -417,7 +419,7 @@ namespace sente {
 
             if (not skipAddingMove){
                 //            std::cout << "adding move " << std::string(move) << std::endl;
-                node.appendProperty(property, positionInfo);
+                node->appendProperty(property, positionInfo);
             }
 
             // put the stone into the board and update the board
@@ -425,11 +427,16 @@ namespace sente {
             updateBoard(move);
         }
 
-//        std::cout << "appending a node with " << node.getAddedMoves().size() << " added moves" << std::endl;
+//        std::cout << "appending a node with " << node->getAddedMoves().size() << " added moves" << std::endl;
 
         if (insert){
-            gameTree.insert(node);
+//            std::cout << "inserting the node" << std::endl;
+            gameTree.insert(*node);
         }
+
+        std::cout << gameTree.getDepth() << std::endl;
+
+
 
         // update the player if necessary
         if (gameTree.get().hasProperty(SGF::PL)){
@@ -476,11 +483,13 @@ namespace sente {
         std::vector<Playable> sequence = getMoveSequence();
 
         // determine if the first two items hold particular alternates
-        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(sequence[1]) << std::endl;
+//        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(sequence[1]) << std::endl;
 
         sequence = std::vector<Playable>(sequence.begin(), sequence.end() - steps);
 
-        std::cout << "playing a sequence of " << sequence.size() << " moves" << std::endl;
+
+
+//        std::cout << "playing a sequence of " << sequence.size() << " moves" << std::endl;
 
         // reset the board
         resetBoard();
@@ -556,17 +565,17 @@ namespace sente {
             if (sequence[i].getMove() != Move::nullMove){
                 // if the node has a single move add that move
                 moveSequence.push_back(sequence[i].getMove());
-                std::cout << "appending a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence.back()) << std::endl;
+//                std::cout << "appending a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence.back()) << std::endl;
             }
             else {
                 // if the node has multiple moves, add all of them
                 moveSequence.push_back(sequence[i].getAddedMoves());
-                std::cout << "appending moves: " << std::boolalpha << std::holds_alternative<std::vector<Move>>(moveSequence.back()) << std::endl;
+//                std::cout << "appending moves: " << std::boolalpha << std::holds_alternative<std::vector<Move>>(moveSequence.back()) << std::endl;
             }
         }
 
-        std::cout << "first element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[0]) << std::endl;
-        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[1]) << std::endl;
+//        std::cout << "first element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[0]) << std::endl;
+//        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[1]) << std::endl;
 
         return moveSequence;
     }
