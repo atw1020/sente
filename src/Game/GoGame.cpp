@@ -430,11 +430,9 @@ namespace sente {
 //        std::cout << "appending a node with " << node->getAddedMoves().size() << " added moves" << std::endl;
 
         if (insert){
-//            std::cout << "inserting the node" << std::endl;
+            std::cout << "inserting the node at depth " << gameTree.getDepth() << std::endl;
             gameTree.insert(*node);
         }
-
-        std::cout << gameTree.getDepth() << std::endl;
 
 
 

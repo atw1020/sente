@@ -377,18 +377,15 @@ namespace sente::SGF {
 
     bool SGFNode::operator==(const SGFNode &other) const {
 
-//        std::cout << "checking for equality" << std::endl;
-
         bool sameMoves = true;
 
         for (const auto& move : addedMoves){
-            if (std::find(other.addedMoves.begin(), other.addedMoves.end(), move) != other.addedMoves.end()){
+            // if the move isn't in the other node's moves
+            if (std::find(other.addedMoves.begin(), other.addedMoves.end(), move) == other.addedMoves.end()){
                 sameMoves = false;
                 break;
             }
         }
-
-//        std::cout << "sameMoves evaluated to " << std::boolalpha << sameMoves << std::endl;
 
         return (move == other.move) and sameMoves;
     }

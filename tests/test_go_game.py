@@ -1093,18 +1093,18 @@ class TestSetPoints(TestCase):
         game = sente.Game()
 
         game.play(4, 10)
-        print("*****************adding first stones*****************")
         game.play([sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)])
         game.step_up()
-        print("*****************adding second stones*****************")
         game.play([sente.Move(15, 15, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)])
-        print(game)
-        print("*****************second step up*****************")
         game.step_up()
-        print("*****************printing branches*****************")
-        print(game.get_branches())
 
-        self.assertIn((sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)),
+        self.assertIn(sente.Move(15, 15, sente.stone.BLACK),
                          tuple(game.get_branches()[0]))
+        self.assertIn(sente.Move(3, 3, sente.stone.WHITE),
+                      tuple(game.get_branches()[0]))
 
+        self.assertIn(sente.Move(15, 15, sente.stone.WHITE),
+                      tuple(game.get_branches()[1]))
+        self.assertIn(sente.Move(3, 3, sente.stone.BLACK),
+                      tuple(game.get_branches()[1]))
 
