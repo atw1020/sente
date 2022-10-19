@@ -205,8 +205,8 @@ class TestLegalMove(TestCase):
         self.assertTrue(game.is_legal(3, 3, sente.stone.BLACK))
         self.assertFalse(game.is_legal(3, 3, sente.stone.WHITE))
 
-        self.assertTrue(game.is_legal(sente.Move(15, 15, sente.stone.BLACK)))
-        self.assertFalse(game.is_legal(sente.Move(15, 15, sente.stone.WHITE)))
+        self.assertTrue(game.is_legal(sente.Move(sente.stone.BLACK, 15, 15)))
+        self.assertFalse(game.is_legal(sente.Move(sente.stone.WHITE, 15, 15)))
 
     def test_correct_color(self):
         """
@@ -223,8 +223,8 @@ class TestLegalMove(TestCase):
         self.assertTrue(game.is_legal(15, 3, sente.stone.WHITE))
         self.assertFalse(game.is_legal(15, 3, sente.stone.BLACK))
 
-        self.assertTrue(game.is_legal(sente.Move(15, 3, sente.stone.WHITE)))
-        self.assertFalse(game.is_legal(sente.Move(15, 3, sente.stone.BLACK)))
+        self.assertTrue(game.is_legal(sente.Move(sente.stone.WHITE, 15, 3)))
+        self.assertFalse(game.is_legal(sente.Move(sente.stone.BLACK, 15, 3)))
 
     def test_empty_out_of_bounds(self):
         """
@@ -241,9 +241,9 @@ class TestLegalMove(TestCase):
         self.assertFalse(game.is_legal(19, 20, sente.stone.BLACK))
 
         # internal indexing
-        self.assertTrue(game.is_legal(sente.Move(18, 18, sente.stone.BLACK)))
-        self.assertFalse(game.is_legal(sente.Move(19, 18, sente.stone.BLACK)))
-        self.assertFalse(game.is_legal(sente.Move(18, 19, sente.stone.BLACK)))
+        self.assertTrue(game.is_legal(sente.Move(sente.stone.BLACK, 19, 19)))
+        self.assertFalse(game.is_legal(sente.Move(sente.stone.BLACK, 20, 19)))
+        self.assertFalse(game.is_legal(sente.Move(sente.stone.BLACK, 19, 20)))
 
     def test_occupied_space(self):
         """
@@ -458,7 +458,7 @@ class IllegalMoveThrowsException(TestCase):
             game.play(15, 3, sente.stone.BLACK)
 
         with self.assertRaises(sente.exceptions.IllegalMoveException):
-            game.play(sente.Move(15, 3, sente.stone.BLACK))
+            game.play(sente.Move(sente.stone.BLACK, 15, 3))
 
     def test_empty_out_of_bounds(self):
         """
@@ -475,8 +475,8 @@ class IllegalMoveThrowsException(TestCase):
             game.play(19, 20, sente.stone.BLACK)
 
         with self.assertRaises(sente.exceptions.IllegalMoveException):
-            game.play(sente.Move(20, 19, sente.stone.BLACK))
-            game.play(sente.Move(19, 20, sente.stone.BLACK))
+            game.play(sente.Move(sente.stone.BLACK, 20, 19))
+            game.play(sente.Move(sente.stone.BLACK, 19, 20))
 
     def test_occupied_space(self):
         """

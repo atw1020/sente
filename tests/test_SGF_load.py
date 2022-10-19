@@ -345,8 +345,8 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("tests/sgf/simple fork.sgf")
 
-        self.assertIn(sente.Move(15, 3, sente.stone.BLACK), game.get_branches())
-        self.assertIn(sente.Move(16, 3, sente.stone.BLACK), game.get_branches())
+        self.assertIn(sente.Move(sente.stone.BLACK, 16, 4), game.get_branches())
+        self.assertIn(sente.Move(sente.stone.BLACK, 17, 4), game.get_branches())
 
     def test_long_branched_sgf(self):
         """
@@ -358,10 +358,11 @@ class BranchedSGF(TestCase):
 
         game = sgf.load("tests/sgf/two josekis.sgf")
 
-        self.assertEqual([sente.Move(16, 3, sente.stone.BLACK)], game.get_branches())
+        self.assertEqual([sente.Move(sente.stone.BLACK, 17, 4)], game.get_branches())
         game.play(17, 4)
 
-        self.assertEqual([sente.Move(14, 2, sente.stone.WHITE), sente.Move(14, 3, sente.stone.WHITE)], game.get_branches())
+        self.assertEqual([sente.Move(sente.stone.WHITE, 15, 3),
+                          sente.Move(sente.stone.WHITE, 15, 4)], game.get_branches())
 
     def test_complex_branched_sgf(self):
         """
@@ -377,10 +378,10 @@ class BranchedSGF(TestCase):
         game.play_default_sequence()
         game.advance_to_root()
 
-        self.assertEqual([sente.Move(16, 3, sente.stone.BLACK)], game.get_branches())
+        self.assertEqual([sente.Move(sente.stone.BLACK, 17, 4)], game.get_branches())
         game.play(17, 4)
 
-        self.assertEqual([sente.Move(14, 3, sente.stone.WHITE), sente.Move(14, 2, sente.stone.WHITE)],
+        self.assertEqual([sente.Move(sente.stone.WHITE, 15, 4), sente.Move(sente.stone.WHITE, 15, 3)],
                          game.get_branches())
 
     def test_load_comments(self):

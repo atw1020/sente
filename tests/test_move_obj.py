@@ -40,10 +40,10 @@ class StoneTest(TestCase):
 
 class MoveTest(TestCase):
 
-    move1 = sente.Move(4, 4, sente.stone.BLACK)
-    move2 = sente.Move(4, 4, sente.stone.BLACK)
-    move3 = sente.Move(3, 4, sente.stone.BLACK)
-    move4 = sente.Move(3, 4, sente.stone.WHITE)
+    move1 = sente.Move(sente.stone.BLACK, 5, 5)
+    move2 = sente.Move(sente.stone.BLACK, 5, 5)
+    move3 = sente.Move(sente.stone.BLACK, 4, 5)
+    move4 = sente.Move(sente.stone.WHITE, 4, 5)
 
     def test_equals(self):
         """

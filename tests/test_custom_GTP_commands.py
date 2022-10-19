@@ -159,7 +159,7 @@ class CustomGTPCommands(TestCase):
         def move_arg(arg: sente.Move) -> Tuple[bool, str]:
             return True, str(arg)
 
-        self.assertEqual("= " + move_arg(sente.Move(3, 15, sente.stone.BLACK))[1] + "\n",
+        self.assertEqual("= " + move_arg(sente.Move(sente.stone.BLACK, 4, 16))[1] + "\n",
                          session.interpret("test-move_arg BLACK D4"))
 
     def test_bool_arg(self):
@@ -271,7 +271,7 @@ class CustomGTPCommands(TestCase):
 
         @session.Command
         def return_move() -> sente.Move:
-            return sente.Move(4, 14, sente.stone.BLACK)
+            return sente.Move(sente.stone.BLACK, 5, 15)
 
         self.assertEqual("= B E5\n", session.interpret("test-return_move"))
 
@@ -303,7 +303,7 @@ class CustomGTPCommands(TestCase):
 
         @session.GenMove
         def genmove(stone: sente.stone) -> sente.Move:
-            return sente.Move(4, 14, sente.stone.BLACK)
+            return sente.Move(sente.stone.BLACK, 5, 15)
 
         # check that the move is generated
         self.assertEqual("= E5\n", session.interpret("genmove B"))
@@ -320,7 +320,7 @@ class CustomGTPCommands(TestCase):
 
         @session.GenMove
         def genmove(stone: sente.stone) -> sente.Move:
-            return sente.Move(3, 3, sente.stone.BLACK)
+            return sente.Move(sente.stone.BLACK, 4, 4)
 
         session.interpret("boardsize 9")
         session.interpret("genmove B")
@@ -500,7 +500,7 @@ class InterpreterSyntaxChecking(TestCase):
 
         @session.Command
         def letter_i_skipped_move() -> sente.Move:
-            return sente.Move(8, 10, sente.stone.BLACK)
+            return sente.Move(sente.stone.BLACK, 9, 11)
 
         self.assertEqual("= B J9\n", session.interpret("test-letter_i_skipped_move"))
 

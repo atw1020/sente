@@ -363,9 +363,9 @@ class TestTreeNavigation(TestCase):
 
         self.assertEqual(3, len(branches))
 
-        self.assertIn(sente.Move(14, 2, sente.stone.WHITE), branches)
-        self.assertIn(sente.Move(14, 14, sente.stone.WHITE), branches)
-        self.assertIn(sente.Move(2, 14, sente.stone.WHITE), branches)
+        self.assertIn(sente.Move(sente.stone.WHITE, 15, 3), branches)
+        self.assertIn(sente.Move(sente.stone.WHITE, 15, 15), branches)
+        self.assertIn(sente.Move(sente.stone.WHITE, 3, 15), branches)
 
     def test_play_moves(self):
         """
@@ -377,8 +377,9 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(2, 2, sente.stone.BLACK),
-                 sente.Move(4, 4, sente.stone.WHITE), sente.Move(6, 6, sente.stone.BLACK)]
+        moves = [sente.Move(sente.stone.BLACK, 3, 3),
+                 sente.Move(sente.stone.WHITE, 5, 5),
+                 sente.Move(sente.stone.BLACK, 7, 7)]
 
         game.play_sequence(moves)
 
@@ -396,8 +397,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE),
-                 sente.Move(7, 7, sente.stone.BLACK)]
+        moves = [sente.Move(sente.stone.BLACK, 3, 3), sente.Move(sente.stone.WHITE, 5, 5),
+                 sente.Move(sente.stone.BLACK, 7, 7)]
 
         game.play_sequence(moves)
 
@@ -413,8 +414,8 @@ class TestTreeNavigation(TestCase):
 
         game = sente.Game()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(5, 5, sente.stone.WHITE),
-                 sente.Move(3, 3, sente.stone.BLACK)]
+        moves = [sente.Move(sente.stone.BLACK, 3, 3), sente.Move(sente.stone.WHITE, 5, 5),
+                 sente.Move(sente.stone.BLACK, 3, 3)]
 
         with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play_sequence(moves)
@@ -438,8 +439,8 @@ class TestTreeNavigation(TestCase):
 
         default_branch = game.get_default_sequence()
 
-        moves = [sente.Move(3, 3, sente.stone.BLACK), sente.Move(15, 3, sente.stone.WHITE),
-                 sente.Move(3, 15, sente.stone.BLACK)]
+        moves = [sente.Move(sente.stone.BLACK, 4, 4), sente.Move(sente.stone.WHITE, 16, 4),
+                 sente.Move(sente.stone.BLACK, 4, 16)]
 
         self.assertEqual(moves, default_branch)
 
@@ -461,7 +462,7 @@ class TestTreeNavigation(TestCase):
 
         default_branch = game.get_default_sequence()
 
-        moves = [sente.Move(3, 15, sente.stone.BLACK)]
+        moves = [sente.Move(sente.stone.BLACK, 4, 16)]
 
         self.assertEqual(moves, default_branch)
 
@@ -487,8 +488,8 @@ class TestTreeNavigation(TestCase):
 
         sequences = game.get_all_sequences()
 
-        self.assertEqual([[sente.Move(3, 3, sente.stone.BLACK), sente.Move(3, 15, sente.stone.WHITE)],
-                          [sente.Move(15, 3, sente.stone.BLACK), sente.Move(15, 15, sente.stone.WHITE)]], sequences)
+        self.assertEqual([[sente.Move(sente.stone.BLACK, 4, 4), sente.Move(sente.stone.WHITE, 4, 16)],
+                          [sente.Move(sente.stone.BLACK, 16, 4), sente.Move(sente.stone.WHITE, 16, 16)]], sequences)
 
     def test_get_all_sequences_does_not_move(self):
         """
@@ -513,7 +514,7 @@ class TestTreeNavigation(TestCase):
         sequences = game.get_all_sequences()
 
         # we should only get one branch
-        self.assertEqual([[sente.Move(15, 15, sente.stone.WHITE)]], sequences)
+        self.assertEqual([[sente.Move(sente.stone.WHITE, 16, 16)]], sequences)
 
         # and that branch should not have been played
         self.assertEqual(sente.stone.BLACK, game.get_point(16, 4))
@@ -572,7 +573,8 @@ class TestTreeNavigation(TestCase):
         game.play(2, 3)
         game.step_up()
 
-        self.assertEqual(game.get_branches(), [sente.Move(2, 2, sente.stone.BLACK), sente.Move(1, 2, sente.stone.BLACK)])
+        self.assertEqual(game.get_branches(), [sente.Move(sente.stone.BLACK, 3, 3),
+                                               sente.Move(sente.stone.BLACK, 2, 3)])
 
     def test_step_up_0_steps(self):
         """
@@ -1014,7 +1016,7 @@ class TestSetSpaces(TestCase):
         game = sente.Game()
 
         game.play(4, 4)
-        game.play({sente.Move(3, 3, sente.stone.WHITE)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
 
         game.play(16, 16)
 
@@ -1031,19 +1033,19 @@ class TestSetSpaces(TestCase):
 
         game = sente.Game()
 
-        game.set_points({sente.Move(1, 0, sente.stone.BLACK),
-                         sente.Move(1, 1, sente.stone.BLACK),
-                         sente.Move(1, 2, sente.stone.BLACK),
-                         sente.Move(1, 3, sente.stone.BLACK),
-                         sente.Move(0, 3, sente.stone.BLACK)})
+        game.set_points({sente.Move(sente.stone.BLACK, 2, 1),
+                         sente.Move(sente.stone.BLACK, 2, 2),
+                         sente.Move(sente.stone.BLACK, 2, 3),
+                         sente.Move(sente.stone.BLACK, 2, 4),
+                         sente.Move(sente.stone.BLACK, 1, 4)})
 
-        game.set_points({sente.Move(2, 0, sente.stone.WHITE),
-                         sente.Move(2, 1, sente.stone.WHITE),
-                         sente.Move(2, 2, sente.stone.WHITE),
-                         sente.Move(2, 3, sente.stone.WHITE),
-                         sente.Move(2, 4, sente.stone.WHITE),
-                         sente.Move(1, 4, sente.stone.WHITE),
-                         sente.Move(0, 4, sente.stone.WHITE)})
+        game.set_points({sente.Move(sente.stone.WHITE, 3, 1),
+                         sente.Move(sente.stone.WHITE, 3, 2),
+                         sente.Move(sente.stone.WHITE, 3, 3),
+                         sente.Move(sente.stone.WHITE, 3, 4),
+                         sente.Move(sente.stone.WHITE, 3, 5),
+                         sente.Move(sente.stone.WHITE, 2, 5),
+                         sente.Move(sente.stone.WHITE, 1, 5)})
 
         self.assertEqual(game.get_point(2, 1), sente.stone.BLACK)
         self.assertEqual(game.get_point(2, 2), sente.stone.BLACK)
@@ -1071,8 +1073,8 @@ class TestSetSpaces(TestCase):
 
         game = sente.Game()
 
-        game.set_points({sente.Move(4, 4, sente.stone.BLACK)})
-        game.set_points({sente.Move(4, 4, sente.stone.EMPTY)})
+        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
 
         self.assertEqual(sente.stone.EMPTY, game.get_point(4, 4))
 
@@ -1088,10 +1090,10 @@ class TestSetSpaces(TestCase):
 
         game.play(4, 4)
 
-        game.play({sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)})
+        game.play({sente.Move(sente.stone.BLACK, 15, 15), sente.Move(sente.stone.WHITE, 3, 3)})
         game.step_up()
 
-        self.assertEqual((sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)),
+        self.assertEqual((sente.Move(sente.stone.BLACK, 15, 15), sente.Move(sente.stone.WHITE, 3, 3)),
                          tuple(game.get_branches()[0]))
 
     def test_play_branches(self):
@@ -1105,19 +1107,19 @@ class TestSetSpaces(TestCase):
         game = sente.Game()
 
         game.play(4, 10)
-        game.play({sente.Move(15, 15, sente.stone.BLACK), sente.Move(3, 3, sente.stone.WHITE)})
+        game.play({sente.Move(sente.stone.BLACK, 15, 15), sente.Move(sente.stone.WHITE, 3, 3)})
         game.step_up()
-        game.play({sente.Move(15, 15, sente.stone.WHITE), sente.Move(3, 3, sente.stone.BLACK)})
+        game.play({sente.Move(sente.stone.WHITE, 15, 15), sente.Move(sente.stone.BLACK, 3, 3)})
         game.step_up()
 
-        self.assertIn(sente.Move(15, 15, sente.stone.BLACK),
+        self.assertIn(sente.Move(sente.stone.BLACK, 15, 15),
                       game.get_branches()[0])
-        self.assertIn(sente.Move(3, 3, sente.stone.WHITE),
+        self.assertIn(sente.Move(sente.stone.WHITE, 3, 3),
                       game.get_branches()[0])
 
-        self.assertIn(sente.Move(15, 15, sente.stone.WHITE),
+        self.assertIn(sente.Move(sente.stone.WHITE, 15, 15),
                       game.get_branches()[1])
-        self.assertIn(sente.Move(3, 3, sente.stone.BLACK),
+        self.assertIn(sente.Move(sente.stone.BLACK, 3, 3),
                       game.get_branches()[1])
 
     def test_different_order_equal(self):
@@ -1132,9 +1134,9 @@ class TestSetSpaces(TestCase):
 
         game.play(4, 16)
 
-        game.play({sente.Move(4, 4, sente.stone.BLACK), sente.Move(16, 16, sente.stone.WHITE)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4), sente.Move(sente.stone.WHITE, 16, 16)})
         game.step_up()
-        game.play({sente.Move(16, 16, sente.stone.WHITE), sente.Move(4, 4, sente.stone.BLACK)})
+        game.play({sente.Move(sente.stone.WHITE, 16, 16), sente.Move(sente.stone.BLACK, 4, 4)})
         game.step_up()
 
         self.assertEqual(1, len(game.get_branches()))
@@ -1151,12 +1153,12 @@ class TestSetSpaces(TestCase):
 
         game.play(4, 4)
 
-        game.play({sente.Move(15, 15, sente.BLACK), sente.Move(3, 15, sente.BLACK)})
-        game.play({sente.Move(15, 3, sente.WHITE), sente.Move(3, 3, sente.WHITE)})
+        game.play({sente.Move(sente.BLACK, 16, 16), sente.Move(sente.BLACK, 4, 16)})
+        game.play({sente.Move(sente.WHITE, 16, 4), sente.Move(sente.WHITE, 4, 4)})
 
         game.step_up()
 
-        self.assertIn(sente.Move(15, 15, sente.BLACK), game.get_branches()[0])
-        self.assertIn(sente.Move(3, 15, sente.BLACK), game.get_branches()[0])
-        self.assertIn(sente.Move(15, 3, sente.WHITE), game.get_branches()[0])
-        self.assertIn(sente.Move(3, 3, sente.WHITE), game.get_branches()[0])
+        self.assertIn(sente.Move(sente.BLACK, 16, 16), game.get_branches()[0])
+        self.assertIn(sente.Move(sente.BLACK, 4, 16), game.get_branches()[0])
+        self.assertIn(sente.Move(sente.WHITE, 16, 4), game.get_branches()[0])
+        self.assertIn(sente.Move(sente.WHITE, 4, 4), game.get_branches()[0])
