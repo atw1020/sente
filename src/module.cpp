@@ -175,15 +175,16 @@ PYBIND11_MODULE(sente, module){
     },
               py::arg("color"));
 
-    py::class_<sente::Move>(module, "Move", R"pbdoc(
+    py::class_<sente::Move>(module, "Move",
+        R"pbdoc(
             A class that represents a move that can be played on a go board, consisting of a position and a stone.
 
             :members:
         )pbdoc")
-        .def(py::init<unsigned, unsigned, sente::Stone>(),
+        .def(py::init<sente::Stone, unsigned, unsigned>(),
+                py::arg("stone"),
                 py::arg("x"),
-                py::arg("y"),
-                py::arg("stone"))
+                py::arg("y"))
         .def("get_x", &sente::Move::getX, R"pbdoc(
             get the x-coordinate of the move (internal indices)
 
@@ -225,6 +226,7 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("play", &sente::Board<19>::playStone,
             py::arg("move"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 play a stone on the board
 
@@ -261,6 +263,7 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("play", &sente::Board<13>::playStone,
             py::arg("move"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 play a stone on the board
 
@@ -298,6 +301,7 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("play", &sente::Board<9>::playStone,
             py::arg("move"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 play a stone on the board
 
@@ -398,6 +402,7 @@ PYBIND11_MODULE(sente, module){
                 return game.isLegal(move);
             },
             py::arg("move"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 Checks to see if a move is legal.
 
@@ -462,6 +467,7 @@ PYBIND11_MODULE(sente, module){
                 game.playStone(move);
             },
             py::arg("move"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
 
                 Plays a stone on the board at the specified location and Captures and stones
@@ -640,8 +646,8 @@ PYBIND11_MODULE(sente, module){
             )pbdoc")
         .def("numpy", &sente::utils::getFeatures)
         .def("numpy", [](const sente::GoGame& game){
-            return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
-        })
+                return sente::utils::getFeatures(game, {"Black Stones", "White Stones", "Empty Points", "Ko Points"});
+            })
         .def("get_properties", [](const sente::GoGame& game) -> py::dict{
 
                 py::dict response;
@@ -704,8 +710,6 @@ PYBIND11_MODULE(sente, module){
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
 
-                py::gil_scoped_release release;
-
                 // load the text from the file
                 std::ifstream filePointer(fileName);
 
@@ -728,6 +732,7 @@ PYBIND11_MODULE(sente, module){
             py::arg("disable_warnings") = false,
             py::arg("ignore_illegal_properties") = true,
             py::arg("fix_file_format") = true,
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 Loads a go game from an SGF file.
 
@@ -738,18 +743,16 @@ PYBIND11_MODULE(sente, module){
                 :return: a ``sente.Game`` object populated with data from the SGF file
             )pbdoc", py::return_value_policy::take_ownership)
         .def("dump", [](const sente::GoGame& game, const std::string& fileName){
-                py::gil_scoped_release release;
                 std::ofstream output(fileName);
                 output << sente::SGF::dumpSGF(game);
-            },
+             },
              py::arg("game"),
              py::arg("file_name"),
+             py::call_guard<py::gil_scoped_release>(),
              "saves a game as an SGF")
         .def("loads", [](const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties,
                                                      bool fixFileFormat) -> sente::GoGame {
-
-                py::gil_scoped_release release;
                 auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                 return sente::GoGame(tree);
             },
@@ -757,6 +760,7 @@ PYBIND11_MODULE(sente, module){
             py::arg("disable_warnings") = false,
             py::arg("ignore_illegal_properties") = true,
             py::arg("fix_file_format") = true,
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 Loads a go game from an SGF file.
 
@@ -766,23 +770,16 @@ PYBIND11_MODULE(sente, module){
                 :param fix_file_format: whether or not to fix the file format if it is wrong
                 :return: a ``sente.Game`` object populated with data from the SGF file
             )pbdoc", py::return_value_policy::take_ownership)
-        .def("dumps", [](const sente::GoGame& game){
-                py::gil_scoped_release release;
-                return sente::SGF::dumpSGF(game);
-            },
+        .def("dumps", &sente::SGF::dumpSGF,
             py::arg("game"),
+            py::call_guard<py::gil_scoped_release>(),
             "Serialize a string as an SGF");
 
     auto exceptions = module.def_submodule("exceptions", "various exceptions used by sente");
 
     py::register_exception<sente::utils::InvalidSGFException>(exceptions, "InvalidSGFException");
     py::register_exception<sente::utils::IllegalMoveException>(exceptions, "IllegalMoveException");
-
-#if PY_MAJOR_VERSION == 3
-    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "FileNotFoundError", PyExc_FileNotFoundError);
-#else
-    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "IOError", PyExc_IOError);
-#endif
+    py::register_exception<sente::utils::FileNotFoundException>(exceptions, "FileNotFoundException", PyExc_FileNotFoundError);
 
     auto GTP = module.def_submodule("GTP", R"pbdoc(
         Utilities for implementing the go text protocol (GTP)

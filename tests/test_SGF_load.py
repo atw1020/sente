@@ -463,7 +463,7 @@ class InvalidSGF(TestCase):
     def test_nonexistent_file(self):
         """
 
-        tests to see if if we raises a fileNotFound Exception
+        tests to see if we raise a fileNotFound Exception
 
         :return:
         """

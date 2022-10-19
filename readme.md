@@ -119,7 +119,7 @@ Finally, Sente also provides utilities for reading and saving SGF files using th
 Building & Contributing
 ---
 
-Sente uses [CMake](https://cmake.org), [git](https://git-scm.com) and C++17. In order to 
+Sente uses [Meson](https://mesonbuild.com), [git](https://git-scm.com) and C++17. In order to 
 build the library, you will need CMake, and a 
 C++ compiler that supports C++17. You can install these 
 using a software package installer like homebrew or apt.
@@ -127,13 +127,13 @@ using a software package installer like homebrew or apt.
 OSx
 ```bash
 $ brew install git
-$ brew install cmake
+$ brew install meson
 $ xcode-select --install  # installs Apple clang++
 ```
 Debian/Ubuntu
 ```bash
 $ sudo apt-get install git
-$ sudo apt-get install cmake
+$ sudo apt-get install meson
 $ sudo apt-get install g++
 ```
 

@@ -49,6 +49,7 @@ namespace sente {
         Move();
         // Move(const Move& move) = delete;
         Move(unsigned x, unsigned y, Stone stone);
+        Move(Stone stone, unsigned x, unsigned y);
         Move(Vertex vertex, Stone stone);
 
         const static Move passBlack;

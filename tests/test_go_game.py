@@ -848,7 +848,7 @@ class TestNumpy(TestCase):
         self.assertTrue(np.array_equal(correct_board, numpy))
 
 
-class TestSetPoints(TestCase):
+class TestHandicaps(TestCase):
 
     def test_handicap_1(self):
         """
@@ -1001,6 +1001,8 @@ class TestSetPoints(TestCase):
         self.assertEqual(game.get_point(10, 10), sente.stone.BLACK)
         self.assertEqual(game.get_active_player(), sente.stone.WHITE)
 
+
+class TestSetSpaces(TestCase):
     def test_play_after_set(self):
         """
 
@@ -1008,6 +1010,16 @@ class TestSetPoints(TestCase):
 
         :return:
         """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+        game.play({sente.Move(3, 3, sente.stone.WHITE)})
+
+        game.play(16, 16)
+
+        self.assertEqual(sente.stone.WHITE, game.get_point(4, 4))
+        self.assertEqual(sente.stone.WHITE, game.get_point(16, 16))
 
     def test_setup_problem(self):
         """
@@ -1085,7 +1097,7 @@ class TestSetPoints(TestCase):
     def test_play_branches(self):
         """
 
-
+        checks to make sure different sets of moves create different branches
 
         :return:
         """
@@ -1108,3 +1120,43 @@ class TestSetPoints(TestCase):
         self.assertIn(sente.Move(3, 3, sente.stone.BLACK),
                       game.get_branches()[1])
 
+    def test_different_order_equal(self):
+        """
+
+        makes sure that branches that adds stones in a different order are considered equal
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 16)
+
+        game.play({sente.Move(4, 4, sente.stone.BLACK), sente.Move(16, 16, sente.stone.WHITE)})
+        game.step_up()
+        game.play({sente.Move(16, 16, sente.stone.WHITE), sente.Move(4, 4, sente.stone.BLACK)})
+        game.step_up()
+
+        self.assertEqual(1, len(game.get_branches()))
+
+    def test_add_moves_to_step(self):
+        """
+
+        checks to see if adding moves twice unions them
+
+        :return:
+        """
+
+        game = sente.Game()
+
+        game.play(4, 4)
+
+        game.play({sente.Move(15, 15, sente.BLACK), sente.Move(3, 15, sente.BLACK)})
+        game.play({sente.Move(15, 3, sente.WHITE), sente.Move(3, 3, sente.WHITE)})
+
+        game.step_up()
+
+        self.assertIn(sente.Move(15, 15, sente.BLACK), game.get_branches()[0])
+        self.assertIn(sente.Move(3, 15, sente.BLACK), game.get_branches()[0])
+        self.assertIn(sente.Move(15, 3, sente.WHITE), game.get_branches()[0])
+        self.assertIn(sente.Move(3, 3, sente.WHITE), game.get_branches()[0])

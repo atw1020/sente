@@ -164,7 +164,7 @@ namespace sente {
     }
 
     bool GoGame::isLegal(unsigned x, unsigned y) {
-        return isLegal(Move(x, y, gameTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        return isLegal(Move(x, y, getActivePlayer()));
     }
 
     bool GoGame::isLegal(unsigned int x, unsigned int y, Stone stone) {
@@ -204,7 +204,7 @@ namespace sente {
     }
 
     void GoGame::playStone(unsigned x, unsigned y){
-        playStone(Move(x, y, gameTree.getDepth() % 2 == 0 ? BLACK : WHITE));
+        playStone(Move(x, y, getActivePlayer()));
     }
 
     void GoGame::playStone(unsigned int x, unsigned int y, Stone stone) {
@@ -218,8 +218,6 @@ namespace sente {
      * @param move move to play
      */
     void GoGame::playStone(const Move &move) {
-
-        py::gil_scoped_release release;
 
         // create a new SGF node
         SGF::SGFNode node(move);
@@ -336,13 +334,12 @@ namespace sente {
      */
     void GoGame::addStones(const std::unordered_set<Move>& moves){
 
-//        py::gil_scoped_release release;
-
         // handle errors before moving forward
         for (const auto & move : moves){
             // error handling
             if (not isAddLegal(move)){
                 if (not board->isOnBoard(move)){
+                    // aquire the GIL to throw an exception
                     throw utils::IllegalMoveException(utils::OFF_BOARD, move);
                 }
             }
@@ -353,9 +350,6 @@ namespace sente {
         auto temp = SGF::SGFNode(Move::nullMove);
         bool insert = false;
 
-//        std::cout << "first move is "
-//                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
-
         if (node->getMove() != Move::nullMove){
             // create a new node
 //            std::cout << "not on a null move, creating a new node" << std::endl;
@@ -363,8 +357,7 @@ namespace sente {
             insert = true;
         }
 
-//        std::cout << "first move is "
-//                  << std::string(gameTree.getSequence()[0].getMove()) << std::endl;
+//        std::cout << "made it to for move in moves" << std::endl;
 
         // add all the moves
         for (const auto& move : moves){
@@ -427,13 +420,15 @@ namespace sente {
             updateBoard(move);
         }
 
-//        std::cout << "appending a node with " << node->getAddedMoves().size() << " added moves" << std::endl;
+//        std::cout << "inserting into the tree" << std::endl;
 
         if (insert){
 //            std::cout << "inserting the node at depth " << gameTree.getDepth() << std::endl;
             gameTree.insert(*node);
         }
 
+
+//        std::cout << "made it past insertion" << std::endl;
 
 
         // update the player if necessary
@@ -448,6 +443,9 @@ namespace sente {
                     break;
             }
         }
+
+//        std::cout << "exiting addStones" << std::endl;
+
     }
 
     void GoGame::setActivePlayer(Stone player) {
