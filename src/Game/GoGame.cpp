@@ -130,14 +130,10 @@ namespace sente {
      */
     void GoGame::resetBoard(){
 
-//        std::cout << "entering resetBoard" << std::endl;
-
         // create a new board
         clearBoard();
         // reset the tree to the root
         gameTree.advanceToRoot();
-
-//        std::cout << "got past advanceToRoot" << std::endl;
 
         // set the groups and captures to be empty
         groups = std::unordered_map<Move, std::shared_ptr<Group>>();
@@ -152,12 +148,8 @@ namespace sente {
         resetKoPoint();
         passCount = 0;
 
-//        std::cout << "adding moves" << std::endl;
-
         // add any stones at the root node
         addStones(gameTree.get().getAddedMoves());
-
-//        std::cout << "added moves" << std::endl;
 
         activeColor = getStartingColor();
 
@@ -221,8 +213,6 @@ namespace sente {
 
         // create a new SGF node
         SGF::SGFNode node(move);
-
-//        std::cout << "playing stone " << std::string(move) << std::endl;
 
         // check for pass/resign
         if (move.isPass()){
@@ -311,16 +301,9 @@ namespace sente {
         if (not board->isOnBoard(move)){
             return false;
         }
-        // std::cout << "passed isOnBoard" << std::endl;
 //        bool isEmpty = board->getStone(move.getVertex()) == EMPTY;
-        // std::cout << "passed isEmpty" << std::endl;
         bool notSelfCapture = rules == TROMP_TAYLOR or isNotSelfCapture(move);
-        // std::cout << "passed isNotSelfCapture" << std::endl;
 //        bool notKoPoint = isNotKoPoint(move);
-
-//        std::cout << "isEmpty:" << std::boolalpha << isEmpty << std::endl;
-//        std::cout << "notSelfCapture:" << std::boolalpha << notSelfCapture << std::endl;
-//        std::cout << "notKoPoint:" << std::boolalpha << notKoPoint << std::endl;
 
         return notSelfCapture;
 
@@ -352,12 +335,10 @@ namespace sente {
 
         if (node->getMove() != Move::nullMove){
             // create a new node
-//            std::cout << "not on a null move, creating a new node" << std::endl;
             node = &temp;
             insert = true;
         }
 
-//        std::cout << "made it to for move in moves" << std::endl;
 
         // add all the moves
         for (const auto& move : moves){
@@ -420,16 +401,9 @@ namespace sente {
             updateBoard(move);
         }
 
-//        std::cout << "inserting into the tree" << std::endl;
-
         if (insert){
-//            std::cout << "inserting the node at depth " << gameTree.getDepth() << std::endl;
             gameTree.insert(*node);
         }
-
-
-//        std::cout << "made it past insertion" << std::endl;
-
 
         // update the player if necessary
         if (gameTree.get().hasProperty(SGF::PL)){
@@ -443,9 +417,6 @@ namespace sente {
                     break;
             }
         }
-
-//        std::cout << "exiting addStones" << std::endl;
-
     }
 
     void GoGame::setActivePlayer(Stone player) {
@@ -479,13 +450,8 @@ namespace sente {
         std::vector<Playable> sequence = getMoveSequence();
 
         // determine if the first two items hold particular alternates
-//        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(sequence[1]) << std::endl;
 
         sequence = std::vector<Playable>(sequence.begin(), sequence.end() - steps);
-
-
-
-//        std::cout << "playing a sequence of " << sequence.size() << " moves" << std::endl;
 
         // reset the board
         resetBoard();
@@ -516,16 +482,30 @@ namespace sente {
     }
 
     void GoGame::playMoveSequence(const std::vector<Playable>& moves) {
-        for (const Playable& move : moves){
-            if (std::holds_alternative<Move>(move)){
-//                std::cout << "playing a move" << std::endl;
-                playStone(std::get<Move>(move));
-            }
-            else {
-//                std::cout << "adding stones" << std::endl;
-                addStones(std::get<std::unordered_set<Move>>(move));
+
+        // obtain a backup of the move sequence
+        auto backupSequence = getMoveSequence();
+
+        try {
+            for (const Playable& move : moves){
+                if (std::holds_alternative<Move>(move)){
+                    playStone(std::get<Move>(move));
+                }
+                else {
+                    addStones(std::get<std::unordered_set<Move>>(move));
+                }
             }
         }
+        catch (const utils::IllegalMoveException& except){
+
+            // if we hit an illegal move, reset the board and replay the sequence
+            resetBoard();
+            playMoveSequence(backupSequence);
+
+            // pass the exception back up the call tree
+            throw except;
+        }
+
     }
 
     void GoGame::setASCIIMode(bool useASCII) {
@@ -557,21 +537,17 @@ namespace sente {
         auto sequence = gameTree.getSequence();
         std::vector<Playable> moveSequence;
 
-        for (unsigned i = 0; i < sequence.size(); i++){
-            if (sequence[i].getMove() != Move::nullMove){
+        for (auto & node : sequence){
+            if (node.getMove() != Move::nullMove){
                 // if the node has a single move add that move
-                moveSequence.push_back(sequence[i].getMove());
+                moveSequence.emplace_back(node.getMove());
 //                std::cout << "appending a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence.back()) << std::endl;
             }
             else {
                 // if the node has multiple moves, add all of them
-                moveSequence.push_back(sequence[i].getAddedMoves());
-//                std::cout << "appending moves: " << std::boolalpha << std::holds_alternative<std::vector<Move>>(moveSequence.back()) << std::endl;
+                moveSequence.emplace_back(node.getAddedMoves());
             }
         }
-
-//        std::cout << "first element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[0]) << std::endl;
-//        std::cout << "second element is a move: " << std::boolalpha << std::holds_alternative<Move>(moveSequence[1]) << std::endl;
 
         return moveSequence;
     }
@@ -898,11 +874,8 @@ namespace sente {
         Stone player = getActivePlayer();
         std::vector<Move> moves;
 
-        // std::cout << "entering getLegalMoves" << std::endl;
-
         for (unsigned i = 0; i < board->getSide(); i++){
             for (unsigned j = 0; j < board->getSide(); j++){
-                // std::cout << std::string(Move(i, j, player)) << std::endl;
                 if (isLegal(i, j)){
                     moves.emplace_back(i, j, player);
                 }
@@ -1079,8 +1052,6 @@ namespace sente {
 
     bool GoGame::isNotSelfCapture(const Move &move) const{
 
-        // std::cout << "entering isNotSelfCapture" << std::endl;
-
         std::unordered_set<std::shared_ptr<Group>> ourAffectedGroups{};
         std::unordered_set<std::shared_ptr<Group>> theirAffectedGroups{};
 
@@ -1125,8 +1096,6 @@ namespace sente {
             auto liberty = *liberties.begin();
             filledLastLiberty = liberty.getX() == move.getX() and liberty.getY() == move.getY();
         }
-
-        // std::cout << "leaving isNotSelfCapture" << std::endl;
 
         return not liberties.empty() and not filledLastLiberty;
     }

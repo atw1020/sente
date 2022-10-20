@@ -137,7 +137,7 @@ class BoardTest13(TestCase):
 
         board2 = Board19()
 
-        board2.play(Move(stone.WHITE, 4, 4))
+        board2.play(Move(stone.BLACK, 4, 4))
         board2.play(Move(stone.WHITE, 9, 4))
 
         self.assertNotEqual(board1, Board19())
