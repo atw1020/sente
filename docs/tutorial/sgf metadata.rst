@@ -71,6 +71,7 @@ For example, say we have an SGF file containing a game record of the Honinbo Shu
 
 .. code-block:: python
 
+    >>> from sente import sgf
     >>> game = sgf.load("ear reddening game.sgf")
     >>> game.get_properties()
     {'PB': 'Yasuda Shusaku',        # PB: Name of the black player
@@ -79,6 +80,11 @@ For example, say we have an SGF file containing a game record of the Honinbo Shu
      'RE': 'B+2',                   # RE: Result of the game (Black wins by 2 points)
      'WR': '8d',                    # WR: Rank of the white player
      'DT': '1846-09-11,14,15'}      # DT: Date(s) the game was played
+
+     >>> from sente import sgf
+     >>> game = sgf.load("ear reddening game.sgf")
+     >>> game.get_properties()
+     {'PB': 'Yasuda Shusaku', 'BR': '4d', 'PW': 'Inoue Gennan Inseki', 'RE': 'B+2', 'WR': '8d', 'DT': '1846-09-11,14,15'}      # DT: Date(s) the game was played
 
 As seen above, the resulting dictionary will map from the property code to the value associated with the property.
 This value is typically a string, but in some cases, it may be a list of strings if the property is associated with multiple values.
@@ -91,41 +97,19 @@ Setting metadata
 
 Sente can set the metadata properties of a ``Game`` object using the ``set_property()`` method.
 
-.. code-block::
-
-    >>> game = sente.Game()
-    >>> game.set_property("PB", "Arthur Wesley")
-    >>> game.set_property("PW", "Lucas Wesley")
-    >>> game.get_properties()
-    {'SZ': '19',
-     'PB': 'Arthur Wesley',
-     'FF': '4',
-     'RU': 'Chinese',
-     'PW': 'Lucas Wesley'}
-
 .. doctest::
-    :hide:
 
     >>> import sente
     >>> game = sente.Game()
     >>> game.set_property("PB", "Arthur Wesley")
     >>> game.set_property("PW", "Lucas Wesley")
     >>> game.get_properties()
-    {'FF': '4', 'SZ': '19', 'PB': 'Arthur Wesley', 'RU': 'Chinese', 'PW': 'Lucas Wesley'}
+    {'SZ': '19', 'PB': 'Arthur Wesley', 'FF': '4', 'RU': 'Chinese', 'PW': 'Lucas Wesley'}
 
 As mentioned above, Sente strictly enforces conformity to the official SGF file format, and custom SGF properties are not permitted as metadata.
 Thus, setting a property not defined by the standard will result in an error.
 
-.. code-block::
-
-    >>> game = sente.Game()
-    >>> game.set_property("JD", "Kaei 5-11-17")
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-    sente.exceptions.InvalidSGFException: unknown SGF Property "JD"
-
 .. doctest::
-    :hide:
 
     >>> game = sente.Game()
     >>> game.set_property("JD", "Kaei 5-11-17")

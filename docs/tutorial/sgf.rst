@@ -56,7 +56,7 @@ However, if the ``get_children`` method is called, we can see that the opening m
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
     >>> game.get_branches() # if we use get_branches() we can see that a branch has been initiated
-    [<sente.Move B Q3>]
+    [<sente.Move B Q4>]
 
 It can be pretty tedious to play through every move by calling ``get_branches()`` and selecting the first branch every time, so sente provides the ``get_default_sequence()`` and ``play_default_sequence()`` methods to make it easier to play through games.
 If we wish to play the game through Hong Jansik's resignation at move 212, we can use the ``play_default_sequence()`` method to play out the main branch of the game.

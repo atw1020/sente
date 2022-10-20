@@ -84,7 +84,7 @@ the ``sente.Game()`` constructor as follows
 .. doctest:: python
 
     >>> import sente
-    >>> game = sente.Game(handicap=sente.get_handicap(4))
+    >>> game = sente.Game(handicap=sente.get_handicap_stones(4))
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .

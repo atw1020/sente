@@ -189,7 +189,7 @@ Once moves have been undone, the move(s) played at a given tree node can be obta
     >>> game.play(7, 7)
     >>> game.step_up()
     >>> print(game.get_branches())
-    [<sente.Move W G6>]
+    [<sente.Move W G7>]
 
 The ``sente.Move`` object is an object that can be passed to the ``game.play()`` method to play the specified move.
 The ``get_branches()`` method returns a python list containing all of the moves played at the current nod.
@@ -291,6 +291,16 @@ To make game tree navigation more straightforward, the ``sente.Game`` Object con
     >>> print(game.get_sequence())
     [<sente.Move B[dd]>, <sente.Move W[do]>, <sente.Move B[oo]>]
 
+.. doctest:: python
+    :hide:
+
+    >>> import sente; game = sente.Game()
+    >>> game.play(4, 4)
+    >>> game.play(4, 15)
+    >>> game.play(15, 15)
+    >>> print(game.get_sequence())
+    [<sente.Move B D4>, <sente.Move W D15>, <sente.Move B P15>]
+
 If the moves in a sequence are undone, the board position can be restored by using the ``play_sequence()`` method.
 
 .. code-block:: python
@@ -349,7 +359,7 @@ Additionally, because the ``get_sequence`` method returns a python list, python 
     >>> game.play(4, 15)
     >>> game.play(15, 15)
     >>> print(game.get_sequence())
-    [<sente.Move B D3>, <sente.Move W[do]>, <sente.Move B[oo]>]
+    [<sente.Move B D4>, <sente.Move W D15>, <sente.Move B P15>]
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .

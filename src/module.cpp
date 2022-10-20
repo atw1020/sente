@@ -608,6 +608,7 @@ PYBIND11_MODULE(sente, module){
              )pbdoc")
         .def("play_sequence", &sente::GoGame::playMoveSequence,
                  py::arg("moves"),
+                 py::call_guard<py::gil_scoped_release>(),
                  R"pbdoc(
                 plays all of the moves in a given list of moves
 
@@ -615,6 +616,7 @@ PYBIND11_MODULE(sente, module){
                 :raises IllegalMoveException: If any move in the sequence is illegal
             )pbdoc")
         .def("play_default_sequence", &sente::GoGame::playDefaultSequence,
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
                 plays out the moves in the default (first) branch of the tree
             )pbdoc")

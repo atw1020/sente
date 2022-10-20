@@ -267,6 +267,21 @@ class ErrorMessages(TestCase):
 
         self.assertEqual("? unacceptable size\n", engine.interpret("boardsize 10"))
 
+    def test_moves_mapped_correctly(self):
+        """
+
+        makes sure that the interpreter converts moves to sente correctly
+
+        :return:
+        """
+
+        engine = GTP.Session()
+        engine.interpret("play B D4")
+
+        print(engine.game)
+
+        self.assertEqual(sente.stone.BLACK, engine.game.get_point(4, 16))
+
     def test_illegal_move(self):
         """
 
