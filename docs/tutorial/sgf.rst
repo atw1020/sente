@@ -32,34 +32,7 @@ It populates an internal game tree with the moves played, but it does not play t
 After the game is loaded, the game will still have an empty board.
 However, if the ``get_children`` method is called, we can see that the opening move will be populated
 
-.. code-block:: python
-
-    >>> print(game) # the board is empty but the SGF file is loaded
-     1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     3  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     4  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-     5  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     6  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     7  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     8  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-     9  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    10  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    11  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
-    17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-        A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-    >>> game.get_branches() # if we use get_branches() we can see that a branch has been initiated
-    [<sente.Move B[dp]>]
-
 .. doctest::
-    :hide:
 
     >>> print(game) # the board is empty but the SGF file is loaded
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -83,7 +56,7 @@ However, if the ``get_children`` method is called, we can see that the opening m
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
     >>> game.get_branches() # if we use get_branches() we can see that a branch has been initiated
-    [<sente.Move B[pd]>]
+    [<sente.Move B Q3>]
 
 It can be pretty tedious to play through every move by calling ``get_branches()`` and selecting the first branch every time, so sente provides the ``get_default_sequence()`` and ``play_default_sequence()`` methods to make it easier to play through games.
 If we wish to play the game through Hong Jansik's resignation at move 212, we can use the ``play_default_sequence()`` method to play out the main branch of the game.

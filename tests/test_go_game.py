@@ -1037,19 +1037,19 @@ class TestSetSpaces(TestCase):
 
         game = sente.Game()
 
-        game.set_points({sente.Move(sente.stone.BLACK, 2, 1),
-                         sente.Move(sente.stone.BLACK, 2, 2),
-                         sente.Move(sente.stone.BLACK, 2, 3),
-                         sente.Move(sente.stone.BLACK, 2, 4),
-                         sente.Move(sente.stone.BLACK, 1, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 2, 1),
+                  sente.Move(sente.stone.BLACK, 2, 2),
+                  sente.Move(sente.stone.BLACK, 2, 3),
+                  sente.Move(sente.stone.BLACK, 2, 4),
+                  sente.Move(sente.stone.BLACK, 1, 4)})
 
-        game.set_points({sente.Move(sente.stone.WHITE, 3, 1),
-                         sente.Move(sente.stone.WHITE, 3, 2),
-                         sente.Move(sente.stone.WHITE, 3, 3),
-                         sente.Move(sente.stone.WHITE, 3, 4),
-                         sente.Move(sente.stone.WHITE, 3, 5),
-                         sente.Move(sente.stone.WHITE, 2, 5),
-                         sente.Move(sente.stone.WHITE, 1, 5)})
+        game.play({sente.Move(sente.stone.WHITE, 3, 1),
+                   sente.Move(sente.stone.WHITE, 3, 2),
+                   sente.Move(sente.stone.WHITE, 3, 3),
+                   sente.Move(sente.stone.WHITE, 3, 4),
+                   sente.Move(sente.stone.WHITE, 3, 5),
+                   sente.Move(sente.stone.WHITE, 2, 5),
+                   sente.Move(sente.stone.WHITE, 1, 5)})
 
         self.assertEqual(game.get_point(2, 1), sente.stone.BLACK)
         self.assertEqual(game.get_point(2, 2), sente.stone.BLACK)
@@ -1077,8 +1077,8 @@ class TestSetSpaces(TestCase):
 
         game = sente.Game()
 
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
 
         self.assertEqual(sente.stone.EMPTY, game.get_point(4, 4))
 

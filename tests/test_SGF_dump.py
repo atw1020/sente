@@ -237,9 +237,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
         self.assertIn("AB", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
 
         self.assertNotIn("AE", sgf.dumps(game))
         self.assertNotIn("AW", sgf.dumps(game))
@@ -254,9 +254,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
         self.assertIn("AB", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.WHITE, 4, 4)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
 
         self.assertNotIn("AE", sgf.dumps(game))
 
@@ -269,9 +269,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
         self.assertIn("AB", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
 
         self.assertNotIn("AB", sgf.dumps(game))
         self.assertNotIn("AE", sgf.dumps(game))
@@ -286,9 +286,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.WHITE, 4, 4)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
         self.assertIn("AW", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
 
         self.assertNotIn("AE", sgf.dumps(game))
         self.assertNotIn("AW", sgf.dumps(game))
@@ -302,9 +302,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.WHITE, 4, 4)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
         self.assertIn("AW", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.WHITE, 4, 4)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
 
         self.assertNotIn("AE", sgf.dumps(game))
         self.assertNotIn("AB", sgf.dumps(game))
@@ -319,9 +319,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.WHITE, 4, 4)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
         self.assertIn("AW", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
 
         self.assertNotIn("AB", sgf.dumps(game))
         self.assertNotIn("AE", sgf.dumps(game))
@@ -336,9 +336,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
         self.assertNotIn("AE", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.BLACK, 4, 4)})
+        game.play({sente.Move(sente.stone.BLACK, 4, 4)})
 
         self.assertNotIn("AE", sgf.dumps(game))
         self.assertNotIn("AW", sgf.dumps(game))
@@ -352,9 +352,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
         self.assertNotIn("AE", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.WHITE, 4, 4)})
+        game.play({sente.Move(sente.stone.WHITE, 4, 4)})
 
         self.assertNotIn("AE", sgf.dumps(game))
         self.assertNotIn("AB", sgf.dumps(game))
@@ -368,9 +368,9 @@ class SettingStones(TestCase):
         """
 
         game = sente.Game()
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
         self.assertNotIn("AE", sgf.dumps(game))
-        game.set_points({sente.Move(sente.stone.EMPTY, 4, 4)})
+        game.play({sente.Move(sente.stone.EMPTY, 4, 4)})
 
         self.assertNotIn("AB", sgf.dumps(game))
         self.assertNotIn("AE", sgf.dumps(game))

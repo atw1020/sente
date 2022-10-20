@@ -66,21 +66,21 @@ can be seen below:
     >>> from sente import GTP
     >>> session = GTP.Session()
     >>> print(session.interpret("list_commands"))
-    = play
-    boardsize
-    name
-    exit
-    clear_board
-    undo
-    list_commands
-    komi
+    = version
+    loadsgf
     quit
     showboard
     genmove
-    known_command
+    list_commands
     protocol_version
-    version
-    loadsgf
+    known_command
+    komi
+    exit
+    clear_board
+    boardsize
+    name
+    play
+    undo
     <BLANKLINE>
 
 The ``GTP.Session`` Object

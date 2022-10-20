@@ -224,8 +224,8 @@ namespace sente {
         }
 
         // add the letter to the second co-ord
-        std::string message = (stone == BLACK ? "B " : "W ") + std::to_string(y);
-        message.insert(message.begin() + 2, first);
+        std::string message = (stone == BLACK ? "B " : "W ") + std::to_string(y + 1);
+        message.insert(message.end() - 1, first);
 
         return message;
     }

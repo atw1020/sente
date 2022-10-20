@@ -97,9 +97,9 @@ Sente can set the metadata properties of a ``Game`` object using the ``set_prope
     >>> game.set_property("PB", "Arthur Wesley")
     >>> game.set_property("PW", "Lucas Wesley")
     >>> game.get_properties()
-    {'FF': '4',
-     'SZ': '19',
+    {'SZ': '19',
      'PB': 'Arthur Wesley',
+     'FF': '4',
      'RU': 'Chinese',
      'PW': 'Lucas Wesley'}
 
