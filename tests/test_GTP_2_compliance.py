@@ -278,8 +278,6 @@ class ErrorMessages(TestCase):
         engine = GTP.Session()
         engine.interpret("play B D4")
 
-        print(engine.game)
-
         self.assertEqual(sente.stone.BLACK, engine.game.get_point(4, 16))
 
     def test_illegal_move(self):

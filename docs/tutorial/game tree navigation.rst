@@ -383,7 +383,7 @@ Additionally, because the ``get_sequence`` method returns a python list, python 
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
     >>> move_sequence = game.get_sequence()
     >>> game.step_up(3) # alternatively, you could use the advance_to_root() method
-    >>> game.play_sequence(move_sequence)
+    >>> game.play_sequence(move_sequence[:-1])
     >>> print(game)
      1  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
      2  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
@@ -399,14 +399,10 @@ Additionally, because the ``get_sequence`` method returns a python list, python 
     12  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     13  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     14  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
-    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  ⚫ .  .  .  .
+    15  .  .  .  ⚪ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     16  .  .  .  *  .  .  .  .  .  *  .  .  .  .  .  *  .  .  .
     17  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
     19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
         A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T
-
-Handicaps & Playing Stones anywhere
------------------------------------
-
 

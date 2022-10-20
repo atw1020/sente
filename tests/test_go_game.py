@@ -417,12 +417,9 @@ class TestTreeNavigation(TestCase):
         moves = [sente.Move(sente.stone.BLACK, 3, 3), sente.Move(sente.stone.WHITE, 5, 5),
                  sente.Move(sente.stone.BLACK, 3, 3)]
 
-        print(game)
-
         with self.assertRaises(sente.exceptions.IllegalMoveException):
             game.play_sequence(moves)
 
-        print(game)
         self.assertEqual(sente.stone.EMPTY, game.get_point(3, 3))
 
     def test_get_default_sequence_root(self):

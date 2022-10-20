@@ -72,8 +72,6 @@ class BoardTest19(TestCase):
 
         board = Board19()
 
-        print("got to assert")
-
         board.play(Move(stone.BLACK, 19, 1))
         board.play(Move(stone.WHITE, 4, 16))
 
@@ -97,12 +95,6 @@ class BoardTest19(TestCase):
                   "18  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n" \
                   "19  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .\n" \
                   "    A  B  C  D  E  F  G  H  J  K  L  M  N  O  P  Q  R  S  T"
-
-        """if platform == "win32":
-            correct = correct.replace("⚪", "O ")
-            correct = correct.replace("⚫", "# ")"""
-
-        print("got to assert")
 
         self.assertEqual(correct, str(board))
 

@@ -184,7 +184,14 @@ PYBIND11_MODULE(sente, module){
         .def(py::init<sente::Stone, unsigned, unsigned>(),
                 py::arg("stone"),
                 py::arg("x"),
-                py::arg("y"))
+                py::arg("y"),
+        R"pbdoc(
+            Move class constructor
+
+            :param stone: the color of the stone.
+            :param x: x co-ordinate of the point to play at.
+            :param y: y co-ordinate of the point to play at.
+        )pbdoc")
         .def("get_x", &sente::Move::getX, R"pbdoc(
             get the x-coordinate of the move (internal indices)
 
@@ -205,7 +212,12 @@ PYBIND11_MODULE(sente, module){
         .def("__ne__", &sente::Move::operator!=)
         .def("__str__", [](const sente::Move& move){
             return std::string(move);
-        })
+        },
+        R"pbdoc(
+            generates a string representation of the move
+
+            :return: string
+        )pbdoc")
         .def("__hash__", [](const sente::Move& move){
             return std::hash<sente::Move>{}(move);
         })
@@ -439,8 +451,8 @@ PYBIND11_MODULE(sente, module){
             },
             py::arg("x"),
             py::arg("y"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
-
                 Plays a stone on the board at the specified location and Captures and stones
 
                 :param x: The x co-ordinate of the move to play.
@@ -453,6 +465,7 @@ PYBIND11_MODULE(sente, module){
             py::arg("x"),
             py::arg("y"),
             py::arg("stone"),
+            py::call_guard<py::gil_scoped_release>(),
             R"pbdoc(
 
                 Plays a stone on the board at the specified location and Captures and stones
