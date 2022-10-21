@@ -1094,8 +1094,10 @@ class TestSetSpaces(TestCase):
         game.play({sente.Move(sente.stone.BLACK, 15, 15), sente.Move(sente.stone.WHITE, 3, 3)})
         game.step_up()
 
-        self.assertEqual((sente.Move(sente.stone.BLACK, 15, 15), sente.Move(sente.stone.WHITE, 3, 3)),
-                         tuple(game.get_branches()[0]))
+        self.assertIn(sente.Move(sente.stone.BLACK, 15, 15),
+                      game.get_branches()[0])
+        self.assertIn(sente.Move(sente.stone.WHITE, 3, 3),
+                      game.get_branches()[0])
 
     def test_play_branches(self):
         """
