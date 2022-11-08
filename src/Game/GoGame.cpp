@@ -173,6 +173,11 @@ namespace sente {
         bool notKoPoint = isNotKoPoint(move);
         bool correctColor = isCorrectColor(move);
 
+//        std::cout << "isEmpty: " << std::boolalpha << isEmpty << std::endl;
+//        std::cout << "notSelfCapture: " << std::boolalpha << notSelfCapture << std::endl;
+//        std::cout << "notKoPoint: " << std::boolalpha << notKoPoint << std::endl;
+//        std::cout << "correctColor: " << std::boolalpha << correctColor << std::endl;
+
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
 
@@ -961,7 +966,34 @@ namespace sente {
      * @return
      */
     Stone GoGame::getStartingColor() const {
-        return gameTree.getRoot().hasProperty(SGF::HA) ? WHITE : BLACK;
+
+//        std::cout << "the root has " << gameTree.getRoot().getAddedMoves().size() << " moves associated with it" << std::endl;
+
+        bool whitesMoveFirst;
+
+        if (not gameTree.getRoot().getAddedMoves().empty()){
+
+            unsigned blackStones = 0;
+            unsigned whiteStones = 0;
+
+            // go through all the moves and see if there are no white moves
+            for (const auto& move : gameTree.getRoot().getAddedMoves()){
+                if (move.getStone() == BLACK){
+                    blackStones++;
+                }
+                else {
+                    whiteStones++;
+                }
+            }
+
+            // if we have more black stones than white stones, white moves first
+            whitesMoveFirst = blackStones > whiteStones;
+        }
+        else {
+            whitesMoveFirst = gameTree.getRoot().hasProperty(SGF::HA);
+        }
+
+        return whitesMoveFirst ? WHITE : BLACK;
     }
 
     /**

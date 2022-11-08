@@ -188,6 +188,22 @@ class BasicSGF(TestCase):
         except Exception as E:
             self.fail(E)
 
+    def test_add_black_first_move(self):
+        """
+
+        tests to see if a game that starts on a while move can be loaded
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/31640020- - .sgf")
+        branches = game.get_branches()
+
+        try:
+            game.play(branches[0])
+        except sente.exceptions.IllegalMoveException as E:
+            self.fail(E)
+
 
 class AddStones(TestCase):
 

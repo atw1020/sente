@@ -729,10 +729,16 @@ PYBIND11_MODULE(sente, module){
                 filePointer.close();
 
                 // generate the move tree
-                auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+                try {
+                    auto tree = sente::SGF::loadSGF(SGFText, disableWarnings, ignoreIllegalProperties, fixFileFormat);
 
-                // set the engine's game to be the move tree
-                return sente::GoGame(tree);
+                    // set the engine's game to be the move tree
+                    return sente::GoGame(tree);
+                }
+                catch (const sente::utils::InvalidSGFException& exception){
+                    std::string message = "Error loading file \"" + fileName + "\":" + exception.what();
+                    throw sente::utils::InvalidSGFException(message);
+                }
 
             },
             py::arg("filename"),
