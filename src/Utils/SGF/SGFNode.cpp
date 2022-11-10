@@ -289,7 +289,19 @@ namespace sente::SGF {
     }
 
     bool SGFNode::hasProperty(SGFProperty property) const {
-        return properties.find(property) != properties.end();
+
+        switch (property) {
+            case B:
+            case W:
+                // return whether we have a null move
+                return move == Move::nullMove;
+            case AB:
+            case AW:
+            case AE:
+                return not addedMoves.empty();
+            default:
+                return properties.find(property) != properties.end();
+        }
     }
 
     bool SGFNode::isEmpty() const {

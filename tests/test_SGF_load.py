@@ -204,6 +204,35 @@ class BasicSGF(TestCase):
         except sente.exceptions.IllegalMoveException as E:
             self.fail(E)
 
+    def test_infinite_loop(self):
+        """
+
+        tests to see if we get stuck in an infinite loop
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/34049517-Yasui Senkaku-Honinbo Dosaku.sgf")
+
+        for i, move in enumerate(game.get_default_sequence()):
+            print(game)
+            print("played move", str(i) + ":", move)
+            game.play(move)
+
+    def test_zero_stone_handicap(self):
+        """
+
+        makes sure that a zero stone handicap is interpreted correctly
+
+        :return:
+        """
+
+        game = sgf.load("tests/sgf/28715150-Honinbo Shusaku-Gennan Inseki.sgf")
+
+        moves = game.get_branches()
+        print(moves[0])
+        game.play(moves[0])
+
 
 class AddStones(TestCase):
 

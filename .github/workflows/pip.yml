@@ -49,6 +49,7 @@ jobs:
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_SKIP: "*-win32 pp38-win_amd64"
           CIBW_TEST_SKIP: "*universal2:arm64"
+          MACOSX_DEPLOYMENT_TARGET: "10.14"
 
       - name: Verify clean directory
         run: git diff --exit-code

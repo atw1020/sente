@@ -736,7 +736,7 @@ PYBIND11_MODULE(sente, module){
                     return sente::GoGame(tree);
                 }
                 catch (const sente::utils::InvalidSGFException& exception){
-                    std::string message = "Error loading file \"" + fileName + "\":" + exception.what();
+                    std::string message = "Error loading file \"" + fileName + "\": " + exception.what();
                     throw sente::utils::InvalidSGFException(message);
                 }
 

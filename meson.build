@@ -16,14 +16,6 @@ inst = python_module.find_installation()
 # pybind11 dependency
 pybind11_dep = dependency('pybind11', required: true)
 
-# disable throwing std::bad_access on darwin
-if host_machine.system() == 'darwin'
-    # fixme: find a better way to enable std::variant usage on darwin
-    args = ['-D_LIBCPP_DISABLE_AVAILABILITY']
-else
-    args = []
-endif
-
 inst.extension_module('sente', 'src/module.cpp',
                       'src/Game/Group.cpp', 'src/Game/Group.h', 'src/Game/GoGame.h', 'src/Game/GoGame.cpp',
                       'src/Game/Move.cpp', 'src/Game/Move.h', 'src/Game/Board.h',
@@ -41,6 +33,5 @@ inst.extension_module('sente', 'src/module.cpp',
                       'src/Utils/GTP/Controller.h', 'src/Utils/GTP/Controller.cpp',
                       'src/Utils/GTP/Session.h', 'src/Utils/GTP/Session.cpp',
                       'src/Utils/GTP/PythonBindings.cpp', 'src/Utils/GTP/PythonBindings.h',
-                      dependencies: [pybind11_dep, inst.dependency()],
-                      cpp_args: args)
+                      dependencies: [pybind11_dep, inst.dependency()])
 

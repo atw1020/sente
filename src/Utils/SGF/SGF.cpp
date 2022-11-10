@@ -186,6 +186,7 @@ namespace sente::SGF {
                     // otherwise do nothing
                     if (lastProperty != NONE){
                         node.appendProperty(lastProperty, temp);
+//                        std::cout << "appending " << temp << " to property " << toStr(lastProperty) << std::endl;
                     }
 
                     inBrackets = false;
@@ -202,8 +203,8 @@ namespace sente::SGF {
             }
         }
 
-        if (*cursor != ']'){
-            // TODO: throw an exception if the last item in the sequence is not a closing bracket
+        for (const auto& property : node.getProperties()){
+            std::cout << "node has property " << toStr(property.first) << std::endl;
         }
 
         return node;

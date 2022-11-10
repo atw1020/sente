@@ -173,10 +173,10 @@ namespace sente {
         bool notKoPoint = isNotKoPoint(move);
         bool correctColor = isCorrectColor(move);
 
-//        std::cout << "isEmpty: " << std::boolalpha << isEmpty << std::endl;
-//        std::cout << "notSelfCapture: " << std::boolalpha << notSelfCapture << std::endl;
-//        std::cout << "notKoPoint: " << std::boolalpha << notKoPoint << std::endl;
-//        std::cout << "correctColor: " << std::boolalpha << correctColor << std::endl;
+        std::cout << "isEmpty: " << std::boolalpha << isEmpty << std::endl;
+        std::cout << "notSelfCapture: " << std::boolalpha << notSelfCapture << std::endl;
+        std::cout << "notKoPoint: " << std::boolalpha << notKoPoint << std::endl;
+        std::cout << "correctColor: " << std::boolalpha << correctColor << std::endl;
 
         return isEmpty and notSelfCapture and notKoPoint and correctColor;
     }
@@ -971,7 +971,14 @@ namespace sente {
 
         bool whitesMoveFirst;
 
+        std::cout << "entering getStartingColor" << std::endl;
+        for (const auto& property : gameTree.getRoot().getProperties()){
+            std::cout << "node has property " << toStr(property.first) << std::endl;
+        }
+
         if (not gameTree.getRoot().getAddedMoves().empty()){
+
+            std::cout << "found added moves at the root" << std::endl;
 
             unsigned blackStones = 0;
             unsigned whiteStones = 0;
@@ -986,11 +993,23 @@ namespace sente {
                 }
             }
 
+            std::cout << "we have " << blackStones << "black stones" << std::endl;
+            std::cout << "we have " << whiteStones << "white stones" << std::endl;
+
             // if we have more black stones than white stones, white moves first
             whitesMoveFirst = blackStones > whiteStones;
         }
         else {
-            whitesMoveFirst = gameTree.getRoot().hasProperty(SGF::HA);
+            std::cout << "checking if the game has a handicap" << std::endl;
+            std::cout << "hasProperty(SGF::HA) evaluates to " << std::boolalpha << gameTree.getRoot().hasProperty(SGF::HA) << std::endl;
+            // check if there is a handicap
+            if (gameTree.getRoot().hasProperty(SGF::HA)){
+                // return whether the value is zero
+                whitesMoveFirst = std::stoi(gameTree.getRoot().getProperty(SGF::HA)[0]) != 0;
+            }
+            else {
+                whitesMoveFirst = false;
+            }
         }
 
         return whitesMoveFirst ? WHITE : BLACK;
