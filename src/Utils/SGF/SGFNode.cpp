@@ -140,6 +140,7 @@ namespace sente::SGF {
     }
 
     void SGFNode::appendProperty(SGFProperty property, const std::string &value) {
+
         if (property == B or property == W){
 
             if (hasProperty(AW) or hasProperty(AB) or hasProperty(AE)){
@@ -290,11 +291,18 @@ namespace sente::SGF {
 
     bool SGFNode::hasProperty(SGFProperty property) const {
 
+//        std::cout << "looking for property " << toStr(property) << std::endl;
+//        std::cout << "properties has " << properties.size() << " elements" << std::endl;
+//
+//        for (const auto& item : properties){
+//            std::cout << "node has property " << toStr(item.first) << std::endl;
+//        }
+
         switch (property) {
             case B:
             case W:
                 // return whether we have a null move
-                return move == Move::nullMove;
+                return move != Move::nullMove;
             case AB:
             case AW:
             case AE:

@@ -138,7 +138,7 @@ namespace sente::SGF {
     SGFNode nodeFromText(const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties){
 
-        // std::cout << "entering nodeFromText with text " << SGFText << std::endl;
+        std::cout << "entering nodeFromText with text \"" << SGFText << "\"" << std::endl;
 
         SGFNode node;
         std::string temp;
@@ -203,10 +203,6 @@ namespace sente::SGF {
             }
         }
 
-        for (const auto& property : node.getProperties()){
-            std::cout << "node has property " << toStr(property.first) << std::endl;
-        }
-
         return node;
 
     }
@@ -249,6 +245,7 @@ namespace sente::SGF {
                         inBrackets = false;
                     }
                     else {
+                        // TODO: add highlighting
                         throw utils::InvalidSGFException("Extra Closing Bracket");
                     }
                     break;
@@ -339,6 +336,9 @@ namespace sente::SGF {
                     if (not inBrackets){
 
                         if (previousSlice + 1 < cursor){
+
+                            std::cout << "hit a semicolon with " << strip(std::string(previousSlice, cursor)) << std::endl;
+
                             // get the node from the text
                             tempNode = nodeFromText(strip(std::string(previousSlice, cursor)),
                                                     disableWarnings, ignoreIllegalProperties);
