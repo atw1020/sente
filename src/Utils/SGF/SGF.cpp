@@ -16,9 +16,6 @@ namespace py = pybind11;
 std::string strip(const std::string &input)
 {
 
-    // py::print("entering strip with \"" + input + "\"");
-    // py::print("size: ", input.size());
-
     auto start_it = input.begin();
     auto end_it = input.end();
     while (std::isspace(*start_it) and start_it != end_it)
@@ -138,8 +135,6 @@ namespace sente::SGF {
     SGFNode nodeFromText(const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties){
 
-        std::cout << "entering nodeFromText with text \"" << SGFText << "\"" << std::endl;
-
         SGFNode node;
         std::string temp;
 
@@ -186,7 +181,6 @@ namespace sente::SGF {
                     // otherwise do nothing
                     if (lastProperty != NONE){
                         node.appendProperty(lastProperty, temp);
-//                        std::cout << "appending " << temp << " to property " << toStr(lastProperty) << std::endl;
                     }
 
                     inBrackets = false;
@@ -207,6 +201,41 @@ namespace sente::SGF {
 
     }
 
+    void insertNode(utils::Tree<SGFNode>& SGFTree,
+                    const std::string& nodeText,
+                    bool& firstNode,
+                    unsigned& FFVersion,
+                    bool disableWarnings,
+                    bool ignoreIllegalProperties,
+                    bool fixFileFormat){
+
+        SGFNode tempNode;
+
+        if (not nodeText.empty()) {
+            // add the property prior to this one
+            tempNode = nodeFromText(nodeText, disableWarnings, ignoreIllegalProperties);
+
+            if (firstNode){
+                SGFTree = utils::Tree<SGFNode>(tempNode);
+                firstNode = false;
+                if (SGFTree.get().hasProperty(FF)){
+                    FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
+                }
+                else {
+                    // the file format must be FF[1] because it's not specified
+                    FFVersion = 1;
+                }
+            }
+            else {
+                SGFTree.insert(tempNode);
+            }
+            // validate the result with the file format version
+            if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
+                handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
+            }
+        }
+    }
+
     utils::Tree<SGFNode> loadSGF(const std::string& SGFText, bool disableWarnings,
                                                       bool ignoreIllegalProperties,
                                                       bool fixFileFormat){
@@ -222,14 +251,13 @@ namespace sente::SGF {
         std::string temp;
 
         auto cursor = SGFText.begin();
-        auto previousSlice = cursor;
+        auto nodeStart = cursor;
 
         unsigned FFVersion;
 
         std::stack<unsigned> branchDepths{};
 
         utils::Tree<SGFNode> SGFTree;
-        SGFNode tempNode;
 
         // go through the rest of the tree
 
@@ -254,69 +282,21 @@ namespace sente::SGF {
                     break;
                 case '(':
                     if (not inBrackets){
-                        temp = strip(std::string(previousSlice, cursor));
 
-                        if (not temp.empty()) {
-                            // add the property prior to this one
-                            tempNode = nodeFromText(temp, disableWarnings, ignoreIllegalProperties);
-
-                            if (firstNode){
-                                SGFTree = utils::Tree<SGFNode>(tempNode);
-                                firstNode = false;
-                                if (SGFTree.get().hasProperty(FF)){
-                                    FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
-                                }
-                                else {
-                                    // the file format must be FF[1] because it's not specified
-                                    FFVersion = 1;
-                                }
-                            }
-                            else {
-                                SGFTree.insert(tempNode);
-                            }
-                            // validate the result with the file format version
-                            if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
-                            }
-                        }
+                        // insert a node if we have to
+                        temp = strip(std::string(nodeStart, cursor));
+                        insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
 
                         // with the property added to the tree, the push the depth of the current node onto the stack
                         branchDepths.push(SGFTree.getDepth());
-
-                        // update the previousSlice
-                        previousSlice = cursor + 1;
                     }
                     break;
                 case ')':
                     if (not inBrackets){
 
-                        temp = strip(std::string(previousSlice, cursor));
-
-                        if (not temp.empty()) {
-                            // add the property prior to this one
-                            tempNode = nodeFromText(temp, disableWarnings, ignoreIllegalProperties);
-                            if (firstNode){
-                                SGFTree = utils::Tree<SGFNode>(tempNode);
-                                firstNode = false;
-                                if (SGFTree.get().hasProperty(FF)){
-                                    FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
-                                }
-                                else {
-                                    // the file format must be FF[1] because it's not specified
-                                    FFVersion = 1;
-                                }
-                            }
-                            else {
-                                SGFTree.insert(tempNode);
-                            }
-                            // validate the result with the file format version
-                            if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
-                            }
-                        }
-
-                        // update the previousSlice
-                        previousSlice = cursor + 1;
+                        // insert a node if we need to
+                        temp = strip(std::string(nodeStart, cursor));
+                        insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
 
                         // update the depth
                         if (not branchDepths.empty()){
@@ -335,37 +315,16 @@ namespace sente::SGF {
                 case ';':
                     if (not inBrackets){
 
-                        if (previousSlice + 1 < cursor){
-
-                            std::cout << "hit a semicolon with " << strip(std::string(previousSlice, cursor)) << std::endl;
-
-                            // get the node from the text
-                            tempNode = nodeFromText(strip(std::string(previousSlice, cursor)),
-                                                    disableWarnings, ignoreIllegalProperties);
-                            if (firstNode){
-                                SGFTree = utils::Tree<SGFNode>(tempNode);
-                                firstNode = false;
-                                if (SGFTree.get().hasProperty(FF)){
-                                    FFVersion = std::stoi(SGFTree.get().getProperty(FF)[0]);
-                                }
-                                else {
-                                    // the file format must be FF[1] because it's not specified
-                                    FFVersion = 1;
-                                }
-                            }
-                            else {
-                                SGFTree.insert(tempNode);
-                            }
-                            // validate the result with the file format version
-                            if (not SGFTree.get().getInvalidProperties(FFVersion).empty()){
-                                handleUnsupportedProperty(SGFTree, FFVersion, disableWarnings, fixFileFormat);
-                            }
+                        // if we aren't on the first node, we should insert the previous chunk of text
+                        if (nodeStart != SGFText.begin()){
+                            temp = strip(std::string(nodeStart, cursor));
+                            insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                         }
 
-                        // update the previousSlice
-                        previousSlice = cursor + 1;
-                        break;
+                        // seeing a semicolon means that we are about to see a node
+                        nodeStart = cursor + 1;
                     }
+                    break;
             }
         }
 
