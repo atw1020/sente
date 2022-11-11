@@ -93,6 +93,7 @@ class BasicSGF(TestCase):
         """
 
         game = sgf.load("tests/sgf/34839594-255-IDW64-noob_bot_3.sgf")
+        move_sequence = game.get_default_sequence()
         game.play_default_sequence()
 
         self.assertEqual(" 1  .  .  .  .  .  .  ⚫ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚫ .  .  .  .  .\n"
@@ -203,21 +204,6 @@ class BasicSGF(TestCase):
             game.play(branches[0])
         except sente.exceptions.IllegalMoveException as E:
             self.fail(E)
-
-    def test_infinite_loop(self):
-        """
-
-        tests to see if we get stuck in an infinite loop
-
-        :return:
-        """
-
-        game = sgf.load("tests/sgf/34049517-Yasui Senkaku-Honinbo Dosaku.sgf")
-
-        for i, move in enumerate(game.get_default_sequence()):
-            print(game)
-            print("played move", str(i) + ":", move)
-            game.play(move)
 
     def test_zero_stone_handicap(self):
         """

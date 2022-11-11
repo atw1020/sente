@@ -86,8 +86,6 @@ namespace sente {
         gameTree = SGFTree;
 
         auto rootNode = gameTree.getRoot();
-        std::cout << "the root node has " << rootNode.getAddedMoves().size() << " moves" << std::endl;
-        std::cout << "the root node has " << rootNode.getProperties().size() << " properties" << std::endl;
 
         if (rootNode.hasProperty(SGF::SZ)){
             // parse if available
@@ -154,6 +152,7 @@ namespace sente {
         addStones(gameTree.get().getAddedMoves());
 
         activeColor = getStartingColor();
+//        std::cout << "the starting color for this game is " << (activeColor == BLACK ? "Black" : "White") << std::endl;
 
     }
 

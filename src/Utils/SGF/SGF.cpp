@@ -135,6 +135,8 @@ namespace sente::SGF {
     SGFNode nodeFromText(const std::string& SGFText, bool disableWarnings,
                                                      bool ignoreIllegalProperties){
 
+//        std::cout << "entering nodeFromText with text \"" << SGFText << "\"" << std::endl;
+
         SGFNode node;
         std::string temp;
 
@@ -244,8 +246,10 @@ namespace sente::SGF {
             throw utils::InvalidSGFException("File is Empty or unreadable");
         }
 
-        bool inBrackets = false;
         bool firstNode = true;
+        bool inBrackets = false;
+        // skip inserting nodes if a previous step inserted them
+        bool lastNodeAlreadyAdded = true;
 
         // temporary string variable
         std::string temp;
@@ -282,11 +286,6 @@ namespace sente::SGF {
                     break;
                 case '(':
                     if (not inBrackets){
-
-                        // insert a node if we have to
-                        temp = strip(std::string(nodeStart, cursor));
-                        insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
-
                         // with the property added to the tree, the push the depth of the current node onto the stack
                         branchDepths.push(SGFTree.getDepth());
                     }
@@ -297,6 +296,9 @@ namespace sente::SGF {
                         // insert a node if we need to
                         temp = strip(std::string(nodeStart, cursor));
                         insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+
+                        // we've added this node
+                        lastNodeAlreadyAdded = true;
 
                         // update the depth
                         if (not branchDepths.empty()){
@@ -309,19 +311,19 @@ namespace sente::SGF {
                         else {
                             throw utils::InvalidSGFException("extra closing parentheses");
                         }
-
                     }
                     break;
                 case ';':
                     if (not inBrackets){
 
                         // if we aren't on the first node, we should insert the previous chunk of text
-                        if (nodeStart != SGFText.begin()){
+                        if (not lastNodeAlreadyAdded){
                             temp = strip(std::string(nodeStart, cursor));
                             insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                         }
 
                         // seeing a semicolon means that we are about to see a node
+                        lastNodeAlreadyAdded = false;
                         nodeStart = cursor + 1;
                     }
                     break;
