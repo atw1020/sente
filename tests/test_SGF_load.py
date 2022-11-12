@@ -216,7 +216,6 @@ class BasicSGF(TestCase):
         game = sgf.load("tests/sgf/28715150-Honinbo Shusaku-Gennan Inseki.sgf")
 
         moves = game.get_branches()
-        print(moves[0])
         game.play(moves[0])
 
 
@@ -461,7 +460,11 @@ class InvalidSGF(TestCase):
 
         for file in files:
             with self.assertRaises(sente.exceptions.InvalidSGFException):
-                game = sgf.load(str(Path("tests/invalid sgf")/file))
+                try:
+                    game = sgf.load(str(Path("tests/invalid sgf")/file))
+                    print("exception not raised in file", file)
+                except sente.exceptions.InvalidSGFException as E:
+                    raise E
 
     def test_invalid_moves(self):
         """
@@ -512,7 +515,7 @@ class InvalidSGF(TestCase):
         """
 
         with self.assertRaises(sente.exceptions.InvalidSGFException):
-            sgf.load("tests/invalid sgf/module.cpp")
+            sgf.load("tests/invalid sgf/Group.cpp")
 
     def test_binary_file(self):
         """

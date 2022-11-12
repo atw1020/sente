@@ -211,6 +211,8 @@ namespace sente::SGF {
                     bool ignoreIllegalProperties,
                     bool fixFileFormat){
 
+//        std::cout << "entering insertNode with text \"" << nodeText << "\"" << std::endl;
+
         SGFNode tempNode;
 
         if (not nodeText.empty()) {
@@ -249,7 +251,7 @@ namespace sente::SGF {
         bool firstNode = true;
         bool inBrackets = false;
         // skip inserting nodes if a previous step inserted them
-        bool lastNodeAlreadyAdded = true;
+        bool nodeAddedWithParentheses = true;
 
         // temporary string variable
         std::string temp;
@@ -286,7 +288,17 @@ namespace sente::SGF {
                     break;
                 case '(':
                     if (not inBrackets){
-                        // with the property added to the tree, the push the depth of the current node onto the stack
+
+                        // insert a node if we need to
+                        temp = strip(std::string(nodeStart, cursor));
+                        insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
+
+                        // we've added a node with closing parentheses
+                        nodeAddedWithParentheses = true;
+                        nodeStart = cursor + 1;
+
+                        // push how deep we currently are in the tree onto a stack to record how far we have to
+                        // step up to get out of the branch
                         branchDepths.push(SGFTree.getDepth());
                     }
                     break;
@@ -297,11 +309,13 @@ namespace sente::SGF {
                         temp = strip(std::string(nodeStart, cursor));
                         insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
 
-                        // we've added this node
-                        lastNodeAlreadyAdded = true;
+                        // we've added a node with closing parentheses
+                        nodeAddedWithParentheses = true;
+                        nodeStart = cursor + 1;
 
                         // update the depth
                         if (not branchDepths.empty()){
+//                            std::cout << "popping a depth of " << branchDepths.top() << std::endl;
                             // step up until we reach the previous branch depth
                             while (SGFTree.getDepth() > branchDepths.top()){
                                 SGFTree.stepUp();
@@ -309,21 +323,23 @@ namespace sente::SGF {
                             branchDepths.pop();
                         }
                         else {
-                            throw utils::InvalidSGFException("extra closing parentheses");
+                            throw utils::InvalidSGFException("unmatched closing parentheses");
                         }
                     }
                     break;
                 case ';':
                     if (not inBrackets){
 
+//                        std::cout << "hit a semicolon" << std::endl;
+
                         // if we aren't on the first node, we should insert the previous chunk of text
-                        if (not lastNodeAlreadyAdded){
+                        if (not nodeAddedWithParentheses){
                             temp = strip(std::string(nodeStart, cursor));
                             insertNode(SGFTree, temp, firstNode, FFVersion, disableWarnings, ignoreIllegalProperties, fixFileFormat);
                         }
 
                         // seeing a semicolon means that we are about to see a node
-                        lastNodeAlreadyAdded = false;
+                        nodeAddedWithParentheses = false;
                         nodeStart = cursor + 1;
                     }
                     break;
