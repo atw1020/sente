@@ -23,7 +23,7 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/setup-python@v4.3.0
+      - uses: actions/setup-python@v4.4.0
         with:
           python-version: ${{ matrix.python-version }}
 
